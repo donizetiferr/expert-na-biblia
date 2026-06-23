@@ -9,8 +9,6 @@
 
 import { getDatabase } from '../db/database';
 
-const FREEZE_POR_SEMANA = 1; // usuario pode "congelar" 1 dia por semana
-
 export interface StreakInfo {
   dias_consecutivos: number;
   ultima_atividade: string | null; // YYYY-MM-DD

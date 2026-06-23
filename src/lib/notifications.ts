@@ -6,7 +6,6 @@
  */
 
 import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
 
 const MENSAGENS = [
   'Você já estudou hoje? Sua jornada bíblica continua! 📖',
@@ -61,8 +60,8 @@ export async function agendarLembreteDiario(hora = 19, minuto = 0): Promise<void
     },
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.DAILY,
-      hour,
-      minute,
+      hour: hora,
+      minute: minuto,
     },
   });
 }

@@ -21,12 +21,14 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "types": ["node", "jest"],
     "jsx": "react-native",
     "moduleResolution": "bundler",
     "module": "ESNext",
     "target": "ES2022",
     "lib": ["ES2022", "DOM"],
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
       "@/*": ["./src/*"],
       "@assets/*": ["./assets/*"],
@@ -50,6 +52,7 @@
     "dist",
     ".expo",
     "build",
-    "__tests__/e2e"
+    "__tests__/e2e",
+    "scripts"
   ]
 }

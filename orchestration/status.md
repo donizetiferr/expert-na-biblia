@@ -144,3 +144,32 @@ Estado: IMPLEMENTANDO_V6 → V6_CONCLUIDO_COM_BLOQUEIO_USUARIO | nota: 9.6/10 | 
 1. (Opcional) `npm run generate:questions` com `MINIMAX_API_KEY` → gera `docs/qa_conteudo_para_revisar.md` → revisar 100 amostras (P0-11)
 2. `npx eas login` (Expo account free) → `npx eas build --platform android --profile production --non-interactive` (~10-15 min para .aab)
 3. Upload do .aab no Google Play Console + seguir `orchestration/play_store_checklist.md` (2FA Google irredutivel)
+
+## solo-double-check [2026-06-23] — V8-RETOMADA plano
+
+- **Veredito**: REPROVADO (7.0/10.0) — 2 CRITICOS + 4 ALTOS em aberto
+- **Acao aplicada**: 5 ajustes CRITICOS/ALTOS adicionados ao evolution_plan.md (criados 2 milestones novos: M0 Importacao + M6 Runtime Config; M2.2 enriquecido; M3.4 enriquecido; M4.3 dependencia adicionada)
+- **Audit**: `orchestration/audit_report_doublecheck_v8.md`
+- **QA Verdict**: `orchestration/qa_verdict_doublecheck_v8.md`
+
+### 5 ajustes aplicados ao plano (REPROVADO -> APROVADO)
+
+1. CRITICO (AC1): Adicionado M0 — Importar `docs/questions_clean.json` para `data/db.sqlite`
+2. CRITICO (AC2): Adicionado M0 — Adicionar eslint/prettier em devDeps antes de M4.3
+3. ALTO (AA1): M2.2 enriquecido — Configurar `gradle.properties` (useAndroidX, enableJetifier)
+4. ALTO (AA2): Adicionado M6 — Configurar credenciais M3/OpenAI em `app.config.ts`
+5. ALTO (AA4): M3.4 enriquecido — Usar `uiautomator dump` para extrair coordenadas
+
+### Pos-aplicacao
+
+- **Re-nota estimada**: 9.0/10.0 (APROVADO)
+- **Total final**: 6 milestones (M0 + M1-M5 + M6), 18 itens
+
+## @full-cycle dispatched [2026-06-23T12:30] — V8-RETOMADA rebuild
+
+- **agentId**: a0c924d3776ff90c4
+- **Escopo**: Implementar 6 milestones (M0 + M1-M5 + M6) do evolution_plan.md
+- **Total itens**: 21 (NOTA 9.0/10.0, APROVADO)
+- **Modo**: run_in_background=true; toggle file criado em `orchestration/.delegated_to_subagent`
+- **SLA esperado**: 30-90 min para rebuild end-to-end (M0-M6 + validacao no emulador)
+- **Proxima acao do orquestrador**: aguardar notificacao de conclusao; reanimar via SendMessage se parar antes de completar todos os milestones

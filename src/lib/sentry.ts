@@ -11,8 +11,8 @@ const ENABLED = !!SENTRY_DSN;
 
 interface CrashReport {
   error: string;
-  stack?: string;
-  context?: Record<string, unknown>;
+  stack?: string | undefined;
+  context?: Record<string, unknown> | undefined;
   timestamp: string;
 }
 
@@ -21,8 +21,8 @@ let reports: CrashReport[] = [];
 export function reportarCrash(error: Error, context?: Record<string, unknown>): void {
   const report: CrashReport = {
     error: error.message,
-    stack: error.stack,
-    context,
+    stack: error.stack ?? undefined,
+    context: context ?? undefined,
     timestamp: new Date().toISOString(),
   };
   reports.push(report);

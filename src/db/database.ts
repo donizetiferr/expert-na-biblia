@@ -1,5 +1,4 @@
 import * as SQLite from 'expo-sqlite';
-import { Asset } from 'expo-asset';
 
 /**
  * Wrapper expo-sqlite para Expert Na Biblia.

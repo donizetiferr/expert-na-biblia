@@ -69,7 +69,15 @@
     "ios": "expo run:ios",
     "start": "expo start",
     "prebuild": "expo prebuild --platform android",
-    "build:android": "cd android && ./gradlew assembleRelease"
+    "build:android": "cd android && ./gradlew assembleRelease",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx}\" \"__tests__/**/*.{ts,tsx,js,jsx}\" \"scripts/**/*.{ts,js}\"",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx}\" \"__tests__/**/*.{ts,tsx,js,jsx}\" \"scripts/**/*.{ts,js}\"",
+    "test": "jest",
+    "test:e2e": "playwright test",
+    "import:questions": "tsx scripts/import_questions.ts",
+    "import:all": "tsx scripts/import_questions.ts"
   },
   "dependencies": {
     "@expo-google-fonts/bangers": "^0.4.0",
@@ -98,8 +106,23 @@
     "react-native-worklets": "^0.9.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^26.0.0",
+    "@types/react": "^19.2.17",
+    "@types/react-native": "^0.72.8",
+    "@typescript-eslint/eslint-plugin": "^8.62.0",
+    "@typescript-eslint/parser": "^8.62.0",
     "babel-plugin-module-resolver": "^5.0.3",
     "babel-preset-expo": "^56.0.15",
-    "better-sqlite3": "^12.11.1"
+    "better-sqlite3": "^12.11.1",
+    "eslint": "^10.5.0",
+    "eslint-config-expo": "^56.0.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-native": "^5.0.0",
+    "prettier": "^3.8.4",
+    "typescript": "^6.0.3"
   }
 }

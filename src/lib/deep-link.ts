@@ -6,7 +6,6 @@
  */
 
 import * as Linking from 'expo-linking';
-import { COLORS } from '../constants/colors';
 
 export const URL_SCHEME = 'expertnabiblia://';
 

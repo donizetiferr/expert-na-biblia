@@ -1,0 +1,3 @@
+subagent_id=full-cycle-v8-rebuild
+delegated_at=2026-06-23T12:30
+context=Implementar evolution_plan.md V8-RETOMADA do projeto Expert Na Biblia (Pessoal). 6 milestones, 21 itens. Rebuild nativo do APK Android via gradle para resolver crash do app. Plano ja passou por double check (NOTA 9.0/10.0, APROVADO).

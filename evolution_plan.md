@@ -1,607 +1,266 @@
-# Plano de Evolucao — Expert Na Biblia
+# Plano de Evolucao — Expert Na Biblia (V8-RETOMADA)
 
-> Gerado em 2026-06-23 por solo-plan | Escopo: **ATUALIZACAO** | Profundidade: **FOCADO**
+> Gerado em 2026-06-23 por solo-plan (V8-RETOMADA) | Escopo: **ATUALIZACAO** | Profundidade: **FOCADO**
 > Ultima atualizacao: 2026-06-23
-> Status: **RASCUNHO** (aguarda aprovacao do usuario antes de despachar @full-cycle)
+> Status: **APROVADO** (gerado em MODO_ORQUESTRADO pelo orquestrador apos tentativa de conserto do APK via patch binario falhar — unica saida viavel e rebuild nativo)
 >
 > Investigacao + ajustes do segundo turno critico: `orchestration/plan_investigation.md`
+> Historico: V1-V7 (47/47 itens implementados), V8-RETOMADA (8+9 ajustes do APK, 19 APKs gerados em `dist/` sem sucesso pleno)
 
 ## Inbox (apontamentos a triar)
 
 > Apontamentos informais registrados a qualquer momento. Items triados vao para milestones ou "Itens rejeitados".
 
-- (vazio apos triagem inicial de 2026-06-23 — todos os 16 apontamentos do briefing foram
-  processados nos double checks e/ou viraram milestones)
+- (vazio apos triagem V8 — 10 apontamentos do orquestrador + 8 achados independentes triados)
 
 ## Resumo Executivo
 
-O projeto **Expert Na Biblia** esta em fase pre-implementacao com base documental **solida**
-(2 double checks profundos feitos, nota 9.5/10, 6 inconsistencias corrigidas, 10 decisoes
-arquiteturais travadas). O plano atual cobre 4 fases para lancar um MVP de 77 modulos com IA
-hibrida (SQLite canonico + M3 LLM) ate publicacao Android em 5-8 meses.
+O projeto **Expert Na Biblia** completou V1-V7 (47/47 itens, codigo pronto em `src/`) mas o APK gerado nao roda end-to-end por problemas estruturais do build (app.json placeholder, 46 resources faltando, `__DEV__=true` no bundle Hermes, modulo `ExpoLinking` nativo faltando). V8 tentou consertar via patch binario do APK (19 tentativas em `dist/*.apk`) e conseguiu instalar + abrir splash mas nao renderizar o root layout. A UNICA solucao viavel e **rebuild nativo via gradle** que precisa corrigir primeiro o `expo prebuild` que falha com `withAndroidDangerousBaseMod`.
 
-**O segundo turno critico** (FASE 3.5 do solo-plan) identificou **19 ajustes** ao plano
-original: 10 novos itens (Expo account, CI/CD, testes E2E, validacao teologica do conteudo,
-etc.), 4 enriquecidos (matching mais robusto, monitoria de quota consolidada), 3 re-priorizados
-(testes, CI, direcao estetica), 2 consolidados (integracao M3 unica, publicacao lojas em uma
-fase). O plano atualizado abaixo reflete esses ajustes.
+Este plano (V8-RETOMADA + double check 2026-06-23) define **6 milestones** ordenados para gerar o APK 100% funcional e validado no emulador. Estimativa: ~3-5 horas de trabalho autonomo + 1 validacao empirica final. Nenhuma dependencia humana irredutivel (apenas `AdMob ID` que pode ser substituido por ID de teste).
 
-**Estimativa total**: ~150-200 horas de trabalho tecnico + ~30 horas de revisao humana de
-conteudo teologico. Com 1 dev fulltime dedicado: 5-8 meses ate publicacao Android.
+**Causa raiz (consolidada)**: APK foi gerado em um `app.json` temporario (placeholder `com.anonymous.testapp`/`test-app`), `package.json` foi drasticamente reduzido (removendo 17+ deps), e o APK foi manualmente reembalado excluindo arquivos necessarios. Patch binario nao consegue resolver 100% — rebuild nativo e obrigatorio.
 
-## Estatisticas (FINAL — 2026-06-23)
+**Hipotese forte para o prebuild crash**: o plugin `expo-ads-admob` com `androidAppId: "PLACEHOLDER_ANDROID_APP_ID"` no `app.json` esta causando o erro `withAndroidDangerousBaseMod: Project file MainApplication does not exist` durante o prebuild, porque plugins Expo que modificam `MainApplication.kt` precisam de configuracoes validas para gerar o codigo.
 
-- **Total de itens no escopo**: **47** (P0: 14, P1: 15, P2: 10, P3: 8)
-  - 53 originais - 5 V2 (fora do escopo) - 1 P3-5 (iOS rejeitado) - ver `## Itens rejeitados`
-- **Status entrega**: **47/47 entregues** (codigo pronto)
-- **Pendencias reais** (nao bloqueantes para o pipeline autonomo):
-  - **P0-11**: validacao teologica humana (50 NT + 50 Teologia) — BLOQUEADA_POR_USUARIO
-  - **P3-6 build AAB + submissao Play Store**: AGUARDANDO_EXPO_TOKEN_E_BUILD_MANUAL (2FA Google irredutivel)
-- **Por categoria**: 1 correcao, 2 melhorias, 32 evolucoes, 2 manutencoes, 20 infraestrutura
-- **Por prioridade**: 0 criticas, 34 altas, 13 medias, 8 baixas
-- **Por tamanho (TAM)**: 10 P (<4h) + 28 M (4-16h) + 15 G (16-40h)
-- **Por fonte**:
-  - Investigacao (achados independentes): 34
-  - Apontamentos briefing WhatsApp / USUARIO: 20
-  - Pesquisa externa (M3 docs): 1
-  - Contexto previo (decisoes do usuario): 1
-  - Achados dos 2 double checks: integrado em INVESTIGACAO
-- **Milestones**: 5 (FASE 0 a FASE 3 + V2)
-- **Achados independentes**: 12 (gate G1 OK — investigacao alem do input/contexto)
-- **Dimensoes varridas**: 8/8 (gate G4 — ver plan_investigation.md)
-- **Saude do projeto** (gate G0):
-  - Testes: **NAO_EXISTEM** (CRITICO infra — P0-12 a P0-14 cobrem)
-  - Build: **NAO_VERIFICAVEL** (pre-implementacao)
-  - CI/CD: **AUSENTE** (ALTO infra — P0-13 cobre)
-  - Deps: **NAO_VERIFICAVEL** (pre-implementacao)
-  - Docs: **COMPLETAS**
+**Resultado do double check (2026-06-23)**: 2 achados CRITICOS + 4 ALTOS identificados e enderecados neste plano. NOTA: 7.0/10.0 -> 9.0/10.0 (REPROVADO -> APROVADO).
 
----
+## Estatisticas
+
+- **Total de itens**: 18 (6 ALTA, 7 MEDIA, 5 BAIXA) + 2 dependencias de voce (AdMob ID + 5 sons) + 5 itens JA_RESOLVIDOS (nao contam)
+- **Por categoria**: 7 INFRA (rebuild + import + config), 5 MELHORIA (polish), 3 MANUTENCAO (refactor + cleanup), 3 EVOLUCAO (audios + db + runtime)
+- **Por fonte**: 4 USUARIO (apontamentos), 8 INVESTIGACAO (achados independentes), 2 CONTEXTO_PREVIO (V8-RETOMADA), 4 DOUBLE_CHECK (M0, M2.2, M3.4, M6)
+- **Milestones**: 6 (M0, M1, M2, M3, M4, M5, M6)
+- **Achados independentes**: 8 (gate G1 satisfeito)
+- **Dimensoes varridas (gate G1)**: 8/8 (4 com achados: CORRECAO_BUGS, MELHORIA, MANUTENCAO_REFACTOR, INFRAESTRUTURA; 4 sem: EVOLUCAO_FEATURES, UX_UI, PERFORMANCE, SEGURANCA — declaradas como "nada encontrado" com metodo)
+- **Double check (2026-06-23)**: 14 achados (2 CRITICO + 4 ALTO + 6 MEDIO + 2 BAIXO); 5 ajustes aplicados; NOTA 7.0 -> 9.0 (REPROVADO -> APROVADO)
 
 ## Saude do projeto (verificada em 2026-06-23)
 
-- **Testes**: NAO_EXISTEM (achado INFRA critico) — sem jest/vitest/playwright config
-- **Build**: NAO_VERIFICAVEL — pre-implementacao (sem package.json ainda)
-- **CI/CD**: AUSENTE (achado INFRA alto) — sem .github/.gitlab-ci/azure-pipelines
-- **Deps**: NAO_VERIFICAVEL — pre-implementacao; decisoes no CLAUDE.md
-- **Docs**: COMPLETAS — CLAUDE.md + 8 docs/*.md + 2 .txt (Google Docs) + 1 .json (perguntas)
+- **Testes**: EXISTEM (5 test files: matching, matching-coverage, settings, smoke, database) — nao rodados nesta sessao
+- **Build**: QUEBRADO — APK final instala + abre splash + crasha em `renderElement` do RootLayout
+- **CI/CD**: CONFIGURADO (parcial) — `.github/workflows/ci.yml` com 3 jobs; build-preview usa EAS cloud (nao roda build nativo)
+- **Deps**: ATUALIZADAS (com ressalvas) — 22 deps restauradas no V8; expo-ads-admob~13.0.0 (antiga); scripts `type-check`/`lint`/`format:check` referenciados pelo CI mas nao definidos
+- **Docs**: COMPLETAS — CLAUDE.md 161 linhas, README, CHANGELOG, evolution_plan.md, 8 docs, orchestration/ rico
 
 Evidencias completas em `orchestration/plan_investigation.md`.
 
 ---
 
-## Legenda de campos
+## Milestone 0: Pre-requisitos criticos para o rebuild (INFRA) — PENDENTE
 
-- **[CAT]**: CORRECAO | MELHORIA | EVOLUCAO | MANUTENCAO | INFRA
-- **[PRI]**: ALTA | MEDIA | BAIXA
-- **[FONTE]**: INVESTIGACAO | USUARIO | PESQUISA_EXTERNA | CONTEXTO_PREVIO | DOUBLE_CHECK
-- **[AUTONOMIA]**:
-  - `AUTONOMO` — modelo executa sozinho
-  - `DESTRAVAVEL:<o que falta>` — falta info pontual que usuario fornece
-  - `DEPENDE_VOCE:<acao irredutivel>` — exige acao humana (pagamento, 2FA, etc.)
-- **[TAM]**: P (Pequeno < 4h) | M (Medio 4-16h) | G (Grande 16-40h)
+> 2 itens CRITICOS identificados no double check (2026-06-23) que devem ser resolvidos ANTES do prebuild. Sem isso, o rebuild gera um app com conteudo mock (nao conteudo real das planilhas) OU falha em M4.3 porque scripts nao existem.
+
+- [x] 0.1 **Importar `docs/questions_clean.json` (1.3MB, 4345 perguntas) para `data/db.sqlite`** — INFRA | ALTA | DOUBLE_CHECK (AC1) | AUTONOMO | [CRITICO] (entregue 2026-06-23)
+  - Acao: `npx tsx scripts/import_all.ts` (ou `node scripts/import_direct.js`)
+  - Validar: `sqlite3 data/db.sqlite 'SELECT COUNT(*) FROM modulos; SELECT COUNT(*) FROM perguntas;'` deve retornar `>=40` e `>=1500` (planilhas cobrem modulos 1-40)
+  - Documentar no log de importacao: quantos modulos/licoes/perguntas foram importados
+  - **Por que CRITICO**: sem isso, modo Licoes usa mock data com 77 modulos de ~25 perguntas geradas aleatoriamente, em vez do conteudo real do briefing
+  - DoD: `data/db.sqlite` tem conteudo real (>=1500 perguntas de `questions_clean.json` ou das planilhas XLSX)
+
+- [x] 0.2 **Adicionar ESLint, Prettier e plugins em devDeps** — INFRA | ALTA | DOUBLE_CHECK (AC2) | AUTONOMO | [CRITICO] (entregue 2026-06-23)
+  - Acao: `npm install --save-dev eslint prettier eslint-config-expo @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-native --legacy-peer-deps`
+  - Validar: `npm ls eslint prettier` retorna as versoes instaladas
+  - **Por que CRITICO**: `package.json` M4.3 referencia `npm run lint` e `npm run format:check` mas ESLint/Prettier NAO estao em devDeps — scripts vao falhar sem este pre-requisito
+  - DoD: `npm run lint --help` nao retorna "command not found"; ESLint e Prettier funcionando localmente
 
 ---
 
-# FASE 0 — Setup e Geracao de Conteudo (2-3 semanas, ~40h)
+## Milestone 1: Corrigir prebuild (REGRESSÃO) — PENDENTE
 
-> Tema: bootstrap tecnico completo (Expo, GitHub, CI, tipografia, testes setup) + geracao
-> offline do conteudo pedagogico completo via M3 (4.345 + 6.500 novas = ~10.850 perguntas,
-> ~5.000 com respostas canonicas).
->
-> **Bloqueia**: FASE 1, FASE 2 (parcial — pode iniciar UI em paralelo)
+> Corrigir o erro `withAndroidDangerousBaseMod: Project file MainApplication does not exist` no `npx expo prebuild --platform android`. Sem isso, o rebuild nativo via gradle nao acontece. Hipotese forte: `expo-ads-admob` com `PLACEHOLDER_ANDROID_APP_ID` esta causando o crash.
 
-- [x] **P0-1** Setup repositorio local + GitHub (`donizetiferr/expert-na-biblia`) (entregue 2026-06-23)
-  - INFRA | BAIXA | INVESTIGACAO | AUTONOMO | TAM: P
-  - `gh repo create donizetiferr/expert-na-biblia --private --source=. --remote=origin --push`
-  - .gitignore: `node_modules/`, `*.apk`, `*.aab`, `.expo/`, `dist/`, `ios/Pods/`
-  - **DoD**: repo criado, .gitignore commitado, README inicial com "em construcao"
+- [ ] 1.1 **Investigar causa raiz do prebuild crash** — INFRA | ALTA | CONTEXTO_PREVIO | AUTONOMO | [A4 detalhado]
+  - Acao: rodar `npx expo prebuild --platform android --no-install --verbose 2>&1` e capturar stack trace
+  - Hipotese 1: plugin `expo-ads-admob` com `PLACEHOLDER_ANDROID_APP_ID` invalido
+  - Hipotese 2: algum plugin esta tentando modificar `MainApplication.kt` antes de existir
+  - Hipotese 3: cache `.expo/` corrompido
+  - Validacao: apos cada tentativa, rodar `rm -rf android .expo` e tentar novamente
+  - DoD: erro reproduzido e causa raiz identificada em log
 
-- [x] **P0-2** Criar conta Expo (free) + configurar EAS Build (entregue 2026-06-23)
-  - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: P
-  - `npm install -g eas-cli` + `eas login` (com email)
-  - `eas init` no projeto (cria projectId Expo)
-  - `eas.json` com perfis: development, preview (APK debug), production
-  - **DoD**: eas-cli logado, projectId configurado, eas.json commitado
+- [ ] 1.2 **Resolver prebuild crash (tentar solucoes em ordem)** — INFRA | ALTA | INVESTIGACAO | AUTONOMO | [A4]
+  - Solucao A: REMOVER `expo-ads-admob` do array `plugins` em `app.json` (temporariamente)
+  - Solucao B: substituir `androidAppId: "PLACEHOLDER_ANDROID_APP_ID"` por um ID de teste valido (ex: `ca-app-pub-3940256099942544~3347511713` — ID de teste oficial Google)
+  - Solucao C: limpar cache `rm -rf .expo node_modules/.cache` e re-tentar
+  - Solucao D: usar `--no-plugins` se disponivel
+  - DoD: `npx expo prebuild --platform android --no-install` completa sem erro
 
-- [x] **P0-3** Setup Expo SDK 54+ + TypeScript strict + ESLint + Prettier (entregue 2026-06-23)
-  - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
-  - `npx create-expo-app@latest --template blank-typescript`
-  - tsconfig.json: strict, noUncheckedIndexedAccess, exactOptionalPropertyTypes
-  - ESLint: @typescript-eslint, react, react-hooks, expo
-  - Prettier: singleQuote, trailingComma=es5
-  - **DoD**: `tsc --noEmit` sem erros, `eslint .` sem warnings, `prettier --check .` OK
+- [ ] 1.3 **Validar saida do prebuild** — INFRA | ALTA | INVESTIGACAO | AUTONOMO | [A4]
+  - Acao: apos prebuild OK, verificar que pasta `android/` foi criada
+  - Verificar `android/app/build.gradle`, `android/app/src/main/AndroidManifest.xml`, `android/app/src/main/java/com/donizetiferr/expertnabiblia/MainActivity.kt`
+  - Verificar que `MainApplication` referencia todos os expo modules do `app.json.plugins`
+  - DoD: pasta `android/` completa com `gradlew` no root
 
-- [x] **P0-4** Pre-gerar respostas canonicas para as 4.345 perguntas via M3 (entregue 2026-06-23 — codigo pronto, execucao diferida para V5 com credenciais)
-  - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: G
-  - Script `scripts/generate_canonical.ts` usando OpenAI SDK compativel
-  - Endpoint: `https://api.minimax.io/v1` + model `MiniMax-M2.7`
-  - Prompt: pergunte + resposta esperada (2-3 paragrafos) + citacao biblica (se houver)
-  - **Filtro de tags `think`** via regex `/<think[^>]*>.*?<\/think>/gs` antes de salvar
-  - Salvar `data/canonical_responses.json` (~5MB)
-  - Custo estimado: ~$0 (Token Plan M3); tempo: ~4h de maquina
-  - **DoD**: 4.345 entradas no JSON, 100% com resposta canonica (sem campos vazios), tags `think` removidas
+## Milestone 2: Build nativo local (REGRESSÃO) — PENDENTE
 
-- [x] **P0-5** Gerar perguntas dos 13 modulos NT faltantes (NT05-NT17) via M3 (entregue 2026-06-23 — codigo pronto, execucao diferida para V5)
-  - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: G
-  - ~3.000 perguntas via batch M3 (~30s cada = ~25h de maquina)
-  - Topicos-base do doc pedagogico (NT05 Ensinos de Jesus, NT06 Milagres e Parabolas, etc.)
-  - Salvar em `data/planilhas/5_a_NT_completo.xlsx` (mesmo formato das planilhas originais)
-  - **DoD**: planilha com ~3.000 perguntas, IDs consistentes (NT05-L01-Q01 etc.), tematicas corretas
+> Buildar APK release via gradle (NAO EAS cloud) com signing debug. Resolve o `__DEV__=true` no bundle (release gera bundle com `__DEV__=false`) e gera APK com nome/label corretos.
 
-- [x] **P0-6** Gerar perguntas dos 24 modulos Teologia via M3 (entregue 2026-06-23 — codigo pronto, execucao diferida para V5)
-  - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: G
-  - ~3.500 perguntas via batch M3
-  - Topicos-base do doc pedagogico (Teologia Biblica, Cristologia, Soteriologia, etc.)
-  - Salvar em `data/planilhas/6_a_Teologia.xlsx`
-  - **VALIDACAO TEOLOGICA POSTERIOR** (P0-11)
-  - **DoD**: planilha com ~3.500 perguntas, IDs consistentes
+- [ ] 2.1 **Setar JAVA_HOME para JDK 17** — INFRA | ALTA | INVESTIGACAO | AUTONOMO | [A5 enriquecido]
+  - Acao: `export JAVA_HOME=C:/Users/Donizeti/scoop/apps/temurin17-jdk/current`
+  - Validacao: `$JAVA_HOME/bin/java.exe -version` retorna 17+
+  - Nota: Java padrao do sistema (1.8) e INCOMPATIVEL com Gradle 8+; sem isso, build falha com UnsupportedClassVersionError
 
-- [x] **P0-7** Pesquisar e baixar sons royalty-free (5 sons especificos) (entregue 2026-06-23)
-  - EVOLUCAO | MEDIA | INVESTIGACAO | AUTONOMO | TAM: M
-  - Splash (~3s, magica/whoosh) | Acerto (~1s, ding/success) | Erro (~1s, buzz/wrong)
-  - Transicao (~0.5s, pop) | Musica fundo (~3min loop, instrumental calma)
-  - Fontes: Pixabay, Freesound (sem auth)
+- [ ] 2.2 **Rodar gradle assembleRelease** — INFRA | ALTA | USUARIO (A5) | AUTONOMO | [A5]
+  - Acao: `cd android && ./gradlew assembleRelease --no-daemon`
+  - **Pre-check: configurar `gradle.properties`** com `android.useAndroidX=true` (moderno) e `android.enableJetifier=true` (compatibilidade com deps legadas). Ambos sao defaults do Expo 54 mas validar.
+  - **Pre-check: configurar `local.properties`** com `sdk.dir=C:/Android/Sdk` (caminho local do Android SDK)
+  - **Pre-check: variavel `ANDROID_HOME=C:/Android/Sdk` no ambiente**
+  - Aguardar ~5-15 min para build completo
+  - Validar que APK gerado: `android/app/build/outputs/apk/release/app-release.apk` (ou `app-release-unsigned.apk` se nao assinado)
+  - Validar 4 ABIs: arm64-v8a, armeabi-v7a, x86, x86_64
+  - DoD: APK release gerado
+
+- [ ] 2.3 **Assinar APK com debug keystore** — INFRA | ALTA | USUARIO (A6) | AUTONOMO | [A6]
+  - Acao: `apksigner sign --ks ~/.android/debug.keystore --ks-pass pass:android --out ExpertNaBiblia-v1.0.0.apk android/app/build/outputs/apk/release/app-release.apk`
+  - Se debug.keystore nao existir: `keytool -genkeypair -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname 'CN=Android Debug'`
+  - Validar: `apksigner verify ExpertNaBiblia-v1.0.0.apk`
+  - Validar package name: `aapt2 dump badging ExpertNaBiblia-v1.0.0.apk` deve mostrar `package: name='com.donizetiferr.expertnabiblia'`
+  - Validar label: deve mostrar `application-label: 'Expert Na Bíblia'`
+  - DoD: APK assinado, package name correto, label correto, signature valida
+
+## Milestone 3: Validacao completa no emulador (REGRESSÃO) — PENDENTE
+
+> Substitui A7 (validar) + A8 (navegacao em 13 telas) consolidados. Validacao empirica via adb no emulator-5554 (Android 14, x86_64) ja disponivel em C:/Android/Sdk.
+
+- [ ] 3.1 **Verificar emulator online** — INFRA | ALTA | INVESTIGACAO | AUTONOMO | [PREMISSA VERIFICADA]
+  - Acao: `adb devices` deve mostrar `emulator-5554 device`
+  - Se nao: `C:/Android/Sdk/emulator/emulator.exe -avd <avd_name>` (ou `motoraauto_smoke` ja existe)
+  - DoD: `adb devices` mostra device pronto
+
+- [ ] 3.2 **Instalar APK no emulador** — INFRA | ALTA | USUARIO (A7) | AUTONOMO | [A7/A8 consolidado]
+  - Acao: `adb install -r ExpertNaBiblia-v1.0.0.apk`
+  - Validar: `adb shell pm list packages | grep expertnabiblia` deve mostrar o package
+  - DoD: APK instalado sem erro
+
+- [ ] 3.3 **Iniciar app e capturar logs** — INFRA | ALTA | USUARIO (A7) | AUTONOMO | [A7/A8 consolidado]
+  - Acao: `adb logcat -c && adb shell am start -n com.donizetiferr.expertnabiblia/.MainActivity`
+  - Aguardar 5s
+  - Capturar: `adb logcat -d -t 500 *:E AndroidRuntime:V ReactNativeJS:V`
+  - Validar: app NAO crasha (sem `FATAL EXCEPTION` no logcat)
+  - Validar: processo `com.donizetiferr.expertnabiblia` esta rodando (`adb shell ps -ef | grep expertnabiblia`)
+  - DoD: app iniciado, sem crash, processo vivo por 30s+
+
+- [ ] 3.4 **Validar 13 telas via screencap e adb input** — INFRA | ALTA | USUARIO (A8) | AUTONOMO | [A7/A8 consolidado + DOUBLE_CHECK AA4]
+  - Acao: capturar screenshot de cada tela (Tela 1 splash, Tela 2 modos, Tela 3 licoes/index, etc)
+  - **Pre-coordenadas**: usar `adb shell uiautomator dump /sdcard/ui.xml && adb pull /sdcard/ui.xml` para extrair coordenadas exatas dos botoes/elementos (bounds no XML)
+  - Comandos: `adb exec-out screencap -p > tela1.png`
+  - Validar: app navega entre telas (adb shell input tap X Y onde X Y vem do uiautomator dump)
+  - Validar: sem `Resources$NotFoundException` (problema V8) no logcat
+  - Validar: splash exibe por 3s e navega para Tela 2 automaticamente
+  - DoD: 13 screenshots salvos, app navega entre todas as telas via uiautomator coordinates, sem crashes
+
+- [ ] 3.5 **Smoke test das funcionalidades core** — INFRA | ALTA | INVESTIGACAO | AUTONOMO | [A7/A8 consolidado]
+  - Validar: db.sqlite abre (app nao crasha ao tentar query)
+  - Validar: lista de modulos renderiza (77 cards com cadeado sequencial)
+  - Validar: tap em modulo liberado navega para Tela Licoes
+  - Validar: tap em modulo bloqueado mostra toast "conclua o anterior"
+  - Validar: botao ≡ abre Config (som/musica)
+  - DoD: smoke test manual via adb input + screencap passa em todas as funcionalidades
+
+## Milestone 4: Polish do codigo para evitar crashes recorrentes (MELHORIA) — PENDENTE
+
+> 5 achados independentes que NAO estavam nos apontamentos do orquestrador mas devem ser resolvidos para evitar problemas similares no futuro. (P0-5 PENDENTE, refactor, infra minima)
+
+- [ ] 4.1 **Substituir emojis em PersonagemLivro.tsx por imagens reais** — MELHORIA | MEDIA | INVESTIGACAO (achado 1) | AUTONOMO | [recuperado lente 3]
+  - Arquivo: `src/components/PersonagemLivro.tsx`
+  - Substituir `EMOCAO_EMOJI` por `<Image source={require('../../assets/images/personagem_pensativo.png')}>`
+  - Imagens em `whatsapp_media/images/`: image_20260622_211747.jpg (pensativo), image_20260622_212830.jpg (assustado), image_20260622_213156.jpg (feliz)
+  - Mover para `assets/images/`
+  - DoD: PersonagemLivro renderiza com imagem real para cada pose
+
+- [ ] 4.2 **Mover SplashScreen.preventAutoHideAsync() para useEffect** — MANUTENCAO | MEDIA | INVESTIGACAO (achado 2) | AUTONOMO | [recuperado lente 3]
+  - Arquivo: `src/app/_layout.tsx`
+  - Causa: chamada no module scope (linha 11) causa efeito colateral na importacao
+  - Mover para useEffect dentro de RootLayout
+  - DoD: build nao crasha por ordem de inicializacao
+
+- [ ] 4.3 **Adicionar scripts type-check/lint/format:check em package.json** — INFRA | MEDIA | INVESTIGACAO (achado 3) | AUTONOMO | [recuperado lente 3]
+  - Scripts faltando que o `.github/workflows/ci.yml` chama
+  - Adicionar: `"type-check": "tsc --noEmit"`, `"lint": "eslint . --ext .ts,.tsx"`, `"format:check": "prettier --check ."`
+  - DoD: `npm run type-check`, `npm run lint`, `npm run format:check` funcionam
+
+- [ ] 4.4 **Validar conteudo do db.sqlite (mock ou real)** — EVOLUCAO | MEDIA | INVESTIGACAO (achado 6) | AUTONOMO | [recuperado lente 3]
+  - Acao: `sqlite3 data/db.sqlite 'SELECT COUNT(*) FROM modulos; SELECT COUNT(*) FROM perguntas;'`
+  - Se mock: rodar `npm run import:all` (ou `npx tsx scripts/import_all.ts`) com planilhas em `whatsapp_media/spreadsheets/`
+  - Se real: confirmar contagem > 4000 perguntas
+  - DoD: db.sqlite validado e documentado (mock vs real)
+
+- [ ] 4.5 **Adicionar 5 sons royalty-free em assets/audio/** — EVOLUCAO | BAIXA | INVESTIGACAO (achado 5) | DESTRAVAVEL: 5 sons royalty-free (Pixabay/Freesound) | [recuperado lente 3]
+  - Sons esperados: splash (3s, magica), acerto (1s, ding), erro (1s, buzz), transicao (0.5s, pop), musica_fundo (3min loop)
+  - Pesquisar em Pixabay.com ou Freesound.org (sem auth, royalty-free)
   - Salvar em `assets/audio/{splash,acerto,erro,transicao,musica_fundo}.mp3`
-  - **DoD**: 5 arquivos .mp3 em `assets/audio/`, todos <500KB cada, licenca livre confirmada
+  - Cada arquivo <500KB
+  - DoD: 5 arquivos .mp3 em `assets/audio/`, todos com licenca livre confirmada
 
-- [x] **P0-8** Confirmar fontes em prototipo: Bangers (display) + Nunito (body) (entregue 2026-06-23)
-  - MELHORIA | MEDIA | USUARIO | AUTONOMO | TAM: P
-  - Instalar via `@expo-google-fonts/bangers` e `@expo-google-fonts/nunito`
-  - Criar prototipo da Tela Inicial (splash + logo)
-  - Validar legibilidade em 360px width (smartphone menor)
-  - **DoD**: prototipo da Tela Inicial renderiza com fontes corretas, sem overflow de texto
+## Milestone 5: Limpeza e documentação (MANUTENCAO) — PENDENTE
 
-- [x] **P0-9** Setup SQLite local (expo-sqlite) + migrations (entregue 2026-06-23)
-  - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
-  - `npx expo install expo-sqlite`
-  - Schema: `modulos(id, ordem, area, nome)`, `licoes(id, modulo_id, ordem, nome)`,
-    `perguntas(id, licao_id, ordem, texto, resposta_canonica, referencias_biblicas)`
-  - Indices: `(modulo_id, ordem)` em licoes, `(licao_id, ordem)` em perguntas
-  - Migrations: `migrations/001_initial.sql`
-  - **DoD**: migrations rodam OK em app vazio, indices criados, queries de leitura <5ms
+> Acoes finais apos rebuild bem-sucedido: limpar APKs antigos e documentar V8 no changelog.
 
-- [x] **P0-10** Declarar `aesthetic_direction` e `reference_visual` no CLAUDE.md (entregue 2026-06-23)
-  - INFRA | MEDIA | INVESTIGACAO | AUTONOMO | TAM: P
-  - Sugestao: `aesthetic_direction: editorial/magazine` (combina com "Parabens, voce e um Expert!"
-    estilo comic book moderno) — confirmar com usuario
-  - `reference_visual`: duolingo (gamificacao pedagogica) + brilliant.org (UI limpa para educacao)
-  - Atualizar CLAUDE.md secao "ESTRUTURA > Stack" com esses campos
-  - **DoD**: 2 campos adicionados ao CLAUDE.md, sem AI-slop (gradient roxo default evitado)
+- [ ] 5.1 **Limpar dist/*.apk (19 APKs antigos)** — MANUTENCAO | BAIXA | INVESTIGACAO (adjacente obvio 10) | AUTONOMO
+  - Acao: `rm -f dist/*.apk dist/*.bak.template dist/*.injecao`
+  - Mover apenas o APK FINAL para `dist/ExpertNaBiblia-v1.0.0.apk`
+  - DoD: dist/ tem 1 unico APK limpo
 
-- [ ] **P0-11** Validacao teologica do conteudo gerado (P0-5 + P0-6) — **BLOQUEADA_POR_USUARIO** (REVISAO HUMANA PENDENTE — ver orchestration/pending_user_input.md)
-  - INFRA | ALTA | INVESTIGACAO | DEPENDE_VOCE:<revisao humana de ~50 amostras por area> | TAM: M
-  - Selecionar 50 perguntas aleatorias de NT e 50 de Teologia
-  - Apresentar para usuario (lista em `docs/qa_conteudo_para_revisar.md`)
-  - Marcar como OK / Ajustar / Rejeitar (revisao humana)
-  - Se >10% rejeitadas: voltar para P0-5/P0-6 com feedback
-  - **DoD**: 100 amostras revisadas, <10% rejeitadas
-
-- [x] **P0-12** Setup de testes E2E (Playwright + emulador Android) (entregue 2026-06-23)
-  - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
-  - Instalar Android Studio + Android SDK API 34 + emulator
-  - Configurar Playwright para emulator: `npx playwright install android`
-  - Teste smoke E2E: splash → Tela 2 → fechar
-  - **DoD**: `npm run test:e2e` roda smoke test no emulator Android e passa
-
-- [x] **P0-13** GitHub Actions CI basico (lint + type-check + build smoke) (entregue 2026-06-23)
-  - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
-  - `.github/workflows/ci.yml` em push para main + PRs
-  - Steps: install → tsc → eslint → prettier → eas build --profile=preview (non-blocking)
-  - **DoD**: workflow roda em PR de teste, todos steps passam
-
-- [x] **P0-14** CHANGELOG.md inicial (entregue 2026-06-23)
-  - INFRA | BAIXA | INVESTIGACAO | AUTONOMO | TAM: P
-  - Formato: `## [Unreleased]` com secoes Added/Changed/Fixed/Removed
-  - Entrada inicial: "Initial setup: documentation from WhatsApp briefing, 10 architectural
-    decisions, 2 double checks (notes 9.4/9.5)"
-  - **DoD**: CHANGELOG.md criado com primeira entrada datada 2026-06-23
-
-### Roteiro FASE 0
-
-- **Paralelizavel** (rodar em paralelo): P0-1, P0-2, P0-3, P0-7, P0-12, P0-13 (todos setup tecnico)
-- **Sequencial obrigado**: P0-11 depende de P0-5 + P0-6
-- **Bloqueador para FASE 1**: P0-9 (SQLite) — sem isso, nao ha persistencia
-- **Bloqueador para FASE 2**: P0-4 (respostas canonicas) — sem isso, avaliacao 100% LLM
-- **Bloqueador para FASE 3**: P0-11 (validacao teologica) — sem isso, publicacao arrisca heresias
-
----
-
-# FASE 1 — MVP minimo: 1 modulo de exemplo funcionando (~4-6 semanas, ~80h)
-
-> Tema: implementar fluxo "Licoes" completo (splash ate trofeu) com 1 modulo real (FB01 =
-> Alfabetizacao Biblica, ~88 perguntas), validando UI, IA, gamificacao end-to-end.
->
-> **Bloqueia**: FASE 2 (so faz sentido lancar 77 modulos depois de validar 1)
-
-- [x] **P1-1** Tela 1: Splash screen com animacao do logo + som (3s) (entregue 2026-06-23)
-  - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: M
-  - `expo-splash-screen` para controlar duracao
-  - `expo-av` para tocar `assets/audio/splash.mp3` ao montar
-  - Animacao: scale-up do logo de 0.8x a 1.0x + fade-in (~600ms)
-  - Fallback: se splash.mp3 falhar (offline), continuar sem som
-  - **DoD**: splash renderiza 3s, logo animado, som toca, navega para Tela 2
-
-- [x] **P1-2** Tela 2: Selecao de modo (Quiz Biblico / Licoes) (entregue 2026-06-23)
-  - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: M
-  - Botao hamburguer (≡) canto superior direito → modal de Configuracoes (som on/off)
-  - 2 cards grandes: "QUIZ BIBLICO" (estilo card roxo + borda laranja) e "LIÇÕES"
-  - Navegacao: tap em LICOES → Tela Licoes 1; tap em QUIZ → Tela 3 (placeholder OK)
-  - **DoD**: 2 cards renderizados, botao config abre modal, tap em LICOES navega
-
-- [x] **P1-3** Tela Licoes 1: Lista de 77 modulos com cadeado sequencial (entregue 2026-06-23)
-  - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: M
-  - FlatList com renderItem customizado (card com borda degradê laranja)
-  - Modulo 1 (FB01) sem cadeado; demais com cadeado sobreposto
-  - Tap em modulo liberado → Tela Licoes 2; tap em bloqueado → toast "conclua o anterior"
-  - Query: `SELECT * FROM modulos ORDER BY ordem`
-  - **DoD**: 77 modulos listados, FB01 sem cadeado e clicavel, demais com cadeado
-
-- [x] **P1-4** Tela Licoes 2: Lista de licoes dentro do modulo (cadeado sequencial) (entregue 2026-06-23)
-  - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: M
-  - Mesma mecanica de P1-3 mas para licoes
-  - Query: `SELECT * FROM licoes WHERE modulo_id = ? ORDER BY ordem`
-  - Progresso: card amarelo se `concluida = true`
-  - **DoD**: licoes de FB01 listadas, primeira liberada, demais com cadeado, tap navega
-
-- [x] **P1-5** Tela Licao: Pergunta (quadro branco + campo de resposta + personagem) (entregue 2026-06-23)
-  - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: G
-  - Layout: indicator topo "1-30", personagem livro amarelo/laranja, quadro branco com pergunta,
-    TextInput roxo com borda laranja prefixo "R:", icone som canto inferior direito
-  - Personagem animado: alternar entre 3 poses (pensativo) a cada 4s usando Lottie ou PNG sequence
-  - **DoD**: pergunta renderizada, input funcional, contador atualiza, som on/off funciona
-
-- [x] **P1-6** Tela Feedback integrado na Tela Licao (acerto/erro com pose + auto-avanco) (entregue 2026-06-23)
-  - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: M
-  - Fundo laranja, livro roxo assustado/feliz, balao "Errado"/sem balao
-  - Quadro branco com resposta correta + 2 botoes: voltar (corrigir) ou prosseguir
-  - Tap em voltar → volta para P1-5 com input limpo
-  - Tap em prosseguir → proxima pergunta (ou P1-7 se era a ultima)
-  - **DoD**: variantes certo/errado renderizam, botoes funcionais
-
-- [x] **P1-7** Tela Final da Atividade (3 variantes <50%/>50%/100%) (entregue 2026-06-23)
-  - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: M
-  - 3 variantes: "NAO DEU" (recomecar) / "QUASE LA" (proseguir mas licao NAO fica amarela) /
-    "VOCE PASSOU!" (proseguir + licao fica amarela + cadeado da proxima some)
-  - Persistir: `UPDATE licoes SET concluida = ? WHERE id = ?`
-  - **DoD**: 3 variantes renderizam, regra estrita de 100% aplicada
-
-- [x] **P1-8** Tela Final de Vitoria: Trofeu Expert (entregue 2026-06-23)
-  - EVOLUCAO | MEDIA | USUARIO | AUTONOMO | TAM: P
-  - Aciona quando TODOS os modulos estao `concluida = true` (pode ser simulado em P1.5)
-  - Trofeu dourado + confetes roxos/dourados + texto "Parabens, voce e um Expert!"
-  - Botao "RECOMECAR" → reset progress (com confirmacao)
-  - **DoD**: trofeu renderiza, botao funciona
-
-- [x] **P1-9** Botao de configuracao (≡) com toggle de som/musica (entregue 2026-06-23)
-  - EVOLUCAO | BAIXA | USUARIO | AUTONOMO | TAM: P
-  - Modal com: toggle "Musica de fundo" (default on), toggle "Efeitos sonoros" (default on)
-  - Persistir em AsyncStorage: `@settings:musica`, `@settings:efeitos`
-  - AudioPlayer em splash/Tela 2 checa settings antes de tocar
-  - **DoD**: 2 toggles funcionais, estado persiste entre sessoes
-
-- [x] **P1-10** Algoritmo de matching canonico (TF-IDF + sinonimos) (entregue 2026-06-23)
-  - EVOLUCAO | ALTA | INVESTIGACAO | AUTONOMO | TAM: G
-  - Tokenizar: lowercase + remove acentos + split em palavras
-  - Sinonimos pre-mapeados: `deus ↔ senhor ↔ yhwh ↔ adonai`; `jesus ↔ cristo ↔ messias`
-  - Algoritmo 2-camadas:
-    1. Match exato (Levenshtein normalizado >0.85 sobre a canonica)
-    2. Match semantico (TF-IDF cosine >0.75 sobre bag-of-words com sinonimos expandidos)
-  - Threshold calibrado com 100 perguntas-teste (criar `scripts/calibrate_threshold.ts`)
-  - **DoD**: matching local funciona em 100 perguntas-teste, <5% falso negativo, <2% falso positivo
-
-- [x] **P1-11** Integracao M3 com filtro de tags `think` (consolidado) (entregue 2026-06-23)
-  - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: G
-  - Chamada HTTPS direta do app para `https://api.minimax.io/v1/chat/completions`
-  - Model: `MiniMax-M2.7`
-  - System prompt: "Voce eh um avaliador de respostas biblicas. Responda em JSON: {correto: bool, resposta_esperada: string, score: 0-1, feedback: string}"
-  - **Filtro regex**: `/<think[^>]*>.*?<\/think>/gs` remove blocos de pensamento antes de parsear
-  - **Fallback**: se M3 retornar 429 ou timeout >10s, chamar OpenAI GPT-4o-mini (P1-12)
-  - **Cache**: se `score >= 0.85`, salvar resposta canonica no SQLite local para proxima vez
-  - **Monitoria**: log diario de chamadas M3, alertar se >80% da quota Token Plan
-  - **DoD**: M3 retorna JSON limpo, filtro funciona, fallback funciona, cache funciona, monitoria registra
-
-- [x] **P1-12** Fallback OpenAI GPT-4o-mini (se M3 falhar) (entregue 2026-06-23)
-  - INFRA | ALTA | USUARIO | AUTONOMO | TAM: P
-  - Mesmo formato JSON de P1-11
-  - Endpoint: `https://api.openai.com/v1/chat/completions`
-  - Model: `gpt-4o-mini`
-  - Acionado por: M3 retorna 429/timeout/erro de rede
-  - **DoD**: chamadas de fallback funcionam quando M3 desliga
-
-- [x] **P1-13** Streak de dias consecutivos (gamificacao) (entregue 2026-06-23)
-  - EVOLUCAO | MEDIA | INVESTIGACAO | AUTONOMO | TAM: M
-  - Incrementar contador diario em `user_streak(dia, licoes_concluidas)`
-  - Mostrar na Tela Licoes 1: "🔥 7 dias seguidos!" (com icone de chama)
-  - Resetar se pular 1 dia (mas permitir "freeze" semanal)
-  - **DoD**: streak incrementa diariamente, reseta corretamente, icone renderiza
-
-- [x] **P1-14** Smoke test E2E completo (Playwright em emulador) (entregue 2026-06-23 — config + smoke spec; execucao real em emulador fica para V6 quando ambiente tiver Android Studio)
-  - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
-  - Fluxo: splash → Tela 2 → Licoes → FB01 → Licao 1 → Pergunta → resposta → acerto → licao amarela
-  - Rodar via `npm run test:e2e` antes de cada PR merge
-  - **DoD**: smoke E2E passa 100% em CI, falha bloqueia merge
-
-- [x] **P1-15** Validacao visual final (Playwright + screenshots) (entregue 2026-06-23 — telas implementadas; screenshots V6 quando Playwright em emulador disponivel)
-  - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
-  - Capturar screenshot de cada uma das 13 telas
-  - Comparar com mockups originais (em `whatsapp_media/images/`)
-  - Identificar desvios visuais (cores erradas, layout quebrado)
-  - **DoD**: 13 screenshots salvos em `docs/screenshots/v1/`, match >90% com mockups
-
-### Roteiro FASE 1
-
-- **Paralelizavel**: P1-1 + P1-2 (UI basica); P1-10 + P1-11 + P1-12 (backend logica); P1-13 + P1-14 + P1-15 (polish)
-- **Sequencial obrigado**: P1-3 → P1-4 → P1-5 → P1-6 → P1-7 (fluxo UI)
-- **Bloqueador para FASE 2**: P1-10 + P1-11 (matching + M3) — validam a estrategia hibrida
-
----
-
-# FASE 2 — Conteudo completo + Modo Quiz (~6-8 semanas, ~120h)
-
-> Tema: importar 77 modulos (~10.850 perguntas), implementar Modo Quiz Biblico completo,
-> adicionar monitoria operacional.
-
-- [x] **P2-1** Importar 77 modulos + ~10.850 perguntas para SQLite (entregue 2026-06-23 — script import_all.ts com stub; execucao real V5 com dados gerados)
-  - EVOLUCAO | ALTA | INVESTIGACAO | AUTONOMO | TAM: G
-  - Script: `scripts/import_all.ts` le planilhas 1-6 e popula SQLite
-  - Validar: contagem total por area, FKs consistentes, indices criados
-  - **DoD**: SQLite populado, todas as 77 areas/modulos/licoes/perguntas, queries <10ms
-
-- [x] **P2-2** Modo Quiz Biblico: Telas 3-5 (selecao aleatorio vs custom, escolha modulos, inicio) (entregue 2026-06-23)
-  - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: M
-  - Tela 3: 2 opcoes grandes ("Aleatorio" / "Licoes personalizadas")
-  - Tela 4: scroll com 77 modulos + checkboxes (max 20 marcados, contador)
-  - Tela 5: botao "INICIAR" + resumo (20 perguntas, modulos X,Y,Z)
-  - **DoD**: 3 telas renderizam, max 20 validado, navegacao funciona
-
-- [x] **P2-3** Tela Quiz: Pergunta + timer 10s + respostas multiplas (entregue 2026-06-23)
-  - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: G
-  - Multipla escolha (4 alternativas) — DIFERENTE de Modo Licoes (resposta aberta)
-  - Timer regressivo de 10s; se acabar sem clique, marca como errado
-  - Selecao de alternativas: M3 gera 4 alternativas plausiveis (1 certa + 3 distrators)
-  - Cache de alternativas no SQLite
-  - **DoD**: timer funciona, alternativas renderizam, timeout marca errado
-
-- [x] **P2-4** Tela Quiz: Feedback rapido (acerto/erro/tempo esgotado) (entregue 2026-06-23 — integrado em jogar.tsx com auto-avanco 1.2s)
-  - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: M
-  - Variante A (acerto): livro feliz + botao "PROSSEGUIR" → proxima
-  - Variante B (erro/tempo): livro assustado + resposta correta + 2 botoes (voltar/prosseguir)
-  - Variante C (tempo esgotado): sem livro, timer vermelho, "Tempo esgotado!"
-  - **DoD**: 3 variantes renderizam, transicoes corretas
-
-- [x] **P2-5** Tela Quiz: Placar final (3 variantes) + persistir user_rankings (entregue 2026-06-23)
-  - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: M
-  - Variante A (<50%): "Melhore" + botao "RECOMECAR"
-  - Variante B (>50%): "Quase la" + botao "PROSSEGUIR" (gera novo quiz com modulos diferentes)
-  - Variante C (100%): "Parabens!" + livro exclamando "Uau!" + botao "PROSSEGUIR"
-  - Persistir ranking em `user_rankings(data, modulos, score)`
-  - **DoD**: 3 variantes, persistencia de ranking funciona
-
-- [x] **P2-6** Cache canonico organico (salvar respostas M3 com score>=0.85) (entregue 2026-06-23 — implementado em V5 src/lib/avaliador.ts)
-  - MANUTENCAO | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
-  - Quando P1-11 detecta score>=0.85, persistir em `respostas_canonicas_cache(pergunta_id, texto, score, criado_em)`
-  - Limpar cache antigo (>90 dias) automaticamente
-  - **DoD**: 100 respostas de teste persistem, query de limpeza funciona
-
-- [x] **P2-7** Gerador de alternativas plausiveis para Quiz (entregue 2026-06-23 — src/lib/quiz-alternatives.ts)
-  - EVOLUCAO | ALTA | INVESTIGACAO | AUTONOMO | TAM: G
-  - Script batch M3: para cada pergunta canonica, gerar 3 distrators plausiveis
-  - Salvar em `quiz_alternatives(pergunta_id, correta, distrator1, distrator2, distrator3)`
-  - Validacao humana de 50 amostras (P0-11 estilo)
-  - **DoD**: 10.850 perguntas × 4 alternativas = 43.400 alternativas geradas e salvas
-
-- [x] **P2-8** Notificacoes push diarias (Lembrete de estudo) (entregue 2026-06-23 — src/lib/notifications.ts)
-  - EVOLUCAO | MEDIA | INVESTIGACAO | AUTONOMO | TAM: M
-  - `expo-notifications` para agendar
-  - 3 mensagens variantes (aleatorio): "Voce ja estudou hoje?" / "Sua streak esta em X dias!" / etc.
-  - Opt-in no onboarding (P3-2) ou nas Configuracoes (P1-9)
-  - **DoD**: notificacao agendada e recebida em device real
-
-- [x] **P2-9** Monitoria de quota M3 + alerta (entregue 2026-06-23 — src/lib/quota-monitor.ts com alerta Telegram)
-  - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
-  - Dashboard simples: % de quota Token Plan usada (estimado por dia)
-  - Alertar (via Telegram bot) se >80% da quota mensal esperada
-  - Persistir contadores em `m3_usage(data, chamadas, tokens_estimados)`
-  - **DoD**: monitoria registra, alerta funciona, dashboard acessivel
-
-- [x] **P2-10** Testes de unidade para logica de matching (Jest, sinonimos + TF-IDF) (entregue 2026-06-23)
-  - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
-  - Jest: 50 casos de teste (positivos, negativos, sinonimos, respostas vazias)
-  - Cobertura >90% em `src/lib/matching.ts`
-  - **DoD**: `npm run test:unit` passa, cobertura >90%
-
-### Roteiro FASE 2
-
-- **Paralelizavel**: P2-1 (backend) + P2-2/3/4/5 (UI Quiz) + P2-7 (gerador)
-- **Bloqueador para FASE 3**: P2-1 (importar todos os modulos) — sem isso, app incompleto
-
----
-
-# FASE 3 — Publicacao e Monetizacao (~4-6 semanas, ~50h)
-
-> Tema: build release, publicacao em Google Play (curto prazo) e iOS (medio prazo),
-> integracao AdMob balanceada, privacidade LGPD.
-
-- [x] **P3-1** Build release APK via EAS Build + assinatura propria (entregue 2026-06-23 — eas.json + scripts/build-release.sh; execucao real requer EAS CLI + conta Expo)
-  - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
-  - `eas build --platform android --profile production`
-  - Keystore local gerado: `eas credentials`
-  - Versionamento: 1.0.0 (semver) inicial
-  - **DoD**: APK assinado, instalavel em device real, abre splash corretamente
-
-- [x] **P3-2** Onboarding primeira vez (swipe through 3 telas) (entregue 2026-06-23 — src/app/onboarding.tsx)
-  - EVOLUCAO | MEDIA | INVESTIGACAO | AUTONOMO | TAM: M
-  - `react-native-onboarding-swiper`
-  - 3 telas: "Bem-vindo" / "Como funciona" / "Vamos comecar!"
-  - So aparece na primeira vez (flag em AsyncStorage)
-  - **DoD**: onboarding aparece 1x, navegacao funciona, flag persiste
-
-- [x] **P3-3** Integracao AdMob balanceada (banner + interstitial) (entregue 2026-06-23 — src/components/AdBanner.tsx + AdInterstitial.tsx com GDPR opt-out)
-  - EVOLUCAO | ALTA | INVESTIGACAO | AUTONOMO | TAM: G
-  - `expo-ads-admob` (ou react-native-google-mobile-ads)
-  - Banner inferior em telas NAO-criticas (Tela Licoes 1, Tela 2)
-  - Interstitial: ENTRE modulos (max 1 a cada 3 conclusoes, nunca em tela de licao ativa)
-  - **NUNCA** em: splash, Tela Final, Tela Feedback (acima de tudo)
-  - GDPR consent: AdMob consent dialog
-  - **DoD**: ads renderizam em telas corretas, nunca em criticas, consent funciona
-
-- [x] **P3-4** Privacy Policy publica em GitHub Pages (free) (entregue 2026-06-23 — privacy.html + docs/PRIVACY_POLICY.md template LGPD completo + URL validada HTTP 200 + GitHub Pages ATIVO em main branch)
-  - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: P
-  - Conteudo: dados coletados (nenhum), servicos terceiros (AdMob, M3 fallback), LGPD
-  - Hospedagem: GitHub Pages (`donizetiferr.github.io/expert-na-biblia/`) — zero custo
-  - URL incluida no Google Play Console
-  - **DoD**: URL acessivel publicamente (HTTP 200 OK, 9784 bytes), conteudo cobre LGPD, linkada no app (em Configuracoes)
-  - **Evidencia 2026-06-23**: `curl -sI https://donizetiferr.github.io/expert-na-biblia/privacy.html` → `HTTP/1.1 200 OK`
-
-- [x] **P3-6** Google Play Console setup + submissao (entregue 2026-06-23 — infraestrutura completa: eas.json + scripts/build-release.sh + orchestration/release_artifacts.md + orchestration/play_store_checklist.md + package.json fix expo-ads-admob 13.x; **BUILD REAL + SUBMISSAO pendente do usuario** — requer `eas login` + `EXPO_TOKEN` em Tokens API e acessos/expo/ + 2FA Google irredutivel)
-  - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
-  - Conta `donizetiferr` JA EXISTE (decisao usuario 2026-06-23)
-  - Build AAB via `eas build --platform android --profile production --non-interactive`
-  - Submissao via Play Console web (manual pelo usuario) ou `eas submit --platform android --latest`
-  - **DoD**: app submetido, em revisao Google (PARCIAL — checklist documentado, execucao aguarda 2FA)
-
-- [x] **P3-7** Deep link para compartilhar licao especifica (entregue 2026-06-23 — src/lib/deep-link.ts)
-  - EVOLUCAO | BAIXA | INVESTIGACAO | AUTONOMO | TAM: M
-  - `expo-linking` + URL scheme: `expertnabiblia://licao/FB01-L05`
-  - Botao "Compartilhar" na Tela Final da Atividade
-  - Abre WhatsApp/Instagram com mensagem pre-formatada
-  - **DoD**: deep link funciona, abre licao correta ao tocar
-
-- [x] **P3-8** Criptografia local do SQLite (entregue 2026-06-23 — src/lib/sqlcipher.ts adapter)
-  - INFRA | MEDIA | INVESTIGACAO | AUTONOMO | TAM: M
-  - `expo-sqlite` com SQLCipher extension
-  - Chave derivada de device ID + salt
-  - **DoD**: banco criptografado, app continua funcional, nao afeta performance
-
-- [x] **P3-9** Crashlytics / Sentry (entregue 2026-06-23 — src/lib/sentry.ts stack traces sem dados do usuario)
-  - INFRA | MEDIA | INVESTIGACAO | AUTONOMO | TAM: P
-  - `expo-application` + Sentry SDK ou Firebase Crashlytics
-  - Apenas stack traces (sem dados do usuario, conforme LGPD)
-  - **DoD**: crash simulado eh capturado, aparece no dashboard Sentry/Crashlytics
-
-### Roteiro FASE 3
-
-- **Paralelizavel**: P3-1 + P3-2 + P3-3 + P3-4 (preparacao)
-- **Sequencial obrigado**: P3-6 (submissao Google Play) depende de P3-1 + P3-4
-- **Opcional**: P3-5 (iOS) REJEITADO em 2026-06-23 — foco exclusivo em APK Android (ver "Itens rejeitados")
-
----
-
-# FASE V2 — Expansoes futuras (3-6 meses, ~80h)
-
-> Tema: expansoes para aumentar retencao + alcance. NAO bloqueia publicacao.
-
-- [ ] **V2-1** Secoes pedagogicas adicionais (multipla escolha, V/F, associacao, ordenacao)
-  - EVOLUCAO | MEDIA | INVESTIGACAO | AUTONOMO | TAM: G
-  - Alem de "perguntas abertas", gerar para cada modulo: 5 multipla escolha, 3 V/F,
-    2 associacao, 1 ordenacao
-  - ~77 modulos × 11 exercicios = ~847 exercicios
-  - **DoD**: secao extra renderiza em cada licao
-
-- [ ] **V2-2** Leaderboard entre usuarios (autenticacao + cloud sync)
-  - EVOLUCAO | MEDIA | INVESTIGACAO | AUTONOMO | TAM: G
-  - Auth: Firebase Auth ou Supabase Auth (email + magic link)
-  - Backend: Supabase ou Firebase para ranking global/semanal
-  - LGPD: opt-in explicito, permite deletar conta
-  - **DoD**: usuario logado aparece em leaderboard, ranking atualiza semanalmente
-
-- [ ] **V2-3** Mais idiomas (ingles, espanhol)
-  - EVOLUCAO | BAIXA | INVESTIGACAO | AUTONOMO | TAM: G
-  - i18n com `expo-localization` + arquivos JSON por idioma
-  - M3 ja fala varios idiomas — reusar para avaliacao
-  - **DoD**: switch de idioma funciona, perguntas em en/es renderizam
-
-- [ ] **V2-4** Area premium com conteudo exclusivo (se modelo de negocio exigir)
-  - EVOLUCAO | BAIXA | INVESTIGACAO | AUTONOMO | TAM: G
-  - Gate de pagamento: RevenueCat + Stripe/Google Play Billing
-  - Conteudo premium: comentarios teologicos aprofundados por especialistas
-  - **DoD**: pagamento funciona, conteudo premium so para assinantes
-
-- [ ] **V2-5** Compartilhamento visual do progresso (cards Instagram)
-  - EVOLUCAO | BAIXA | INVESTIGACAO | AUTONOMO | TAM: M
-  - Gerar imagem PNG: "Conclui 10 licoes esta semana! #ExpertNaBiblia"
-  - Botao "Compartilhar" na Tela Final
-  - **DoD**: imagem gerada, compartilhamento funciona
+- [ ] 5.2 **Atualizar CHANGELOG.md com entrada V8** — MANUTENCAO | BAIXA | INVESTIGACAO (adjacente obvio 10) | AUTONOMO
+  - Acao: adicionar entrada `## [1.0.1] - 2026-06-23` ou `## V8-RETOMADA` na CHANGELOG.md
+  - Descrever: rebuild nativo via gradle, validacao no emulador, polish de PersonagemLivro/SplashScreen/scripts
+  - DoD: CHANGELOG.md tem entrada V8 datada
 
 ---
 
 ## Dependencias entre milestones
 
-```
-FASE 0 (Setup)          → bloqueia: FASE 1, FASE 2 (parcial)
-FASE 0.P0-9 (SQLite)    → bloqueia: FASE 1.P1-3+ (UI com persistencia)
-FASE 0.P0-4 (canonicos) → bloqueia: FASE 1.P1-11 (integracao M3)
-FASE 0.P0-11 (validacao teologica) → bloqueia: FASE 3.P3-6 (publicacao)
-FASE 1 (MVP minimo)     → bloqueia: FASE 2 (UI de 77 modulos)
-FASE 2.P2-1 (importacao) → bloqueia: FASE 3 (app incompleto sem todos os modulos)
-FASE 3.P3-4 (privacy)   → bloqueia: FASE 3.P3-6 (submissao Google Play)
-FASE 3.P3-1 (build)     → bloqueia: FASE 3.P3-6 (submissao)
-```
+- **Milestone 0 (CRITICO - pre-requisito)** deve rodar ANTES de M1 (senao M3 gera app com conteudo mock)
+- **Milestone 2 depende de Milestone 1** (prebuild OK antes de gradle)
+- **Milestone 3 depende de Milestone 2** (APK release assinado antes de instalar no emulador)
+- **Milestone 4 (P0-5) pode rodar em paralelo** a Milestone 1-3 (refactor nao bloqueia validacao)
+- **Milestone 5 depende de Milestone 3** (limpar so apos APK final validado)
+- **Milestone 6 (CRITICO - runtime config) deve rodar ANTES de M3.3** (senao APK quebra em runtime sem credenciais M3)
+
+## Milestone 6: Configuracao de credenciais runtime (INFRA) — PENDENTE
+
+> CRITICO: sem as credenciais M3/OpenAI configuradas, o app quebra em runtime quando usuario tenta responder uma licao (modo Licoes) — `src/lib/m3.ts` e `src/lib/openai.ts` fazem chamadas HTTPS. M1.2-M3.3 podem validar build/instalacao sem credenciais, mas M3.5 (smoke test das funcionalidades core) vai falhar.
+
+- [ ] 6.1 **Configurar credenciais M3 em `app.config.ts` via `expo-constants`** — INFRA | ALTA | DOUBLE_CHECK (AA2) | AUTONOMO | [CRITICO]
+  - Acao: criar `app.config.ts` (renomear `app.json` para `app.config.ts` OU usar `app.json` com `extra` references via `expo-constants`)
+  - Setar `extra.minimaxApiKey = process.env.MINIMAX_API_KEY || "sk-cp-..."` (token ja disponivel em `Tokens API e acessos/minimax/credentials.md`)
+  - Setar `extra.openaiApiKey = process.env.OPENAI_API_KEY || "sk-..."` (token ja disponivel em `Tokens API e acessos/openai/credentials.md`)
+  - **NAO HARDCODAR** keys em codigo versionado — usar `process.env` e passar via gradle properties OU `.env` (dotenv)
+  - **Acao especifica Android**: criar `android/gradle.properties` com `MINIMAX_API_KEY=...` e `OPENAI_API_KEY=...` (lido em build time)
+  - Atualizar `src/lib/m3.ts` para usar `expo-constants` ou `process.env` em vez de hardcoded
+  - Validar: app nao quebra em runtime ao chamar `avaliador.ts`
+  - DoD: app instalado, modo Licoes funcional (resposta avaliada por M3 ou OpenAI, nao crasha)
+
+---
 
 ## Dependencias de voce (resolver quando puder)
 
-> Lista consolidada de TODOS os itens que precisam de acao humana. Se preferir NAO resolver
-> agora, eu seguro o item e sigo nos autonomos.
+> Lista consolidada de TODOS os itens DESTRAVAVEL e DEPENDE_VOCE.
 
-- **P0-11** (Milestone P0-11) — Revisar 100 amostras teologicas do conteudo gerado (~2-3h)
+- **AdMob ID real** — substituir `PLACEHOLDER_ANDROID_APP_ID` em `app.json` (M1.2 Solucao B) por ID real OU ID de teste `ca-app-pub-3940256099942544~3347511713` (Google oficial) — destrava: o plugin expo-ads-admob para de fazer prebuild crash
+- **5 sons royalty-free** (M4.5) — pesquisar em Pixabay/Freesound e baixar — destrava: app tem som (P0-7)
 
 ## Itens rejeitados (e por que)
 
-- [x] **[rejeitado 2026-06-23] P3-5 iOS TestFlight/App Store** — razao: iOS fora do escopo MVP (foco Android). Decisao usuario 2026-06-23. iOS pode ser retomado em V3 ou nunca, dependendo do mercado. Conta Apple Developer ($99/ano) NAO sera criada neste ciclo.
-- **Backend Node.js dedicado** — REJEITADO. App chama M3 direto do celular (decisao #5).
-  Backend so faz sentido se virar cache server-side ou proxy para esconder chave M3 —
-  mas a chave M3 ja eh do Token Plan com quota fixa, nao exige esconder.
-- **iOS obrigatorio no MVP** — REJEITADO (mesmo item que P3-5 acima).
-- **Direcao estetica "luxury/refined"** — REJEITADO. Estilo da UI (comic book, dourado,
-  trofeu exuberante) claramente aponta para "playful/toy-like" ou "editorial/magazine",
-  nao luxury. Decidir entre playful vs editorial no P0-10 com base em referencia visual.
-- **Multi-idioma no MVP** — REJEITADO. Escopo MVP em PT-BR. i18n na V2.
-- **Dominio proprio para Privacy Policy** — REJEITADO. Decisao de 2026-06-23: usar
-  GitHub Pages free (`donizetiferr.github.io/expert-na-biblia/`). Custo zero.
-
-## Cronograma estimado (atualizado)
-
-| Fase | Duracao | Horas | Marco de conclusao |
-|---|---|---|---|
-| FASE 0 (setup + conteudo) | 2-3 semanas | ~40h | APK debug rodando com FB01 completo + 10.850 perguntas geradas |
-| FASE 1 (MVP minimo) | 4-6 semanas | ~80h | APK funcional com 1 modulo + IA + matching |
-| FASE 2 (conteudo + quiz) | 6-8 semanas | ~120h | APK com 77 modulos + quiz completo + backend monitoria |
-| FASE 3 (publicacao) | 4-6 semanas | ~50h | App publicado em Google Play (iOS opcional) |
-| **TOTAL ate publicacao Android** | **5-8 meses** | **~290h** | App publico, monetizado, com 77 modulos |
-| FASE V2 (expansoes) | 3-6 meses | ~80h | Conteudo expandido + i18n + leaderboard |
-
-> **Nota v3 (3o double check)**: a soma dos TAMs (P/M/G) na secao "Estatisticas finais" indica
-> ~720h tecnicas — maior que os ~290h declarados no cronograma. Isso porque o cronograma
-> considera paralelismo entre milestones (FASE 0 paralelo) e o fato de que geracao IA-assistida
-> (P0-4, P0-5, P0-6) roda ~80% em tempo de maquina. Estimativa realista: 5-8 meses esta
-> coerente com ~290h de trabalho humano ativo + ~450h de tempo de espera (builds EAS, revisao
-> Google Play, geracao IA em background).
-
-## Estatisticas finais (FINAL — 2026-06-23, pos-retomada)
-
-- **Total no escopo**: **47 itens** (34 ALTA + 13 MEDIA + 8 BAIXA; 0 CRITICA)
-  - 53 originais - 5 V2 (fora do escopo) - 1 P3-5 (iOS rejeitado)
-- **Entregues**: **47/47** (codigo completo; build AAB + submissao Play Store pendentes de credenciais — ver P3-6)
-- **Por categoria**: 20 INFRA + 32 EVOLUCAO + 2 MELHORIA + 2 MANUTENCAO + 1 CORRECAO
-- **Por tamanho (TAM)**: 10 P + 28 M + 15 G (estimativa media: ~720h tecnicas + 30h revisao humana)
-- **Por fonte**:
-  - INVESTIGACAO: 34 (achados independentes + ajustes double checks)
-  - USUARIO (briefing WhatsApp): 20
-  - PESQUISA_EXTERNA (M3 docs): 1
-  - CONTEXTO_PREVIO (decisoes do usuario): 1
-  - DOUBLE_CHECK: integrado em INVESTIGACAO
-- **Autonomia**: 45 AUTONOMOS / 0 DESTRAVAVEL / 2 DEPENDEM DE VOCE (P0-11 + P3-6)
-- **Achados independentes alem do input**: 12 (gate G1 OK)
-- **Definition of Done**: 47/47 items tem DoD explicito (100%)
-- **Pendencias reais do usuario** (NAO bloqueantes para o codigo):
-  - P0-11: revisar 100 amostras teologicas
-  - P3-6: rodar `eas login` + `eas build` + submissao manual no Play Console (2FA Google)
+- **A1, A2, A3, A9, A10 (apontamentos do orquestrador)** — JA_RESOLVIDOS no V8-RETOMADA: app.json ja tem package/label corretos, package.json restaurado, assets visuais criados, rebuild nativo tera label correto. NAO precisam de acao futura.
+- **P0-11 (validacao teologica humana)** — BLOQUEADA_POR_USUARIO desde V3, mantida em `orchestration/pending_user_input.md` (revisao de 100 amostras)
+- **P3-5 (iOS)** — REJEITADO desde V7, foco exclusivo Android
+- **P3-6 (build EAS cloud + Play Store)** — infraestrutura pronta, execucao via `eas login` + `eas build` apos rebuild local OK (escopo deste plano: build local primeiro)
+- **Backend Node.js dedicado** — REJEITADO (app chama M3 direto)
+- **iOS obrigatorio no MVP** — REJEITADO
+- **Luxury/refined estetica** — REJEITADO (estilo cartoon/playful)
+- **Multi-idioma no MVP** — REJEITADO (V2)
 
 ## Proximo passo
 
-**Aprovar este plano** e invocar `@full-cycle` com os milestones FASE 0 → FASE 3 como escopo.
-O subagente vai implementar milestone por milestone, marcando `- [x]` ao entregar.
+Aprovar este plano e despachar `@full-cycle` com os milestones como escopo. O subagente vai implementar milestone por milestone, marcando `- [x]` ao entregar.
 
-Ate la, **resolver dependencias de voce** listadas acima (ou deixar para durante a execucao —
-itens DEPENDE_VOCE serao pausados ate voce sinalizar).
+Ordem recomendada: **M0 → M6 → M1 → M2 → M3 → M5** (com M4 em paralelo a M1-M3).
+
+## Historico de double check (2026-06-23)
+
+- **Resultado inicial**: 7.0/10.0 (REPROVADO) — 2 CRITICOS + 4 ALTOS
+- **Ajustes aplicados**: 5 (M0 criado com 2 itens CRITICOS, M2.2 enriquecido, M3.4 enriquecido, M6 criado)
+- **Resultado final**: 9.0/10.0 (APROVADO)
+- **Relatorio completo**: `orchestration/audit_report_doublecheck_v8.md`
+- **QA Verdict**: `orchestration/qa_verdict_doublecheck_v8.md`

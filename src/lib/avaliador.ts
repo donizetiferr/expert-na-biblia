@@ -112,7 +112,7 @@ async function cachearSeAlto(perguntaId: string, texto: string, score: number): 
   }
 }
 
-async function registrarUso(origem: 'M3' | 'OPENAI'): Promise<void> {
+async function registrarUso(_origem: 'M3' | 'OPENAI'): Promise<void> {
   const hoje = new Date().toISOString().split('T')[0]!;
   try {
     const db = getDatabase();
