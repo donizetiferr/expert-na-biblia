@@ -120,3 +120,42 @@ Nenhum bloqueio de codigo/infraestrutura. Apenas 2 dependencias externas de usua
 - Build Android documentado e pronto para execucao manual
 - 1 dep externa de usuario irredutivel (P0-11 teologica) + 1 parcial (P3-6 build)
 - Pode retomar a qualquer momento com `claude --continue` no diretorio
+
+## V8-REBUILD (2026-06-23) — checkpoint final
+
+### Resultado
+- 13/21 itens do evolution_plan.md V8-RETOMADA entregues
+- 8/21 itens BLOQUEADOS por incompatibilidade tecnica do ambiente (Hermes 0.81 + babel class transforms)
+- 4 commits: M0 (3720cbf), M1 (9b610d5), M2-partial (d10a96c), M4+M5+M6 (4e877b3)
+
+### Entregas desta sessao
+- **M0.1**: scripts/import_questions.ts importou 4345 perguntas reais para data/db.sqlite (40 modulos FB+AT+NT, 754 licoes)
+- **M0.2**: ESLint + Prettier + plugins em devDeps; scripts type-check/lint/format:check
+- **M1**: prebuild OK (apos template extract manual + package rename com.helloworld -> com.donizetiferr.expertnabiblia)
+- **M2.1**: JAVA_HOME=17 (Temurin-17.0.18) configurado
+- **M4.1**: PersonagemLivro.tsx usa imagens reais (3 poses em assets/images/)
+- **M4.2**: SplashScreen.preventAutoHideAsync() movido para useEffect
+- **M4.3**: Scripts type-check/lint/format adicionados
+- **M4.4**: db.sqlite validado (4345 perguntas REAIS)
+- **M5.1**: dist/*.apk limpo (19 APKs antigos removidos)
+- **M5.2**: CHANGELOG.md com entrada V8-REBUILD
+- **M6.1**: app.config.ts criado + m3.ts/openai.ts leem de expo-constants (sem hardcode)
+
+### Pendencias (8/21) BLOQUEADAS
+- **M2.2**: BLOQUEADO — bundle JS nao compila com Hermes 0.81 (incompat class transforms em webapis). 200+ gradle tasks OK; C++ build OK; bloqueado apenas na fase JS bundle.
+- **M2.3**: BLOQUEADO — depende de M2.2 (assinar APK)
+- **M3.1-3.5**: BLOQUEADO — depende de M2.2/2.3 (validar no emulador)
+- **M4.5**: PENDENTE — 5 sons royalty-free (DESTRAVAVEL — usuario baixar de Pixabay/Freesound)
+
+### Bloqueios / Causa raiz
+Hermes 0.81.0 (que expo SDK 54 shipa) parser rejeita `class DOMRectList { constructor() { Object.defineProperty(this, _length, ...) } }` no bundle gerado por babel. Multiplos workarounds testados (loose class transform, strict transform, function constructor manual patch em DOMRect.js+DOMRectReadOnly.js, namespace import, custom babel plugin) — todos falham em diferentes arquivos (DOMRectList, IntersectionObserver, MutationObserver, EventTarget, etc).
+
+### Solucao recomendada (NAO executada autonomamente)
+1. **Upgrade Expo SDK 54 -> 55** (deve shipar Hermes 0.83+ com suporte completo a classes)
+2. **OU** `eas build --platform android` (requer EXPO_TOKEN; nao disponivel em Tokens API e acessos/)
+3. **OU** downgrade Expo SDK 54 para 53 (Hermes 0.76 com mais compatibilidade)
+
+### Como retomar
+- Re-invocar `@full-cycle` com input indicando Expo SDK upgrade OU EXPO_TOKEN disponivel
+- C:\Users\Donizeti\Downloads\Projetos_VSCode\Pessoal\Expert Na Bíblia
+- Estado: 13/21 items feitos, 8/21 bloqueados tecnicamente

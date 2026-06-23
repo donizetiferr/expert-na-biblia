@@ -173,3 +173,34 @@ Estado: IMPLEMENTANDO_V6 → V6_CONCLUIDO_COM_BLOQUEIO_USUARIO | nota: 9.6/10 | 
 - **Modo**: run_in_background=true; toggle file criado em `orchestration/.delegated_to_subagent`
 - **SLA esperado**: 30-90 min para rebuild end-to-end (M0-M6 + validacao no emulador)
 - **Proxima acao do orquestrador**: aguardar notificacao de conclusao; reanimar via SendMessage se parar antes de completar todos os milestones
+
+## @full-cycle V8-REBUILD [2026-06-23T15:40] — CONCLUIDO_COM_PENDENCIAS_AMBIENTE
+
+- **Estado**: CONCLUIDO_COM_PENDENCIAS_AMBIENTE (8 de 21 itens bloqueados por incompatibilidade tecnica do ambiente)
+- **Itens entregues (13/21)**:
+  - M0.1: Import de 4345 perguntas para data/db.sqlite (40 modulos, 754 licoes, 4345 perguntas)
+  - M0.2: ESLint + Prettier + plugins em devDeps; scripts type-check/lint/format:check
+  - M1.1-1.3: Prebuild OK apos manual template extract + package rename com.helloworld -> com.donizetiferr.expertnabiblia
+  - M2.1: JAVA_HOME=17 configurado (validado openjdk 17.0.18 Temurin)
+  - M4.1: PersonagemLivro.tsx usa imagens reais (3 poses)
+  - M4.2: SplashScreen.preventAutoHideAsync() movido para useEffect
+  - M4.3: Scripts type-check/lint/format adicionados
+  - M4.4: db.sqlite validado (4345 perguntas REAIS das planilhas)
+  - M5.1: dist/*.apk limpo (19 APKs antigos removidos)
+  - M5.2: CHANGELOG.md com entrada V8-REBUILD
+  - M6.1: app.config.ts criado + m3.ts/openai.ts leem de expo-constants (sem hardcode)
+- **Itens BLOQUEADOS (8/21)**:
+  - M2.2: BLOQUEADO — bundle JS nao compila com Hermes 0.81 (incompat class transforms). 200+ gradle tasks executadas; C++ build OK; bloqueado apenas na fase JS bundle.
+  - M2.3: BLOQUEADO — depende de M2.2 (assinar APK)
+  - M3.1-3.5: BLOQUEADO — depende de M2.2/2.3 (validar no emulador)
+  - M4.5: PENDENTE — 5 sons royalty-free (DESTRAVAVEL — usuario baixar)
+- **Causa raiz do bloqueio M2.2**: react-native 0.81.5 (que expo SDK 54 shipa) usa `class` com `Object.defineProperty(this, _length, ...)` em webapis (DOMRectList, IntersectionObserver, etc) que Hermes 0.81.0 parser rejeita. Multiplos workarounds testados (loose class transform, strict transform, function constructor manual patch, custom babel plugin) — todos falham em diferentes arquivos.
+- **Solucao recomendada** (NAO executada autonomamente):
+  1. Upgrade Expo SDK 54 -> 55 (que deve shipar Hermes 0.83+ com suporte completo a classes)
+  2. OU `eas build --platform android` (requer EXPO_TOKEN; nao disponivel em Tokens API e acessos/)
+  3. OU downgrade Expo SDK 54 para 53 (que tem Hermes 0.76 com mais compatibilidade)
+- **Commits** (5 total):
+  - M0: 3720cbf
+  - M1: 9b610d5
+  - M2 partial: d10a96c
+  - M4+M5+M6: <commit atual>
