@@ -46,7 +46,19 @@ Estado: TRIAGEM_INICIANDO → TRIAGEM_CONCLUIDA → PESQUISA_CONCLUIDA → ROADM
 Estado: IMPLEMENTANDO_V1 → V1_CONCLUIDO_AGUARDANDO_ORQUESTRADOR | nota: 9.5/10 | commit: 7aa0254 | wire_in_report.md: APROVADO trivial | testes baseline: 0 → final: 5 (+5)
 
 ## solo-evolve V2 2026-06-23
-Estado: IMPLEMENTANDO_V2 → V2_CONCLUIDO_AGUARDANDO_ORQUESTRADOR | nota: 9.7/10 | commit: 9357928 | wire_in_report.md: APROVADO (1 deferido para V5) | testes 5 → 11 (+6) | projeto: C:\Users\Donizeti\Downloads\Projetos_VSCode\Pessoal\Expert Na Bíblia | total_apontamentos_input: 24
+Estado: IMPLEMENTANDO_V2 → V2_CONCLUIDO_AGUARDANDO_ORQUESTRADOR | nota: 9.7/10 | commit: 9357928 | wire_in_report.md: APROVADO (1 deferido para V5) | testes 5 → 11 (+6)
+
+## solo-evolve V3 2026-06-23
+Estado: IMPLEMENTANDO_V3 → V3_CONCLUIDO_COM_BLOQUEIO_USUARIO | nota: 9.4/10 | commit: 601e414 | wire_in_report.md: APROVADO trivial | testes 11 → 22 (+11) | 1 item BLOQUEADA_POR_USUARIO (P0-11 revisao teologica)
+
+## solo-evolve V4 2026-06-23
+Estado: IMPLEMENTANDO_V4 → V4_CONCLUIDO_AGUARDANDO_ORQUESTRADOR | nota: 9.6/10 | commit: 699fb76 | wire_in_report.md: APROVADO (9/9 OK) | testes 22 → 28 (+6)
+
+## solo-evolve V5 2026-06-23
+Estado: IMPLEMENTANDO_V5 → V5_CONCLUIDO_AGUARDANDO_ORQUESTRADOR | nota: 9.5/10 | commit: 0791d06 | wire_in_report.md: APROVADO (9 OK + 3 deferidos) | testes 28 → 52 (+24)
+
+## solo-evolve V6 2026-06-23
+Estado: IMPLEMENTANDO_V6 → V6_CONCLUIDO_COM_BLOQUEIO_USUARIO | nota: 9.6/10 | commit: 3e14faf | wire_in_report.md: APROVADO (2 OK + 6 deferidos + 3 BLOQUEADAS) | testes 52 mantidos | 48/48 itens FASE 0-3: 45 IMPLEMENTADOS + 3 BLOQUEADAS_POR_USUARIO (P0-11, P3-5, P3-6) | projeto: C:\Users\Donizeti\Downloads\Projetos_VSCode\Pessoal\Expert Na Bíblia | total_apontamentos_input: 24
 
 ## Pendencias do usuario
 
