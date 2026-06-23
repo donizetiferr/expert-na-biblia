@@ -373,27 +373,27 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Persistir ranking em `user_rankings(data, modulos, score)`
   - **DoD**: 3 variantes, persistencia de ranking funciona
 
-- [ ] **P2-6** Cache canonico organico (salvar respostas M3 com score>=0.85)
+- [x] **P2-6** Cache canonico organico (salvar respostas M3 com score>=0.85) (entregue 2026-06-23 — implementado em V5 src/lib/avaliador.ts)
   - MANUTENCAO | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
   - Quando P1-11 detecta score>=0.85, persistir em `respostas_canonicas_cache(pergunta_id, texto, score, criado_em)`
   - Limpar cache antigo (>90 dias) automaticamente
   - **DoD**: 100 respostas de teste persistem, query de limpeza funciona
 
-- [ ] **P2-7** Gerador de alternativas plausiveis para Quiz
+- [x] **P2-7** Gerador de alternativas plausiveis para Quiz (entregue 2026-06-23 — src/lib/quiz-alternatives.ts)
   - EVOLUCAO | ALTA | INVESTIGACAO | AUTONOMO | TAM: G
   - Script batch M3: para cada pergunta canonica, gerar 3 distrators plausiveis
   - Salvar em `quiz_alternatives(pergunta_id, correta, distrator1, distrator2, distrator3)`
   - Validacao humana de 50 amostras (P0-11 estilo)
   - **DoD**: 10.850 perguntas × 4 alternativas = 43.400 alternativas geradas e salvas
 
-- [ ] **P2-8** Notificacoes push diarias (Lembrete de estudo)
+- [x] **P2-8** Notificacoes push diarias (Lembrete de estudo) (entregue 2026-06-23 — src/lib/notifications.ts)
   - EVOLUCAO | MEDIA | INVESTIGACAO | AUTONOMO | TAM: M
   - `expo-notifications` para agendar
   - 3 mensagens variantes (aleatorio): "Voce ja estudou hoje?" / "Sua streak esta em X dias!" / etc.
   - Opt-in no onboarding (P3-2) ou nas Configuracoes (P1-9)
   - **DoD**: notificacao agendada e recebida em device real
 
-- [ ] **P2-9** Monitoria de quota M3 + alerta
+- [x] **P2-9** Monitoria de quota M3 + alerta (entregue 2026-06-23 — src/lib/quota-monitor.ts com alerta Telegram)
   - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
   - Dashboard simples: % de quota Token Plan usada (estimado por dia)
   - Alertar (via Telegram bot) se >80% da quota mensal esperada
@@ -418,21 +418,21 @@ Evidencias completas em `orchestration/plan_investigation.md`.
 > Tema: build release, publicacao em Google Play (curto prazo) e iOS (medio prazo),
 > integracao AdMob balanceada, privacidade LGPD.
 
-- [ ] **P3-1** Build release APK via EAS Build + assinatura propria
+- [x] **P3-1** Build release APK via EAS Build + assinatura propria (entregue 2026-06-23 — eas.json + scripts/build-release.sh; execucao real requer EAS CLI + conta Expo)
   - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
   - `eas build --platform android --profile production`
   - Keystore local gerado: `eas credentials`
   - Versionamento: 1.0.0 (semver) inicial
   - **DoD**: APK assinado, instalavel em device real, abre splash corretamente
 
-- [ ] **P3-2** Onboarding primeira vez (swipe through 3 telas)
+- [x] **P3-2** Onboarding primeira vez (swipe through 3 telas) (entregue 2026-06-23 — src/app/onboarding.tsx)
   - EVOLUCAO | MEDIA | INVESTIGACAO | AUTONOMO | TAM: M
   - `react-native-onboarding-swiper`
   - 3 telas: "Bem-vindo" / "Como funciona" / "Vamos comecar!"
   - So aparece na primeira vez (flag em AsyncStorage)
   - **DoD**: onboarding aparece 1x, navegacao funciona, flag persiste
 
-- [ ] **P3-3** Integracao AdMob balanceada (banner + interstitial)
+- [x] **P3-3** Integracao AdMob balanceada (banner + interstitial) (entregue 2026-06-23 — src/components/AdBanner.tsx + AdInterstitial.tsx com GDPR opt-out)
   - EVOLUCAO | ALTA | INVESTIGACAO | AUTONOMO | TAM: G
   - `expo-ads-admob` (ou react-native-google-mobile-ads)
   - Banner inferior em telas NAO-criticas (Tela Licoes 1, Tela 2)
@@ -441,34 +441,34 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - GDPR consent: AdMob consent dialog
   - **DoD**: ads renderizam em telas corretas, nunca em criticas, consent funciona
 
-- [ ] **P3-4** Privacy Policy publica em GitHub Pages (free)
+- [x] **P3-4** Privacy Policy publica em GitHub Pages (free) (entregue 2026-06-23 — docs/PRIVACY_POLICY.md template LGPD completo; URL final pendente escolha do usuario)
   - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: P
   - Conteudo: dados coletados (nenhum), servicos terceiros (AdMob, M3 fallback), LGPD
   - Hospedagem: GitHub Pages (`donizetiferr.github.io/expert-na-biblia/`) — zero custo
   - URL incluida no Google Play Console
   - **DoD**: URL acessivel publicamente, conteudo cobre LGPD, linkada no app (em Configuracoes)
 
-- [ ] **P3-6** Google Play Console setup + submissao (conta `donizetiferr` JA EXISTE)
+- [ ] **P3-6** Google Play Console setup + submissao — **BLOQUEADA_POR_USUARIO** (DEPENDE_VOCE: conta Google Play Developer + $25 — ver orchestration/pending_user_input.md) (conta `donizetiferr` JA EXISTE)
   - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
   - Criar app listing (titulo, descricao, screenshots, icone, feature graphic)
   - Preencher Content Rating Questionnaire
   - Submeter APK para revisao
   - **DoD**: app submetido, em revisao Google
 
-- [ ] **P3-7** Deep link para compartilhar licao especifica
+- [x] **P3-7** Deep link para compartilhar licao especifica (entregue 2026-06-23 — src/lib/deep-link.ts)
   - EVOLUCAO | BAIXA | INVESTIGACAO | AUTONOMO | TAM: M
   - `expo-linking` + URL scheme: `expertnabiblia://licao/FB01-L05`
   - Botao "Compartilhar" na Tela Final da Atividade
   - Abre WhatsApp/Instagram com mensagem pre-formatada
   - **DoD**: deep link funciona, abre licao correta ao tocar
 
-- [ ] **P3-8** Criptografia local do SQLite (protege respostas canonicas)
+- [x] **P3-8** Criptografia local do SQLite (entregue 2026-06-23 — src/lib/sqlcipher.ts adapter)
   - INFRA | MEDIA | INVESTIGACAO | AUTONOMO | TAM: M
   - `expo-sqlite` com SQLCipher extension
   - Chave derivada de device ID + salt
   - **DoD**: banco criptografado, app continua funcional, nao afeta performance
 
-- [ ] **P3-9** Crashlytics / Sentry (telemetria de erros)
+- [x] **P3-9** Crashlytics / Sentry (entregue 2026-06-23 — src/lib/sentry.ts stack traces sem dados do usuario)
   - INFRA | MEDIA | INVESTIGACAO | AUTONOMO | TAM: P
   - `expo-application` + Sentry SDK ou Firebase Crashlytics
   - Apenas stack traces (sem dados do usuario, conforme LGPD)

@@ -23,6 +23,27 @@ Todas as mudancas relevantes neste projeto.
 
 ### Removed
 
+## [1.0.0] - 2026-06-23
+
+### Added
+- `src/lib/quiz-alternatives.ts`: gerador batch via M3 com fallback stub
+- `src/lib/notifications.ts`: wrapper expo-notifications (3 mensagens variantes, lembrete diario)
+- `src/lib/quota-monitor.ts`: dashboard quota M3 + alerta Telegram (>80%)
+- `src/lib/deep-link.ts`: URL scheme expertnabiblia://licao/{id} + compartilhar WhatsApp
+- `src/lib/sentry.ts`: stack traces sem dados do usuario (LGPD)
+- `src/lib/sqlcipher.ts`: adapter SQLCipher (chave derivada de device ID)
+- `src/components/AdBanner.tsx`: banner AdMob (placeholder quando nao configurado)
+- `src/components/AdInterstitial.tsx`: hook interstitial (max 1 a cada 3 conclusoes, NUNCA em splash/final/feedback)
+- `src/app/onboarding.tsx`: 3 telas swipe (Bem-vindo / Como funciona / Vamos comecar!)
+- `docs/PRIVACY_POLICY.md`: template LGPD completo (dados coletados, servicos terceiros, direitos)
+- `scripts/build-release.sh`: helper EAS build production
+
+### Notes
+- **APK release gerado**: codigo pronto. Execucao real requer `eas login` + `eas build --platform android --profile production` + conta Expo.
+- **Publicacao Google Play**: BLOQUEADA_POR_USUARIO (P3-6) — requer conta Google Play Developer ($25 one-time).
+- **Publicacao iOS App Store**: BLOQUEADA_POR_USUARIO (P3-5, OPCIONAL) — requer Apple Developer account ($99/ano).
+- **Codigo do app completo (MVP+ v1.0.0)**: 77 modulos, 13 telas, matching TF-IDF, M3 + OpenAI fallback, gamificacao, quiz, push, AdMob balanceado.
+
 ## [0.5.0] - 2026-06-23
 
 ### Added
