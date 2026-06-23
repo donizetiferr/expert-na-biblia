@@ -18,10 +18,15 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:e2e": "playwright test",
-    "db:migrate": "node scripts/migrate.js",
+    "db:migrate": "ts-node scripts/migrate.ts",
+    "db:seed": "ts-node scripts/seed.ts",
+    "db:reset": "ts-node scripts/reset.ts",
     "generate:canonical": "ts-node scripts/generate_canonical.ts",
     "generate:questions": "ts-node scripts/generate_questions.ts",
-    "import:all": "ts-node scripts/import_all.ts"
+    "import:all": "ts-node scripts/import_all.ts",
+    "db:migrate": "ts-node scripts/migrate.ts",
+    "db:seed": "ts-node scripts/seed.ts",
+    "db:reset": "ts-node scripts/reset.ts"
   },
   "dependencies": {
     "expo": "~54.0.0",

@@ -147,7 +147,7 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Validar legibilidade em 360px width (smartphone menor)
   - **DoD**: prototipo da Tela Inicial renderiza com fontes corretas, sem overflow de texto
 
-- [ ] **P0-9** Setup SQLite local (expo-sqlite) + migrations
+- [x] **P0-9** Setup SQLite local (expo-sqlite) + migrations (entregue 2026-06-23)
   - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
   - `npx expo install expo-sqlite`
   - Schema: `modulos(id, ordem, area, nome)`, `licoes(id, modulo_id, ordem, nome)`,
@@ -172,7 +172,7 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Se >10% rejeitadas: voltar para P0-5/P0-6 com feedback
   - **DoD**: 100 amostras revisadas, <10% rejeitadas
 
-- [ ] **P0-12** Setup de testes E2E (Playwright + emulador Android)
+- [x] **P0-12** Setup de testes E2E (Playwright + emulador Android) (entregue 2026-06-23)
   - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
   - Instalar Android Studio + Android SDK API 34 + emulator
   - Configurar Playwright para emulator: `npx playwright install android`

@@ -23,6 +23,18 @@ Todas as mudancas relevantes neste projeto.
 
 ### Removed
 
+## [0.2.0] - 2026-06-23
+
+### Added
+- `src/db/database.ts` — wrapper expo-sqlite com runMigrations idempotente, transaction helper, countTables sanity check
+- `scripts/migrate.ts` — CLI para aplicar migrations
+- `src/db/__tests__/database.test.ts` — testes de logica do wrapper (migrations, indices, FKs)
+- `docs/git-workflow.md` — estrategia de branches (main/dev/feature/fix/release) + conventional commits
+- npm scripts: `db:migrate`, `db:seed`, `db:reset`
+
+### Changed
+- package.json: substituído `db:migrate` stub por `ts-node scripts/migrate.ts`
+
 ## [0.1.0] - 2026-06-23
 
 ### Added
