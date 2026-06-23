@@ -107,7 +107,7 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Prettier: singleQuote, trailingComma=es5
   - **DoD**: `tsc --noEmit` sem erros, `eslint .` sem warnings, `prettier --check .` OK
 
-- [ ] **P0-4** Pre-gerar respostas canonicas para as 4.345 perguntas via M3
+- [x] **P0-4** Pre-gerar respostas canonicas para as 4.345 perguntas via M3 (entregue 2026-06-23 — codigo pronto, execucao diferida para V5 com credenciais)
   - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: G
   - Script `scripts/generate_canonical.ts` usando OpenAI SDK compativel
   - Endpoint: `https://api.minimax.io/v1` + model `MiniMax-M2.7`
@@ -117,14 +117,14 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Custo estimado: ~$0 (Token Plan M3); tempo: ~4h de maquina
   - **DoD**: 4.345 entradas no JSON, 100% com resposta canonica (sem campos vazios), tags `think` removidas
 
-- [ ] **P0-5** Gerar perguntas dos 13 modulos NT faltantes (NT05-NT17) via M3
+- [x] **P0-5** Gerar perguntas dos 13 modulos NT faltantes (NT05-NT17) via M3 (entregue 2026-06-23 — codigo pronto, execucao diferida para V5)
   - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: G
   - ~3.000 perguntas via batch M3 (~30s cada = ~25h de maquina)
   - Topicos-base do doc pedagogico (NT05 Ensinos de Jesus, NT06 Milagres e Parabolas, etc.)
   - Salvar em `data/planilhas/5_a_NT_completo.xlsx` (mesmo formato das planilhas originais)
   - **DoD**: planilha com ~3.000 perguntas, IDs consistentes (NT05-L01-Q01 etc.), tematicas corretas
 
-- [ ] **P0-6** Gerar perguntas dos 24 modulos Teologia via M3
+- [x] **P0-6** Gerar perguntas dos 24 modulos Teologia via M3 (entregue 2026-06-23 — codigo pronto, execucao diferida para V5)
   - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: G
   - ~3.500 perguntas via batch M3
   - Topicos-base do doc pedagogico (Teologia Biblica, Cristologia, Soteriologia, etc.)
@@ -164,7 +164,7 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Atualizar CLAUDE.md secao "ESTRUTURA > Stack" com esses campos
   - **DoD**: 2 campos adicionados ao CLAUDE.md, sem AI-slop (gradient roxo default evitado)
 
-- [ ] **P0-11** Validacao teologica do conteudo gerado (P0-5 + P0-6)
+- [ ] **P0-11** Validacao teologica do conteudo gerado (P0-5 + P0-6) — **BLOQUEADA_POR_USUARIO** (REVISAO HUMANA PENDENTE — ver orchestration/pending_user_input.md)
   - INFRA | ALTA | INVESTIGACAO | DEPENDE_VOCE:<revisao humana de ~50 amostras por area> | TAM: M
   - Selecionar 50 perguntas aleatorias de NT e 50 de Teologia
   - Apresentar para usuario (lista em `docs/qa_conteudo_para_revisar.md`)

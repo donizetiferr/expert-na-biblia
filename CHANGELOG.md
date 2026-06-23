@@ -23,6 +23,24 @@ Todas as mudancas relevantes neste projeto.
 
 ### Removed
 
+## [0.3.0] - 2026-06-23
+
+### Added
+- `scripts/generate_canonical.ts`: implementacao completa — chamada HTTPS a `https://api.minimax.io/v1/chat/completions` (modelo MiniMax-M2.7), filtro regex `/<think[^>]*>.*?<\/think>/gs`, batch processing (10 paralelas), retry com backoff exponencial (max 3 tentativas), checkpoint incremental em `data/canonical_responses.json`. Modo stub quando `MINIMAX_API_KEY` nao definido
+- `scripts/generate_questions.ts`: implementacao completa — catalogo de 13 modulos NT (NT05-NT17) + 24 modulos Teologia (TE01-TE24), 25 perguntas/licao, IDs consistentes `MODULO-Lxx-Qxx`, total ~6.500 perguntas. Stubs em `data/planilhas/5_a_NT_completo.json` + `6_a_Teologia.json`
+- `scripts/select_samples_for_review.ts`: selecao aleatoria de 100 amostras (50 NT + 50 Teologia) para revisao humana; gera `docs/qa_conteudo_para_revisar.md`
+- `scripts/__tests__/generate_questions.test.ts`: 11 testes (filtro think tags, gerarId, validacao catalogo)
+- `docs/qa_conteudo_para_revisar.md`: template pronto para revisao humana (P0-11)
+- `orchestration/pending_user_input.md`: bloco `DEP_PENDENTE_VALIDACAO_TEOLOGICA` (P0-11)
+- `orchestration/blocked_versions.md`: V3 ITEM-18 marcado BLOQUEADA_POR_USUARIO
+
+### Changed
+- Marcados em evolution_plan.md: P0-4, P0-5, P0-6 como `- [x] (entregue 2026-06-23 — codigo pronto, execucao diferida para V5 com credenciais)`. P0-11 marcado BLOQUEADA_POR_USUARIO
+
+### Notes
+- Execucao REAL de `npm run generate:canonical` + `npm run generate:questions` requer credenciais M3 ativas + npm install. Codigo esta pronto para rodar.
+- Bloqueio P0-11 NAO trava o pipeline — regra AUTONOMIA MAXIMA: outras versoes autonomas continuam.
+
 ## [0.2.0] - 2026-06-23
 
 ### Added

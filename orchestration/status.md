@@ -40,7 +40,13 @@ A iniciar.
 
 ## solo-roadmap 2026-06-23
 
-Estado: TRIAGEM_INICIANDO → TRIAGEM_CONCLUIDA → PESQUISA_CONCLUIDA | modo: COMPLETE | projeto: C:\Users\Donizeti\Downloads\Projetos_VSCode\Pessoal\Expert Na Bíblia | total_apontamentos_input: 24
+Estado: TRIAGEM_INICIANDO → TRIAGEM_CONCLUIDA → PESQUISA_CONCLUIDA → ROADMAP_DRAFT_GERADO → AUDITORIA_CONCLUIDA | nota: 9.2 → FINALIZADO | modo: COMPLETE
+
+## solo-evolve V1 2026-06-23
+Estado: IMPLEMENTANDO_V1 → V1_CONCLUIDO_AGUARDANDO_ORQUESTRADOR | nota: 9.5/10 | commit: 7aa0254 | wire_in_report.md: APROVADO trivial | testes baseline: 0 → final: 5 (+5)
+
+## solo-evolve V2 2026-06-23
+Estado: IMPLEMENTANDO_V2 → V2_CONCLUIDO_AGUARDANDO_ORQUESTRADOR | nota: 9.7/10 | commit: 9357928 | wire_in_report.md: APROVADO (1 deferido para V5) | testes 5 → 11 (+6) | projeto: C:\Users\Donizeti\Downloads\Projetos_VSCode\Pessoal\Expert Na Bíblia | total_apontamentos_input: 24
 
 ## Pendencias do usuario
 
