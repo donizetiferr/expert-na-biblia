@@ -86,20 +86,20 @@ Evidencias completas em `orchestration/plan_investigation.md`.
 >
 > **Bloqueia**: FASE 1, FASE 2 (parcial — pode iniciar UI em paralelo)
 
-- [ ] **P0-1** Setup repositorio local + GitHub (`donizetiferr/expert-na-biblia`)
+- [x] **P0-1** Setup repositorio local + GitHub (`donizetiferr/expert-na-biblia`) (entregue 2026-06-23)
   - INFRA | BAIXA | INVESTIGACAO | AUTONOMO | TAM: P
   - `gh repo create donizetiferr/expert-na-biblia --private --source=. --remote=origin --push`
   - .gitignore: `node_modules/`, `*.apk`, `*.aab`, `.expo/`, `dist/`, `ios/Pods/`
   - **DoD**: repo criado, .gitignore commitado, README inicial com "em construcao"
 
-- [ ] **P0-2** Criar conta Expo (free) + configurar EAS Build
+- [x] **P0-2** Criar conta Expo (free) + configurar EAS Build (entregue 2026-06-23)
   - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: P
   - `npm install -g eas-cli` + `eas login` (com email)
   - `eas init` no projeto (cria projectId Expo)
   - `eas.json` com perfis: development, preview (APK debug), production
   - **DoD**: eas-cli logado, projectId configurado, eas.json commitado
 
-- [ ] **P0-3** Setup Expo SDK 51+ + TypeScript strict + ESLint + Prettier
+- [x] **P0-3** Setup Expo SDK 54+ + TypeScript strict + ESLint + Prettier (entregue 2026-06-23)
   - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
   - `npx create-expo-app@latest --template blank-typescript`
   - tsconfig.json: strict, noUncheckedIndexedAccess, exactOptionalPropertyTypes
@@ -132,7 +132,7 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - **VALIDACAO TEOLOGICA POSTERIOR** (P0-11)
   - **DoD**: planilha com ~3.500 perguntas, IDs consistentes
 
-- [ ] **P0-7** Pesquisar e baixar sons royalty-free (5 sons especificos)
+- [x] **P0-7** Pesquisar e baixar sons royalty-free (5 sons especificos) (entregue 2026-06-23)
   - EVOLUCAO | MEDIA | INVESTIGACAO | AUTONOMO | TAM: M
   - Splash (~3s, magica/whoosh) | Acerto (~1s, ding/success) | Erro (~1s, buzz/wrong)
   - Transicao (~0.5s, pop) | Musica fundo (~3min loop, instrumental calma)
@@ -140,7 +140,7 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Salvar em `assets/audio/{splash,acerto,erro,transicao,musica_fundo}.mp3`
   - **DoD**: 5 arquivos .mp3 em `assets/audio/`, todos <500KB cada, licenca livre confirmada
 
-- [ ] **P0-8** Confirmar fontes em prototipo: Bangers (display) + Nunito (body)
+- [x] **P0-8** Confirmar fontes em prototipo: Bangers (display) + Nunito (body) (entregue 2026-06-23)
   - MELHORIA | MEDIA | USUARIO | AUTONOMO | TAM: P
   - Instalar via `@expo-google-fonts/bangers` e `@expo-google-fonts/nunito`
   - Criar prototipo da Tela Inicial (splash + logo)
@@ -156,7 +156,7 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Migrations: `migrations/001_initial.sql`
   - **DoD**: migrations rodam OK em app vazio, indices criados, queries de leitura <5ms
 
-- [ ] **P0-10** Declarar `aesthetic_direction` e `reference_visual` no CLAUDE.md
+- [x] **P0-10** Declarar `aesthetic_direction` e `reference_visual` no CLAUDE.md (entregue 2026-06-23)
   - INFRA | MEDIA | INVESTIGACAO | AUTONOMO | TAM: P
   - Sugestao: `aesthetic_direction: editorial/magazine` (combina com "Parabens, voce e um Expert!"
     estilo comic book moderno) — confirmar com usuario
@@ -179,13 +179,13 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Teste smoke E2E: splash → Tela 2 → fechar
   - **DoD**: `npm run test:e2e` roda smoke test no emulator Android e passa
 
-- [ ] **P0-13** GitHub Actions CI basico (lint + type-check + build smoke)
+- [x] **P0-13** GitHub Actions CI basico (lint + type-check + build smoke) (entregue 2026-06-23)
   - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
   - `.github/workflows/ci.yml` em push para main + PRs
   - Steps: install → tsc → eslint → prettier → eas build --profile=preview (non-blocking)
   - **DoD**: workflow roda em PR de teste, todos steps passam
 
-- [ ] **P0-14** CHANGELOG.md inicial
+- [x] **P0-14** CHANGELOG.md inicial (entregue 2026-06-23)
   - INFRA | BAIXA | INVESTIGACAO | AUTONOMO | TAM: P
   - Formato: `## [Unreleased]` com secoes Added/Changed/Fixed/Removed
   - Entrada inicial: "Initial setup: documentation from WhatsApp briefing, 10 architectural
@@ -441,22 +441,15 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - GDPR consent: AdMob consent dialog
   - **DoD**: ads renderizam em telas corretas, nunca em criticas, consent funciona
 
-- [ ] **P3-4** Privacy Policy publica (URL obrigatoria para Google Play)
-  - INFRA | ALTA | INVESTIGACAO | DESTRAVAVEL:<usuario escolher entre GitHub Pages free OU dominio proprio R$10-15/ano> | TAM: P
+- [ ] **P3-4** Privacy Policy publica em GitHub Pages (free)
+  - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: P
   - Conteudo: dados coletados (nenhum), servicos terceiros (AdMob, M3 fallback), LGPD
-  - Hospedagem: GitHub Pages (free, dominio `donizetiferr.github.io/expert-na-biblia/`)
+  - Hospedagem: GitHub Pages (`donizetiferr.github.io/expert-na-biblia/`) — zero custo
   - URL incluida no Google Play Console
-  - **DoD**: URL acessivel, conteudo cobre LGPD, linkada no app (em Configuracoes)
+  - **DoD**: URL acessivel publicamente, conteudo cobre LGPD, linkada no app (em Configuracoes)
 
-- [ ] **P3-5** TestFlight + App Store (iOS) — OPCIONAL medio prazo
-  - INFRA | MEDIA | INVESTIGACAO | DEPENDE_VOCE:<conta Apple Developer + pagamento $99/ano> | TAM: G
-  - `eas build --platform ios --profile production`
-  - Configurar App Store Connect metadata
-  - Submeter para revisao (risco de rejeicao por "conteudo teologico" — ter plano B)
-  - **DoD**: build iOS OK, submetido para revisao (status pendente de resultado Apple)
-
-- [ ] **P3-6** Google Play Console setup + submissao
-  - INFRA | ALTA | INVESTIGACAO | DEPENDE_VOCE:<conta Google Play Developer + pagamento $25 one-time> | TAM: M
+- [ ] **P3-6** Google Play Console setup + submissao (conta `donizetiferr` JA EXISTE)
+  - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
   - Criar app listing (titulo, descricao, screenshots, icone, feature graphic)
   - Preencher Content Rating Questionnaire
   - Submeter APK para revisao
@@ -545,22 +538,21 @@ FASE 3.P3-1 (build)     → bloqueia: FASE 3.P3-6 (submissao)
 > Lista consolidada de TODOS os itens que precisam de acao humana. Se preferir NAO resolver
 > agora, eu seguro o item e sigo nos autonomos.
 
-- **P0-11** (Milestone P0-11) — Revisar 100 amostras teologicas do conteudo gerado
-- **P3-4** (Milestone P3-4) — Escolher GitHub Pages (free) ou dominio proprio (R$10-15/ano)
-- **P3-5** (Milestone P3-5) — Criar Apple Developer account + pagar $99/ano (OPCIONAL iOS)
-- **P3-6** (Milestone P3-6) — Criar Google Play Developer account + pagar $25 one-time
+- **P0-11** (Milestone P0-11) — Revisar 100 amostras teologicas do conteudo gerado (~2-3h)
 
 ## Itens rejeitados (e por que)
 
 - **Backend Node.js dedicado** — REJEITADO. App chama M3 direto do celular (decisao #5).
   Backend so faz sentido se virar cache server-side ou proxy para esconder chave M3 —
   mas a chave M3 ja eh do Token Plan com quota fixa, nao exige esconder.
-- **iOS obrigatorio no MVP** — REJEITADO. Decisao #8 prioriza Android curto prazo. iOS fica
-  opcional no medio prazo (P3-5).
+- **iOS obrigatorio no MVP** — REJEITADO. Decisao de 2026-06-23: foco EXCLUSIVO em APK
+  Android no MVP. iOS fica para depois (V3 ou nunca, dependendo do mercado).
 - **Direcao estetica "luxury/refined"** — REJEITADO. Estilo da UI (comic book, dourado,
   trofeu exuberante) claramente aponta para "playful/toy-like" ou "editorial/magazine",
   nao luxury. Decidir entre playful vs editorial no P0-10 com base em referencia visual.
 - **Multi-idioma no MVP** — REJEITADO. Escopo MVP em PT-BR. i18n na V2.
+- **Dominio proprio para Privacy Policy** — REJEITADO. Decisao de 2026-06-23: usar
+  GitHub Pages free (`donizetiferr.github.io/expert-na-biblia/`). Custo zero.
 
 ## Cronograma estimado (atualizado)
 

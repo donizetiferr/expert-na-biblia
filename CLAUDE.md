@@ -37,6 +37,17 @@ todos os módulos são concluídos.
   - Chama M3 quando resposta nao da match canonico local
   - Caching: respostas M3 com score>=0.85 sao salvas como canonicas para proxima vez
 - **Assets visuais**: ja fornecidos via Google Drive (logo, paleta, personagens, telas mockadas)
+- **aesthetic_direction**: `editorial/magazine` (comic book moderno, exuberante, "Parabéns, você é um Expert!" estilo gibi)
+- **reference_visual**:
+  - Duolingo (gamificação pedagógica que mantém engajamento)
+  - Brilliant.org (UI limpa para educação, sem ruído visual)
+- **Anti-AI-slop**: evitar Inter/Roboto como body (usamos Bangers + Nunito); evitar gradient roxo default (usamos degradê específico #8b16c7→#3c026d + acento laranja); evitar cards default rounded+sombra (usamos bordas grossas laranja); layout asymmetric com hierarquia editorial
+
+### Tipografia (confirmado em 2026-06-23 via P0-8)
+
+- **Display (titulos)**: Bangers (Google Fonts)
+- **Body**: Nunito Regular/Bold/ExtraBold (Google Fonts)
+- Pacotes: `@expo-google-fonts/bangers` + `@expo-google-fonts/nunito`
 
 ### Pastas do projeto
 
@@ -105,13 +116,18 @@ Expert Na Biblia/
 
 ### Decisoes ainda pendentes (follow-up durante implementacao)
 
-- **Conta publicacao lojas**: GitHub `donizetiferr` (uso pessoal, ja ativo) ou conta empresarial
-  `D7Bots` (verificada ativa em 2026-06-22 com 2 repos privados). Google Play Console e Apple
-  Developer Program sao independentes do GitHub ($25 one-time + $99/ano).
 - **Modulos Teologia**: gerar perguntas para os 24 modulos ou lancar so FB+AT+NT+NT-completo
   (53 modulos)? Decidir apos MVP beta validar engajamento.
 - **Backend deploy**: Railway.app, Render.com ou Cloudflare Workers? Decidir quando implementar
-  backend.
+  backend (provavelmente desnecessario - app chama M3 direto).
+
+### Decisoes de escopo tomadas em 2026-06-23 (pos-double-check)
+
+- **Foco**: APK Android EXCLUSIVO no MVP. iOS/Apple Store FORA do escopo (cancelado).
+- **Publicacao lojas**: conta Google Play Developer `donizetiferr` JA EXISTE — sem custo
+  adicional, sem bloqueio. P3-5 (iOS) REMOVIDO do escopo.
+- **Privacy Policy URL**: usar GitHub Pages free (`donizetiferr.github.io/expert-na-biblia/`)
+  — zero custo. Nao precisa dominio proprio.
 
 ## PROXIMO PASSO
 

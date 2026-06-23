@@ -24,3 +24,42 @@ Thumbs.db
 .playwright-mcp/
 playwright-report/
 test-results/
+
+# Expo / React Native / EAS Build
+.expo/
+.expo-shared/
+expo-env.d.ts
+web-build/
+*.tsbuildinfo
+*.apk
+*.aab
+*.ipa
+*.app
+
+# Native (Android + iOS)
+ios/Pods/
+ios/build/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+*.keystore
+!debug.keystore
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Metro / Bundler
+.metro-health-check*
+metro.config.js.bak
+
+# Testing
+coverage/
+*.lcov
+.nyc_output/
+
+# Orchestration transient (artifacts runtime nao versionados)
+orchestration/dev_server.md
