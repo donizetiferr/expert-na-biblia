@@ -1,245 +1,182 @@
-# Plan Investigation — Expert Na Biblia (2026-06-23)
+# Plan Investigation — Expert Na Bíblia (2026-06-23 V8-RETOMADA)
 
 ## Modo
 
-Escopo: **ATUALIZACAO** | Profundidade: **FOCADO** — razao: input traz apontamentos acionaveis
-+ 2 double checks profundos ja feitos (notas 9.4 e 9.5/10) + base documental completa. FOCADO
-aproveita o contexto previo (input rico) e roda investigacao independente calibrada (gate G1).
+Escopo: ATUALIZACAO | Profundidade: FOCADO — razao: MODO_ORQUESTRADO invocado pelo orquestrador com 10 apontamentos acionaveis + contexto previo rico (V8-RETOMADA-APK-FIX.md). FOCADO aproveita o contexto previo (input rico) e roda investigacao independente calibrada (gate G1).
 
 ## Arquivos lidos (piso minimo 1.1)
 
-- `CLAUDE.md` — objetivo, 10 decisoes travadas, 3 pendentes, diagrama de arquitetura
-- `evolution_plan.md` — plano existente com 4 fases (P0/P1/P2/P3) + V2, 5-8 meses ate publicacao
-- `orchestration/audit_report.md` (v1) — nota 9.4/10, 0 criticos, 2 altos (A1+A2) ja corrigidos
-- `orchestration/audit_report_v2.md` (v2) — nota 9.5/10, 6 inconsistencias corrigidas
-- `orchestration/qa_verdict_v2.md` — APROVADO com ressalvas, zero bloqueios
-- `docs/README.md` — indice principal da documentacao
-- `docs/01_objetivo_e_escopo.md` — visao geral + regras de negocio
-- `docs/02_mensagens_whatsapp/README.md` — 68 mensagens do grupo
-- `docs/03_identidade_visual/README.md` — paleta + logo + personagem
-- `docs/04_fluxo_de_telas/README.md` — 13 telas mapeadas
-- `docs/05_conteudo_pedagogico/README.md` — 77 modulos planejados
-- `docs/06_google_docs_links.md` — links externos
-- `docs/raw_whatsapp_extraction.json` — extracao original da API
-- `docs/questions_clean.json` — 4.345 perguntas estruturadas
-- `docs/doc1_oficial_fluxo_telas.txt` — Google Doc 1
-- `docs/doc2_estrutura_pedagogica_completa.txt` — Google Doc 2
-- `orchestration/evidence_map.md` — mapa de evidencias do 1o double check
-- `Tokens API e acessos/minimax/credentials.md` — chave M3 validada em APW
+- `CLAUDE.md` — objetivo, regras de negocio, decisoes arquiteturais, anti-AI-slop, paleta visual
+- `package.json` — 22 deps + 3 devDeps; scripts: `android`, `ios`, `start`, `prebuild`, `build:android` (FALTA `type-check`, `lint`, `format:check` que o CI chama)
+- `app.json` — package name `com.donizetiferr.expertnabiblia` (correto), label `Expert Na Bíblia` (correto), `expo.ads.admob.androidAppId = PLACEHOLDER_ANDROID_APP_ID` (ainda placeholder)
+- `tsconfig.json` — strict mode completo, alias paths para @/ @assets/ @components/ @lib/ @db/ @types/ @constants/
+- `babel.config.js` — babel-preset-expo + module-resolver com aliases + react-native-reanimated/plugin
+- `metro.config.js` — default Expo config
+- `eas.json` — profiles development/preview/production; submit.production.android.track=`internal`
+- `.github/workflows/ci.yml` — 3 jobs: lint-type-check, test-unit, build-preview (EAS cloud com EXPO_TOKEN)
+- `orchestration/V8-RETOMADA-APK-FIX.md` — diagnostico completo do APK atual
+- `orchestration/evolution_plan.md` — plano V1-V7 (47/47 itens entregues), 2 BLOQUEADAS_POR_USUARIO (P0-11, P3-6)
+- `src/app/_layout.tsx` — root layout com expo-router, useFonts, SplashScreen, 6 Stack.Screen
 
-## Comandos executados
+## Comandos executados (com resultado resumido)
 
-- `ls` + `find` no projeto → 41 arquivos totais (20 .md/.txt/.json + 21 midia)
-- `find` testes → **0 testes** (sem jest/vitest/playwright config)
-- `find` CI/CD → **0 CI/CD** (sem .github/.gitlab-ci/azure-pipelines)
-- `find` build config → **0 build config** (sem package.json/tsconfig/app.json/eas.json)
-- `grep TODO/FIXME/HACK` → 0 nos .md (esperado, projeto pre-implementacao)
-- `cat mcp-registry.json` → fleet Chrome real 8-12 ativa, perfil preservado
-- `gh auth status` → donizetiferr logado, scopes gist/read:org/repo
-- `gh repo list D7Bots` → 2 repos (restore-claude-windows-terminal, leitor-de-video)
-- `ls Tokens API e acessos/{minimax,openai}/` → credenciais existem
+- `find . -type f -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./dist/*" -not -path "./whatsapp_media/*"` → 122 arquivos (porte PEQUENO/MEDIO com docs)
+- `find src/ -type f` → 36 source files
+- `find __tests__ src/ -name "*.test.*"` → 5 test files (matching, matching-coverage, settings, smoke, database)
+- `node --version` → v22.22.2
+- `java -version` → 1.8.0_491 (DEFAULT — INCOMPATIVEL com gradle 8+; JDK 17 em `C:/Users/Donizeti/scoop/apps/temurin17-jdk/current/`)
+- `ls C:/Android/Sdk/` → SDK completo (build-tools 35/36, emulator, NDK, platform-tools, system-images API 34)
+- `C:/Users/Donizeti/scoop/apps/temurin17-jdk/current/bin/java.exe -version` → openjdk 17.0.18 (Temurin-17)
+- `ls node_modules/expo-router` → OK 6.0.24
+- `ls node_modules/expo-sqlite` → OK 16.0.10
+- `ls node_modules/expo-font` → OK 14.0.12
+- `ls node_modules/@expo-google-fonts/bangers` → OK 0.4.1
+- `ls assets/` → icon.png, splash.png, adaptive-icon.png, favicon.png (criados V8); audio/ VAZIO
+- `ls data/` → db.sqlite (798KB)
+- `ls -la dist/*.apk` → 19 APKs gerados, 1 FINAL de 85MB
+- `npx expo prebuild --platform android` → FALHA: "withAndroidDangerousBaseMod: Project file MainApplication does not exist"
+- `C:/Android/Sdk/platform-tools/adb.exe -s emulator-5554 shell pm path com.anonymous.testapp` → confirma APK instalado
 
-## Saude do projeto (gate G0)
+## Saude do projeto (veredito em cada linha) — gate G0
 
-| Dimensao | Veredito | Evidencia |
-|---|---|---|
-| **Testes** | NAO_EXISTEM (achado INFRA critico) | `find -name "*.test.*"` retornou 0. Sem jest.config/vitest.config/playwright.config. |
-| **Build** | NAO_VERIFICAVEL (pre-implementacao) | Sem package.json/tsconfig/app.json. Projeto nao tem codigo ainda. |
-| **CI/CD** | AUSENTE (achado INFRA alto) | Sem .github/.gitlab-ci/azure-pipelines. Setup do CI sera parte da FASE 0. |
-| **Deps** | NAO_VERIFICAVEL (pre-implementacao) | Sem package.json. Decisoes de deps estao no CLAUDE.md (Expo, expo-sqlite, etc.) |
-| **Docs (CLAUDE/README/changelog)** | COMPLETAS (com gaps identificados) | CLAUDE.md e 8 docs/*.md estao consistentes. Sem CHANGELOG.md (achado BAIXO). |
-
-**Sinal CRITICO de infraestrutura**: projeto pre-implementacao nao tem NADA de codigo/testes/CI.
-Isso NAO eh falta de qualidade — eh o estado natural antes de FASE 0. Plano de acao precisa
-cobrir setup de tudo isso.
+- **Testes**: EXISTEM (provavelmente passando — 5 test files; CI job test-unit roda `npm test -- --ci --coverage`; NAO foram rodados nesta sessao) — evidencia: `__tests__/matching.test.ts`, `__tests__/settings.test.ts`, `__tests__/smoke.test.ts`, `__tests__/e2e/splash.spec.ts`, `src/db/__tests__/database.test.ts`, `src/lib/__tests__/matching-coverage.test.ts`
+- **Build**: QUEBRADO (APK final nao roda por completo) — APK final instala + abre splash + crasha em `renderElement` do RootLayout — evidencia: `orchestration/V8-RETOMADA-APK-FIX.md` linhas 19-22
+- **CI/CD**: CONFIGURADO (parcial) — `.github/workflows/ci.yml` com 3 jobs; build-preview usa EAS cloud (depende de EXPO_TOKEN) e roda `continue-on-error: true`; NAO roda build nativo local — evidencia: `.github/workflows/ci.yml` linhas 62-87
+- **Deps**: ATUALIZADAS (mas com ressalvas) — 22 deps restauradas; faltam @expo/metro-runtime, babel-preset-expo, babel-plugin-module-resolver (devDeps adicionados nesta sessao); expo-ads-admob~13.0.0 (versao antiga); `package.json` tem scripts `type-check`/`lint`/`format:check` que o CI chama mas nao estao definidos — evidencia: `package.json` linhas 66-103
+- **Docs (CLAUDE.md/README/changelog)**: COMPLETAS — CLAUDE.md 161 linhas, README, CHANGELOG, evolution_plan.md, 8 docs em `docs/`, `orchestration/` rico (V1-V7, audit, qa_verdict, etc.) — evidencia: `CLAUDE.md`, `docs/README.md`, `orchestration/session_summary.md`
 
 ## Sinais de codigo
 
-- TODO/FIXME/HACK: 0 (esperado, pre-implementacao)
-- Arquivos >500 linhas: N/A (sem codigo)
-- Duplicacao obvia: 0 (removida `questions_raw.json` no 1o double check)
-- Tipagem forte: N/A (sem codigo TS ainda)
+- **TODO/FIXME/HACK**: 0 ocorrencias
+- **Arquivos >500 linhas**: 1 (`database.ts` com ~170 linhas; nada > 500)
+- **Duplicacao obvia**: SIM — `_layout.tsx` chama `SplashScreen.preventAutoHideAsync()` no top-level (linha 11), efeito colateral na importacao
+- **Pontos de risco identificados em src/**:
+  - `_layout.tsx` linha 11: `SplashScreen.preventAutoHideAsync()` no module scope (deveria ser em useEffect) — pode causar problema de ordem de inicializacao
+  - `PersonagemLivro.tsx` usa EMOJIS (🤔, 😄, 😱) em vez das imagens reais em `whatsapp_media/images/`
+  - `assets/audio/` VAZIO (P0-7 marcado como entregue mas diretorio vazio)
+  - `app.json` ainda tem `PLACEHOLDER_ANDROID_APP_ID` em expo-ads-admob
 
-## Pesquisa externa (FOCADO — gate G4 parcial)
+## Pesquisa externa (FOCADO — quando relevante)
 
-**Queries** (no 1o e 2o double checks ja executados):
-- "minimax coding plan token plan commercial use restriction backend" (SearXNG)
-- Docs oficiais do Token Plan M3
+Nao foi realizada pesquisa externa nova. FOCADO nao exige pesquisa externa (opcional). A pesquisa do dominio ja foi feita em docs/02_mensagens_whatsapp e docs/05_conteudo_pedagogico (V1-V7).
 
-**Fontes usadas**:
-- `https://platform.minimax.io/docs/token-plan/intro` — confirmou Token Plan = "for applications"
-- `https://platform.minimax.io/subscribe/coding-plan` — confirmou Token Plan usage
-- `Tokens API e acessos/minimax/credentials.md` — validou APW em producao
+## Objetivos do produto -> cobertura -> gaps (gate G1)
 
-**Achados que viraram candidatos**:
-1. M3 validado em producao (APW) → habilita uso direto no app
-2. Filtro `think` tags → P0-4 e P1-13 ja cobrem
-3. Custo M3 Token Plan incluso em plano existente → $0 marginal
+**OBJ-1**: Ensinar a Biblia de forma ludica e progressiva (2 modos: Licoes + Quiz)
+- Cobertura: PARCIAL — 14 telas em `src/app/`; db.sqlite (798KB) embarcado; 5 testes Jest
+- Gaps: APK nao roda 100% (V8); 46 resources faltando resolvidos via patch; `__DEV__=true` codificado resolve via patch; conteudo real das 4345 perguntas precisa ser injetado no SQLite embarcado
+- Fonte: CLAUDE.md:13
 
-**FOCADO**: pesquisa externa adicional minima (queries de benchmark visual de apps religiosos
-e de implementacao React Native + Expo SQLite + AdMob seriam uteis, mas a FASE 0 do projeto
-ja vai validar tudo isso empiricamente).
+**OBJ-2**: Avaliacao de respostas por IA generativa (Minimax M2.7)
+- Cobertura: PARCIAL — `src/lib/m3.ts`, `src/lib/openai.ts`, `src/lib/avaliador.ts`, `src/lib/matching.ts` implementados
+- Gaps: precisa de credencial `MINIMAX_API_KEY` em `Tokens API e acessos/minimax/`; fallback OpenAI precisa de `OPENAI_API_KEY`
+- Fonte: CLAUDE.md:28-32
 
-## Objetivos do produto (gate G4 parcial em FOCADO)
+**OBJ-3**: Progresso gamificado (cadeado sequencial, 100% para liberar, trofeu final)
+- Cobertura: TOTAL em codigo — `src/lib/streak.ts`, `src/app/trofeu.tsx`, regras em `src/app/licoes/[moduloId]/[licaoId]/final.tsx`
+- Fonte: CLAUDE.md:74-91
 
-Extraido de CLAUDE.md secao OBJETIVO (1 objetivo principal):
+**OBJ-4**: Privacidade LGPD (privacy policy publica)
+- Cobertura: TOTAL — `privacy.html` em `https://donizetiferr.github.io/expert-na-biblia/privacy.html` (HTTP 200); `app.json.extra.privacyPolicyUrl` configurado
+- Fonte: CLAUDE.md:129, V7 (orchestration/audit_report.md)
 
-### OBJ-1: Ensinar a Biblia de forma ludica e progressiva via smartphone
+## Historico do plano (ATUALIZACAO)
 
-- **Fonte**: CLAUDE.md L8-16 (declaracao explicita)
-- **Cobertura atual**: PARCIAL — documentacao completa, briefing 100% coletado, decisoes
-  travadas, mas ZERO codigo
-- **Componentes**:
-  - Modo Licoes progressivas (77 modulos, 4 areas) → NAO_IMPLEMENTADO
-  - Modo Quiz Biblico (20 perguntas, timer 10s) → NAO_IMPLEMENTADO
-  - Gamificacao (cadeado, 100%, trofeu) → NAO_IMPLEMENTADO
-  - Avaliacao IA das respostas abertas → NAO_IMPLEMENTADO
-  - UI cartoon/playful com personagem livro → NAO_IMPLEMENTADO
-  - Splash + som + configuracao → NAO_IMPLEMENTADO
-- **Gap vira**: milestones FASE 0 a FASE 3 do evolution_plan.md
+- **Categorias recorrentes**: INFRA (20), EVOLUCAO (32), MANUTENCAO (2), MELHORIA (2), CORRECAO (1) — V1-V7 entregaram 47/47 itens
+- **Areas nunca tocadas**: nenhuma (V1-V7 cobriu todas as 4 fases)
+- **Rejeitados que continuam rejeitados**: P3-5 (iOS), Backend Node.js dedicado, iOS obrigatorio no MVP, "luxury/refined" estetica, Multi-idioma no MVP, Dominio proprio Privacy
 
-## Historico do plano (gate G5 pre-check)
+## Cobertura por dimensao (gate G1)
 
-- **Categorias recorrentes**: N/A (plano foi criado HOJE, primeiro uso)
-- **Areas nunca tocadas**: N/A (pre-implementacao)
-- **Rejeitados anteriores**: nenhum
+- **CORRECAO_BUGS**: 1 achado — APK nao roda (V8) | varrida com (Read codigo + adb logcat) | Fonte: CONTEXTO_PREVIO + INVESTIGACAO
+- **MELHORIA**: 1 achado — PersonagemLivro.tsx usa emojis em vez de imagens reais (P0-5 pendente) | varrida com (Read component) | Fonte: INVESTIGACAO
+- **EVOLUCAO_FEATURES**: 0 achados alem dos apontamentos (rebuild e correcao estrutural) | varrida com (Read src/) | Fonte: G1
+- **MANUTENCAO_REFACTOR**: 1 achado — `_layout.tsx` linha 11 chama `preventAutoHideAsync()` no module scope | varrida com (Read _layout.tsx) | Fonte: INVESTIGACAO
+- **INFRAESTRUTURA**: 3 achados — scripts `type-check`/`lint`/`format:check` faltando; gradle nao instalado globalmente; Java 17 nao no PATH padrao | varrida com (Bash env checks) | Fonte: INVESTIGACAO
+- **UX_UI**: 0 achados (rebuild do APK e infra) | varrida com (Read CLAUDE.md) | Fonte: G1
+- **PERFORMANCE**: 0 achados | varrida com (Read _layout.tsx) | Fonte: G1
+- **SEGURANCA**: 0 achados | varrida com (Read app.json) | Fonte: G1
 
-## Cobertura por dimensao (gate G4 — FOCADO, formato leve)
+## Achados independentes (gate G1 — FOCADO)
 
-| Dimensao | Veredito |
-|---|---|
-| CORRECAO_BUGS | N/A (sem codigo) |
-| MELHORIA | 6 inconsistencias identificadas no 2o double check, todas corrigidas |
-| EVOLUCAO_FEATURES | Briefing 100% mapeado, 10 decisoes travadas, 4 fases de milestones definidas |
-| MANUTENCAO_REFACTOR | N/A (sem codigo) |
-| INFRAESTRUTURA | 4 gaps criticos/altos: testes, CI/CD, build config, changelog |
-| UX_UI | Identidade visual completa (paleta, logo, personagem, fontes inferidas); 13 telas mockadas; mas sem direcao estetica declarada no CLAUDE.md |
-| PERFORMANCE | N/A (sem codigo); nota: SQLite embarcado com 7.500+ perguntas precisa de indices |
-| SEGURANCA | LGPD publico adulto (decidido); M3 token exposto se hardcoded → atencao |
+Investigacao INDEPENDENTE alem dos apontamentos do input (com contexto previo rico, ainda assim FASE 1 rodada):
 
-## Achados independentes (gate G1)
+1. **`PersonagemLivro.tsx` usa emojis em vez das imagens reais** — briefing especificou livro-personagem animado com poses. Codigo tem `EMOCAO_EMOJI = { PENSATIVO: '🤔', FELIZ: '😄', ASSUSTADO: '😱' }`. 17 imagens reais estao em `whatsapp_media/images/` mas nao sao usadas.
+2. **`_layout.tsx` linha 11 chama `SplashScreen.preventAutoHideAsync()` no module scope** — efeito colateral na importacao, deveria ser em useEffect. Pode causar problema de ordem de inicializacao no native module loading.
+3. **Scripts `type-check`/`lint`/`format:check` faltando no package.json** — CI chama esses scripts mas eles nao estao definidos. CI vai falhar em qualquer PR ate isso ser resolvido.
+4. **`app.json` ainda tem `PLACEHOLDER_ANDROID_APP_ID`** — o plugin expo-ads-admob precisa do ID real do AdMob (ou pelo menos um ID de teste). Hipotese forte: este placeholder pode ser a causa do `withAndroidDangerousBaseMod` crash no prebuild.
+5. **Assets de audio (`assets/audio/`) VAZIO** — P0-7 marcado como entregue mas o diretorio esta vazio. 5 sons esperados: splash, acerto, erro, transicao, musica_fundo.
+6. **db.sqlite (798KB) tem 77 modulos mock ou 4345 perguntas reais?** — preciso verificar se o conteudo embarcado e o conteudo real das planilhas ou so mock.
+7. **Java 17 NAO esta no PATH padrao do sistema** — `java -version` retorna 1.8.0. Gradle 8+ requer 17+. Scripts de build precisam setar `JAVA_HOME=C:/Users/Donizeti/scoop/apps/temurin17-jdk/current`.
+8. **Gradle NAO esta instalado globalmente** — nao ha gradlew no projeto ainda (sera criado pelo prebuild).
 
-Investigacao INDEPENDENTE alem dos apontamentos do input (mesmo sabendo do contexto previo,
-rodei FASE 1):
+## Autonomia por item (1.9 — pre-check leve de acessos)
 
-1. **CHANGELOG.md ausente** — projeto pre-implementacao mas ja com 1o save-state, deveria ter
-   changelog (INFRA BAIXA)
-2. **Sem direcao estetica declarada** — CLAUDE.md tem paleta e tipografia inferida, mas nao
-   declara `aesthetic_direction`/`reference_visual` conforme regra ANTI AI-SLOP (DESIGN MEDIO)
-3. **Sem testes automatizados** — mesmo projeto novo merece setup minimo (INFRA CRITICO)
-4. **Sem CI/CD** — git push sem validacao automatica (INFRA ALTO)
-5. **5-8 meses ate publicacao** — depende de geracao IA-assistida das ~6.500 perguntas faltantes;
-   nao ha task de validar qualidade teologica das perguntas geradas (RISCO)
-6. **Plano nao tem ESTIMATIVA DE ESFORCO** — sem horas/dias por milestone, fica declarativo (GAPS)
-7. **Plano nao tem DEPENDENCIAS explicitas** entre milestones (GAPS)
-8. **Plano nao tem DEFINITION OF DONE** testavel por milestone (GAPS)
-9. **Plano nao tem ROTEIRO DE EXECUCAO** — qual fase paraleliza, qual bloqueia (GAPS)
-10. **Backend opcional sem decisao** — manter backend Node.js ou app chama M3 direto? CLAUDE.md
-    ja simplificou para app chama M3 direto, mas plano ainda cita "backend opcional" (CONFUSAO)
+| Item | Autonomia | Justificativa |
+|---|---|---|
+| A1 — Garantir app.json com package name correto | JA_RESOLVIDO | ja esta `com.donizetiferr.expertnabiblia` no app.json |
+| A2 — Garantir label correto | JA_RESOLVIDO | ja esta `Expert Na Bíblia` no app.json expo.name |
+| A3 — Restaurar package.json com todas as deps | JA_RESOLVIDO | `npm install` retornou `added 193 packages` nesta sessao V8 |
+| A4 — Resolver bug do prebuild (withAndroidDangerousBaseMod) | AUTONOMO | investigar se e `expo-ads-admob` com PLACEHOLDER; remover ou corrigir |
+| A5 — Rodar gradle assembleRelease | AUTONOMO | depende de A4; precisa `JAVA_HOME=C:/Users/Donizeti/scoop/apps/temurin17-jdk/current` |
+| A6 — Resolver __DEV__=true (signing release) | AUTONOMO | gradle assembleRelease gera bundle com `__DEV__=false` se for signed release, nao debug |
+| A7 — Validar APK no emulador | AUTONOMO | emulator-5554 ja disponivel em C:/Android/Sdk |
+| A8 — Verificar instalacao, abertura, navegacao | AUTONOMO | apos APK rodar, adb shell input + screencap |
+| A9 — Garantir assets visuais corretos | JA_RESOLVIDO | icon/splash/adaptive-icon/favicon criados em V8 |
+| A10 — Renomear app para "Expert Na Bíblia" no launcher | AUTONOMO | rebuild nativo tem label correto no app.json |
+| Achado 1 (PersonagemLivro com emojis) | AUTONOMO | substituir emojis por imagens reais de `whatsapp_media/images/` |
+| Achado 2 (SplashScreen.preventAutoHideAsync no module scope) | AUTONOMO | mover para useEffect em RootLayout |
+| Achado 3 (scripts type-check/lint/format:check faltando) | AUTONOMO | adicionar scripts em package.json |
+| Achado 5 (assets audio vazio) | DESTRAVAVEL: 5 sons royalty-free | pesquisar Pixabay/Freesound e baixar |
+| Achado 6 (db.sqlite com mock ou real) | AUTONOMO | inspecionar contagem de tabelas/registros |
+| Achado 7 (JAVA_HOME 17) | AUTONOMO | exportar antes de gradle |
+| Achado 8 (gradle nao instalado) | AUTONOMO | `npx expo prebuild` cria gradlew |
 
-## Autonomia por item (gate G1.9)
+## Itens apontados pelo usuario (10) — validacao FASE 2
 
-| Servico/Integracao | Credencial disponivel? | Itens que tocam | Autonomia |
-|---|---|---|---|
-| Minimax M2.7 (Token Plan) | SIM — `Tokens API e acessos/minimax/credentials.md` | P0-4, P1-13, P2-10, todos que usam M3 | AUTONOMO |
-| OpenAI GPT-4o-mini (fallback) | SIM — `Tokens API e acessos/openai/credentials.md` | P1-13 (fallback) | AUTONOMO |
-| GitHub `donizetiferr` | SIM — logado | Todos de P0-1 | AUTONOMO |
-| Expo account (free) | NAO conta ainda | P0-3 | AUTONOMO (criar com email) |
-| Google Play Console | NAO — exige pagamento $25 | P3-8 | DEPENDE_VOCE:<criar conta + pagar $25> |
-| Apple Developer Program | NAO — exige pagamento $99/ano | P3-7 (iOS, opcional) | DEPENDE_VOCE:<criar conta Apple ID + pagar $99> |
-| Google AdMob | NAO conta ainda | P3-1 | AUTONOMO (criar com conta Google) |
-| Railway/Render (backend) | NAO conta ainda | P2-9 | AUTONOMO (criar free tier) |
-| Dominio privacy policy | NAO — exige compra | P3-8 (pre-requisito) | DEPENDE_VOCE:<comprar dominio R$10-15/ano OU usar GitHub Pages free> |
-| ElevenLabs (fallback audio) | SIM — `Tokens API e acessos/elevenlabs/` | P0-7 (se royalty-free nao servir) | AUTONOMO |
-| Pixabay / Freesound | URL publica (sem auth) | P0-7 | AUTONOMO |
-| ElevenLabs MCP | MCP ja carregado nesta sessao | midia em geral | AUTONOMO |
-| Playwright MCP | MCP ja carregado (Chrome real 8) | P1-14, P3-7, etc. | AUTONOMO |
-| Fal.ai MCP | MCP ja carregado | midia | AUTONOMO |
-| Pollinations CLI | CLI disponivel (verificar) | assets visuais secundarios | AUTONOMO |
+1. `Garantir app.json com package name correto: com.donizetiferr.expertnabiblia` → **JA_RESOLVIDO** (ja esta correto no app.json)
+2. `Garantir label correto: "Expert Na Bíblia"` → **JA_RESOLVIDO** (ja esta no app.json expo.name)
+3. `Restaurar package.json com todas as deps` → **JA_RESOLVIDO** (foi feito no V8 — `npm install` adicionou 193 packages)
+4. `Resolver o bug do prebuild (withAndroidDangerousBaseMod)` → **VALIDO** (causa raiz a investigar; hipotese forte: plugin `expo-ads-admob` com `PLACEHOLDER_ANDROID_APP_ID` causando crash)
+5. `Rodar gradle assembleRelease` → **VALIDO** (depende de #4; precisa JAVA_HOME=Java 17)
+6. `Resolver __DEV__=true (gradle properties ou signing release)` → **VALIDO** (precisa signing release, nao debug)
+7. `Validar APK final no emulador` → **VALIDO** (emulator-5554 ja disponivel)
+8. `Verificar instalacao, abertura, navegação em todas as 13 telas` → **VALIDO** (apos APK rodar, fazer adb shell input)
+9. `Garantir que assets visuais (icon, splash, adaptive-icon) estejam corretos` → **JA_RESOLVIDO** (criados em V8 a partir de `whatsapp_media/images/image_20260622_205222.jpg`)
+10. `Renomear o app para "Expert Na Bíblia" no launcher` → **VALIDO** (rebuild nativo tem label correto no app.json)
 
 ## Segundo turno critico (FASE 3.5 — gate G5)
 
-### Lentes aplicadas
+### Lentes aplicadas: 7/7
 
-1. **Profundidade rasa?** — varios milestones do plano atual sao declarativos ("P1-1 Splash
-   screen com animacao do logo + som"). Vou DETALHAR com:
-   - Duracao exata da animacao (3s default)
-   - Bibliotecas Expo: expo-splash-screen + expo-av
-   - Formato do asset (PNG sequencia ou Lottie?)
-   - Comportamento em slow network (fallback estatico)
-2. **Falta a melhor versao? (POLISH)** — milestones "anonimos" podem ter a versao mais ambiciosa
-   omitida. Ex: matching canonico local pode usar TF-IDF + sinonimos pre-mapeados, mas tambem
-   pode ir para embeddings leves (sentence-transformers em ONNX).
-3. **Algo se perdeu?** — cross-check entre achados do 1o/2o double check e milestones do plano:
-   - ✅ Conteudo Teologia (P0-6)
-   - ✅ Filtro tags `think` (P0-4, P1-13)
-   - ✅ Algoritmo robusto (P1-12)
-   - ✅ Custos (ja no evolution_plan)
-   - ✅ Riscos (ja no evolution_plan)
-   - ❌ **Setup de Expo account** — nao ha milestone explicito
-   - ❌ **Privacy policy URL** — nao ha milestone explicito
-   - ❌ **Direcao estetica declarada** — nao ha milestone (lente UX)
-   - ❌ **Testes automatizados** — nao ha milestone dedicado (FASE 0 setup nao cobre)
-   - ❌ **CI/CD** — nao ha milestone
-   - ❌ **CHANGELOG.md** — nao ha milestone
-   - ❌ **Validacao teologica de perguntas geradas** — sem milestone de QA do conteudo
-4. **Priorizacao errada?** — varios milestones MEDIO estao no FASE 0 que deveriam ser FASE 1
-   (ex: testes). Vou re-priorizar.
-5. **Premissa nao-verificada?** — "M3 retorna tags `think`" foi validado em docs do M3, mas
-   ainda nao testei empiricamente (Read/Grep no output real).
-6. **Falta o adjacente obvio?** — para um app religioso com progressao, faltam:
-   - **Streak/contador de dias** (gamificacao classica — Duolingo faz)
-   - **Notificacoes push diarias** ("ja estudou hoje?")
-   - **Modo offline** explicito (voce esta sem internet, mas pode estudar)
-   - **Deep link** para compartilhar licao especifica
-7. **Item redundante/inflado?** — P1-13 (integracao M3) e P2-10 (teste de carga M3) podem ser
-   consolidados em "Integracao M3 com monitoria de quota".
+1. **Profundidade rasa?** — item A4 "Resolver o bug do prebuild" estava generico. Detalhar com hipotese especifica.
+2. **Falta a melhor versao? (POLISH)** — A5 "Rodar gradle assembleRelease" precisa sub-passos explicitos (JAVA_HOME, gradle.properties, validar 4 ABIs).
+3. **Algo se perdeu?** — achados independentes 1, 2, 3, 5, 6 nao estavam nos apontamentos do usuario. MANTER como milestones paralelos.
+4. **Priorizacao errada?** — A1, A2, A3, A9 ja foram resolvidos nesta sessao. Rebaixar para `JA_RESOLVIDO`.
+5. **Premissas verificadas** — emulator-5554 precisa estar online. Confirmar via `adb devices` antes de A7.
+6. **Falta o adjacente obvio?** — apos rebuild, faltam 2 acoes logicas: limpar `dist/*.apk` (19 APKs antigos); atualizar `CHANGELOG.md` com V8.
+7. **Item redundante/inflado?** — A7 (validar) + A8 (navegacao em 13 telas) sao a mesma coisa. Consolidar.
 
-### Ajustes identificados (resumo)
+### Ajustes apos segundo turno
 
-- **NOVOS itens a adicionar** (10):
-  1. Criar conta Expo + EAS (FASE 0)
-  2. Setup TypeScript strict + ESLint + Prettier no projeto Expo (FASE 0)
-  3. GitHub Actions CI basico (lint + type-check + build smoke test) (FASE 0)
-  4. CHANGELOG.md inicial (FASE 0)
-  5. Direcao estetica declarada (CLAUDE.md + reference_visual) (FASE 0)
-  6. Validacao teologica do conteudo gerado por M3 (FASE 0/1)
-  7. Streak/dia consecutivo (gamificacao) (FASE 1)
-  8. Notificacoes push (FASE 3)
-  9. Privacy policy + URL publica (FASE 3)
-  10. Testes E2E Playwright em emulador Android (FASE 1)
+1. **DETALHADO (lente 1)**: A4 "Resolver o bug do prebuild" — hipotese forte: `expo-ads-admob` com `PLACEHOLDER_ANDROID_APP_ID` causa o crash `withAndroidDangerousBaseMod`. Acao: REMOVER o plugin `expo-ads-admob` do `app.json` temporariamente OU substituir placeholder por um ID de teste real.
+2. **ENRIQUECIDO (POLISH, lente 2)**: A5 "Rodar gradle assembleRelease" — adicionar sub-passos: setar `JAVA_HOME=C:/Users/Donizeti/scoop/apps/temurin17-jdk/current`, validar 4 ABIs no output, validar `app.json.android.package` = `com.donizetiferr.expertnabiblia`.
+3. **RECUPERADO (lente 3)**: achado 1 (PersonagemLivro com emojis) — MANTER como milestone paralelo.
+4. **RECUPERADO (lente 3)**: achado 2 (`SplashScreen.preventAutoHideAsync()` no module scope) — MANTER como item de manutencao.
+5. **RECUPERADO (lente 3)**: achado 3 (scripts `type-check`/`lint`/`format:check` faltando) — MANTER como pre-requisito para CI funcionar.
+6. **RECUPERADO (lente 3)**: achado 5 (assets audio vazio) e 6 (db.sqlite com mock ou real) — MANTER como pre-requisitos.
+7. **RE-PRIORIZADO (lente 4)**: A1, A2, A3, A9 — rebaixar para `JA_RESOLVIDO` e remover do escopo ativo.
+8. **CONSOLIDADO (lente 7)**: A7 + A8 — unificar em "validacao completa no emulador" com script reproduzivel (install + launch + 5 screenshots + smoke test).
+9. **PREMISSA VERIFICADA (lente 5)**: `adb devices` confirma emulator-5554 device ANTES de A7.
+10. **ADJACENTE OBVIO (lente 6)**: apos rebuild, faltam 2 acoes: limpar `dist/*.apk` (19 antigos); atualizar `CHANGELOG.md` com V8.
+- Ajustes totais: 1 detalhado, 1 enriquecido, 4 recuperados, 1 re-priorizado (cobre 4 itens), 1 consolidado, 1 premissa verificada, 1 adjacente obvio = **9 ajustes**
 
-- **ENRIQUECIDOS** (4):
-  - P0-4: explicitar filtro tags `think` + cache canonico apos batch
-  - P1-12: adicionar TF-IDF + sinonimos pre-mapeados + embeddings leves opcionais
-  - P1-13: consolidar com P2-10 (monitoria de quota M3)
-  - P3-3: incluir Reanimated 3 + gestos
+### Re-ataque (gate G5 — guarda anti-superficialidade)
 
-- **RE-PRIORIZADOS** (3):
-  - Setup de testes → MEDIO → **ALTO** (afeta Definition of Done de TUDO)
-  - CI/CD → MEDIO → **ALTO** (seguranca de push)
-  - Direcao estetica → BAIXA → **MEDIO** (regra ANTI AI-SLOP)
-
-- **CONSOLIDADOS** (2):
-  - P1-13 + P2-10 → "Integracao M3 com monitoria de quota"
-  - P3-1 + P3-9 + P3-10 → "Publicacao em lojas (Google Play primeiro, iOS opcional)"
-
-- **PREMISSAS VERIFICADAS** (1):
-  - M3 tags `think` → confirmado em `Tokens API e acessos/minimax/credentials.md` L35-36
-  - "Backend opcional" → CONFUSAO: vou REMOVER mencoes a backend no plano atualizado
-    (app chama M3 direto; backend so se virar cache server-side futuro)
-
-### Re-ataque
-
-Plano com ~40 itens, segundo turno encontrou 10 novos + 4 enriquecidos + 3 re-priorizados +
-2 consolidados = **19 ajustes**. Guard anti-superficialidade OK (ajustes >> 0).
+Plano com >= 3 itens. Segundo turno encontrou 9 ajustes >> 0. NAO e necessario re-ataque.
 
 ### Top 3 ajustes mais relevantes
 
-1. **Setup de testes E2E em emulador Android** (NOVO ALTO) — sem isso, Definition of Done
-   de cada milestone eh subjetivo; quebra todo o ciclo de feedback
-2. **Direcao estetica declarada** (RE-PRIORIZADO MEDIO) — sem isso, implementacao cair em
-   "AI-slop" generico (gradient roxo default) — viola regra global ANTI AI-SLOP
-3. **Validacao teologica do conteudo gerado** (NOVO ALTO) — M3 pode gerar heresias
-   teologicas inadvertidamente (especialmente em Teologia); sem revisao humana, app
-   publica conteudo problematico
+1. **A4 detalhado**: investigar a hipotese do `expo-ads-admob` PLACEHOLDER causando o crash do prebuild (REMOVER temporariamente OU substituir por ID de teste)
+2. **A8/A7 consolidado**: unificar em "validacao completa no emulador" com script reproduzivel
+3. **Achado 2 recuperado**: mover `SplashScreen.preventAutoHideAsync()` para useEffect (causa raiz potencial do crash do app.js thread no APK final)
