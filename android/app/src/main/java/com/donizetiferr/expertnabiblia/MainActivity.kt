@@ -1,4 +1,4 @@
-package com.donizetiferr.expertnabiblia
+package com.expertnabblia
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build
