@@ -1,0 +1,149 @@
+﻿O aplicativo é uma plataforma gratuita criada para testar e ampliar os conhecimentos do usuário sobre a Bíblia. Ele oferece duas formas de aprendizado: o Modo Quiz, com perguntas e desafios, e o Modo Lições, com conteúdos organizados para estudo e aprofundamento.
+
+
+Tela 1:
+  
+
+Inicialização com animação da logo e som.
+
+
+Tela 2:
+  
+
+
+
+Aqui temos o botão de configuração e os dois modos para o usuário escolher, Quiz ou Lições.
+
+
+Tela 3: Se tiver apertado no quiz
+  
+
+Aqui a pessoa escolhe se quer perguntas aleatórias ou de lições personalizadas.
+
+
+Se ela clicar em aleatório, vai direto para tela 5 se clicar em lições vai para 4.
+
+
+Tela 4:
+  
+
+Essa é uma tela onde a pessoa pode selecionar quais módulos ela quer que aparece no quiz, lembrando que é uma tela de scroll com mais de 70 opções, ela pode marcar no máximo 20, já que são 20 questões.
+
+
+Tela 5:
+  
+
+Tela com botão de inicio.
+
+
+Tela 6:
+  
+
+
+
+Aqui temos a pergunta numerada, as possíveis respostas um timer de 10 segundos um ícone que liga e desliga a música e um ícone de home que volta para tela 1.
+
+
+Quando clicar na resposta o botão fica degrade amarelo circulado de preto com a letra preta, se a pessoa não clicar em nenhuma resposta antes do tempo acabar o app considera fim do tempo e da como errado mostrando essa tela como 7:
+
+
+  
+
+Se acertar aparece essa:
+  
+
+Se errar aparece essa:
+  
+
+Tela 8: assim que o quiz acaba
+
+
+  
+
+Melhore se tiver acertado menos que 50%
+  
+
+Quase lá com mais de 50%
+  
+
+Parabéns com 100% ai se apertar prosseguir começa outro com perguntas diferentes.
+
+
+Agora vamos para Tela 3: Quando clica em lições
+
+
+  
+
+Vai ter todos os módulos lembrando que é scroll pois são mais de 70 onde apenas o primeiro é liberado e os outros tem cadeado, o próximo módulo só é liberado quando a pessoa completa 100% do anterior e ele fica amarelo com borda preta e texto preto assim:
+  
+
+Clicando em um módulo vai aparecer a tela de lições dentro do módulo:
+  
+
+Que funciona da mesma forma o primeiro é liberado mas os outros só são liberados quando o anterior foi 100% completado.
+
+
+  
+
+Quando clica no botão nós entramos na lição que é assim:
+  
+
+
+
+Um bloco branco com a pergunta em baixo um espaço para escrever a resposta um botão de liga e desliga a música o de ir para home igual os outros um personagem que vai variando para as pessoas não enjoarem e em cima qual questão está / até qual vai.
+
+
+Se a pessoa acertar aparece essa:
+  
+
+Se ela errar aparece essa:
+  
+
+E no final se ela tiver acertado menos que 50%
+  
+
+Mais de 50%
+  
+
+100%
+  
+
+Lembrando que a pessoa só consegue concluir a lição para ela ficar com o botão amarelo e liberar o próximo quando ela acerta 100%
+
+
+E quando a pessoa termina todos os módulos ou acerta 100% do quiz aparece essa tela:
+  
+
+
+
+E é isso, os links com logo, paleta de cores, personagens, telas e elementos está abaixo:
+
+
+Logo:
+https://drive.google.com/drive/folders/1wpzcW9gs8T8BWZjlTIP07VlVmsyN919f
+
+
+Paleta de cores:
+https://drive.google.com/drive/folders/1i6Ahy5A1bQ1Ra4SpGVoobve4_3R8npgv
+
+
+Degradê roxo:#8b16c7,#3c026d
+Degradê laranja:#fded48,#fd8414
+Branco:#ffffff
+Preto:#0b0012
+
+
+Personagens:
+https://drive.google.com/drive/folders/1rGy3F3q45aJCY6ipDTYyf3Ir88ykjzDm
+
+
+Elementos:
+https://drive.google.com/drive/folders/14JIk5aj_8C5UyLlSfXAaBlrUbPD0J6Hd
+
+
+Telas:
+https://drive.google.com/drive/folders/1Y-OaSvZgKRAuc7e8inXsLCBUZOhh9RxR
+
+
+Módulos, Lições e Perguntas:
+https://drive.google.com/drive/folders/1JZ-4_ijWjRVltmcgP8sAZohQPoxR3PNO

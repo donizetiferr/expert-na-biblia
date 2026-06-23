@@ -1,0 +1,26 @@
+﻿# Auto-gerado pelo bootstrap
+node_modules/
+dist/
+build/
+out/
+.next/
+.nuxt/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.env
+.env.local
+.env.*.local
+*.log
+*.tmp
+*.bak*
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.playwright-mcp/
+playwright-report/
+test-results/
