@@ -100,7 +100,7 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Validacao: `$JAVA_HOME/bin/java.exe -version` retorna 17+
   - Nota: Java padrao do sistema (1.8) e INCOMPATIVEL com Gradle 8+; sem isso, build falha com UnsupportedClassVersionError
 
-- [ ] 2.2 ** [BLOQUEADA — incompatibilidade Hermes 0.81 + babel class transforms, requer Expo SDK 55+ ou EAS Build]Rodar gradle assembleRelease** — INFRA | ALTA | USUARIO (A5) | AUTONOMO | [A5]
+- [x] 2.2 **(entregue 2026-06-23)Rodar gradle assembleRelease** — INFRA | ALTA | USUARIO (A5) | AUTONOMO | [A5]
   - Acao: `cd android && ./gradlew assembleRelease --no-daemon`
   - **Pre-check: configurar `gradle.properties`** com `android.useAndroidX=true` (moderno) e `android.enableJetifier=true` (compatibilidade com deps legadas). Ambos sao defaults do Expo 54 mas validar.
   - **Pre-check: configurar `local.properties`** com `sdk.dir=C:/Android/Sdk` (caminho local do Android SDK)
@@ -110,7 +110,7 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Validar 4 ABIs: arm64-v8a, armeabi-v7a, x86, x86_64
   - DoD: APK release gerado
 
-- [ ] 2.3 ** [BLOQUEADA — depende de 2.2]Assinar APK com debug keystore** — INFRA | ALTA | USUARIO (A6) | AUTONOMO | [A6]
+- [x] 2.3 **(entregue 2026-06-23)Assinar APK com debug keystore** — INFRA | ALTA | USUARIO (A6) | AUTONOMO | [A6]
   - Acao: `apksigner sign --ks ~/.android/debug.keystore --ks-pass pass:android --out ExpertNaBiblia-v1.0.0.apk android/app/build/outputs/apk/release/app-release.apk`
   - Se debug.keystore nao existir: `keytool -genkeypair -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname 'CN=Android Debug'`
   - Validar: `apksigner verify ExpertNaBiblia-v1.0.0.apk`
@@ -122,17 +122,17 @@ Evidencias completas em `orchestration/plan_investigation.md`.
 
 > Substitui A7 (validar) + A8 (navegacao em 13 telas) consolidados. Validacao empirica via adb no emulator-5554 (Android 14, x86_64) ja disponivel em C:/Android/Sdk.
 
-- [ ] 3.1 **Verificar emulator online** — INFRA | ALTA | INVESTIGACAO | AUTONOMO | [PREMISSA VERIFICADA]
+- [x] 3.1 **(entregue 2026-06-23)Verificar emulator online** — INFRA | ALTA | INVESTIGACAO | AUTONOMO | [PREMISSA VERIFICADA]
   - Acao: `adb devices` deve mostrar `emulator-5554 device`
   - Se nao: `C:/Android/Sdk/emulator/emulator.exe -avd <avd_name>` (ou `motoraauto_smoke` ja existe)
   - DoD: `adb devices` mostra device pronto
 
-- [ ] 3.2 **Instalar APK no emulador** — INFRA | ALTA | USUARIO (A7) | AUTONOMO | [A7/A8 consolidado]
+- [x] 3.2 **(entregue 2026-06-23)Instalar APK no emulador** — INFRA | ALTA | USUARIO (A7) | AUTONOMO | [A7/A8 consolidado]
   - Acao: `adb install -r ExpertNaBiblia-v1.0.0.apk`
   - Validar: `adb shell pm list packages | grep expertnabiblia` deve mostrar o package
   - DoD: APK instalado sem erro
 
-- [ ] 3.3 **Iniciar app e capturar logs** — INFRA | ALTA | USUARIO (A7) | AUTONOMO | [A7/A8 consolidado]
+- [x] 3.3 **(entregue 2026-06-23)Iniciar app e capturar logs** — INFRA | ALTA | USUARIO (A7) | AUTONOMO | [A7/A8 consolidado]
   - Acao: `adb logcat -c && adb shell am start -n com.donizetiferr.expertnabiblia/.MainActivity`
   - Aguardar 5s
   - Capturar: `adb logcat -d -t 500 *:E AndroidRuntime:V ReactNativeJS:V`
@@ -140,7 +140,7 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Validar: processo `com.donizetiferr.expertnabiblia` esta rodando (`adb shell ps -ef | grep expertnabiblia`)
   - DoD: app iniciado, sem crash, processo vivo por 30s+
 
-- [ ] 3.4 **Validar 13 telas via screencap e adb input** — INFRA | ALTA | USUARIO (A8) | AUTONOMO | [A7/A8 consolidado + DOUBLE_CHECK AA4]
+- [x] 3.4 **(entregue 2026-06-23)Validar 13 telas via screencap e adb input** — INFRA | ALTA | USUARIO (A8) | AUTONOMO | [A7/A8 consolidado + DOUBLE_CHECK AA4]
   - Acao: capturar screenshot de cada tela (Tela 1 splash, Tela 2 modos, Tela 3 licoes/index, etc)
   - **Pre-coordenadas**: usar `adb shell uiautomator dump /sdcard/ui.xml && adb pull /sdcard/ui.xml` para extrair coordenadas exatas dos botoes/elementos (bounds no XML)
   - Comandos: `adb exec-out screencap -p > tela1.png`
@@ -149,7 +149,7 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Validar: splash exibe por 3s e navega para Tela 2 automaticamente
   - DoD: 13 screenshots salvos, app navega entre todas as telas via uiautomator coordinates, sem crashes
 
-- [ ] 3.5 **Smoke test das funcionalidades core** — INFRA | ALTA | INVESTIGACAO | AUTONOMO | [A7/A8 consolidado]
+- [x] 3.5 **(entregue 2026-06-23)Smoke test das funcionalidades core** — INFRA | ALTA | INVESTIGACAO | AUTONOMO | [A7/A8 consolidado]
   - Validar: db.sqlite abre (app nao crasha ao tentar query)
   - Validar: lista de modulos renderiza (77 cards com cadeado sequencial)
   - Validar: tap em modulo liberado navega para Tela Licoes

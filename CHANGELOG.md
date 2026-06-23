@@ -28,9 +28,41 @@ Todas as mudancas relevantes neste projeto.
 - M5.1: 19+ APKs antigos em `dist/` (todos binarios de tentativas de patch em V8)
 
 ### Known Issues
-- **M2.2 BLOQUEADO**: bundle JS nao compila com Hermes 0.81 (RN 0.81) por causa de incompat entre babel class transforms e parser Hermes. Erro "invalid statement encountered" em `class DOMRectList` (e outros webapis). Workarounds testados: loose transform, strict transform, namespace import, function constructor manual patch (DOMRect.js + DOMRectReadOnly.js) — todos falham em outros arquivos (DOMRectList, IntersectionObserver, MutationObserver, etc). SOLUCAO: upgrade para Expo SDK 55+ (Hermes 0.83+ que suporta ES6 classes) OU usar EAS Build cloud com `eas build --platform android` (requer EXPO_TOKEN).
-- **M3 BLOQUEADO**: depende de M2.2 (APK assinado)
+- ~~**M2.2 BLOQUEADO**: bundle JS nao compila com Hermes 0.81 (RN 0.81) por causa de incompat entre babel class transforms e parser Hermes. Erro "invalid statement encountered" em `class DOMRectList` (e outros webapis). Workarounds testados: loose transform, strict transform, namespace import, function constructor manual patch (DOMRect.js + DOMRectReadOnly.js) — todos falham em outros arquivos (DOMRectList, IntersectionObserver, MutationObserver, etc). SOLUCAO: upgrade para Expo SDK 55+ (Hermes 0.83+ que suporta ES6 classes) OU usar EAS Build cloud com `eas build --platform android` (requer EXPO_TOKEN).~~ **RESOLVIDO** — upgrade para SDK 55 + RN 0.83.6 (Hermes 0.83) + build a partir de path sem espacos `C:\ENB` (workaround para MAX_PATH 260 char limit e gradle 9 includeBuild).
+- ~~**M3 BLOQUEADO**: depende de M2.2 (APK assinado)~~ **RESOLVIDO** — emulador-5554 (motoraauto_smoke) instalado + APK assinado + 8 screenshots em `dist/screenshots/` cobrindo Modos, Modulos, Licoes, Licao Detail, Quiz, Customizar, Config.
 - **M4.5 PENDENTE**: 5 sons royalty-free (DESTRAVAVEL — usuario baixar de Pixabay/Freesound)
+
+## [V8-SDK55] - 2026-06-23 (SDK 54 → 55 + RN 0.81.5 → 0.83.6 + gradle build SUCCESSFUL)
+
+### Added
+- M2.2 (RESOLVIDO): `gradle assembleRelease` roda end-to-end com Hermes 0.83 + RN 0.83.6. APK 98.2 MB gerado em `dist/ExpertNaBiblia-v1.0.0.apk`
+- M2.3 (RESOLVIDO): APK assinado com debug keystore (`apksigner verify` OK, package `com.donizetiferr.expertnabiblia`, label `Expert Na Bíblia`)
+- M3.1-3.5 (RESOLVIDO): Emulador-5554 (motoraauto_smoke) + adb install OK + am start OK + uiautomator dump para coords + screencap de 8 telas em `dist/screenshots/`
+- `@react-native-community/cli` adicionado como devDep (necessario para `npx react-native config` usado pelo autolinking)
+- Cópia em `C:\ENB\` (path sem espaços) — workaround definitivo para gradle 9 `includeBuild` e Windows MAX_PATH 260 char limit (CC 8.3 short name `EXPERT~1` nao funcionou para o `node_modules` junction)
+
+### Changed
+- `expo`: `~54.0.x` → `~55.0.0`
+- `react`: `18.x` → `19.2.0`
+- `react-native`: `0.81.5` → `0.83.6` (resolve incompat Hermes 0.81 com babel class transforms em webapis)
+- `expo-router`, `expo-sqlite`, `expo-secure-store`, `expo-font`, `expo-asset`, `expo-application`, `expo-constants`, `expo-crypto`, `expo-linking`, `expo-notifications`, `expo-splash-screen`, `expo-status-bar`, `babel-preset-expo`, `eslint-config-expo`: todos bump para `~55.x`
+- `react-native-reanimated`: `4.1.x` → `4.2.1` (SDK 55)
+- `react-native-worklets`: re-adicionado em 0.7.4 (removido em V8-REBUILD para contornar bug)
+- `android/gradle.properties`: `hermesEnabled=false` → `hermesEnabled=true` (Hermes 0.83 funciona com classes ES6)
+- `android/gradle.properties`: `useShortFileNames=true` revertido (nao mais necessario)
+- `MainActivity.kt` + `MainApplication.kt`: `package com.expertnabblia` → `package com.donizetiferr.expertnabiblia` (bug do prebuild com helloworld template; `package` decl nao foi renomeado junto)
+
+### Removed
+- `android/gradle.properties`: `android.overridePathCheck=true` removido (gradle 9 ja trata)
+- Hack `android.useShortFileNames` revertido (nao mais necessario com path sem espacos)
+
+### Fixed
+- **M2.2 RESOLVIDO**: Hermes 0.83 + RN 0.83.6 suportam `class` ES6 com `Object.defineProperty` em webapis (DOMRectList, IntersectionObserver, etc) — bundle JS compila sem erro.
+- **M2.2 RESOLVIDO**: gradle 9 `includeBuild` nao aceita paths com espacos (na verdade aceita, mas `withAndroidDangerousBaseMod` pre-create anula o `node_modules/@react-native/gradle-plugin` que existe no junction target) — copia real em `C:\ENB\` resolve.
+- **M2.2 RESOLVIDO**: `expo-modules-autolinking` requer `build/` pre-compilado (TypeScript) — copia do original completa 7341 arquivos faltantes + cria 914 diretorios.
+- **M2.2 RESOLVIDO**: Windows MAX_PATH 260 char limit durante C++ build (react-native-safe-area-context caminho longo) — `C:\ENB` short path elimina.
+- **M2.2 RESOLVIDO**: `MainActivity.kt` / `MainApplication.kt` com `package com.expertnabblia` causava `Unresolved reference 'BuildConfig'` em Kotlin — corrigido para `com.donizetiferr.expertnabiblia`.
+- **M3 RESOLVIDO**: Validacao completa no emulador motoraauto_smoke (Android 14 x86_64) — splash → modos → licoes → licao detail → quiz → customizar → config. 8 screenshots. Sem FATAL EXCEPTION, sem Resources$NotFoundException, processo vivo.
 
 ## [Unreleased]
 
