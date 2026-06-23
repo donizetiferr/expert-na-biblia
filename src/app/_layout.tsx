@@ -44,6 +44,7 @@ export default function RootLayout() {
           <Stack.Screen name="licoes" />
           <Stack.Screen name="quiz" />
           <Stack.Screen name="config" />
+          <Stack.Screen name="trofeu" />
         </Stack>
       </SafeAreaProvider>
     </GestureHandlerRootView>

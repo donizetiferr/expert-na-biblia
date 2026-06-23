@@ -1,38 +1,59 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Animated, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../constants/colors';
+import { PersonagemLivro } from '../components/PersonagemLivro';
 
 /**
- * Tela 1: Splash + entrada para modos (Sprint V1 - skeleton)
- * Implementacao completa: V4 (P1-1 + P1-2)
+ * Tela 1: Splash screen com animacao do logo + som (3s).
+ * Apos 3s, avanca automaticamente para /modos.
+ * Botao "PULAR" disponivel para usuarios avancados.
  */
-export default function IndexScreen() {
+export default function SplashScreen() {
   const router = useRouter();
+  const scaleAnim = useRef(new Animated.Value(0.8)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(scaleAnim, {
+        toValue: 1.0,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    const timer = setTimeout(() => {
+      router.replace('/modos');
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [router, scaleAnim, fadeAnim]);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>Expert Na Bíblia</Text>
-      <Text style={styles.subtitulo}>Aprenda a Bíblia de forma lúdica</Text>
+      <Animated.View style={{ opacity: fadeAnim, transform: [{ scale: scaleAnim }] }}>
+        <PersonagemLivro pose="FELIZ" size={140} />
+      </Animated.View>
 
-      <View style={styles.cards}>
-        <Pressable
-          style={[styles.card, styles.cardQuiz]}
-          onPress={() => router.push('/quiz')}
-        >
-          <Text style={styles.cardTitulo}>QUIZ BÍBLICO</Text>
-          <Text style={styles.cardSubtitulo}>20 perguntas · Timer 10s</Text>
-        </Pressable>
+      <Animated.Text style={[styles.titulo, { opacity: fadeAnim }]}>
+        Expert Na Bíblia
+      </Animated.Text>
+      <Animated.Text style={[styles.subtitulo, { opacity: fadeAnim }]}>
+        Sua jornada pela Palavra
+      </Animated.Text>
 
-        <Pressable
-          style={[styles.card, styles.cardLicoes]}
-          onPress={() => router.push('/licoes')}
-        >
-          <Text style={styles.cardTitulo}>LIÇÕES</Text>
-          <Text style={styles.cardSubtitulo}>77 módulos progressivos</Text>
-        </Pressable>
-      </View>
-
-      <Text style={styles.versao}>v0.1.0 — setup técnico concluído</Text>
+      <Pressable
+        style={styles.botaoPular}
+        onPress={() => router.replace('/modos')}
+      >
+        <Text style={styles.textoPular}>PULAR ›</Text>
+      </Pressable>
     </View>
   );
 }
@@ -47,10 +68,11 @@ const styles = StyleSheet.create({
   },
   titulo: {
     fontFamily: FONTES.display,
-    fontSize: 56,
+    fontSize: 48,
     color: COLORS.laranjaClaro,
     textAlign: 'center',
-    textShadowColor: COLORS.roxoPrimario,
+    marginTop: ESPACAMENTOS.lg,
+    textShadowColor: COLORS.preto,
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 4,
   },
@@ -60,47 +82,16 @@ const styles = StyleSheet.create({
     color: COLORS.branco,
     textAlign: 'center',
     marginTop: ESPACAMENTOS.sm,
-    marginBottom: ESPACAMENTOS.xxl,
   },
-  cards: {
-    width: '100%',
-    gap: ESPACAMENTOS.lg,
-  },
-  card: {
-    padding: ESPACAMENTOS.xl,
-    borderRadius: BORDAS.raioGrande,
-    borderWidth: BORDAS.larguraGrossa,
-    alignItems: 'center',
-  },
-  cardQuiz: {
-    backgroundColor: COLORS.roxoPrimario,
-    borderColor: COLORS.laranjaEscuro,
-  },
-  cardLicoes: {
-    backgroundColor: COLORS.laranjaEscuro,
-    borderColor: COLORS.roxoPrimario,
-  },
-  cardTitulo: {
-    fontFamily: FONTES.display,
-    fontSize: 32,
-    color: COLORS.branco,
-    textShadowColor: COLORS.preto,
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-  },
-  cardSubtitulo: {
-    fontFamily: FONTES.bodyRegular,
-    fontSize: 14,
-    color: COLORS.branco,
-    marginTop: ESPACAMENTOS.xs,
-    opacity: 0.9,
-  },
-  versao: {
-    fontFamily: FONTES.bodyRegular,
-    fontSize: 12,
-    color: COLORS.branco,
-    opacity: 0.5,
+  botaoPular: {
     position: 'absolute',
-    bottom: ESPACAMENTOS.lg,
+    bottom: ESPACAMENTOS.xl,
+    right: ESPACAMENTOS.lg,
+    padding: ESPACAMENTOS.sm,
+  },
+  textoPular: {
+    fontFamily: FONTES.bodyBold,
+    fontSize: 16,
+    color: COLORS.laranjaEscuro,
   },
 });

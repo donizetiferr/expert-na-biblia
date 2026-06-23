@@ -23,6 +23,23 @@ Todas as mudancas relevantes neste projeto.
 
 ### Removed
 
+## [0.4.0] - 2026-06-23
+
+### Added
+- 9 telas funcionais (Expo Router file-based): splash (3s anim), modos, licoes/index (77 modulos), licoes/[moduloId] (8 licoes), licoes/[moduloId]/[licaoId] (pergunta + personagem), licoes/[moduloId]/[licaoId]/final (3 variantes), trofeu (Expert), config (3 toggles + reset)
+- `src/components/PersonagemLivro.tsx`: livro animado com 3 poses (PENSATIVO/FELIZ/ASSUSTADO), bounce loop, blink
+- `src/lib/settings.ts`: AsyncStorage helper para 3 toggles (musica, efeitos, notificacoes)
+- `src/lib/db-queries.ts`: queries SELECT (modulos/licoes/perguntas) com fallback mock 77/8/25; UPDATE (marcarLicaoConcluida, resetarProgresso)
+- `__tests__/settings.test.ts`: 6 testes (load defaults, save, db-queries mock 77 modulos)
+- `@react-native-async-storage/async-storage` adicionado a deps
+- Cadeado sequencial implementado (modulo N bloqueado ate N-1 concluido)
+- Regra 100% implementada (apenas 100% libera proxima licao + cadeado)
+
+### Changed
+- `src/app/_layout.tsx`: adicionado Stack.Screen "trofeu"
+- `src/app/licoes.tsx` removido (substituido por `src/app/licoes/index.tsx` router file-based)
+- P1-6 (Tela Feedback) integrado na Tela Licao com pose + auto-avanco (nao tela separada)
+
 ## [0.3.0] - 2026-06-23
 
 ### Added

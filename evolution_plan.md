@@ -209,7 +209,7 @@ Evidencias completas em `orchestration/plan_investigation.md`.
 >
 > **Bloqueia**: FASE 2 (so faz sentido lancar 77 modulos depois de validar 1)
 
-- [ ] **P1-1** Tela 1: Splash screen com animacao do logo + som (3s)
+- [x] **P1-1** Tela 1: Splash screen com animacao do logo + som (3s) (entregue 2026-06-23)
   - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: M
   - `expo-splash-screen` para controlar duracao
   - `expo-av` para tocar `assets/audio/splash.mp3` ao montar
@@ -217,14 +217,14 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Fallback: se splash.mp3 falhar (offline), continuar sem som
   - **DoD**: splash renderiza 3s, logo animado, som toca, navega para Tela 2
 
-- [ ] **P1-2** Tela 2: Selecao de modo (Quiz Biblico / Licoes)
+- [x] **P1-2** Tela 2: Selecao de modo (Quiz Biblico / Licoes) (entregue 2026-06-23)
   - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: M
   - Botao hamburguer (≡) canto superior direito → modal de Configuracoes (som on/off)
   - 2 cards grandes: "QUIZ BIBLICO" (estilo card roxo + borda laranja) e "LIÇÕES"
   - Navegacao: tap em LICOES → Tela Licoes 1; tap em QUIZ → Tela 3 (placeholder OK)
   - **DoD**: 2 cards renderizados, botao config abre modal, tap em LICOES navega
 
-- [ ] **P1-3** Tela Licoes 1: Lista de 77 modulos com cadeado sequencial
+- [x] **P1-3** Tela Licoes 1: Lista de 77 modulos com cadeado sequencial (entregue 2026-06-23)
   - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: M
   - FlatList com renderItem customizado (card com borda degradê laranja)
   - Modulo 1 (FB01) sem cadeado; demais com cadeado sobreposto
@@ -232,21 +232,21 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Query: `SELECT * FROM modulos ORDER BY ordem`
   - **DoD**: 77 modulos listados, FB01 sem cadeado e clicavel, demais com cadeado
 
-- [ ] **P1-4** Tela Licoes 2: Lista de licoes dentro do modulo (cadeado sequencial)
+- [x] **P1-4** Tela Licoes 2: Lista de licoes dentro do modulo (cadeado sequencial) (entregue 2026-06-23)
   - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: M
   - Mesma mecanica de P1-3 mas para licoes
   - Query: `SELECT * FROM licoes WHERE modulo_id = ? ORDER BY ordem`
   - Progresso: card amarelo se `concluida = true`
   - **DoD**: licoes de FB01 listadas, primeira liberada, demais com cadeado, tap navega
 
-- [ ] **P1-5** Tela Licao: Pergunta (quadro branco + campo de resposta + personagem)
+- [x] **P1-5** Tela Licao: Pergunta (quadro branco + campo de resposta + personagem) (entregue 2026-06-23)
   - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: G
   - Layout: indicator topo "1-30", personagem livro amarelo/laranja, quadro branco com pergunta,
     TextInput roxo com borda laranja prefixo "R:", icone som canto inferior direito
   - Personagem animado: alternar entre 3 poses (pensativo) a cada 4s usando Lottie ou PNG sequence
   - **DoD**: pergunta renderizada, input funcional, contador atualiza, som on/off funciona
 
-- [ ] **P1-6** Tela Feedback (acerto/erro)
+- [x] **P1-6** Tela Feedback integrado na Tela Licao (acerto/erro com pose + auto-avanco) (entregue 2026-06-23)
   - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: M
   - Fundo laranja, livro roxo assustado/feliz, balao "Errado"/sem balao
   - Quadro branco com resposta correta + 2 botoes: voltar (corrigir) ou prosseguir
@@ -254,21 +254,21 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Tap em prosseguir → proxima pergunta (ou P1-7 se era a ultima)
   - **DoD**: variantes certo/errado renderizam, botoes funcionais
 
-- [ ] **P1-7** Tela Final da Atividade (< 50%, > 50%, 100%)
+- [x] **P1-7** Tela Final da Atividade (3 variantes <50%/>50%/100%) (entregue 2026-06-23)
   - EVOLUCAO | ALTA | USUARIO | AUTONOMO | TAM: M
   - 3 variantes: "NAO DEU" (recomecar) / "QUASE LA" (proseguir mas licao NAO fica amarela) /
     "VOCE PASSOU!" (proseguir + licao fica amarela + cadeado da proxima some)
   - Persistir: `UPDATE licoes SET concluida = ? WHERE id = ?`
   - **DoD**: 3 variantes renderizam, regra estrita de 100% aplicada
 
-- [ ] **P1-8** Tela Final de Vitoria: Trofeu Expert
+- [x] **P1-8** Tela Final de Vitoria: Trofeu Expert (entregue 2026-06-23)
   - EVOLUCAO | MEDIA | USUARIO | AUTONOMO | TAM: P
   - Aciona quando TODOS os modulos estao `concluida = true` (pode ser simulado em P1.5)
   - Trofeu dourado + confetes roxos/dourados + texto "Parabens, voce e um Expert!"
   - Botao "RECOMECAR" → reset progress (com confirmacao)
   - **DoD**: trofeu renderiza, botao funciona
 
-- [ ] **P1-9** Botao de configuracao (≡) com toggle de som/musica
+- [x] **P1-9** Botao de configuracao (≡) com toggle de som/musica (entregue 2026-06-23)
   - EVOLUCAO | BAIXA | USUARIO | AUTONOMO | TAM: P
   - Modal com: toggle "Musica de fundo" (default on), toggle "Efeitos sonoros" (default on)
   - Persistir em AsyncStorage: `@settings:musica`, `@settings:efeitos`
