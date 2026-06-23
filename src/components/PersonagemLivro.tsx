@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
-import { Animated, View, Text, StyleSheet } from 'react-native';
-import { COLORS, FONTES, ESPACAMENTOS } from '../constants/colors';
+import { Animated, View, Image, StyleSheet } from 'react-native';
+import { COLORS, ESPACAMENTOS } from '../constants/colors';
 
 /**
  * Personagem livro animado com 3 poses (pensativo, feliz, assustado).
  * Troca automatica a cada 4s; pode ser controlada externamente via prop `pose`.
+ * M4.1 (V8-RETOMADA): usa imagens reais em assets/images/ em vez de emojis.
  */
 
 export type Pose = 'PENSATIVO' | 'FELIZ' | 'ASSUSTADO';
@@ -14,16 +15,16 @@ interface Props {
   size?: number;
 }
 
+const IMAGENS_POSE: Record<Pose, any> = {
+  PENSATIVO: require('../../assets/images/personagem_pensativo.jpg'),
+  FELIZ: require('../../assets/images/personagem_feliz.jpg'),
+  ASSUSTADO: require('../../assets/images/personagem_assustado.jpg'),
+};
+
 const CORES_POSE = {
   PENSATIVO: COLORS.laranjaEscuro,
   FELIZ: COLORS.acertoVerde,
   ASSUSTADO: COLORS.erroVermelho,
-};
-
-const EMOCAO_EMOJI = {
-  PENSATIVO: '🤔',
-  FELIZ: '😄',
-  ASSUSTADO: '😱',
 };
 
 export function PersonagemLivro({ pose = 'PENSATIVO', size = 120 }: Props) {
@@ -60,10 +61,11 @@ export function PersonagemLivro({ pose = 'PENSATIVO', size = 120 }: Props) {
           },
         ]}
       >
-        <Text style={[styles.capa, { fontSize: size * 0.6 }]}>{EMOCAO_EMOJI[pose]}</Text>
-        <Animated.Text style={[styles.olho, { opacity: blinkAnim, fontSize: size * 0.08 }]}>
-          📖
-        </Animated.Text>
+        <Animated.Image
+          source={IMAGENS_POSE[pose]}
+          style={[styles.imagem, { width: size * 0.85, height: size * 1.1, opacity: blinkAnim }]}
+          resizeMode="contain"
+        />
       </View>
     </Animated.View>
   );
@@ -81,11 +83,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: ESPACAMENTOS.sm,
   },
-  capa: {
-    textAlign: 'center',
-  },
-  olho: {
-    position: 'absolute',
-    bottom: ESPACAMENTOS.xs,
+  imagem: {
+    // imagem do personagem com animacao
   },
 });

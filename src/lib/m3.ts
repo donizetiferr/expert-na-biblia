@@ -1,19 +1,26 @@
 /**
  * Cliente Minimax M2.7 (Token Plan) para avaliacao de respostas biblicas.
- * Implementacao completa (V5, ITEM-29).
+ * Implementacao completa (V5, ITEM-29; M6 V8-RETOMADA: le key de app.config.ts via expo-constants).
  *
  * Endpoint: https://api.minimax.io/v1/chat/completions
  * Modelo: MiniMax-M2.7
  * Filtro: tags <think>...</think> sao removidas antes de parsear JSON.
  *
- * ATENCAO (pesquisa A4): API keys em expo-secure-store, NAO AsyncStorage.
+ * Resolucao de API key (ordem de prioridade):
+ * 1. expo-secure-store (chave salva pelo usuario na UI)
+ * 2. expo-constants extra.minimaxApiKey (config global via app.config.ts)
+ * 3. Erro: instruir usuario a configurar
  */
 
 import * as SecureStore from 'expo-secure-store';
+import Constants from 'expo-constants';
 import type { RespostaAvaliacao } from '../types';
 
-const M3_ENDPOINT = 'https://api.minimax.io/v1/chat/completions';
-const M3_MODEL = 'MiniMax-M2.7';
+const M3_ENDPOINT =
+  (Constants.expoConfig?.extra?.minimaxBaseUrl as string | undefined) || 'https://api.minimax.io/v1';
+const M3_MODEL =
+  (Constants.expoConfig?.extra?.minimaxModel as string | undefined) || 'MiniMax-M2.7';
+const M3_CHAT_COMPLETIONS = `${M3_ENDPOINT}/chat/completions`;
 const THINK_REGEX = /<think[^>]*>.*?<\/think>/gs;
 const SECURE_KEY_NAME = 'minimax_api_key';
 const TIMEOUT_MS = 10000;
@@ -40,7 +47,12 @@ export async function salvarApiKey(key: string): Promise<void> {
 }
 
 export async function obterApiKey(): Promise<string | null> {
-  return SecureStore.getItemAsync(SECURE_KEY_NAME);
+  // 1) Tenta secure-store primeiro (chave salva pelo usuario)
+  const stored = await SecureStore.getItemAsync(SECURE_KEY_NAME);
+  if (stored) return stored;
+  // 2) Fallback: app.config.ts extra.minimaxApiKey
+  const fromConfig = (Constants.expoConfig?.extra?.minimaxApiKey as string | undefined) || '';
+  return fromConfig || null;
 }
 
 export async function avaliarResposta(
@@ -49,7 +61,7 @@ export async function avaliarResposta(
 ): Promise<RespostaAvaliacao> {
   const apiKey = await obterApiKey();
   if (!apiKey) {
-    throw new Error('M3_API_KEY_NAO_CONFIGURADA: defina via salvarApiKey() antes de chamar.');
+    throw new Error('M3_API_KEY_NAO_CONFIGURADA: defina via ConfigScreen ou app.config.ts.');
   }
 
   const body = {
@@ -68,7 +80,7 @@ export async function avaliarResposta(
     const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
     try {
-      const res = await fetch(M3_ENDPOINT, {
+      const res = await fetch(M3_CHAT_COMPLETIONS, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -106,4 +118,4 @@ export async function avaliarResposta(
   throw lastError ?? new Error('M3_FALHOU_APOS_RETRIES');
 }
 
-export { M3_ENDPOINT, M3_MODEL, THINK_REGEX, TIMEOUT_MS };
+export { M3_ENDPOINT, M3_CHAT_COMPLETIONS, M3_MODEL, THINK_REGEX, TIMEOUT_MS };

@@ -1,0 +1,71 @@
+import type { ExpoConfig, ConfigContext } from 'expo/config';
+
+/**
+ * app.config.ts (M6 V8-RETOMADA)
+ * Configuracao Expo que le credenciais de runtime via process.env.
+ * NAO HARDCODA keys em codigo versionado — usar .env ou gradle properties.
+ *
+ * Como usar:
+ * - dev local:   criar .env (gitignored) com MINIMAX_API_KEY=... e OPENAI_API_KEY=...
+ * - CI:          setar secrets no GitHub Actions
+ * - EAS Build:   setar via eas.json > build > env
+ * - Gradle:      setar em android/gradle.properties e ler via app.config.ts
+ */
+const config = ({ config }: ConfigContext): ExpoConfig => ({
+  ...config,
+  name: 'Expert Na Bíblia',
+  slug: 'expert-na-biblia',
+  version: '0.1.0',
+  orientation: 'portrait',
+  icon: './assets/icon.png',
+  scheme: 'expertnabiblia',
+  userInterfaceStyle: 'automatic',
+  newArchEnabled: true,
+  splash: {
+    image: './assets/splash.png',
+    resizeMode: 'contain',
+    backgroundColor: '#3c026d',
+  },
+  ios: {
+    supportsTablet: true,
+    bundleIdentifier: 'com.donizetiferr.expertnabiblia',
+    buildNumber: '1',
+  },
+  android: {
+    adaptiveIcon: {
+      foregroundImage: './assets/adaptive-icon.png',
+      backgroundColor: '#3c026d',
+    },
+    package: 'com.donizetiferr.expertnabiblia',
+    versionCode: 1,
+    permissions: ['NOTIFICATIONS', 'INTERNET'],
+  },
+  web: {
+    bundler: 'metro',
+    favicon: './assets/favicon.png',
+  },
+  plugins: [
+    'expo-router',
+    'expo-secure-store',
+    'expo-sqlite',
+    'expo-font',
+  ],
+  experiments: {
+    typedRoutes: true,
+    tsconfigPaths: true,
+  },
+  extra: {
+    router: { origin: false },
+    eas: { projectId: 'PLACEHOLDER_EAS_PROJECT_ID' },
+    privacyPolicyUrl: 'https://donizetiferr.github.io/expert-na-biblia/privacy.html',
+    // M6: credenciais LLM (M3 fallback OpenAI) — leem de env vars em runtime
+    // Para definir localmente: criar .env com MINIMAX_API_KEY e OPENAI_API_KEY
+    // Para CI/EAS: usar eas.json env block
+    minimaxApiKey: process.env.MINIMAX_API_KEY || '',
+    openaiApiKey: process.env.OPENAI_API_KEY || '',
+    minimaxBaseUrl: 'https://api.minimax.io/v1',
+    minimaxModel: 'MiniMax-M2.7',
+  },
+});
+
+export default config;

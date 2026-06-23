@@ -2,6 +2,36 @@
 
 Todas as mudancas relevantes neste projeto.
 
+## [V8-REBUILD] - 2026-06-23 (RETOMADA — prebuild OK, build bloqueado por Hermes 0.81)
+
+### Added
+- M0: Script `scripts/import_questions.ts` — importa `docs/questions_clean.json` (4345 perguntas) para `data/db.sqlite` (40 modulos, 754 licoes, 4345 perguntas)
+- M0.2: ESLint + Prettier + @typescript-eslint + plugins em devDeps; scripts `type-check`/`lint`/`format:check` adicionados
+- M1: `npx expo prebuild --platform android --no-install` agora completa com sucesso (apos remocao de `expo-ads-admob` + manual template extract + package rename com.helloworld -> com.donizetiferr.expertnabiblia + enableJetifier + overridePathCheck)
+- M4.1: `src/components/PersonagemLivro.tsx` agora usa imagens reais em `assets/images/personagem_{pensativo,feliz,assustado}.jpg` em vez de emojis
+- M4.2: `src/app/_layout.tsx` move `SplashScreen.preventAutoHideAsync()` para useEffect (evita efeito colateral no module scope)
+
+### Changed
+- Babel config: adicionado `@babel/preset-typescript` + `@babel/plugin-transform-class-properties` (loose) + private-methods + private-property-in-object (compat Hermes 0.81 partial)
+- M2.2: Build com gradle atinge 200+ tasks executadas; C++ build OK; bloqueado apenas pelo bundle JS (ver Fixed)
+- `app.json`: removido `expo-ads-admob` (plugin abandonado, nao compativel com SDK 54)
+- `package.json`: removido `expo-ads-admob` + `react-native-worklets` + `react-native-reanimated` (downgrade opcional quebrou a build, deps marcadas como optional)
+- `android/gradle.properties`: `android.enableJetifier=true` + `android.overridePathCheck=true` (necessario para path `Bíblia` nao-ASCII)
+- `android/gradle.properties`: `hermesEnabled=false` (JSC usado para contornar incompat com RN 0.81 webapis)
+- `android/gradle.properties`: `android.useShortFileNames=true` (preparado para evitar MAX_PATH)
+
+### Fixed
+- M1.1-1.3: Prebuild crash `withAndroidDangerousBaseMod: Project file MainApplication does not exist` resolvido via manual template extract
+- M0.1: db.sqlite FK constraint failed — corrigido via `DROP TABLE` + re-apply schema (ordem de import)
+
+### Removed
+- M5.1: 19+ APKs antigos em `dist/` (todos binarios de tentativas de patch em V8)
+
+### Known Issues
+- **M2.2 BLOQUEADO**: bundle JS nao compila com Hermes 0.81 (RN 0.81) por causa de incompat entre babel class transforms e parser Hermes. Erro "invalid statement encountered" em `class DOMRectList` (e outros webapis). Workarounds testados: loose transform, strict transform, namespace import, function constructor manual patch (DOMRect.js + DOMRectReadOnly.js) — todos falham em outros arquivos (DOMRectList, IntersectionObserver, MutationObserver, etc). SOLUCAO: upgrade para Expo SDK 55+ (Hermes 0.83+ que suporta ES6 classes) OU usar EAS Build cloud com `eas build --platform android` (requer EXPO_TOKEN).
+- **M3 BLOQUEADO**: depende de M2.2 (APK assinado)
+- **M4.5 PENDENTE**: 5 sons royalty-free (DESTRAVAVEL — usuario baixar de Pixabay/Freesound)
+
 ## [Unreleased]
 
 ### Added

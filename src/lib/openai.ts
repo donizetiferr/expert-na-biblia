@@ -1,6 +1,6 @@
 /**
  * Cliente OpenAI GPT-4o-mini (fallback para M3).
- * Implementacao completa (V5, ITEM-30).
+ * Implementacao completa (V5, ITEM-30; M6 V8-RETOMADA: le key de app.config.ts via expo-constants).
  *
  * Acionado quando:
  * - M3 retorna 429/timeout/erro de rede
@@ -11,6 +11,7 @@
  */
 
 import * as SecureStore from 'expo-secure-store';
+import Constants from 'expo-constants';
 import type { RespostaAvaliacao } from '../types';
 
 const OPENAI_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
@@ -28,7 +29,10 @@ export async function salvarApiKey(key: string): Promise<void> {
 }
 
 export async function obterApiKey(): Promise<string | null> {
-  return SecureStore.getItemAsync(SECURE_KEY_NAME);
+  const stored = await SecureStore.getItemAsync(SECURE_KEY_NAME);
+  if (stored) return stored;
+  const fromConfig = (Constants.expoConfig?.extra?.openaiApiKey as string | undefined) || '';
+  return fromConfig || null;
 }
 
 export async function avaliarResposta(
@@ -37,7 +41,7 @@ export async function avaliarResposta(
 ): Promise<RespostaAvaliacao> {
   const apiKey = await obterApiKey();
   if (!apiKey) {
-    throw new Error('OPENAI_API_KEY_NAO_CONFIGURADA');
+    throw new Error('OPENAI_API_KEY_NAO_CONFIGURADA: defina via ConfigScreen ou app.config.ts.');
   }
 
   const body = {

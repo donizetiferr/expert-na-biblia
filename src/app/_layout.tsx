@@ -8,8 +8,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 
-SplashScreen.preventAutoHideAsync();
-
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
     Bangers_400Regular,
@@ -17,6 +15,11 @@ export default function RootLayout() {
     Nunito_700Bold,
     Nunito_800ExtraBold,
   });
+
+  useEffect(() => {
+    // M4.2 (V8-RETOMADA): mover SplashScreen.preventAutoHideAsync() para useEffect
+    SplashScreen.preventAutoHideAsync();
+  }, []);
 
   useEffect(() => {
     if (fontsLoaded || fontError) {

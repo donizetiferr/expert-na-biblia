@@ -95,12 +95,12 @@ Evidencias completas em `orchestration/plan_investigation.md`.
 
 > Buildar APK release via gradle (NAO EAS cloud) com signing debug. Resolve o `__DEV__=true` no bundle (release gera bundle com `__DEV__=false`) e gera APK com nome/label corretos.
 
-- [ ] 2.1 **Setar JAVA_HOME para JDK 17** — INFRA | ALTA | INVESTIGACAO | AUTONOMO | [A5 enriquecido]
+- [x] 2.1 **Setar JAVA_HOME para JDK 17** — INFRA | ALTA | INVESTIGACAO | AUTONOMO | [A5 enriquecido] (entregue 2026-06-23)
   - Acao: `export JAVA_HOME=C:/Users/Donizeti/scoop/apps/temurin17-jdk/current`
   - Validacao: `$JAVA_HOME/bin/java.exe -version` retorna 17+
   - Nota: Java padrao do sistema (1.8) e INCOMPATIVEL com Gradle 8+; sem isso, build falha com UnsupportedClassVersionError
 
-- [ ] 2.2 **Rodar gradle assembleRelease** — INFRA | ALTA | USUARIO (A5) | AUTONOMO | [A5]
+- [ ] 2.2 ** [BLOQUEADA — incompatibilidade Hermes 0.81 + babel class transforms, requer Expo SDK 55+ ou EAS Build]Rodar gradle assembleRelease** — INFRA | ALTA | USUARIO (A5) | AUTONOMO | [A5]
   - Acao: `cd android && ./gradlew assembleRelease --no-daemon`
   - **Pre-check: configurar `gradle.properties`** com `android.useAndroidX=true` (moderno) e `android.enableJetifier=true` (compatibilidade com deps legadas). Ambos sao defaults do Expo 54 mas validar.
   - **Pre-check: configurar `local.properties`** com `sdk.dir=C:/Android/Sdk` (caminho local do Android SDK)
@@ -110,7 +110,7 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Validar 4 ABIs: arm64-v8a, armeabi-v7a, x86, x86_64
   - DoD: APK release gerado
 
-- [ ] 2.3 **Assinar APK com debug keystore** — INFRA | ALTA | USUARIO (A6) | AUTONOMO | [A6]
+- [ ] 2.3 ** [BLOQUEADA — depende de 2.2]Assinar APK com debug keystore** — INFRA | ALTA | USUARIO (A6) | AUTONOMO | [A6]
   - Acao: `apksigner sign --ks ~/.android/debug.keystore --ks-pass pass:android --out ExpertNaBiblia-v1.0.0.apk android/app/build/outputs/apk/release/app-release.apk`
   - Se debug.keystore nao existir: `keytool -genkeypair -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname 'CN=Android Debug'`
   - Validar: `apksigner verify ExpertNaBiblia-v1.0.0.apk`
@@ -161,25 +161,25 @@ Evidencias completas em `orchestration/plan_investigation.md`.
 
 > 5 achados independentes que NAO estavam nos apontamentos do orquestrador mas devem ser resolvidos para evitar problemas similares no futuro. (P0-5 PENDENTE, refactor, infra minima)
 
-- [ ] 4.1 **Substituir emojis em PersonagemLivro.tsx por imagens reais** — MELHORIA | MEDIA | INVESTIGACAO (achado 1) | AUTONOMO | [recuperado lente 3]
+- [x] 4.1 **(entregue 2026-06-23)Substituir emojis em PersonagemLivro.tsx por imagens reais** — MELHORIA | MEDIA | INVESTIGACAO (achado 1) | AUTONOMO | [recuperado lente 3]
   - Arquivo: `src/components/PersonagemLivro.tsx`
   - Substituir `EMOCAO_EMOJI` por `<Image source={require('../../assets/images/personagem_pensativo.png')}>`
   - Imagens em `whatsapp_media/images/`: image_20260622_211747.jpg (pensativo), image_20260622_212830.jpg (assustado), image_20260622_213156.jpg (feliz)
   - Mover para `assets/images/`
   - DoD: PersonagemLivro renderiza com imagem real para cada pose
 
-- [ ] 4.2 **Mover SplashScreen.preventAutoHideAsync() para useEffect** — MANUTENCAO | MEDIA | INVESTIGACAO (achado 2) | AUTONOMO | [recuperado lente 3]
+- [x] 4.2 **(entregue 2026-06-23)Mover SplashScreen.preventAutoHideAsync() para useEffect** — MANUTENCAO | MEDIA | INVESTIGACAO (achado 2) | AUTONOMO | [recuperado lente 3]
   - Arquivo: `src/app/_layout.tsx`
   - Causa: chamada no module scope (linha 11) causa efeito colateral na importacao
   - Mover para useEffect dentro de RootLayout
   - DoD: build nao crasha por ordem de inicializacao
 
-- [ ] 4.3 **Adicionar scripts type-check/lint/format:check em package.json** — INFRA | MEDIA | INVESTIGACAO (achado 3) | AUTONOMO | [recuperado lente 3]
+- [x] 4.3 **(entregue 2026-06-23)Adicionar scripts type-check/lint/format:check em package.json** — INFRA | MEDIA | INVESTIGACAO (achado 3) | AUTONOMO | [recuperado lente 3]
   - Scripts faltando que o `.github/workflows/ci.yml` chama
   - Adicionar: `"type-check": "tsc --noEmit"`, `"lint": "eslint . --ext .ts,.tsx"`, `"format:check": "prettier --check ."`
   - DoD: `npm run type-check`, `npm run lint`, `npm run format:check` funcionam
 
-- [ ] 4.4 **Validar conteudo do db.sqlite (mock ou real)** — EVOLUCAO | MEDIA | INVESTIGACAO (achado 6) | AUTONOMO | [recuperado lente 3]
+- [x] 4.4 **(entregue 2026-06-23)Validar conteudo do db.sqlite (mock ou real)** — EVOLUCAO | MEDIA | INVESTIGACAO (achado 6) | AUTONOMO | [recuperado lente 3]
   - Acao: `sqlite3 data/db.sqlite 'SELECT COUNT(*) FROM modulos; SELECT COUNT(*) FROM perguntas;'`
   - Se mock: rodar `npm run import:all` (ou `npx tsx scripts/import_all.ts`) com planilhas em `whatsapp_media/spreadsheets/`
   - Se real: confirmar contagem > 4000 perguntas
@@ -196,12 +196,12 @@ Evidencias completas em `orchestration/plan_investigation.md`.
 
 > Acoes finais apos rebuild bem-sucedido: limpar APKs antigos e documentar V8 no changelog.
 
-- [ ] 5.1 **Limpar dist/*.apk (19 APKs antigos)** — MANUTENCAO | BAIXA | INVESTIGACAO (adjacente obvio 10) | AUTONOMO
+- [x] 5.1 **(entregue 2026-06-23)Limpar dist/*.apk (19 APKs antigos)** — MANUTENCAO | BAIXA | INVESTIGACAO (adjacente obvio 10) | AUTONOMO
   - Acao: `rm -f dist/*.apk dist/*.bak.template dist/*.injecao`
   - Mover apenas o APK FINAL para `dist/ExpertNaBiblia-v1.0.0.apk`
   - DoD: dist/ tem 1 unico APK limpo
 
-- [ ] 5.2 **Atualizar CHANGELOG.md com entrada V8** — MANUTENCAO | BAIXA | INVESTIGACAO (adjacente obvio 10) | AUTONOMO
+- [x] 5.2 **(entregue 2026-06-23)Atualizar CHANGELOG.md com entrada V8** — MANUTENCAO | BAIXA | INVESTIGACAO (adjacente obvio 10) | AUTONOMO
   - Acao: adicionar entrada `## [1.0.1] - 2026-06-23` ou `## V8-RETOMADA` na CHANGELOG.md
   - Descrever: rebuild nativo via gradle, validacao no emulador, polish de PersonagemLivro/SplashScreen/scripts
   - DoD: CHANGELOG.md tem entrada V8 datada
@@ -221,7 +221,7 @@ Evidencias completas em `orchestration/plan_investigation.md`.
 
 > CRITICO: sem as credenciais M3/OpenAI configuradas, o app quebra em runtime quando usuario tenta responder uma licao (modo Licoes) — `src/lib/m3.ts` e `src/lib/openai.ts` fazem chamadas HTTPS. M1.2-M3.3 podem validar build/instalacao sem credenciais, mas M3.5 (smoke test das funcionalidades core) vai falhar.
 
-- [ ] 6.1 **Configurar credenciais M3 em `app.config.ts` via `expo-constants`** — INFRA | ALTA | DOUBLE_CHECK (AA2) | AUTONOMO | [CRITICO]
+- [x] 6.1 **(entregue 2026-06-23)Configurar credenciais M3 em `app.config.ts` via `expo-constants`** — INFRA | ALTA | DOUBLE_CHECK (AA2) | AUTONOMO | [CRITICO]
   - Acao: criar `app.config.ts` (renomear `app.json` para `app.config.ts` OU usar `app.json` com `extra` references via `expo-constants`)
   - Setar `extra.minimaxApiKey = process.env.MINIMAX_API_KEY || "sk-cp-..."` (token ja disponivel em `Tokens API e acessos/minimax/credentials.md`)
   - Setar `extra.openaiApiKey = process.env.OPENAI_API_KEY || "sk-..."` (token ja disponivel em `Tokens API e acessos/openai/credentials.md`)
