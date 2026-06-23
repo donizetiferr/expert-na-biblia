@@ -17,4 +17,23 @@
 - **persistente em**: `orchestration/pending_user_input.md` bloco `DEP_PENDENTE_VALIDACAO_TEOLOGICA`
 - **efeito no loop**: PULA V3 + segue para V4-V6 (regra AUTONOMIA MAXIMA); V3 sera retomada em sessao futura quando usuario revisar
 
-## (vazio — sem outras versoes bloqueadas ate V6)
+## V6 — Decisoes 2026-06-23 — RESOLVIDAS nesta sessao
+
+### P3-4 (Privacy Policy) — RESOLVIDO 2026-06-23
+- Antes: BLOQUEADA_POR_USUARIO (usuario precisava escolher GitHub Pages vs dominio proprio)
+- Depois: **AUTONOMO** — usuario escolheu GitHub Pages free
+- Acao tomada: repo tornado publico, Pages ativado, privacy.html publicado em https://donizetiferr.github.io/expert-na-biblia/privacy.html (HTTP 200 confirmado)
+- Status: **CONCLUIDO** — URL pronta para Google Play Console
+
+### P3-5 (iOS / App Store) — REJEITADO 2026-06-23
+- Antes: BLOQUEADA_POR_USUARIO (Apple Developer account + $99/ano)
+- Depois: **REJEITADO** — fora do escopo MVP, foco exclusivo Android
+- Acao tomada: removido de pending_user_input.md; movido para "Itens rejeitados" do evolution_plan.md
+- Status: **REJEITADO** — sem acao futura obrigatoria
+
+### P3-6 (Google Play) — PARCIALMENTE RESOLVIDO 2026-06-23
+- Antes: BLOQUEADA_POR_USUARIO (conta + $25 + submissao)
+- Depois: **PARCIAL** — usuario JA TEM conta `donizetiferr` (sem custo adicional)
+- Pendente: build AAB real requer `eas login` + `EXPO_TOKEN` (credenciais locais do usuario)
+- Acao tomada: infraestrutura completa (eas.json, scripts/build-release.sh, release_artifacts.md, play_store_checklist.md, package.json fix); execucao do build + submissao documentada para o usuario
+- Status: **INFRA PRONTA + AGUARDANDO EXECUCAO MANUAL** (subagente sem EXPO_TOKEN)

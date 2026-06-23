@@ -10,35 +10,34 @@
 - **falta de voce**: revisar `docs/qa_conteudo_para_revisar.md` (a ser gerado apos `npm run generate:questions`) e marcar cada pergunta como OK / AJUSTAR / REJEITAR
 - **concluo ao receber**: marcar P0-11 como `- [x] (entregue YYYY-MM-DD)` em evolution_plan.md e prosseguir para V4-V6; se >10% rejeitadas, voltar para P0-5/P0-6 com feedback
 - **default_se_sem_resposta**: BLOQUEIO ATIVO ate sinalizacao (esta eh dependencia irredutivel — qualidade teologica eh critica, NAO pode ser pulada)
-- **status**: AGUARDANDO_GERACAO_CONTEUDO (ainda precisamos rodar `npm run generate:questions` com MINIMAX_API_KEY para gerar data/planilhas/*.json; este passo sera feito em V5 quando ambiente tiver npm install + credenciais)
-- **LOOP DE AUTONOMIA**: apos geracao, NAO commitar nada automaticamente — apenas gerar `docs/qa_conteudo_para_revisar.md` e aguardar input humano. Em execucao real, este arquivo sera apresentado no relatorio final do @full-cycle.
+- **status**: AGUARDANDO_GERACAO_CONTEUDO (ainda precisamos rodar `npm run generate:questions` com MINIMAX_API_KEY para gerar data/planilhas/*.json; este passo sera feito quando ambiente tiver credenciais)
+- **LOOP DE AUTONOMIA**: apos geracao, NAO commitar nada automaticamente — apenas gerar `docs/qa_conteudo_para_revisar.md` e aguardar input humano.
 
-## DEP_PENDENTE_APPLE_DEV (P3-5)
-
-- **fonte**: ITEM-47 do version_plan.md / P3-5 do evolution_plan.md
-- **dependencia**: conta Apple Developer Program + cartao de credito internacional ($99/ano)
-- **falta de voce**: criar Apple Developer account em https://developer.apple.com/ e adicionar cartao de credito
-- **concluo ao receber**: prosseguir com `eas build --platform ios --profile production` e submeter para App Store Review
-- **default_se_sem_resposta**: BLOQUEADO (App Store eh OPCIONAL — pode ficar para V2/futuro). iOS NAO bloqueia Android/publicacao Google Play.
-- **status**: AGUARDANDO_CONTA_APPLE_DEV
-- **LOOP DE AUTONOMIA**: apos criar conta, executar `eas init` + `eas build` automatico. Antes: iOS NAO sera publicado ate input.
-
-## DEP_PENDENTE_GOOGLE_PLAY_DEV (P3-6)
+## DEP_PENDENTE_GOOGLE_PLAY_BUILD (P3-6 parcial)
 
 - **fonte**: ITEM-48 do version_plan.md / P3-6 do evolution_plan.md
-- **dependencia**: conta Google Play Developer + cartao de credito ($25 one-time)
-- **falta de voce**: criar Google Play Developer account em https://play.google.com/console/ e pagar $25
-- **concluo ao receber**: prosseguir com submissao do APK para revisao Google Play
-- **default_se_sem_resposta**: BLOQUEADO (publicacao Google Play eh PRIORITARIA). Codigo do APK pronto (EAS Build production profile); falta apenas conta + submissao manual.
-- **status**: AGUARDANDO_CONTA_GOOGLE_PLAY
-- **LOOP DE AUTONOMIA**: apos criar conta, executar `eas submit --platform android --latest` automatico para envio. Antes: APK existe mas NAO esta na loja.
+- **dependencia**: credencial EXPO_TOKEN para executar `eas build` (subagente sem credenciais locais)
+- **falta de voce**: rodar localmente (no seu terminal) o seguinte:
+  ```bash
+  # 1. Instalar eas-cli (ja feito pelo subagente)
+  # 2. Login: eas login  (usa sua conta Expo existente ou cria nova)
+  # 3. Salvar EXPO_TOKEN em Tokens API e acessos/expo/credentials.md (loop de autonomia)
+  # 4. Build: eas build --platform android --profile production --non-interactive
+  # 5. Baixar .aab (~5-15 min) e seguir orchestration/play_store_checklist.md
+  ```
+- **concluo ao receber**: executar `eas submit --platform android --latest` automaticamente (submissao EAS Play Console)
+- **default_se_sem_resposta**: BUILD AGUARDANDO EXECUCAO MANUAL — infraestrutura completa, falta apenas credencial + execucao local
+- **status**: AGUARDANDO_EXPO_TOKEN_E_BUILD_MANUAL
+- **LOOP DE AUTONOMIA**: apos salvar EXPO_TOKEN em `Tokens API e acessos/expo/credentials.md`, execucao futura fica 100% autonoma
 
-## DEP_PENDENTE_PRIVACY_HOST (P3-4)
+## DEPENDENCIAS RESOLVIDAS 2026-06-23
 
-- **fonte**: ITEM-45 do version_plan.md / P3-4 do evolution_plan.md
-- **dependencia**: usuario escolher entre GitHub Pages (free) OU dominio proprio (R$10-15/ano)
-- **falta de voce**: sinalizar preferencia — `gh pages` ou dominio customizado
-- **concluo ao receber**: ativar GitHub Pages OU configurar dominio proprio com URL em app.json `extra.privacyPolicyUrl`
-- **default_se_sem_resposta**: GITHUB_PAGES (mais simples, free). URL: `https://donizetiferr.github.io/expert-na-biblia/privacy`
-- **status**: PREFERENCIA_NAO_SINALIZADA
-- **LOOP DE AUTONOMIA**: se preferir dominio proprio, comprar e configurar DNS antes; caso contrario, GitHub Pages eh automatico via repo do projeto.
+### ~~DEP_PENDENTE_PRIVACY_HOST (P3-4)~~ — RESOLVIDO
+- Antes: usuario escolher entre GitHub Pages (free) vs dominio proprio
+- Resolvido: usuario escolheu GitHub Pages (2026-06-23)
+- Resultado: https://donizetiferr.github.io/expert-na-biblia/privacy.html (HTTP 200 confirmado)
+
+### ~~DEP_PENDENTE_APPLE_DEV (P3-5)~~ — REJEITADO
+- Antes: conta Apple Developer Program + cartao de credito internacional ($99/ano)
+- Resolvido: usuario REJEITOU iOS do escopo MVP (2026-06-23)
+- Resultado: foco exclusivo em APK Android; iOS removido do escopo (ver evolution_plan.md "Itens rejeitados")

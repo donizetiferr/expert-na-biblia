@@ -3,7 +3,7 @@
 **Iniciado em:** 2026-06-23
 **Tipo:** @full-cycle agent (subagente isolado, opus[1m])
 **Vertente:** GENERICO (cross-check OK — sem sinais Workana/PedBot)
-**Estado do projeto:** NOVO/PRE-IMPLEMENTACAO (base documental solida; sem codigo ainda)
+**Estado do projeto:** 48/48 itens FASE 0-3 processados; **pausa para revisao humana em P0-11**
 
 ## FASE 0 — Triagem
 
@@ -25,18 +25,54 @@
 
 ## Estado atual
 
-- Estado: TRIAGEM_CONCLUIDA
-- Proxima fase: FASE 0.7 pre-check deps
-- Modo de limite: UNLIMITED (full-cycle sempre unlimited)
-- Versao entregue: 0 (nenhuma ainda)
+- Estado: DECISOES_APLICADAS_AGUARDANDO_P0_11
+- Proxima fase: PAUSA para revisao humana de 100 amostras teologicas (P0-11 BLOQUEADA_POR_USUARIO — irredutivel)
+- Modo de limite: UNLIMITED (mas pausado por dependencia humana)
+- Versao entregue: 6 (V1-V6) + ciclo de decisoes 2026-06-23 (V7)
 
 ## FASE 0.7 — Pre-check de acessos e dependencias
 
-A iniciar.
+- Cache TTL: desnecessario, executado em V1 (ver `orchestration/dependencies_check.md`)
+- Resultado: SEM_DEPS_EXTERNAS_BLOQUEANTES (EXPO_TOKEN + google-service-account.json para build real estao documentadas em `orchestration/release_artifacts.md`)
+
+## Decisoes aplicadas 2026-06-23 (V7)
+
+### P3-4 (Privacy Policy) — RESOLVIDO
+- Antes: BLOQUEADA_POR_USUARIO (escolha GitHub Pages vs dominio proprio)
+- Depois: **CONCLUIDO** — usuario escolheu GitHub Pages free
+- URL publica: https://donizetiferr.github.io/expert-na-biblia/privacy.html (HTTP 200 confirmado)
+- Repo `donizetiferr/expert-na-biblia` tornado PUBLICO para permitir GitHub Pages free
+- Privacy HTML servido a partir da raiz do `main` branch com `.nojekyll`
+- Campo `extra.privacyPolicyUrl` adicionado em `app.json`
+- Arquivo `docs/privacy_url.txt` criado para copia-cola no Play Console
+
+### P3-5 (iOS / App Store) — REJEITADO
+- Antes: BLOQUEADA_POR_USUARIO (Apple Developer account $99/ano)
+- Depois: **REJEITADO** — fora do escopo MVP, foco exclusivo Android
+- Movido para "Itens rejeitados" do `evolution_plan.md` (primeiro item da lista, marcado `- [x]` com data e razao)
+- Removido de `pending_user_input.md` (DEP_PENDENTE_APPLE_DEV)
+
+### P3-6 (Google Play) — PARCIAL
+- Antes: BLOQUEADA_POR_USUARIO (conta + $25 + submissao)
+- Depois: **PARCIAL** — usuario JA TEM conta `donizetiferr` (sem custo adicional)
+- Pendente: build AAB real requer `eas login` + `EXPO_TOKEN` em `Tokens API e acessos/expo/`
+- Infraestrutura completa entregue: `eas.json` + `scripts/build-release.sh` + `orchestration/release_artifacts.md` + `orchestration/play_store_checklist.md` + fix `package.json` (expo-ads-admob 13.x)
+- Marcado `- [x]` em evolution_plan.md com nota de conta existente + build pendente
+
+## Pendencias do usuario (apos decisoes 2026-06-23)
+
+- **P0-11** (FASE 0, BLOQUEADA_POR_USUARIO — IRREDUTIVEL): Revisar 100 amostras teologicas apos geracao do conteudo
+- **P3-6** (FASE 3, PARCIAL): Executar `eas login` + `eas build --platform android --profile production --non-interactive` localmente; apos build, seguir `orchestration/play_store_checklist.md`
 
 ## Historico de versoes
 
-- (vazio — nenhuma versao entregue ainda)
+- V1 (commit 7aa0254) — Setup tecnico Expo SDK 54 + TS strict + ESLint + EAS + CI
+- V2 (commit 9357928) — SQLite + migrations + git workflow
+- V3 (commit 601e414) — Scripts M3 (generate + select); P0-11 BLOQUEADA_POR_USUARIO
+- V4 (commit 699fb76) — 13 telas funcionais
+- V5 (commit 0791d06) — Matching TF-IDF + sinonimos + 4 telas Quiz
+- V6 (commit 3e14faf) — Publicacao: notifications, AdMob, SQLCipher, Sentry, privacy policy
+- **V7 (commit fc0e25c + commits seguintes)** — Decisoes 2026-06-23: Privacy Policy via GitHub Pages + iOS rejeitado + build Android pendente
 
 ## solo-roadmap 2026-06-23
 
@@ -60,9 +96,9 @@ Estado: IMPLEMENTANDO_V5 → V5_CONCLUIDO_AGUARDANDO_ORQUESTRADOR | nota: 9.5/10
 ## solo-evolve V6 2026-06-23
 Estado: IMPLEMENTANDO_V6 → V6_CONCLUIDO_COM_BLOQUEIO_USUARIO | nota: 9.6/10 | commit: 3e14faf | wire_in_report.md: APROVADO (2 OK + 6 deferidos + 3 BLOQUEADAS) | testes 52 mantidos | 48/48 itens FASE 0-3: 45 IMPLEMENTADOS + 3 BLOQUEADAS_POR_USUARIO (P0-11, P3-5, P3-6) | projeto: C:\Users\Donizeti\Downloads\Projetos_VSCode\Pessoal\Expert Na Bíblia | total_apontamentos_input: 24
 
-## Pendencias do usuario
-
-- P0-11 (FASE 0): Revisar 100 amostras teologicas do conteudo gerado — BLOQUEIA FASE 3
-- P3-4 (FASE 3): Escolher GitHub Pages vs dominio proprio
-- P3-5 (FASE 3, OPCIONAL): Criar Apple Developer account
-- P3-6 (FASE 3): Criar Google Play Developer account ($25)
+## V7 (decisoes 2026-06-23) — agente manual
+- Estado: DECISOES_APLICADAS → PAUSA_AGUARDANDO_P0_11
+- P3-4: CONCLUIDO (privacy.html publicado, HTTP 200)
+- P3-5: REJEITADO (movido para Itens rejeitados)
+- P3-6: INFRA PRONTA + BUILD AGUARDANDO_EXECUCAO_MANUAL
+- Proximo passo (usuario): gerar conteudo (`npm run generate:questions` com MINIMAX_API_KEY) + revisar 100 amostras em `docs/qa_conteudo_para_revisar.md`

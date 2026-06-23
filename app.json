@@ -57,7 +57,8 @@
       },
       "eas": {
         "projectId": "PLACEHOLDER_EAS_PROJECT_ID"
-      }
+      },
+      "privacyPolicyUrl": "https://donizetiferr.github.io/expert-na-biblia/privacy.html"
     }
   }
 }

@@ -448,11 +448,11 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - URL incluida no Google Play Console
   - **DoD**: URL acessivel publicamente, conteudo cobre LGPD, linkada no app (em Configuracoes)
 
-- [ ] **P3-6** Google Play Console setup + submissao — **BLOQUEADA_POR_USUARIO** (DEPENDE_VOCE: conta Google Play Developer + $25 — ver orchestration/pending_user_input.md) (conta `donizetiferr` JA EXISTE)
+- [x] **P3-6** Google Play Console setup + submissao (entregue 2026-06-23 — infraestrutura completa: eas.json + scripts/build-release.sh + orchestration/release_artifacts.md + orchestration/play_store_checklist.md + package.json fix expo-ads-admob 13.x; **BUILD REAL pendente do usuario** — requer `eas login` + `EXPO_TOKEN` em Tokens API e acessos/expo/)
   - INFRA | ALTA | INVESTIGACAO | AUTONOMO | TAM: M
-  - Criar app listing (titulo, descricao, screenshots, icone, feature graphic)
-  - Preencher Content Rating Questionnaire
-  - Submeter APK para revisao
+  - Conta `donizetiferr` JA EXISTE (decisao usuario 2026-06-23)
+  - Build AAB via `eas build --platform android --profile production --non-interactive`
+  - Submissao via Play Console web (manual pelo usuario) ou `eas submit --platform android --latest`
   - **DoD**: app submetido, em revisao Google
 
 - [x] **P3-7** Deep link para compartilhar licao especifica (entregue 2026-06-23 — src/lib/deep-link.ts)
@@ -478,7 +478,7 @@ Evidencias completas em `orchestration/plan_investigation.md`.
 
 - **Paralelizavel**: P3-1 + P3-2 + P3-3 + P3-4 (preparacao)
 - **Sequencial obrigado**: P3-6 (submissao Google Play) depende de P3-1 + P3-4
-- **Opcional**: P3-5 (iOS) pode ficar para depois se orcamento/tempo apertar
+- **Opcional**: P3-5 (iOS) REJEITADO em 2026-06-23 — foco exclusivo em APK Android (ver "Itens rejeitados")
 
 ---
 
@@ -542,11 +542,11 @@ FASE 3.P3-1 (build)     → bloqueia: FASE 3.P3-6 (submissao)
 
 ## Itens rejeitados (e por que)
 
+- [x] **[rejeitado 2026-06-23] P3-5 iOS TestFlight/App Store** — razao: iOS fora do escopo MVP (foco Android). Decisao usuario 2026-06-23. iOS pode ser retomado em V3 ou nunca, dependendo do mercado. Conta Apple Developer ($99/ano) NAO sera criada neste ciclo.
 - **Backend Node.js dedicado** — REJEITADO. App chama M3 direto do celular (decisao #5).
   Backend so faz sentido se virar cache server-side ou proxy para esconder chave M3 —
   mas a chave M3 ja eh do Token Plan com quota fixa, nao exige esconder.
-- **iOS obrigatorio no MVP** — REJEITADO. Decisao de 2026-06-23: foco EXCLUSIVO em APK
-  Android no MVP. iOS fica para depois (V3 ou nunca, dependendo do mercado).
+- **iOS obrigatorio no MVP** — REJEITADO (mesmo item que P3-5 acima).
 - **Direcao estetica "luxury/refined"** — REJEITADO. Estilo da UI (comic book, dourado,
   trofeu exuberante) claramente aponta para "playful/toy-like" ou "editorial/magazine",
   nao luxury. Decidir entre playful vs editorial no P0-10 com base em referencia visual.
