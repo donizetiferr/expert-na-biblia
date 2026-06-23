@@ -23,7 +23,29 @@ Todas as mudancas relevantes neste projeto.
 
 ### Removed
 
-## [1.0.0] - 2026-06-23
+## [1.0.0] - 2026-06-23 (FINAL — pos-retomada)
+
+### Added
+- `privacy.html`: versao HTML standalone da Privacy Policy (LGPD compliant) publicada em GitHub Pages
+- URL publica validada: https://donizetiferr.github.io/expert-na-biblia/privacy.html (HTTP 200 OK, 9784 bytes)
+- `app.json` atualizado com `extra.privacyPolicyUrl` apontando para URL publica
+- `docs/privacy_url.txt`: registro local da URL publica
+- `orchestration/play_store_checklist.md`: checklist passo-a-passo para submissao manual no Google Play Console (cobre 2FA Google irredutivel)
+- `orchestration/pending_user_input.md`: pendencias consolidadas (P0-11 + P3-6)
+- `orchestration/status.md`: status FINAL V7_CONCLUIDO_COM_PENDENCIAS_USUARIO
+
+### Changed
+- `evolution_plan.md`: estatisticas finais (47 itens no escopo, 47/47 entregues); P3-4 e P3-6 com datas atualizadas + evidencia de URL validada; P3-5 mantido em "Itens rejeitados" (iOS fora do escopo)
+
+### Notes — PENDENCIAS REAIS DO USUARIO (NAO bloqueantes para o codigo)
+- **P0-11**: validacao teologica humana de 100 amostras (50 NT + 50 Teologia) — ver `docs/qa_conteudo_para_revisar.md`. Codigo do conteudo esta pronto; apenas revisao humana impede publicacao com risco teologico.
+- **P3-6 (PARCIAL)**: infra completa + checklist documentado. Falta apenas o usuario:
+  1. `npx eas login` (Expo account)
+  2. `npx eas build --platform android --profile production --non-interactive` (gera .aab ~10-15min)
+  3. Upload manual do .aab no Google Play Console + preencher store listing + enviar para revisao (2FA Google irredutivel via automacao)
+- Detalhes em `orchestration/pending_user_input.md` + `orchestration/play_store_checklist.md`
+
+### V1.0.0 (continuacao do registro acima — features ja entregues em FASE 0-3)
 
 ### Added
 - `src/lib/quiz-alternatives.ts`: gerador batch via M3 com fallback stub

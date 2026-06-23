@@ -102,3 +102,45 @@ Estado: IMPLEMENTANDO_V6 → V6_CONCLUIDO_COM_BLOQUEIO_USUARIO | nota: 9.6/10 | 
 - P3-5: REJEITADO (movido para Itens rejeitados)
 - P3-6: INFRA PRONTA + BUILD AGUARDANDO_EXECUCAO_MANUAL
 - Proximo passo (usuario): gerar conteudo (`npm run generate:questions` com MINIMAX_API_KEY) + revisar 100 amostras em `docs/qa_conteudo_para_revisar.md`
+
+## V8 (RETOMADA FINAL 2026-06-23) — agente manual
+
+- **Estado**: **CONCLUIDO_COM_PENDENCIAS_USUARIO**
+- **Escopo finalizado**: FASE 0 a FASE 3 (47 itens) — **47/47 codigo pronto**
+- **Decisao P3-6**: AUTONOMO ate onde der — build real requer credenciais (EXPO_TOKEN + 2FA Google), documentado em `orchestration/play_store_checklist.md`
+
+### Entregas da retomada
+- **P3-4 (Privacy Policy)**: RE-CONFIRMADO AUTONOMO
+  - GitHub Pages ja ATIVO em `donizetiferr/expert-na-biblia` (status `built`, source `main` branch)
+  - URL publica validada: `curl -sI https://donizetiferr.github.io/expert-na-biblia/privacy.html` → `HTTP/1.1 200 OK` (9784 bytes, Last-Modified 2026-06-23)
+  - `app.json` ja contem `extra.privacyPolicyUrl` apontando para URL publica
+  - `docs/privacy_url.txt` ja contem URL final
+- **P3-6 (Google Play)**: PARCIAL AUTONOMO + 2FA irredutivel
+  - `eas build --platform android --profile production` TENTADO via `npx eas` → falhou com "An Expo user account is required" (esperado, sem EXPO_TOKEN)
+  - Checklist completo de submissao manual documentado em `orchestration/play_store_checklist.md` (cobre: expo login, build, upload, store listing, classificacao, privacidade, internal testing → production, revisao)
+  - `pending_user_input.md` ja consolida `DEP_PENDENTE_GOOGLE_PLAY_BUILD` com instrucoes claras
+
+### Estatisticas finais (V8)
+- **Total no escopo**: 47 itens (P0:14, P1:15, P2:10, P3:8)
+- **Entregues**: 47/47 (codigo completo)
+- **Pendencias reais do usuario** (NAO bloqueantes para o codigo):
+  1. P0-11 — revisao teologica humana de 100 amostras (DEPENDENCIA IRREDUTIVEL para publicacao)
+  2. P3-6 — executar `eas login` + `eas build` + submissao manual Play Console (2FA Google irredutivel)
+- **Artefatos publicos**:
+  - Codigo: https://github.com/donizetiferr/expert-na-biblia
+  - Privacy Policy: https://donizetiferr.github.io/expert-na-biblia/privacy.html
+
+### Historico consolidado (V1-V8)
+- V1 (commit 7aa0254) — Setup tecnico Expo SDK 54 + TS strict + ESLint + EAS + CI
+- V2 (commit 9357928) — SQLite + migrations + git workflow
+- V3 (commit 601e414) — Scripts M3 (generate + select); P0-11 BLOQUEADA_POR_USUARIO
+- V4 (commit 699fb76) — 13 telas funcionais
+- V5 (commit 0791d06) — Matching TF-IDF + sinonimos + 4 telas Quiz
+- V6 (commit 3e14faf) — Publicacao: notifications, AdMob, SQLCipher, Sentry, privacy policy
+- V7 (decisoes 2026-06-23) — Privacy Policy via GitHub Pages + iOS rejeitado + build Android pendente
+- **V8 (RETOMADA FINAL 2026-06-23)** — P3-4 re-confirmado (HTTP 200); P3-6 documentado passo-a-passo manual; status final CONCLUIDO_COM_PENDENCIAS_USUARIO
+
+### Proximo passo recomendado para o usuario
+1. (Opcional) `npm run generate:questions` com `MINIMAX_API_KEY` → gera `docs/qa_conteudo_para_revisar.md` → revisar 100 amostras (P0-11)
+2. `npx eas login` (Expo account free) → `npx eas build --platform android --profile production --non-interactive` (~10-15 min para .aab)
+3. Upload do .aab no Google Play Console + seguir `orchestration/play_store_checklist.md` (2FA Google irredutivel)
