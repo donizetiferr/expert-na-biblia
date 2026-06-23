@@ -1,6 +1,8 @@
+import { useEffect } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../../../constants/colors';
+import { playAcerto, playErro } from '../../../../lib/sound';
 
 /**
  * Tela Final da Atividade (3 variantes <50%/>50%/100%).
@@ -13,6 +15,16 @@ export default function FinalAtividadeScreen() {
 
   const variante =
     score >= 100 ? 'vitoria' : score >= 50 ? 'quase' : 'nao_deu';
+
+  // Tocar som baseado no score ao montar
+  useEffect(() => {
+    if (variante === 'vitoria') {
+      playAcerto().catch(() => {});
+    } else if (variante === 'nao_deu') {
+      playErro().catch(() => {});
+    }
+    // variante 'quase' nao toca (nem acerto nem erro - meio termo)
+  }, [variante]);
 
   const configs = {
     vitoria: {

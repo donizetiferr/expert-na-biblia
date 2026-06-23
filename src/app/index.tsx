@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Animated, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../constants/colors';
 import { PersonagemLivro } from '../components/PersonagemLivro';
+import { playSplash } from '../lib/sound';
 
 /**
  * Tela 1: Splash screen com animacao do logo + som (3s).
@@ -27,6 +28,9 @@ export default function SplashScreen() {
         useNativeDriver: true,
       }),
     ]).start();
+
+    // Tocar splash sound (3s) ao montar a tela
+    playSplash().catch(() => {});
 
     const timer = setTimeout(() => {
       router.replace('/modos');

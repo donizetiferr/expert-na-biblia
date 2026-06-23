@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
+import { playMusicaFundo, stopMusicaFundo } from '../lib/sound';
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -25,6 +26,16 @@ export default function RootLayout() {
     if (fontsLoaded || fontError) {
       SplashScreen.hideAsync();
     }
+  }, [fontsLoaded, fontError]);
+
+  // M4.5 (V8-RETOMADA): iniciar musica de fundo quando fontes carregarem
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      playMusicaFundo().catch(() => {});
+    }
+    return () => {
+      stopMusicaFundo().catch(() => {});
+    };
   }, [fontsLoaded, fontError]);
 
   if (!fontsLoaded && !fontError) {
