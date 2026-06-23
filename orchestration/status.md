@@ -204,3 +204,50 @@ Estado: IMPLEMENTANDO_V6 → V6_CONCLUIDO_COM_BLOQUEIO_USUARIO | nota: 9.6/10 | 
   - M1: 9b610d5
   - M2 partial: d10a96c
   - M4+M5+M6: <commit atual>
+
+## @full-cycle V8-REBUILD [2026-06-23T16:00] — CONCLUIDO 13/21 (62%)
+
+- **Status final**: SAVE_STATE_CONCLUIDO pelo subagente
+- **5 commits**: 3720cbf (M0) | 9b610d5 (M1) | d10a96c (M2 partial) | 4e877b3 (M4+M5+M6) | 98be388 (save-state)
+- **Itens entregues**: 13/21 (62%)
+- **Itens BLOQUEADOS tecnicamente**: 8/21 (38%)
+  - M2.2, M2.3, M3.1, M3.2, M3.3, M3.4, M3.5 (7 itens — todos dependentes de M2.2)
+  - M4.5 (1 item — DESTRAVAVEL: 5 sons royalty-free)
+
+### Causa raiz do bloqueio (M2.2)
+
+Hermes 0.81.0 (shipado com Expo SDK 54) e INCOMPATIVEL com babel class transforms usados por `react-native 0.81.5/src/private/webapis/**` (~37 arquivos incluindo DOMRectList, PerformanceObserver, etc). Erro: "invalid statement encountered" no Hermes 0.81.
+
+### Workarounds testados (todos falharam)
+
+- loose class transform (`loose: true`)
+- strict transform (non-loose)
+- `@babel/preset-typescript` antes dos class plugins
+- manual function-constructor patch em `DOMRect.js` + `DOMRectReadOnly.js`
+- namespace import (`import * as`)
+- `babel-plugin-transform-es2015-classes` (incompat com babel 7)
+
+### Como destravar M2.2 (3 opcoes para o usuario decidir)
+
+1. **Upgrade Expo SDK 54 → 55** (RECOMENDADO) — editar `package.json` `"expo": "~54.0.35"` → `"expo": "~55.0.0"`, rodar `npx expo install --fix`, re-despachar `@full-cycle`. SDK 55 deve shipar Hermes 0.83+ com suporte completo a classes ES6.
+2. **EAS cloud build** — criar `Tokens API e acessos/expo/credentials.md` com EXPO_TOKEN (login em https://expo.dev), depois `eas build --platform android` (server-side, sem o bug Hermes local).
+3. **Downgrade Expo SDK 54 → 53** — reverter `package.json` para SDK 53 (que shipa Hermes 0.74, sem o bug).
+
+### Estado dos artefatos
+
+- `data/db.sqlite`: 1.08MB (cresceu de 798KB; conteudo real importado de `questions_clean.json` 4345 perguntas)
+- `android/`: prebuild OK (gradle config pronto, package `com.donizetiferr.expertnabiblia`, label `Expert Na Bíblia`)
+- `app.config.ts`: criado (M6 — runtime config M3/OpenAI keys)
+- `dist/`: limpo (sem APKs antigos)
+- `evolution_plan.md`: 13/21 marcados `[x]`, 8 marcados como `[ ] BLOQUEADOS`
+- `orchestration/.delegated_to_subagent`: REMOVIDO (ciclo completo)
+
+## Opção (a) — Expo SDK 54 → 55 upgrade [2026-06-23T18:45]
+
+- **Mudanca**: expo 54.0.35 → 55.0.0; react-native 0.81.5 → 0.83.6
+- **Hermes**: deve vir 0.83+ com SDK 55 (resolve bloqueio M2.2 do class transform)
+- **Deps alinhadas**: 22 deps Expo atualizadas para SDK 55; babel-preset-expo 56→55; eslint-config-expo 56→55
+- **Warnings restantes**: @types/jest@30 (esperado 29.5) — nao bloqueante
+- **@full-cycle re-despachado** (agentId a4ef5be8a2a427063) com escopo focado em 8 itens bloqueados: M2.2, M2.3, M3.1-5, M4.5
+- **Toggle file criado**: `orchestration/.delegated_to_subagent`
+- **Modo**: run_in_background=true; esperado 1-2h para concluir (build gradle + validacao no emulador)
