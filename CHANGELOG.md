@@ -23,6 +23,25 @@ Todas as mudancas relevantes neste projeto.
 
 ### Removed
 
+## [0.5.0] - 2026-06-23
+
+### Added
+- `src/lib/matching.ts`: matching canonico 2-camadas (Levenshtein exato + cossino semantico com sinonimos biblicos pre-mapeados — deus/senhor/yhwh, jesus/cristo/messias, etc)
+- `src/lib/m3.ts`: cliente HTTPS Minimax M2.7 (Token Plan) com filtro think tags + retry 3x + timeout 10s + SecureStore para API keys
+- `src/lib/openai.ts`: cliente OpenAI GPT-4o-mini (fallback) — mesmo JSON schema, response_format json_object
+- `src/lib/avaliador.ts`: orquestrador local-cache → M3 → OpenAI com cache SQLite (score >= 0.85) + TTL 90 dias + log m3_usage
+- `src/lib/streak.ts`: streak diario com freeze semanal (SQLite user_streak)
+- `src/lib/quiz-questions.ts`: gerador de 4 alternativas (1 correta + 3 distrators via hash deterministico, Fisher-Yates embaralhamento)
+- `src/app/quiz/index.tsx`: Tela 3 - Aleatorio vs Licoes personalizadas
+- `src/app/quiz/customizar.tsx`: Tela 4 - 77 modulos + checkboxes max 20
+- `src/app/quiz/jogar.tsx`: Tela Quiz - pergunta + timer 10s + 4 alternativas + auto-avanco
+- `src/app/quiz/final.tsx`: Placar final + persistir user_rankings (3 variantes)
+- `src/lib/__tests__/matching-coverage.test.ts`: 24 testes (sinonimos + cossino + Levenshtein + matchCanonico 2-camadas)
+
+### Notes
+- API keys M3 + OpenAI armazenadas em expo-secure-store (pesquisa A4 anti-pattern AsyncStorage)
+- Smoke E2E real em emulador Android fica para V6 (requer Android Studio)
+
 ## [0.4.0] - 2026-06-23
 
 ### Added
