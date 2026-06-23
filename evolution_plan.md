@@ -70,7 +70,7 @@ Evidencias completas em `orchestration/plan_investigation.md`.
 
 > Corrigir o erro `withAndroidDangerousBaseMod: Project file MainApplication does not exist` no `npx expo prebuild --platform android`. Sem isso, o rebuild nativo via gradle nao acontece. Hipotese forte: `expo-ads-admob` com `PLACEHOLDER_ANDROID_APP_ID` esta causando o crash.
 
-- [ ] 1.1 **Investigar causa raiz do prebuild crash** — INFRA | ALTA | CONTEXTO_PREVIO | AUTONOMO | [A4 detalhado]
+- [x] 1.1 **Investigar causa raiz do prebuild crash** — INFRA | ALTA | CONTEXTO_PREVIO | AUTONOMO | [A4 detalhado]
   - Acao: rodar `npx expo prebuild --platform android --no-install --verbose 2>&1` e capturar stack trace
   - Hipotese 1: plugin `expo-ads-admob` com `PLACEHOLDER_ANDROID_APP_ID` invalido
   - Hipotese 2: algum plugin esta tentando modificar `MainApplication.kt` antes de existir
@@ -78,14 +78,14 @@ Evidencias completas em `orchestration/plan_investigation.md`.
   - Validacao: apos cada tentativa, rodar `rm -rf android .expo` e tentar novamente
   - DoD: erro reproduzido e causa raiz identificada em log
 
-- [ ] 1.2 **Resolver prebuild crash (tentar solucoes em ordem)** — INFRA | ALTA | INVESTIGACAO | AUTONOMO | [A4]
+- [x] 1.2 **Resolver prebuild crash (tentar solucoes em ordem)** — INFRA | ALTA | INVESTIGACAO | AUTONOMO | [A4]
   - Solucao A: REMOVER `expo-ads-admob` do array `plugins` em `app.json` (temporariamente)
   - Solucao B: substituir `androidAppId: "PLACEHOLDER_ANDROID_APP_ID"` por um ID de teste valido (ex: `ca-app-pub-3940256099942544~3347511713` — ID de teste oficial Google)
   - Solucao C: limpar cache `rm -rf .expo node_modules/.cache` e re-tentar
   - Solucao D: usar `--no-plugins` se disponivel
   - DoD: `npx expo prebuild --platform android --no-install` completa sem erro
 
-- [ ] 1.3 **Validar saida do prebuild** — INFRA | ALTA | INVESTIGACAO | AUTONOMO | [A4]
+- [x] 1.3 **Validar saida do prebuild** — INFRA | ALTA | INVESTIGACAO | AUTONOMO | [A4]
   - Acao: apos prebuild OK, verificar que pasta `android/` foi criada
   - Verificar `android/app/build.gradle`, `android/app/src/main/AndroidManifest.xml`, `android/app/src/main/java/com/donizetiferr/expertnabiblia/MainActivity.kt`
   - Verificar que `MainApplication` referencia todos os expo modules do `app.json.plugins`

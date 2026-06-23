@@ -37,14 +37,7 @@
       "expo-router",
       "expo-secure-store",
       "expo-sqlite",
-      "expo-font",
-      [
-        "expo-ads-admob",
-        {
-          "androidAppId": "PLACEHOLDER_ANDROID_APP_ID",
-          "iosAppId": "PLACEHOLDER_IOS_APP_ID"
-        }
-      ]
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true,
