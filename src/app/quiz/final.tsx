@@ -14,21 +14,22 @@ export default function QuizFinal() {
 
   const variante = s >= 100 ? 'vitoria' : s >= 50 ? 'quase' : 'nao_deu';
 
+  // V10 M5.6: briefing usa laranja forte, nao roxo/vermelho
   const configs = {
     vitoria: {
-      fundo: COLORS.laranjaEscuro,
+      fundo: COLORS.laranjaForte,
       emoji: '🎉',
       titulo: 'PARABÉNS!',
       subtitulo: `${s}% de acerto — você é um Expert!`,
     },
     quase: {
-      fundo: COLORS.roxoPrimario,
+      fundo: COLORS.laranjaMedio,
       emoji: '💪',
       titulo: 'QUASE LÁ',
       subtitulo: `${s}% — Tente novamente para melhorar`,
     },
     nao_deu: {
-      fundo: COLORS.erroVermelho,
+      fundo: COLORS.laranjaForte,
       emoji: '📖',
       titulo: 'CONTINUE ESTUDANDO',
       subtitulo: `${s}% — Reforce os modulos com mais erros`,

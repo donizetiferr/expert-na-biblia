@@ -22,6 +22,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => ({
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   splash: {
+    // V10 M5.1: reativar splash nativa com logo grande (splash.png 1284x2778 ja existe)
     image: './assets/splash.png',
     resizeMode: 'contain',
     backgroundColor: '#3c026d',

@@ -31,7 +31,8 @@ export default function FinalAtividadeScreen() {
 
   const configs = {
     vitoria: {
-      fundo: TEMA.feedback.acerto.fundo,
+      // V10 M5.6: briefing diz laranja forte #fe8917, nao erroVermelho
+      fundo: COLORS.laranjaForte,
       pose: 'EXCLAMANDO' as const,
       titulo: 'VOCÊ PASSOU!',
       subtitulo: `Lição concluída com ${score}%`,
@@ -39,7 +40,8 @@ export default function FinalAtividadeScreen() {
       proxima: true,
     },
     quase: {
-      fundo: TEMA.feedback.parcial.fundo,
+      // V10 M5.6: laranja medio #fea726
+      fundo: COLORS.laranjaMedio,
       pose: 'PENSATIVO' as const,
       titulo: 'QUASE LÁ',
       subtitulo: `Você fez ${score}% — Reforce os pontos fracos`,
@@ -47,7 +49,8 @@ export default function FinalAtividadeScreen() {
       proxima: false,
     },
     nao_deu: {
-      fundo: TEMA.feedback.erro.fundo,
+      // V10 M5.6: laranja forte (briefing usa laranja, nao vermelho)
+      fundo: COLORS.laranjaForte,
       pose: 'TRISTE' as const,
       titulo: 'NÃO DEU',
       subtitulo: `Apenas ${score}% — Continue estudando`,

@@ -2,20 +2,32 @@ import { View, Text, FlatList, Pressable, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../constants/colors';
-import { listarLicoes } from '../../lib/db-queries';
-import type { Licao } from '../../types';
+import { listarLicoes, listarModulos } from '../../lib/db-queries';
+import type { Licao, Modulo } from '../../types';
 
 /**
  * Tela Licoes 2: Lista de licoes dentro do modulo (cadeado sequencial).
- * Query: SELECT * FROM licoes WHERE modulo_id = ? ORDER BY ordem
+ * V10 M5.3: header mostra o NOME do modulo (ex: "Alfabetização Bíblica") em vez do codigo (FB01).
+ * V10 M5.5: container com fundo creme (briefing), nao roxo.
  */
 export default function ModuloScreen() {
   const router = useRouter();
   const { moduloId } = useLocalSearchParams<{ moduloId: string }>();
   const [licoes, setLicoes] = useState<Licao[]>([]);
+  const [modulo, setModulo] = useState<Modulo | null>(null);
 
   useEffect(() => {
     if (moduloId) listarLicoes(moduloId).then(setLicoes);
+  }, [moduloId]);
+
+  // M5.3: carregar o modulo pelo ID para mostrar o NOME no header
+  useEffect(() => {
+    if (moduloId) {
+      listarModulos().then((mods) => {
+        const m = mods.find((x) => x.id === moduloId);
+        if (m) setModulo(m);
+      });
+    }
   }, [moduloId]);
 
   const liberado = (index: number): boolean => {
@@ -55,7 +67,8 @@ export default function ModuloScreen() {
       <Pressable onPress={() => router.back()} style={styles.voltar}>
         <Text style={styles.voltarTexto}>← Voltar</Text>
       </Pressable>
-      <Text style={styles.titulo}>{moduloId}</Text>
+      {/* M5.3: header mostra NOME do modulo em vez de codigo */}
+      <Text style={styles.titulo}>{modulo?.nome ?? moduloId}</Text>
       <FlatList
         data={licoes}
         keyExtractor={(item) => item.id}
@@ -69,7 +82,7 @@ export default function ModuloScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.roxoEscuro,
+    backgroundColor: COLORS.creme,  // M5.5: briefing diz creme, nao roxo
     padding: ESPACAMENTOS.md,
   },
   voltar: { padding: ESPACAMENTOS.sm, marginBottom: ESPACAMENTOS.sm },
@@ -81,22 +94,24 @@ const styles = StyleSheet.create({
   titulo: {
     fontFamily: FONTES.display,
     fontSize: 32,
-    color: COLORS.laranjaClaro,
+    color: COLORS.roxoEscuro,
     textAlign: 'center',
     marginBottom: ESPACAMENTOS.md,
   },
-  lista: { gap: ESPACAMENTOS.sm },
+  lista: {
+    gap: ESPACAMENTOS.sm,
+  },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: ESPACAMENTOS.md,
     borderRadius: BORDAS.raioMedio,
-    borderWidth: BORDAS.larguraMedia,
+    borderWidth: BORDAS.larguraGrossa,
     gap: ESPACAMENTOS.md,
   },
   cardLiberado: {
-    backgroundColor: COLORS.roxoPrimario,
-    borderColor: COLORS.laranjaEscuro,
+    backgroundColor: COLORS.roxoCard,           // M5.5: briefing diz roxo
+    borderColor: COLORS.laranjaBorda,
   },
   cardBloqueado: {
     backgroundColor: COLORS.cinzaEscuro,
@@ -109,7 +124,7 @@ const styles = StyleSheet.create({
     width: 50,
     textAlign: 'center',
   },
-  numeroLiberado: { color: COLORS.laranjaClaro },
+  numeroLiberado: { color: COLORS.laranjaEscuro },
   numeroBloqueado: { color: COLORS.cinzaMedio },
   nome: {
     fontFamily: FONTES.bodyBold,

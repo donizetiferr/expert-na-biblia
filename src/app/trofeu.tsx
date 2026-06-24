@@ -182,7 +182,8 @@ export default function TrofeuScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.branco,
+    // V10 M5.7: briefing diz creme #f7f4ed, nao branco
+    backgroundColor: COLORS.creme,
     alignItems: 'center',
     justifyContent: 'center',
     padding: ESPACAMENTOS.lg,

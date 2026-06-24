@@ -1,8 +1,11 @@
-# Plano de Evolucao — Expert Na Biblia (V9, 2026-06-24)
+# Plano de Evolucao — Expert Na Biblia (V10, 2026-06-24)
 
-> Gerado em 2026-06-24 por solo-plan (V9) | Escopo: **ATUALIZACAO** | Profundidade: **COMPLETO**
+> Gerado em 2026-06-24 por solo-plan (V10, MODO_ORQUESTRADO) | Escopo: **ATUALIZACAO** | Profundidade: **FOCADO**
 > Ultima atualizacao: 2026-06-24
-> Status: **AGUARDANDO_APROVACAO**
+> Status: **APROVADO**
+>
+> Investigacao + segundo turno critico: `orchestration/plan_investigation_v10.md`
+> Historico: V1-V7 (47/47), V8 (18 [x] c/ 5 gaps), V9 (19 itens, 18/19 [x], corrigiu M1+M2+M3), V9.3.4 (logo + cards visuais), V10 (este plano, foca 3 divergencias de identidade visual).
 >
 > Investigacao + 8 dimensoes + segundo turno critico: `orchestration/plan_investigation.md`
 > Historico: V1-V7 (47/47 itens), V8-RETOMADA (18 marcados [x] mas 5 continham gaps estruturais), V9 (este plano, reseta o que estava mal concluído)
@@ -49,6 +52,14 @@ Este plano V9 redefine os marcos para corrigir esses bugs antes de qualquer cois
 - **CI/CD**: GREEN_FALSO — pipeline passa, app quebra em runtime
 - **Deps**: ATUALIZADAS (Expo SDK 55, RN 0.83.6) — veredito: OK
 - **Docs**: RICO (CLAUDE.md + 6 sub-docs + 47-paginas Google Docs + 17 imagens + 4 planilhas)
+- **Auditoria V9.3.4 vs briefing** (2026-06-24 19h): 3 divergencias de identidade visual (T1 splash nativo, T2 modos sem logo, TL2 header com codigo). Detalhes no M5.
+
+## Estatisticas V10 (ATUALIZADAS)
+
+- **Total de itens**: 33 (4 CRITICA, 6 ALTA, 15 MEDIA, 8 BAIXA) — 19 V9 + 7 M5 + 7 M6 (audio)
+- **Por categoria**: 4 CORRECAO, 8 EVOLUCAO, 4 MANUTENCAO, 4 INFRA, 2 MELHORIA
+- **Por fonte**: 9 USUARIO (queixas V9 + looping V10) + 15 INVESTIGACAO (V9) + 4 INVESTIGACAO (V10 auditoria) + 12 DOUBLE_CHECK (V9) + 4 DOUBLE_CHECK (V10 pos-double-check-usuario)
+- **Milestones**: 6 (M0-M4 do V9 + M5 do V10)
 
 Evidencias completas em `orchestration/plan_investigation.md`.
 
@@ -254,6 +265,192 @@ Evidencias completas em `orchestration/plan_investigation.md`.
     2. Criar `src/lib/network.ts` com listener `NetInfo` do `@react-native-async-storage/async-storage` (ou similar) — exibir banner "Modo offline" no topo quando sem internet
     3. Em `src/app/_layout.tsx`, adicionar `BackHandler` listener global: sair do app so quando estiver na raiz `/modos` (com confirmacao); em outras telas, voltar normalmente
   - DoD: app nao quebra offline; back button inteligente
+
+---
+
+## Milestone 5: Identidade visual conforme briefing (ALTA) — V10
+
+> Auditoria profunda V9.3.4 vs briefing completo (docs/01-06 + 17 imagens) identificou 3
+> divergências. Conteúdo + áudio + quiz estão 100% OK; só falta alinhar 3 telas ao briefing.
+> Estimativa: 30-60 min de trabalho autonomo.
+
+- [x] 5.1 **T1 Splash: logo EXPERT NA BÍBLIA grande no topo (briefing image_20260622_205222.jpg)** — CORRECAO | ALTA | INVESTIGACAO (auditoria V10) | AUTONOMO | [lente 1 profundidade]
+  - **Causa**: o splash nativo Android (theme SplashScreen) toma conta antes do JSX do index.tsx. O `icon.png` (96x96) aparece por 1-2s em vez do logo cropped 750x900.
+  - **Acao**:
+    1. **REATIVAR** `image: "./assets/splash.png"` em `app.config.ts` (foi desabilitado no V9 com `image: undefined`)
+    2. `splash.png` ja existe (1284x2778 com logo cropped 750x900 centralizado, fundo `#3c026d`)
+    3. Em `index.tsx`, fazer `SplashScreen.hideAsync()` APOS 3s para o JSX assumir
+  - DoD: splash mostra logo "EXPERT NA BÍBLIA" grande, nao o adaptive icon 96x96
+
+- [x] 5.2 **T2 Modos: fundo `#f7f4ed` (creme) + logo grande + palavras-chave laranja (briefing image_20260622_223032.jpg)** — MELHORIA | ALTA | INVESTIGACAO (auditoria V10) | AUTONOMO | [lente 2 POLISH]
+  - **Cores oficiais extraidas via pixel analysis**:
+    - Fundo geral: `#f7f4ed` (creme/off-white)
+    - Card botao: `#4d0a7d` (roxo escuro) com borda `#f9ea59` (laranja claro)
+    - Texto: "BÍBLICO" e "LIÇÕES" em laranja/dourado, resto em branco
+  - **Acao** em `modos.tsx`:
+    1. `backgroundColor: "#f7f4ed"` (NÃO roxo)
+    2. Adicionar `<Image source={require('../../assets/images/logo.png')} style={styles.logo} />` no topo (logo cropped 750x900)
+    3. Estilo dos botões: fundo `#4d0a7d` + borda `#f9ea59` 4px + texto com Text nested (span "BÍBLICO"/"LIÇÕES" em laranjaEscuro + resto em branco)
+  - DoD: tela /modos segue a referencia visual do briefing
+
+- [x] 5.3 **TL2 Licoes do Modulo: header com NOME do modulo (briefing image_20260622_210318.jpg)** — CORRECAO | MEDIA | INVESTIGACAO (auditoria V10) | AUTONOMO | [lente 1 profundidade]
+  - **Causa**: `src/app/licoes/[moduloId].tsx` linha 60 mostra `moduloId` (codigo FB01) em vez do `nome` do modulo.
+  - **Acao**:
+    1. Carregar o modulo (ja tem `listarLicoes` que retorna `Licao[]` — adicionar `modulo: Modulo` ou fetch separado)
+    2. Renderizar `<Text>{modulo.nome}</Text>` em vez de `<Text>{moduloId}</Text>`
+  - DoD: header mostra "Alfabetização Bíblica" em vez de "FB01"
+
+- [x] 5.4 **FIX: Looping infinito em Tela Licao (depois do feedback)** — CORRECAO | CRITICA | USUARIO (depois do double check) | AUTONOMO | [lente 3 recuperado]
+  - **Sintoma reportado**: "nao consegui acessar as perguntas, ficou com looping infinito" — o usuario responde a uma pergunta, vai para o feedback, e quando volta para a proxima, a tela trava em loop.
+  - **Causa provavel** (analise do codigo em `src/app/licoes/[moduloId]/[licaoId].tsx`):
+    1. `useEffect` linha 32 com `[licaoId]` nao dispara (mesmo licaoId apos feedback)
+    2. `useEffect` linha 37 com `[params.indice]` chama `setIndice(p)` mas pode criar loop se `p` for undefined ou igual ao `indice` anterior
+    3. `useEffect` da splash com `[router, scaleAnim, fadeAnim]` — `router` em deps pode causar re-rodadas se o `router` for uma nova referencia
+    4. O `<Image>` da splash com `Animated.View` que pode re-disparar animacoes
+  - **Acao**:
+    1. Em `licao[moduloId][licaoId].tsx`:
+       - Trocar `useEffect(() => { if (licaoId) listarPerguntas(licaoId).then(setPerguntas); }, [licaoId]);` para `[licaoId, moduloId]` (garantir reset ao trocar modulo)
+       - Adicionar guard no `useEffect` da linha 37: `if (p === undefined || p === indice) return;`
+       - Mover `setResposta('')` e `setPose('PENSATIVO')` para ANTES do `setIndice(p)` (estado coerente)
+    2. Em `index.tsx` (splash): remover `router` das deps do `useEffect` (substituir por `[]` ja que `router` nao muda)
+    3. Em `quiz/jogar.tsx`: `setInterval` ja tem cleanup, mas o `proxima()` chamado de dentro do `setTempo` pode causar race — usar ref para o timer
+  - DoD: usuario responde 1 pergunta → feedback → vai para proxima (sem loop). Tela splash aparece uma vez e some em 3s.
+
+- [x] 5.5 **TL Pergunta: fundo roxo escuro `#3e036f` (briefing image_20260622_211747.jpg)** — CORRECAO | MEDIA | INVESTIGACAO (auditoria V10) | AUTONOMO | [lente 6 adjacente]
+  - **Bug**: `licao[moduloId][licaoId].tsx` tem `backgroundColor: COLORS.roxoEscuro` (`#3c026d`) — **MAS o briefing usa `#3e036f`** (muito mais claro/saturado)
+  - **Pixel analysis**: fundo_topo=`#3e036f`, fundo_meio=`#5c0d8d` (degradê roxo sutil do topo ao meio)
+  - **Card branco do meio**: `#ffffff` (correto, sem mudança)
+  - **Borda do input**: laranja `#f88800` (ja correto via COLORS.laranjaEscuro)
+  - **Acao**: `licao[moduloId][licaoId].tsx`:
+    - `container: { backgroundColor: '#3e036f' }` (NÃO `#3c026d`)
+  - DoD: Tela Licao tem fundo roxo `#3e036f` (consistente com briefing)
+
+- [x] 5.6 **Feedback Erro + Placar 100%: fundo laranja forte `#fe8917` (briefing image_20260622_212830.jpg e 213535.jpg)** — CORRECAO | MEDIA | INVESTIGACAO (auditoria V10) | AUTONOMO | [lente 6 adjacente]
+  - **Bug**: `final.tsx` (variante 'nao_deu' e 'quase') e `quiz/final.tsx` (variante 'nao_deu' e 'quase') tem `backgroundColor: COLORS.erroVermelho` (`#f87171`) e `COLORS.laranjaEscuro` (`#fd8414`)
+  - **Pixel analysis**: fundo_topo=`#fe8917`, fundo_meio=`#fea726`, borda_card_top=`#fdc937` (degradê laranja vivo)
+  - **Acao em `final.tsx` (TL Final Atividade)**:
+    - variante 'nao_deu': `backgroundColor: '#fe8917'`
+    - variante 'quase': `backgroundColor: '#fea726'`
+    - variante 'vitoria': `backgroundColor: '#fe8917'`
+  - **Acao em `quiz/final.tsx`**:
+    - Mesmas 3 cores
+  - DoD: Feedback/Placar tem fundo laranja forte (consistente com briefing)
+
+- [x] 5.7 **Trofeu: fundo creme `#f7f4ed` + card com gradiente laranja (briefing image_20260622_215940.jpg)** — CORRECAO | MEDIA | INVESTIGACAO (auditoria V10) | AUTONOMO | [lente 6 adjacente]
+  - **Pixel analysis**: fundo_topo=`#f7f4ed` (creme, igual a T2), card_centro=`#ffc027` (laranja claro)
+  - **Acao em `trofeu.tsx`**:
+    - `container: { backgroundColor: '#f7f4ed' }` (NÃO roxo)
+    - Adicionar gradiente linear no card do trofeu: `['#fca605', '#ffc027']` (laranja)
+  - DoD: Tela Trofeu tem fundo creme + card com gradiente laranja (consistente com briefing)
+
+---
+
+## Milestone 6: Evoluções de áudio (ALTA) — V10
+
+> 5 MP3 atuais (splash/acerto/erro/transicao/musica_fundo) são básicos (gerados via ElevenLabs
+> sem muito refinamento). Briefing menciona "som" mas sem detalhes. O usuário pediu para
+> "melhorar som de fundo, efeitos sonoros, etc". Estimativa: 1-2h de trabalho autônomo.
+
+### 6.1 **Sons novos + upgrades (coleção premium)** — MELHORIA | ALTA | USUARIO (depois da auditoria V10) | AUTONOMO | [lente 6 adjacente]
+
+- **Estado atual**: 5 MP3 gerados por ElevenLabs (qualidade média)
+- **Acao**:
+  1. **Música fundo mais longa e profissional**: substituir `musica_fundo.mp3` (81KB, ~5s) por uma faixa de 60-90s em loop seamless (orchestral mysterious, mystery theme, ou lofi gospel)
+  2. **SFX adicionais** (gerar via ElevenLabs MCP `text_to_sound_effects`):
+     - `combo.mp3` — som de "conquista" para quando usuario acerta 3+ seguidas
+     - `tick.mp3` — som sutil de tick do timer do quiz (1s)
+     - `vitoria.mp3` — som grandioso para o trofeu 100% (fanfarra curta)
+     - `cadeira_desbloqueia.mp3` — som de "click + unlock" quando uma licao/modulo é desbloqueado
+     - `shake.mp3` — som de "wrong" mais enérgico (opcional)
+  3. **Refinar `acerto.mp3` e `erro.mp3`** atuais (17KB cada) com versões mais profissionais:
+     - `acerto.mp3` v2 — som cristalino de sino/ding (~2s, fade out)
+     - `erro.mp3` v2 — som suave de "oh no" sem ser irritante (~1s)
+  4. **Adicionar fade in/out no `splash.mp3`**: para não ser abrupto
+- **Onde gerar**: via `mcp__elevenlabs__text_to_sound_effects` (já autenticado no cofre)
+- DoD: 5+ sons novos no `assets/audio/`, todos <500KB exceto música fundo (<2MB)
+
+### 6.2 **Controle de volume independente (musica vs SFX)** — MELHORIA | MEDIA | PESQUISA_EXTERNA (padrão Duolingo/Brilliant) | AUTONOMO | [lente 6 adjacente]
+
+- **Estado atual**: `settings.ts` tem toggle binário `musica: boolean` e `efeitos: boolean`
+- **Acao** em `src/types/index.ts`:
+  1. Adicionar `volumeMusica: number` (0-1, default 0.3)
+  2. Adicionar `volumeEfeitos: number` (0-1, default 0.7)
+  3. Adicionar campo "Volumes" na tela `config.tsx` com 2 sliders
+- **Acao em `src/lib/sound.ts`**:
+  1. `playMusicaFundo()` aplica `volumeMusica` no `setVolumeAsync`
+  2. `playOneShot()` aplica `volumeEfeitos`
+- DoD: usuário pode ajustar volume da música e dos SFX independentemente
+
+### 6.3 **Persistência de config melhorada (sem polling 500ms)** — MANUTENCAO | MEDIA | INVESTIGACAO (auditoria V10) | AUTONOMO | [lente 6 adjacente]
+
+- **Estado atual**: `sound-runtime.ts` faz `setInterval(checkAndReact, 500)` para reagir a mudanças de settings
+- **Problema**: polling de 500ms é ineficiente; pode causar bugs de timing em mudanças rápidas
+- **Acao**:
+  1. Substituir polling por `useSettingsStore` (zustand ou similar) ou callback-based subscription
+  2. OU: usar `useFocusEffect` do expo-router (reage a focus de tela)
+  3. OU: criar `SettingsContext` React + observer pattern
+  4. Manter compat com testes Jest (mock o observer)
+- DoD: sem polling 500ms; mudança em settings reflete em <100ms
+
+### 6.4 **Música tema por módulo (variedade)** — EVOLUCAO | BAIXA | PESQUISA_EXTERNA (padrão Duolingo categoriza por tema) | AUTONOMO | [lente 6 adjacente]
+
+- **Ação**:
+  1. Criar 3 variantes de música fundo por área:
+     - `musica_fundo_fb.mp3` — calm/místico (Fundamentos Bíblicos)
+     - `musica_fundo_at.mp3` — épico/aventuras (Antigo Testamento)
+     - `musica_fundo_nt.mp3` — suave/luminoso (Novo Testamento)
+  2. `playMusicaFundo(moduloId?)` seleciona a música baseada no módulo atual
+  3. Default: variante "fb" (caso sem módulo definido)
+- DoD: música tema diferente para cada área (FB/AT/NT); cross-fade suave entre transições
+
+### 6.5 **Haptic feedback (vibração) em interações chave** — MELHORIA | BAIXA | PESQUISA_EXTERNA (UX mobile best practice) | AUTONOMO | [lente 6 adjacente]
+
+- **Ação**:
+  1. Adicionar `expo-haptics` nas deps
+  2. Criar `src/lib/haptics.ts` com:
+     - `lightTap()` — toque leve (clique em botão)
+     - `successBuzz()` — sucesso (acerto)
+     - `errorBuzz()` — erro (2 buzzes curtos)
+     - `notificationBuzz()` — feedback (passar licao)
+  3. Chamar `successBuzz()` em `playAcerto()` e `errorBuzz()` em `playErro()`
+  4. Adicionar toggle `hapticos: boolean` em `settings.ts` (default true)
+- DoD: vibração contextual em acerto/erro/passar licao; toggle nas settings
+
+### 6.6 **Voice over do quiz (TTS para perguntas)** — EVOLUCAO | BAIXA | USUARIO (auditoria) | DESTRAVAVEL: ElevenLabs TTS API (mesmo cofre) | [lente 6 adjacente]
+
+- **Ação**:
+  1. Adicionar `expo-speech` (`Speech.speak(texto)`)
+  2. Em `quiz/jogar.tsx` e `licao[moduloId][licaoId].tsx`: ao renderizar pergunta, fazer TTS dela em português
+  3. Adicionar toggle `voz: boolean` em `settings.ts` (default false — liga só se usuário quiser)
+- **Risco**: latência de TTS pode atrasar UX; só fazer sob demanda
+- DoD: toggle em settings; ao ativar, perguntas são lidas em PT-BR
+
+### 6.7 **Persistir posição da música (resume após pause)** — MANUTENCAO | BAIXA | INVESTIGACAO (auditoria) | AUTONOMO | [lente 6 adjacente]
+
+- **Estado atual**: `playMusicaFundo()` faz `createAsync({ shouldPlay: true })` — sempre começa do início
+- **Ação**: trackear `positionMillis` em state, ao retomar, chamar `setStatusAsync({ positionMillis: savedPos })`
+- DoD: se o usuário parar a música e voltar, ela continua de onde parou (não do início)
+
+- [x] 5.4 **FIX: Looping infinito em Tela Licao (depois do feedback)** — CORRECAO | CRITICA | USUARIO (depois do double check) | AUTONOMO | [lente 3 recuperado]
+  - **Sintoma reportado**: "nao consegui acessar as perguntas, ficou com looping infinito" — o usuario responde a uma pergunta, vai para o feedback, e quando volta para a proxima, a tela trava em loop.
+  - **Causa provavel** (analise do codigo em `src/app/licoes/[moduloId]/[licaoId].tsx`):
+    1. `useEffect` linha 32 com `[licaoId]` nao dispara (mesmo licaoId apos feedback)
+    2. `useEffect` linha 37 com `[params.indice]` chama `setIndice(p)` mas pode criar loop se `p` for undefined ou igual ao `indice` anterior
+    3. `useEffect` da splash com `[router, scaleAnim, fadeAnim]` — `router` em deps pode causar re-rodadas se o `router` for uma nova referencia
+    4. O `<Image>` da splash com `Animated.View` que pode re-disparar animacoes
+  - **Acao**:
+    1. Em `licao[moduloId][licaoId].tsx`:
+       - Trocar `useEffect(() => { if (licaoId) listarPerguntas(licaoId).then(setPerguntas); }, [licaoId]);` para `[licaoId, moduloId]` (garantir reset ao trocar modulo)
+       - Adicionar guard no `useEffect` da linha 37: `if (p === undefined || p === indice) return;`
+       - Mover `setResposta('')` e `setPose('PENSATIVO')` para ANTES do `setIndice(p)` (estado coerente)
+    2. Em `index.tsx` (splash): remover `router` das deps do `useEffect` (substituir por `[]` ja que `router` nao muda)
+    3. Em `quiz/jogar.tsx`: `setInterval` ja tem cleanup, mas o `proxima()` chamado de dentro do `setTempo` pode causar race — usar ref para o timer
+  - DoD: usuario responde 1 pergunta → feedback → vai para proxima (sem loop). Tela splash aparece uma vez e some em 3s.
+
+### Validacao de apontamentos do usuario (V10)
+- T1 splash com logo grande: VALIDO (auditoria V10 confirmou 96x96 adaptive icon)
+- T2 modos sem logo + palavras-chave: VALIDO (auditoria V10 confirmou divergencia)
+- TL2 header com codigo: VALIDO (auditoria V10 confirmou "FB01" em vez de "Alfabetização Bíblica")
 
 ---
 

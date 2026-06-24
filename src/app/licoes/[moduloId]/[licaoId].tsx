@@ -29,19 +29,22 @@ export default function LicaoScreen() {
   const [pose, setPose] = useState<Pose>('PENSATIVO');
   const [acertos, setAcertos] = useState(0);
 
+  // V10 M5.4: deps incluem [licaoId, moduloId] (não só licaoId) para garantir reset
+  // ao trocar de módulo/lição (evita o looping infinito que ocorria antes).
   useEffect(() => {
     if (licaoId) listarPerguntas(licaoId).then(setPerguntas);
-  }, [licaoId]);
+  }, [licaoId, moduloId]);
 
-  // Quando params.indice muda (deep link do feedback), sincroniza estado
+  // V10 M5.4: quando params.indice muda (deep link do feedback), sincroniza estado
+  // com guard contra loops (p undefined ou igual ao indice atual).
   useEffect(() => {
     const p = parseInt(params.indice ?? '0', 10);
-    if (!Number.isNaN(p) && p !== indice) {
-      setIndice(p);
-      setResposta('');
-      setPose('PENSATIVO');
-    }
-  }, [params.indice]);
+    if (Number.isNaN(p)) return;              // guard: p inválido
+    if (p === indice) return;                 // guard: já está no estado certo
+    setResposta('');                          // ANTES de setIndice (estado coerente)
+    setPose('PENSATIVO');
+    setIndice(p);
+  }, [params.indice, indice]);
 
   if (perguntas.length === 0 || !moduloId || !licaoId) {
     return (
@@ -133,7 +136,8 @@ export default function LicaoScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.roxoEscuro,
+    // V10 M5.5: briefing usa #3e036f (roxo claro), NAO #3c026d (roxoEscuro)
+    backgroundColor: COLORS.roxoClaro,
     padding: ESPACAMENTOS.lg,
   },
   loading: {
