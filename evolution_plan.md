@@ -369,15 +369,24 @@ Ordem recomendada: **M0 → M1 → M2 → M3.1 → (M4 em paralelo) → M3.2 →
   restantes × ~22 RPM = ~3h para conclusao. Log em `data/m2_batch_v9_resume.log`.
 - Apos conclusao automatica, basta re-rodar o APK V9 build (ver item pendente abaixo).
 
-### Pendencias ATUALIZADAS (24/06)
+### Pendencias ATUALIZADAS (24/06 — continuacao 2)
 
-1. **M1.1 batch completo**: 3940 perguntas ainda com `[GERAR]`. Batch rodando em background,
-   ~3h. Acompanhamento: `tail -f data/m2_batch_v9_resume.log`.
-2. **APK V9 build**: encoding de pasta continua problematico (working tree UTF-8 "Bíblia" vs pasta
-   sombra Latin-1 "BÃ­blia"). Tentativa de sincronizar codigo + rodar build em pasta sombra via
-   cmd.exe NAO concluiu — o `gradlew.bat` aparentemente nem chegou a executar. Alternativas:
-   (a) renomear pasta sombra para `expertnaBiblia` (sem acento) e usar essa como build root;
-   (b) aguardar batch M1.1 terminar e gerar V9 build com codigo final via CI EAS Build na nuvem
-   (requer `EXPO_TOKEN` em `Tokens API e acessos/expo/`).
-3. **M3.2 E2E completo**: 8 screenshots capturados, 6 itens de smoke pendentes (quiz, feedback
-   acerto, feedback erro, trofeu, settings toggle real-time, on/off banner offline).
+1. **M1.1 batch completo**: 900/4240 processadas (21%). 3340 restantes × ~20 RPM = ~2h47min para
+   conclusao. Acompanhamento: `tail -f data/m2_batch_v9_resume.log`. Auto-finaliza sozinho.
+2. **APK V9 build**: pendente — encoding da pasta impede build local. Recomendado: apos batch M1.1
+   terminar, gerar APK V9 via EAS Build na nuvem (requer `EXPO_TOKEN`).
+3. **M3.2 E2E**: 21 screenshots validos em `orchestration/v9_e2e_evidence/` (acima dos 14 planejados).
+   Cobertura: splash, onboarding, modos, modulos (cadeado nos seguintes), M001/L01-L08 (cadeado nos
+   seguintes), licao Q01-Q03 (digitar resposta + ENVIAR), quiz (aleatorio+personalizado), config
+   (toggles som/efeitos/notificacoes), banner offline (cena capturada apos svc wifi disable).
+4. **M3.3 catbox**: APK V8 ja em `https://files.catbox.moe/r0kku0.apk`. SHA256:
+   `D2B86ABD269EEC23600619D71091C2207D867F03FBEBD01F387BBD498C11EDB2`. Re-upload confirmou URL
+   (catbox deduplica arquivos identicos). Quando APK V9 estiver pronto, sera subido substituindo.
+5. **M4.1, M4.2, M4.4, M4.7**: todos validados via tsc --noEmit (zero erros em src/). Commit
+   `8b81f6d` adiciona `BackHandlerOffline.tsx` + 13 screenshots + integracao em `_layout.tsx`.
+
+### Acoes automaticas em execucao
+
+- Batch M1.1 continua processando (PID 24756 — runtime 12h+ ate agora). Total checkpoints: 9
+  persistidos a cada 100 perguntas. Auto-recupera de erros transientes (retry exponencial).
+- Apos M1.1 terminar, `data/db.sqlite` tera ~4345 respostas canonicas. Nao requer intervencao manual.
