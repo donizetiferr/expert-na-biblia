@@ -12,6 +12,7 @@ import { initSoundRuntime, stopSoundRuntime } from '../lib/sound-runtime';
 import { startMonitoring, stopMonitoring } from '../lib/network';
 import { BannerOffline } from '../components/BannerOffline';
 import { BackHandlerOffline } from '../components/BackHandlerOffline';
+import { runMigrations } from '../db/database';
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -24,6 +25,18 @@ export default function RootLayout() {
   useEffect(() => {
     SplashScreen.preventAutoHideAsync();
   }, []);
+
+  // V9.2.1: roda migrations + seed na PRIMEIRA execucao do app
+  // (idempotente: aplica seed uma vez via flag _seed_applied)
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      runMigrations().then(() => {
+        console.log('[layout] migrations+seed OK');
+      }).catch((e) => {
+        console.warn('[layout] migrations falharam:', e && e.stack ? e.stack : e);
+      });
+    }
+  }, [fontsLoaded, fontError]);
 
   useEffect(() => {
     if (fontsLoaded || fontError) {

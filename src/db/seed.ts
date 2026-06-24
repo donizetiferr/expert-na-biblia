@@ -9,9 +9,19 @@
  * scripts/generate_seed_ts.cjs (commitados no repo, NAO requerem rebuild).
  */
 import type { SQLiteDatabase } from 'expo-sqlite';
-import { applySeed as applySeedModulosLicoes } from './seed-modulos-licoes';
+import { applySeedModulosLicoes } from './seed-modulos-licoes';
 import { applySeedPerguntas } from './seed-perguntas';
 import { applySeedQuiz } from './seed-quiz';
+
+// Efeito colateral: garantir que Metro bundle inclui os 3 arquivos
+// (tree-shaking removeria se nao houvesse referencia estaticamente observavel).
+// Chamada "morta" — o resultado eh descartado, so importa para o bundler.
+const _FORCE_BUNDLE = [
+  applySeedModulosLicoes.toString(),
+  applySeedPerguntas.toString(),
+  applySeedQuiz.toString(),
+];
+if (_FORCE_BUNDLE.length !== 3) throw new Error('seed broken');
 
 const SEED_FLAG_TABLE = '_seed_applied';
 const SEED_FLAG_VALUE = 'v9_2_1';

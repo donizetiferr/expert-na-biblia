@@ -6,13 +6,13 @@ const db = new Database('data/db.sqlite');
 
 function esc(s) {
   if (s === null || s === undefined) return 'NULL';
-  return '"' + String(s)
+  // SQL usa aspas SIMPLES para strings. Duplas sao reservadas para identificadores.
+  return "'" + String(s)
     .replace(/\\/g, '\\\\')
-    .replace(/"/g, '\\"')
-    .replace(/\$/g, '\\$')
+    .replace(/'/g, "''")  // escape aspas simples dobrando
     .replace(/\n/g, '\\n')
     .replace(/\r/g, '\\r')
-    + '"';
+    + "'";
 }
 
 // MODULOS + LICOES

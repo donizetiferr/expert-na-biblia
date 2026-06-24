@@ -67,9 +67,6 @@ export default function SplashScreen() {
         />
       </Animated.View>
 
-      <Animated.Text style={[styles.titulo, { opacity: fadeAnim }]}>
-        Expert Na Bíblia
-      </Animated.Text>
       <Animated.Text style={[styles.subtitulo, { opacity: fadeAnim }]}>
         Sua jornada pela Palavra
       </Animated.Text>
@@ -93,10 +90,12 @@ const styles = StyleSheet.create({
     padding: ESPACAMENTOS.lg,
   },
   logo: {
-    width: 300,
-    height: 300,
+    width: 340,
+    height: 340,
   },
   titulo: {
+    // V9.2.8: titulo removido (o logo JAH contem "EXPERT NA BIBLIA")
+    // Mantido apenas para compatibilidade TS — nao usado
     fontFamily: FONTES.display,
     fontSize: 48,
     color: COLORS.laranjaClaro,
@@ -108,10 +107,11 @@ const styles = StyleSheet.create({
   },
   subtitulo: {
     fontFamily: FONTES.bodyRegular,
-    fontSize: 18,
-    color: COLORS.branco,
+    fontSize: 20,
+    color: COLORS.laranjaEscuro,
     textAlign: 'center',
-    marginTop: ESPACAMENTOS.sm,
+    marginTop: ESPACAMENTOS.md,
+    fontWeight: 'bold',
   },
   botaoPular: {
     position: 'absolute',

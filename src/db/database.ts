@@ -1,4 +1,5 @@
 import * as SQLite from 'expo-sqlite';
+import { seedDatabaseIfEmpty } from './seed';
 
 /**
  * Wrapper expo-sqlite para Expert Na Biblia.
@@ -33,16 +34,6 @@ export async function runMigrations(): Promise<{ applied: number; skipped: numbe
   }
 
   const db = getDatabase();
-
-  // V9.2.1: seed inicial (modulos + licoes + 4345 perguntas + 4341 quiz_alternatives)
-  // ANTES das migrations, porque as migrations dependem de tabelas existirem;
-  // o seed so popula dados, nao cria schema.
-  try {
-    const { seedDatabaseIfEmpty } = await import('./seed');
-    seedDatabaseIfEmpty(db);
-  } catch (e) {
-    console.warn('[db] seed nao aplicado:', e);
-  }
 
   // Bootstrap tabela de migrations
   db.execSync(`
@@ -142,10 +133,22 @@ export async function runMigrations(): Promise<{ applied: number; skipped: numbe
     db.execSync(migration001);
     db.runSync('INSERT INTO _migrations (name) VALUES (?)', ['001_initial']);
     migrationsApplied = true;
+    // V9.2.6: seed APOS migrations (tabelas existem agora)
+    try {
+      seedDatabaseIfEmpty(db);
+    } catch (e) {
+      console.warn('[db] seed nao aplicado:', e);
+    }
     return { applied: 1, skipped: 0 };
   }
 
   migrationsApplied = true;
+  // Seed idempotente (checa flag _seed_applied) — roda mesmo se migration ja aplicada
+  try {
+    seedDatabaseIfEmpty(db);
+  } catch (e) {
+    console.warn('[db] seed nao aplicado:', e);
+  }
   return { applied: 0, skipped: 1 };
 }
 
