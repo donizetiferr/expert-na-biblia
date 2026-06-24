@@ -1,209 +1,209 @@
 {
-  "generated_at": "2026-06-24T06:05:14.417Z",
-  "elapsed_s": 2194.7,
-  "total": 3340,
-  "ok": 708,
-  "err": 2632,
+  "generated_at": "2026-06-24T14:37:36.179Z",
+  "elapsed_s": 11460.6,
+  "total": 2027,
+  "ok": 1595,
+  "err": 432,
   "failures": [
     {
-      "id": "AT08-L14-Q05",
-      "err": "JSON nao encontrado: <think>\nA pergunta é sobre as consequências políticas e religiosas da infidelidade dos reis de Judá."
+      "id": "AT13-L08-Q01",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about what Proverbs teaches about wealth and poverty in Brazilian Portugu"
     },
     {
-      "id": "AT08-L20-Q03",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about the role that covenant, temple, idolatry, or prophecy plays in the "
+      "id": "AT13-L10-Q04",
+      "err": "TypeError: terminated"
     },
     {
-      "id": "AT08-L20-Q06",
-      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical question in Brazilian Portuguese about how the \"purpose of kin"
+      "id": "AT13-L20-Q05",
+      "err": "TypeError: terminated"
     },
     {
-      "id": "AT08-L23-Q01",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about characters, kings, or events linked to the temple and worship in Ch"
-    },
-    {
-      "id": "AT08-L23-Q06",
-      "err": "JSON nao encontrado: <think>\nThe user is asking a Bible question in Brazilian Portuguese about how the temple and worship"
-    },
-    {
-      "id": "AT08-L24-Q03",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about how audiences and contexts of composition help explain differences "
-    },
-    {
-      "id": "AT08-L24-Q06",
-      "err": "JSON nao encontrado: <think>\nThe question asks: \"How does Chronicles encourage the community after the exile?\"\n\nThis is a"
-    },
-    {
-      "id": "AT09-L02-Q03",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about a biblical question in Brazilian Portuguese. The question is \"Que a"
-    },
-    {
-      "id": "AT09-L10-Q03",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about what authorization, opposition, or challenge appears in the teachin"
-    },
-    {
-      "id": "AT09-L11-Q01",
-      "err": "JSON nao encontrado: <think>\nPergunta sobre Esdras e os casamentos mistos. Preciso lembrar o que a Bíblia diz sobre isso."
-    },
-    {
-      "id": "AT09-L19-Q03",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about what authorization, opposition, or challenge appears in Nehemiah's "
-    },
-    {
-      "id": "AT10-L03-Q01",
+      "id": "AT13-L20-Q07",
       "err": "TypeError: fetch failed"
     },
     {
-      "id": "AT10-L05-Q01",
+      "id": "AT13-L21-Q06",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about the relationship between Christ, creation, redemption, and true wis"
+    },
+    {
+      "id": "AT13-L21-Q05",
+      "err": "JSON nao encontrado: <think>\nThe question asks: \"How does union with Christ transform the Christian way of seeking wisdom"
+    },
+    {
+      "id": "AT14-L04-Q04",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical question in Portuguese about how God, fear, love, or covenant "
+    },
+    {
+      "id": "AT14-L04-Q05",
+      "err": "JSON nao encontrado: <think>\nThe user is asking in Portuguese about biblical interpretations regarding \"work and accompli"
+    },
+    {
+      "id": "AT14-L05-Q06",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about the contribution that pleasure and wealth offer to the overall mess"
+    },
+    {
+      "id": "AT14-L07-Q04",
+      "err": "JSON nao encontrado: <think>\nThe question is in Portuguese and asks: \"Como Deus, temor, amor ou aliança se relacionam com"
+    },
+    {
+      "id": "AT14-L07-Q06",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a question in Portuguese about a biblical book: \"Que contribuição [tempo/"
+    },
+    {
+      "id": "AT14-L09-Q01",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about what \"death\" means in the context of Ecclesiastes or Song of Songs "
+    },
+    {
+      "id": "AT14-L09-Q03",
+      "err": "JSON nao encontrado: <think>\nThe question is in Portuguese and asks: \"Que tensão ou limite da vida humana aparece em mort"
+    },
+    {
+      "id": "AT14-L10-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about a biblical question regarding images, arguments, or experiences use"
+    },
+    {
+      "id": "AT14-L11-Q04",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a theological/biblical question in Brazilian Portuguese: \"How does God's "
+    },
+    {
+      "id": "AT14-L11-Q05",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a theological question in Brazilian Portuguese about how the fear of God "
+    },
+    {
+      "id": "AT14-L13-Q05",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical question in Portuguese: \"Why is it difficult to reconstruct a "
+    },
+    {
+      "id": "AT14-L14-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about a biblical/theological question in Brazilian Portuguese: \"Quais ima"
+    },
+    {
+      "id": "AT14-L16-Q04",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical/theological question in Portuguese about how God, fear, love, "
+    },
+    {
+      "id": "AT14-L16-Q06",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a question in Portuguese about a biblical book: \"Que contribuição beleza "
+    },
+    {
+      "id": "AT14-L17-Q03",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about a tension or limit of human life that appears in conjugal exclusivi"
+    },
+    {
+      "id": "AT14-L18-Q05",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about misinterpretations to avoid when studying sexuality in marriage fro"
+    },
+    {
+      "id": "AT14-L18-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about Bible questions regarding sexuality in marriage - what images, argu"
+    },
+    {
+      "id": "AT15-L01-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about the difference between biblical prophecy and simple prediction of t"
+    },
+    {
+      "id": "AT15-L01-Q04",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about a biblical prophecy question in Portuguese. The question asks: \"Wha"
+    },
+    {
+      "id": "AT15-L01-Q05",
+      "err": "JSON nao encontrado: <think>\nThe user is asking in Portuguese about how symbolic actions, visions, and oracles were used "
+    },
+    {
+      "id": "AT15-L01-Q07",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a question in Portuguese about how the fulfillment and faithfulness to th"
+    },
+    {
+      "id": "AT15-L02-Q03",
+      "err": "JSON nao encontrado: <think>\nThe user is asking in Brazilian Portuguese about a biblical question: \"Which characters, vis"
+    },
+    {
+      "id": "AT15-L02-Q05",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about a historical greeting or future hope related to a prophetic calling"
+    },
+    {
+      "id": "AT15-L03-Q03",
+      "err": "JSON nao encontrado: <think>\nThe question asks: \"Which characters, visions or oracles are linked to prophecy and covenant"
+    },
+    {
+      "id": "AT15-L08-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about messianic hope in Isaiah - specifically which book, period, and his"
+    },
+    {
+      "id": "AT15-L08-Q06",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical/theological question in Portuguese about how the messianic hop"
+    },
+    {
+      "id": "AT15-L10-Q04",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about how judgment, holiness, covenant, or restoration appear in the fall"
+    },
+    {
+      "id": "AT15-L10-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about the book, period, and historical situation in which the fall of Jer"
+    },
+    {
+      "id": "AT15-L12-Q03",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about acrostic poems and how they appear in the Bible book. This seems to"
+    },
+    {
+      "id": "AT15-L12-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking in Brazilian Portuguese about \"How poems express grief over the destructi"
+    },
+    {
+      "id": "AT15-L12-Q04",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical question in Portuguese: \"How are sin, judgment, and accountabi"
+    },
+    {
+      "id": "AT15-L14-Q04",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about how concepts like \"juízo\" (judgment), \"santidade\" (holiness), \"alia"
+    },
+    {
+      "id": "AT15-L14-Q03",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about which characters, visions, or oracles are linked to the glory of Go"
+    },
+    {
+      "id": "AT15-L14-Q06",
+      "err": "JSON nao encontrado: <think>\nThe question asks how the glory of God in Ezekiel connects to Christ, the New Covenant, or t"
+    },
+    {
+      "id": "AT15-L15-Q03",
+      "err": "JSON nao encontrado: <think>\nThe user is asking in Portuguese about biblical characters, visions, or oracles linked to in"
+    },
+    {
+      "id": "AT15-L16-Q05",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about a biblical question in Brazilian Portuguese: \"Qual promessa de rest"
+    },
+    {
+      "id": "AT15-L17-Q04",
+      "err": "JSON nao encontrado: <think>\nThe question is in Portuguese and asks: \"How do judgment, holiness, covenant or restoration "
+    },
+    {
+      "id": "AT15-L18-Q03",
+      "err": "JSON nao encontrado: <think>\nThe question asks about how narratives of fidelity and apocalyptic visions structure the boo"
+    },
+    {
+      "id": "AT15-L15-Q04",
       "err": "TypeError: fetch failed"
     },
     {
-      "id": "AT10-L06-Q06",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about the risks that the conspiracy (likely referring to a biblical conte"
+      "id": "AT15-L18-Q05",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a question in Portuguese about the Bible, specifically about how Daniel d"
     },
     {
-      "id": "AT10-L10-Q03",
-      "err": "Nenhum JSON com campo \"r\" parseavel (ultimo err: Expected ',' or '}' after property value in JSON at position 217 (line 1 column 218))"
+      "id": "AT15-L18-Q07",
+      "err": "JSON nao encontrado: <think>\nThe user is asking in Portuguese: \"How do Jesus and the New Testament resume/take up images "
     },
     {
-      "id": "AT10-L10-Q04",
-      "err": "Nenhum JSON com campo \"r\" parseavel (ultimo err: Expected ',' or '}' after property value in JSON at position 380 (line 1 column 381))"
+      "id": "AT15-L19-Q04",
+      "err": "JSON nao encontrado: <think>\nThe question asks about how \"judgment, holiness, covenant or restoration appear in faithfuln"
     },
     {
-      "id": "AT10-L13-Q01",
-      "err": "JSON nao encontrado: <think>The user is asking about characters and main events linked to divine providence in the Bible."
+      "id": "AT15-L19-Q06",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical question in Portuguese about how faithfulness in exile connect"
     },
     {
-      "id": "AT11-L03-Q01",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about a celestial scene presented at the beginning of the Book of Job.\n\nL"
-    },
-    {
-      "id": "AT11-L03-Q07",
-      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical question in Brazilian Portuguese. The question is: \"What does "
-    },
-    {
-      "id": "AT11-L06-Q03",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about the vision of Eliphaz regarding suffering, justice, or wisdom. Elip"
-    },
-    {
-      "id": "AT11-L09-Q04",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about how Job or his interlocutors react in the context of Job's response"
-    },
-    {
-      "id": "AT11-L10-Q01",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about the theology of retribution defended rigidly by Job's friends. This"
-    },
-    {
-      "id": "AT11-L12-Q07",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about Job's discourses leading him to humility and trust. This is a theol"
-    },
-    {
-      "id": "AT11-L15-Q06",
-      "err": "JSON nao encontrado: <think>\nThe user is asking a theological question in Brazilian Portuguese: \"How does divine sovereig"
-    },
-    {
-      "id": "AT11-L18-Q03",
-      "err": "Nenhum JSON com campo \"r\" parseavel (ultimo err: Expected ',' or '}' after property value in JSON at position 416 (line 1 column 417))"
-    },
-    {
-      "id": "AT12-L06-Q01",
-      "err": "JSON nao encontrado: <think>\nA pergunta é sobre o que caracteriza os salmos de gratidão no livro dos Salmos.\n\nResposta ca"
-    },
-    {
-      "id": "AT12-L10-Q05",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about messianic themes in the Psalms, including royalty, suffering, pries"
-    },
-    {
-      "id": "AT12-L13-Q05",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT12-L13-Q06",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT12-L14-Q01",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT12-L14-Q02",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT12-L14-Q03",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT12-L18-Q02",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT12-L18-Q03",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT12-L18-Q04",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT12-L17-Q04",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about how the use of Psalms in worship expresses faith, adoration, suffer"
-    },
-    {
-      "id": "AT13-L01-Q05",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT13-L01-Q06",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT13-L02-Q02",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT13-L02-Q03",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT13-L02-Q01",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT13-L02-Q04",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT13-L02-Q05",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT13-L02-Q06",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT13-L03-Q01",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT13-L03-Q02",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT13-L03-Q03",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT13-L03-Q04",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT13-L03-Q05",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
-    },
-    {
-      "id": "AT13-L03-Q06",
-      "err": "HTTP 429: {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"message\":\"Token Plan rate limit reached: Upgrade your Token Plan or switch to pay-as-you-go API usage. (2062)\",\"http_code\":\"429\"},\"request_id\":\"068a"
+      "id": "AT15-L20-Q06",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about how \"sonhos e impérios\" (dreams and empires) connects to Christ, th"
     }
   ]
 }
