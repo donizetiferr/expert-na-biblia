@@ -3,6 +3,19 @@
 > Versoes BLOQUEADAS por dependencia externa (POR_USUARIO, POR_NOS, etc).
 > Regra AUTONOMIA MAXIMA: BLOQUEADA_POR_NOS conta para circuit breaker; BLOQUEADA_POR_USUARIO NAO conta (pulada, loop segue).
 
+## V[M1.1] — Geracao de respostas canonicas via M2.7 — BLOQUEADA_POR_USUARIO
+
+- **timestamp**: 2026-06-24
+- **fase**: M1.1 (batch retomado, parado apos 93 sucessos)
+- **motivo**: Quota mensal do Token Plan Minimax M2.7 estourada (HTTP 429, code 2062, "Token Plan rate limit reached")
+- **detalhes**: M1.1 batch retomou em background com concurrency 6 e processou 93 sucessos em ~3min. Apos isso, todas as 700+ chamadas subsequentes retornaram HTTP 429. Teste direto confirmou que o limiter do Token Plan M2.7 esta ativo ate reset mensal. Nao ha credencial OpenAI instalada em `Tokens API e acessos/openai/` para ativar fallback (CLAUDE.md previa fallback OpenAI GPT-4o-mini).
+- **dependencia_concreta**: (a) upgrade do Token Plan M2.7 (https://platform.minimax.io/account/billing) OU (b) switch para pay-as-you-go M2.7 (sem rate limit) OU (c) instalacao de OPENAI_API_KEY em `Tokens API e acessos/openai/credentials.env` para ativar fallback.
+- **codigo_completo_passando**: SIM — script `scripts/generate_canonicos_v9.js` esta funcional; checkpoint em `data/checkpoint_v9.json` (1592 IDs ja processados). Falta apenas API disponivel.
+- **acao_necessaria**: executar uma das 3 opcoes acima e depois `node scripts/generate_canonicos_v9.js --resume --concurrency 4` (concurrency menor = menos chance de bater rate limit). ~2h45min para zerar 2753 restantes.
+- **re_tentavel**: SIM (assim que quota reabrir ou credencial OpenAI for instalada)
+- **default_se_sem_resposta**: BLOQUEIO ATIVO; loop segue em outras tarefas autonomas (M3.2 OK, M4 polish OK, M3.3 em build)
+- **persistente em**: `orchestration/pending_user_input.md` bloco `DEP_PENDENTE_QUOTA_M2_7`
+
 ## V3 — ITEM-18 (P0-11) — BLOQUEADA_POR_USUARIO
 
 - **timestamp**: 2026-06-23

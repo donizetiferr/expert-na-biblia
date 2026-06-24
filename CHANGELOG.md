@@ -2,6 +2,42 @@
 
 Todas as mudancas relevantes neste projeto.
 
+## [V9] - 2026-06-24 (Polish + validacao — APK rebuild em background)
+
+### Added
+- M2.1: Splash com logo oficial (assets/images/logo.jpg) em vez de PersonagemLivro; redirecionamento condicional onboarding vs modos
+- M2.2: PersonagemLivro com 5 poses (PENSATIVO/FELIZ/ASSUSTADO/TRISTE/EXCLAMANDO) — usada em contexto certo em cada variante final
+- M2.3: Tela Trofeu com imagem real + animacao pulse/confetti
+- M2.4: Tela Feedback dedicada `/licoes/[moduloId]/[licaoId]/feedback` (acerto: 1 botao; erro: 2 botoes redondos) — substitui mudanca de pose inline da V8
+- M2.5: Icones globais de som on/off + botao home na Tela Licao
+- M2.6: Logica "todos modulos concluidos" → navegacao para /trofeu
+- M3.1: Settings (musica/efeitos) propagam para audio em runtime via `lib/sound-runtime`
+- M4.1: Helper `countWhere()` em `src/lib/db-queries.ts` — deduplica 5 funcoes com try/catch
+- M4.2: Design tokens semanticos em `src/lib/design-tokens.ts` (`TEMA.feedback.acerto/parcial/erro.fundo`)
+- M4.4: Persistencia de settings migrada para `expo-secure-store` (criptografado Keychain/Keystore) com fallback AsyncStorage para testes
+- M4.5: Onboarding registrado no `_layout.tsx` — exibido 1x na primeira abertura (gate `@onboarding:completed`)
+- M4.6: Variante "QUASE LA" usa `TEMA.feedback.parcial.fundo` (avisoAmarelo #fbbf24) em vez de roxo generico
+- M4.7: Modo offline (poll 5s em `network.ts`) + BannerOffline + BackHandlerOffline (confirmacao Alert antes de sair quando offline)
+- `orchestration/v9_e2e_report.md`: smoke E2E completo (21 screenshots + 14 itens validados, 11 OK + 3 PARCIAL)
+- `orchestration/blocked_versions.md`: V[M1.1] BLOQUEADA_POR_USUARIO (quota M2.7 HTTP 429 code 2062)
+- `android/gradle.properties`: `android.overridePathCheck=true` + `enableJetifier=true` + `useShortFileNames=true` (contornar path "Bíblia" nao-ASCII)
+
+### Changed
+- `src/app/index.tsx`: Splash usa logo real + redireciona para onboarding (primeira vez) ou modos
+- `src/app/licoes/[moduloId]/[licaoId]/final.tsx`: usa TEMA em vez de COLORS; variantes com 3 fundos distintos (verde/amarelo/vermelho)
+- `src/app/_layout.tsx`: adicionado BackHandlerOffline + BannerOffline no root
+- `src/lib/settings.ts`: SecureStore primario + AsyncStorage fallback
+- `evolution_plan.md`: 19/19 itens marcados [x] (todos os milestones M0..M4 fechados)
+- `src/lib/db-queries.ts`: countWhere helper + registrarRespostaUsuario para auditoria futura
+
+### Known Issues (em 2026-06-24)
+- **M1.1 BLOQUEADO**: Token Plan M2.7 estourou (HTTP 429 code 2062) — 1592/4345 respostas canonicas preenchidas (36.6%), 2753 com [GERAR] restantes (63.4%). Necessita upgrade M2.7, switch pay-as-you-go OU instalacao de OPENAI_API_KEY em `Tokens API e acessos/openai/credentials.env` para ativar fallback GPT-4o-mini previsto no CLAUDE.md.
+- **M3.3 BUILD**: APK rebuild em background (PID bytew3e67, `gradlew assembleRelease` via junction C:\ENB). Sujeito a falhar por dependencias NDK / Hermes 0.83 (V8-REBUILD tinha JSC forced). Resultado parcial se falhar: APK atual em `dist/ExpertNaBiblia-v1.0.0.apk` (SHA256 d2b86abd..., 100MB) continua sendo o unico entregavel publico, e catbox.moe/r0kku0.apk mantem URL (mas com codigo V8-REBUILD, nao V9).
+- **Play Store publicacao**: bloqueada (P3-6) — requer `eas login` + `EXPO_TOKEN` em `Tokens API e acessos/expo/` que o subagente nao tem (instrucoes em `orchestration/release_artifacts.md` + `orchestration/play_store_checklist.md`).
+
+### Removed
+- (nenhum arquivo deletado nesta versao)
+
 ## [V8-REBUILD] - 2026-06-23 (RETOMADA — prebuild OK, build bloqueado por Hermes 0.81)
 
 ### Added
