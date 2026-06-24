@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../../../constants/colors';
+import { TEMA } from '../../../../lib/design-tokens';
 import { PersonagemLivro } from '../../../../components/PersonagemLivro';
 import { playAcerto, playErro } from '../../../../lib/sound';
 import { marcarLicaoConcluida, todosModulosConcluidos } from '../../../../lib/db-queries';
@@ -30,7 +31,7 @@ export default function FinalAtividadeScreen() {
 
   const configs = {
     vitoria: {
-      fundo: COLORS.laranjaEscuro,
+      fundo: TEMA.feedback.acerto.fundo,
       pose: 'EXCLAMANDO' as const,
       titulo: 'VOCÊ PASSOU!',
       subtitulo: `Lição concluída com ${score}%`,
@@ -38,7 +39,7 @@ export default function FinalAtividadeScreen() {
       proxima: true,
     },
     quase: {
-      fundo: COLORS.avisoAmarelo,
+      fundo: TEMA.feedback.parcial.fundo,
       pose: 'PENSATIVO' as const,
       titulo: 'QUASE LÁ',
       subtitulo: `Você fez ${score}% — Reforce os pontos fracos`,
@@ -46,7 +47,7 @@ export default function FinalAtividadeScreen() {
       proxima: false,
     },
     nao_deu: {
-      fundo: COLORS.erroVermelho,
+      fundo: TEMA.feedback.erro.fundo,
       pose: 'TRISTE' as const,
       titulo: 'NÃO DEU',
       subtitulo: `Apenas ${score}% — Continue estudando`,

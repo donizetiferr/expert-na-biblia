@@ -9,6 +9,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { playMusicaFundo, stopMusicaFundo } from '../lib/sound';
 import { initSoundRuntime, stopSoundRuntime } from '../lib/sound-runtime';
+import { startMonitoring, stopMonitoring } from '../lib/network';
+import { BannerOffline } from '../components/BannerOffline';
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -33,10 +35,13 @@ export default function RootLayout() {
       playMusicaFundo().catch(() => {});
       // V9 M3.1: inicia runtime watcher para reagir a mudancas de settings
       initSoundRuntime();
+      // V9 M4.7: inicia monitor de conectividade para o BannerOffline
+      startMonitoring();
     }
     return () => {
       stopMusicaFundo().catch(() => {});
       stopSoundRuntime();
+      stopMonitoring();
     };
   }, [fontsLoaded, fontError]);
 
@@ -63,6 +68,7 @@ export default function RootLayout() {
           <Stack.Screen name="config" />
           <Stack.Screen name="trofeu" />
         </Stack>
+        <BannerOffline />
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

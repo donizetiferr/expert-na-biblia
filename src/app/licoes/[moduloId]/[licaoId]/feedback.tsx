@@ -1,6 +1,7 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../../../constants/colors';
+import { TEMA } from '../../../../lib/design-tokens';
 import { PersonagemLivro } from '../../../../components/PersonagemLivro';
 import { playAcerto, playErro } from '../../../../lib/sound';
 
@@ -75,7 +76,11 @@ export default function FeedbackScreen() {
     <View
       style={[
         styles.container,
-        { backgroundColor: isAcerto ? COLORS.acertoVerde : COLORS.laranjaEscuro },
+        {
+          backgroundColor: isAcerto
+            ? TEMA.feedback.acerto.fundo
+            : TEMA.feedback.erro.fundo,
+        },
       ]}
     >
       {isAcerto ? (

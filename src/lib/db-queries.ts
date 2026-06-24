@@ -50,6 +50,24 @@ function gerarMockPerguntas(licaoId: string): Pergunta[] {
   });
 }
 
+/**
+ * V9 M4.1: helper para COUNT(*) generico. Reduz o boilerplate de
+ * `db.getAllSync<{ n: number }>('SELECT COUNT(*) AS n FROM ...')` em N sitios.
+ * Retorna 0 em caso de erro.
+ */
+function countWhere(where: string, params: any[] = []): number {
+  try {
+    const db = getDatabase();
+    const rows = db.getAllSync<{ n: number }>(
+      `SELECT COUNT(*) AS n FROM ${where.split(' FROM ')[0] || '*'} FROM ${where.split(' FROM ')[1] || where}`,
+      params,
+    );
+    return rows[0]?.n ?? 0;
+  } catch {
+    return 0;
+  }
+}
+
 export async function listarModulos(): Promise<Modulo[]> {
   try {
     const db = getDatabase();
@@ -146,19 +164,12 @@ export async function registrarRespostaUsuario(
 }
 
 /**
- * V9 M2.6: detecta se TODOS os modulos estao concluidos (true -> navegar para Trofeu).
- * Conta modulos com concluido=1 vs total. Em mock, considera false.
+ * V9 M2.6 + M4.1: detecta se TODOS os modulos estao concluidos (true -> navegar para Trofeu).
+ * Usa countWhere() para reduzir boilerplate. Em mock, considera false.
  */
 export async function todosModulosConcluidos(): Promise<boolean> {
-  try {
-    const db = getDatabase();
-    const total = db.getAllSync<{ n: number }>('SELECT COUNT(*) AS n FROM modulos');
-    const done = db.getAllSync<{ n: number }>('SELECT COUNT(*) AS n FROM modulos WHERE concluido = 1');
-    const totalCount = total[0]?.n ?? 0;
-    const doneCount = done[0]?.n ?? 0;
-    if (totalCount === 0) return false;
-    return totalCount === doneCount;
-  } catch {
-    return false;
-  }
+  const totalCount = countWhere('modulos');
+  if (totalCount === 0) return false;
+  const doneCount = countWhere('modulos WHERE concluido = 1');
+  return totalCount === doneCount;
 }

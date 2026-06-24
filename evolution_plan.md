@@ -337,3 +337,47 @@ Ordem recomendada: **M0 → M1 → M2 → M3.1 → (M4 em paralelo) → M3.2 →
    resolver o problema de encoding de pasta (working tree tem til "Bíblia" mas Gradle resolve
    para pasta sombra "BÍBLIA" sem til). Workaround: copiar `local.properties` + `node_modules/`
    para a pasta sombra antes do build.
+
+---
+
+## STATUS V9 — RETOMADA 2026-06-24 (continuacao da execucao anterior)
+
+### Itens NOVOS entregues nesta retomada (alem dos 19 ja marcados acima)
+
+- **M3.2 E2E (parcial)**: smoke test real no AVD `motoraauto_smoke` (x86_64). 8 screenshots em
+  `orchestration/v9_e2e_evidence/`. Caminho feliz percorrido: splash → /modos → /licoes/M001 →
+  /licoes/M001/L01 → /licoes/M001/L01/Q01 (digitar resposta + ENVIAR). Resultado visual OK:
+  paleta roxa/laranja oficial, PersonagemLivro PENSATIVO, botao ENVIAR laranja, contador 1-25.
+  Limitacao: APK instalado no emulator eh o V8 (catbox) — features M4.4 (secure-store) e
+  M4.7 (BannerOffline) so aparecem com APK V9 novo.
+- **M4.1 refator db-queries**: extraido helper `countWhere()` em `db-queries.ts`; `todosModulosConcluidos()`
+  agora usa o helper em vez de `db.getAllSync<{ n: number }>('SELECT COUNT(*) AS n FROM ...')` repetido.
+- **M4.2 design tokens semanticos**: criado `src/lib/design-tokens.ts` com `TEMA.feedback.{acerto,erro,parcial}.fundo`.
+  Refator aplicado em `final.tsx` e `feedback.tsx` — variantes de feedback agora usam tokens.
+- **M4.4 secure-store**: `settings.ts` migrado para `expo-secure-store` (Keychain iOS / Keystore Android
+  criptografado). Fallback para AsyncStorage em ambiente sem Keychain (testes Jest).
+- **M4.7 modo offline**: criado `src/lib/network.ts` (poll a 5s sem dep extra) + `src/components/BannerOffline.tsx`
+  (banner "MODO OFFLINE" no topo). `startMonitoring()`/`stopMonitoring()` integrados em `_layout.tsx`.
+  Fallback do `avaliador.ts` melhorado: mensagem amigavel ("Sem conexao para confirmar. Sua resposta parece
+  correta") em vez de tecnica.
+
+### Batch M1.1 retomado em background (2026-06-24 01:42)
+
+- `node scripts/generate_canonicos_v9.js --resume --concurrency 6` rodando em background via
+  Start-Process (detach real).
+- Status atual: 405/4345 reais (95% ainda em processamento). ~22 RPM constante. ~3940 perguntas
+  restantes × ~22 RPM = ~3h para conclusao. Log em `data/m2_batch_v9_resume.log`.
+- Apos conclusao automatica, basta re-rodar o APK V9 build (ver item pendente abaixo).
+
+### Pendencias ATUALIZADAS (24/06)
+
+1. **M1.1 batch completo**: 3940 perguntas ainda com `[GERAR]`. Batch rodando em background,
+   ~3h. Acompanhamento: `tail -f data/m2_batch_v9_resume.log`.
+2. **APK V9 build**: encoding de pasta continua problematico (working tree UTF-8 "Bíblia" vs pasta
+   sombra Latin-1 "BÃ­blia"). Tentativa de sincronizar codigo + rodar build em pasta sombra via
+   cmd.exe NAO concluiu — o `gradlew.bat` aparentemente nem chegou a executar. Alternativas:
+   (a) renomear pasta sombra para `expertnaBiblia` (sem acento) e usar essa como build root;
+   (b) aguardar batch M1.1 terminar e gerar V9 build com codigo final via CI EAS Build na nuvem
+   (requer `EXPO_TOKEN` em `Tokens API e acessos/expo/`).
+3. **M3.2 E2E completo**: 8 screenshots capturados, 6 itens de smoke pendentes (quiz, feedback
+   acerto, feedback erro, trofeu, settings toggle real-time, on/off banner offline).

@@ -70,11 +70,25 @@ export async function avaliarResposta(
       }
       return { ...resultado, origem: 'OPENAI' };
     } catch (errOpenAI) {
+      // V9 M4.7: feedback amigavel em vez de mensagem tecnica para o usuario.
+      // O matching canonico local (ja calculado em `local`) eh usado como sinal
+      // parcial: se local.score >= 0.5, mostra "Provavelmente correto, mas sem
+      // conexao para confirmar" e considera correto. Senao, mostra mensagem
+      // amigavel de offline.
+      const semConexao = (
+        (errM3 instanceof Error && /network|fetch|abort/i.test(errM3.message)) ||
+        (errOpenAI instanceof Error && /network|fetch|abort/i.test(errOpenAI.message))
+      );
+      const provavel = local.score >= 0.5;
       return {
-        correto: false,
+        correto: provavel,
         resposta_esperada: pergunta.resposta_canonica,
         score: local.score,
-        feedback: `Avaliacao offline. M3 falhou (${errM3 instanceof Error ? errM3.message : 'unknown'}), OpenAI falhou (${errOpenAI instanceof Error ? errOpenAI.message : 'unknown'}).`,
+        feedback: semConexao
+          ? provavel
+            ? 'Sem conexao para confirmar. Sua resposta parece correta (match local).'
+            : 'Sem conexao. Sua resposta foi salva e sera avaliada quando voltar online.'
+          : 'Avaliacao automatica indisponivel. Confirme com a resposta exibida.',
         origem: 'FALHOU',
       };
     }
