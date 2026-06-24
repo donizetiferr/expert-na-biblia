@@ -34,6 +34,16 @@ export async function runMigrations(): Promise<{ applied: number; skipped: numbe
 
   const db = getDatabase();
 
+  // V9.2.1: seed inicial (modulos + licoes + 4345 perguntas + 4341 quiz_alternatives)
+  // ANTES das migrations, porque as migrations dependem de tabelas existirem;
+  // o seed so popula dados, nao cria schema.
+  try {
+    const { seedDatabaseIfEmpty } = await import('./seed');
+    seedDatabaseIfEmpty(db);
+  } catch (e) {
+    console.warn('[db] seed nao aplicado:', e);
+  }
+
   // Bootstrap tabela de migrations
   db.execSync(`
     CREATE TABLE IF NOT EXISTS _migrations (
