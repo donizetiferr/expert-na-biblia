@@ -54,10 +54,12 @@ mas exige intervencao do usuario para destravar (upgrade / pay-as-you-go / OpenA
 
 ### APK
 - **Path local**: `C:\Users\Donizeti\Downloads\Projetos_VSCode\Pessoal\Expert Na Bíblia\dist\ExpertNaBiblia-v9.0.0.apk`
-- **Tamanho**: 100.611.027 bytes (~96 MB)
-- **SHA256**: `ad96d36b64ac386783b56320c60d2ae106b96ee16ec294f15840f23d6b941eee`
-- **URL publica**: https://files.catbox.moe/ptegco.apk (verificado HTTP 200)
+- **Tamanho**: 100.612.491 bytes (~96 MB)
+- **SHA256**: `dc21715fea790b95da1cf24f71d03b2cb54369655984dcd96b2c7542ee89c75b`
+- **URL publica**: https://files.catbox.moe/2ybe0j.apk (verificado HTTP 200)
 - **Package**: `com.donizetiferr.expertnabiblia` (versionCode 1, versionName "0.1.0")
+- **Encoding path**: build via `C:\ENB` (copia real — path com "í" quebra AGP 9.0; ver `v9_apk.md`)
+- **Inclui polish**: M4.1 (countWhere regex-safe), M4.2 (design tokens semanticos), M4.4 (sound-runtime via settings.ts), M4.7 (offline robusto + BackHandler grace 5s)
 
 ### Codigo
 - 19 arquivos modificados/criados no `src/`
@@ -105,7 +107,7 @@ mas exige intervencao do usuario para destravar (upgrade / pay-as-you-go / OpenA
 
 - **Smoke E2E**: 21 screenshots em `orchestration/v9_e2e_evidence/` cobrindo 14 fluxos
 - **APK build**: BUILD SUCCESSFUL em 1m29s via gradle 9.0 + Java 17 + Android SDK 36
-- **APK upload**: HTTP 200 confirmado em https://files.catbox.moe/ptegco.apk
+- **APK upload**: HTTP 200 confirmado em https://files.catbox.moe/2ybe0j.apk
 - **M1.1 gap**: contado via SQL direto em `data/db.sqlite` — 2318/4345 preenchidas
 - **Quota M2.7**: testado via 1 chamada direta + log do batch — ambos confirmam HTTP 429 code 2062
 - **Design tokens**: inspecionado `src/lib/design-tokens.ts` e validado em `final.tsx:33-57` (3 variantes)
@@ -128,7 +130,7 @@ cd /c/ENB/android
 
 # M3.3 upload (SUCESSO)
 curl -F "fileToUpload=@app-release.apk" https://catbox.moe/user/api.php -F "reqtype=fileupload"
-# → https://files.catbox.moe/ptegco.apk
+# → https://files.catbox.moe/2ybe0j.apk
 
 # Validacoes (SQL)
 node -e "..."  # ver v9_e2e_report.md e blocked_versions.md para queries completas

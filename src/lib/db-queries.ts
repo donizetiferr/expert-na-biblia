@@ -51,15 +51,35 @@ function gerarMockPerguntas(licaoId: string): Pergunta[] {
 }
 
 /**
- * V9 M4.1: helper para COUNT(*) generico. Reduz o boilerplate de
- * `db.getAllSync<{ n: number }>('SELECT COUNT(*) AS n FROM ...')` em N sitios.
- * Retorna 0 em caso de erro.
+ * V9 M4.1 (polish): helper para COUNT(*) generico.
+ *
+ * API:
+ *   countWhere('modulos')                              -> total de modulos
+ *   countWhere('modulos WHERE concluido = ?', [1])     -> modulos concluidos
+ *   countWhere('perguntas WHERE licao_id = ?', [lid])  -> perguntas de uma licao
+ *
+ * Restricoes (anti-SQL-injection):
+ * - O argumento `fromClause` e validado por regex contra a forma esperada
+ *   `<tabela>( WHERE <col> <op> ?)?` (sem `;`, sem comentarios).
+ * - Valores vao em `params` (binding), nunca concatenados.
+ *
+ * Retorna 0 em caso de erro (consumidores nao quebram em mock/test).
  */
-function countWhere(where: string, params: any[] = []): number {
+const FROM_CLAUSE_RE = /^[a-zA-Z_][a-zA-Z0-9_]*(\s+WHERE\s+[a-zA-Z_][a-zA-Z0-9_]*\s*(=|<>|!=|>=|<=|>|<|LIKE|IN)\s*\?)?$/;
+
+// Tipos aceitos pelo SQLite bind (expo-sqlite): number | string | boolean | null | Uint8Array
+type SqlBindValue = number | string | boolean | null | Uint8Array;
+type SqlBindParams = SqlBindValue[];
+
+function countWhere(fromClause: string, params: SqlBindParams = []): number {
+  if (!FROM_CLAUSE_RE.test(fromClause.trim())) {
+    // Clausula malformada — nao executa. Retorna 0 silenciosamente.
+    return 0;
+  }
   try {
     const db = getDatabase();
     const rows = db.getAllSync<{ n: number }>(
-      `SELECT COUNT(*) AS n FROM ${where.split(' FROM ')[0] || '*'} FROM ${where.split(' FROM ')[1] || where}`,
+      `SELECT COUNT(*) AS n FROM ${fromClause}`,
       params,
     );
     return rows[0]?.n ?? 0;
@@ -164,12 +184,12 @@ export async function registrarRespostaUsuario(
 }
 
 /**
- * V9 M2.6 + M4.1: detecta se TODOS os modulos estao concluidos (true -> navegar para Trofeu).
- * Usa countWhere() para reduzir boilerplate. Em mock, considera false.
+ * V9 M2.6 + M4.1 (polish): detecta se TODOS os modulos estao concluidos (true -> navegar para Trofeu).
+ * Usa countWhere() validado para reduzir boilerplate. Em mock (total=0), considera false.
  */
 export async function todosModulosConcluidos(): Promise<boolean> {
   const totalCount = countWhere('modulos');
   if (totalCount === 0) return false;
-  const doneCount = countWhere('modulos WHERE concluido = 1');
+  const doneCount = countWhere('modulos WHERE concluido = ?', [1]);
   return totalCount === doneCount;
 }

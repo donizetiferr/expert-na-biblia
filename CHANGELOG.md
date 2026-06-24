@@ -2,6 +2,29 @@
 
 Todas as mudancas relevantes neste projeto.
 
+## [V9-polish] - 2026-06-24 (Rebuild + catbox upload — polish incluido)
+
+### Changed
+- APK V9 rebuildado COM polish M4.1/M4.2/M4.4/M4.7 e re-uploadado para catbox.moe
+  - **URL publica nova**: https://files.catbox.moe/2ybe0j.apk (HTTP 200 verificado)
+  - **SHA256 novo**: `dc21715fea790b95da1cf24f71d03b2cb54369655984dcd96b2c7542ee89c75b`
+  - **Tamanho**: 100.612.491 bytes (~96 MB)
+  - **Build**: `BUILD SUCCESSFUL in 1m 57s` via `C:\ENB\android` (copia real do projeto)
+  - **URL antiga (substituida)**: https://files.catbox.moe/ptegco.apk — V9 base SEM polish
+- `orchestration/v9_apk.md`: secoes dedicadas para V9 + polish (atual) e V9 base (substituido)
+- `orchestration/v9_relatorio_final.md`: URL/SHA256/tamanho atualizados para V9 + polish
+- `src/components/BannerOffline.tsx`: subtexto com duracao offline + re-render 10s
+- `src/components/BackHandlerOffline.tsx`: grace period 5s antes de interceptar BackHandler
+- `src/lib/network.ts`: metricas de probe (consecutiveFailures, lastChange, getNetworkStats)
+- `src/lib/db-queries.ts`: countWhere com regex-validacao anti-SQL-injection + typed params
+- `src/lib/design-tokens.ts`: ESPACO/BORDA/TIPOGRAFIA semanticos + TEMA.sombra.comic
+- `src/lib/sound-runtime.ts`: usa `loadSettings()` (settings.ts) em vez de AsyncStorage direto
+- `tsconfig.json`: `ignoreDeprecations: "6.0"` -> `"5.0"` (TS 5.9.3 compat)
+
+### Notes
+- Build path encoding: AGP 9.0 aborta com path contendo "í" (Bíblia); solucao = copia real em `C:\ENB\` (NAO mklink /J — ver `v9_apk.md`)
+- M1.1 conteudo pedagogico continua BLOQUEADA_POR_USUARIO (mesmo APK; UI pronta + 2318/4345 respostas canonicas)
+
 ## [V9] - 2026-06-24 (Polish + validacao — APK rebuild em background)
 
 ### Added

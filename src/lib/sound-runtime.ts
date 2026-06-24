@@ -1,39 +1,38 @@
 /**
- * sound-runtime.ts — V9 M3.1
+ * sound-runtime.ts — V9 M3.1 + M4.4 (polish)
  *
  * Sistema de reacao a mudancas de settings em tempo real.
- * - Observa AsyncStorage keys @settings:musica e @settings:efeitos
+ * - Observa settings.musica e settings.efeitos via settings.ts (SecureStore-backed)
  * - Quando musica muda para false: stopMusicaFundo() IMEDIATO
  * - Quando musica muda para true: playMusicaFundo() IMEDIATO
  * - Quando efeitos muda para false: descarta qualquer playOneShot em flight (early return)
  *
  * Implementacao: polling leve a cada 500ms (alternativa a real listeners RN sem dep extra).
- * Custo: 1 leitura de 2 keys a cada 500ms = desprezivel.
+ * Custo: 1 leitura de 1 objeto settings a cada 500ms = desprezivel.
+ *
+ * M4.4 polish: usa settings.ts como single source of truth (SecureStore) em vez
+ * de ler AsyncStorage diretamente. Garante que se o backend de persistencia
+ * mudar (migracao para MMKV, SQLite proprio, etc), o runtime continua funcionando
+ * sem alterar este arquivo.
  *
  * Exporta:
  *   - initSoundRuntime(): inicia polling (chamado em _layout.tsx)
  *   - stopSoundRuntime(): para polling (cleanup)
+ *   - checkAndReact(): tick manual (util para testes)
  */
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { loadSettings } from './settings';
 import { stopMusicaFundo, playMusicaFundo } from './sound';
 
-const KEY_MUSICA = '@settings:musica';
-const KEY_EFEITOS = '@settings:efeitos';
 const POLL_MS = 500;
 
 let interval: ReturnType<typeof setInterval> | null = null;
 let lastMusica: boolean | null = null;
 let lastEfeitos: boolean | null = null;
 
-async function readBool(key: string): Promise<boolean> {
-  const v = await AsyncStorage.getItem(key);
-  return v === null ? true : v === '1'; // default true para musica/efeitos
-}
-
 export async function checkAndReact(): Promise<void> {
-  const musica = await readBool(KEY_MUSICA);
-  const efeitos = await readBool(KEY_EFEITOS);
+  const settings = await loadSettings();
+  const { musica, efeitos } = settings;
 
   // Reagir a mudanca de MUSICA
   if (lastMusica !== null && musica !== lastMusica) {
