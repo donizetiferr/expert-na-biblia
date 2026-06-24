@@ -11,6 +11,7 @@ import { playMusicaFundo, stopMusicaFundo } from '../lib/sound';
 import { initSoundRuntime, stopSoundRuntime } from '../lib/sound-runtime';
 import { startMonitoring, stopMonitoring } from '../lib/network';
 import { BannerOffline } from '../components/BannerOffline';
+import { BackHandlerOffline } from '../components/BackHandlerOffline';
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -69,6 +70,7 @@ export default function RootLayout() {
           <Stack.Screen name="trofeu" />
         </Stack>
         <BannerOffline />
+        <BackHandlerOffline />
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
