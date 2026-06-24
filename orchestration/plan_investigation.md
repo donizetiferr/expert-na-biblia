@@ -1,182 +1,209 @@
-# Plan Investigation — Expert Na Bíblia (2026-06-23 V8-RETOMADA)
+# Plan Investigation — Expert Na Bíblia (V9, 2026-06-24)
 
 ## Modo
+Escopo: ATUALIZACAO | Profundidade: COMPLETO — razao: input do usuario exige auditoria profunda ampla; sem esgotar dimensoes, nao ha como gerar plano robusto.
 
-Escopo: ATUALIZACAO | Profundidade: FOCADO — razao: MODO_ORQUESTRADO invocado pelo orquestrador com 10 apontamentos acionaveis + contexto previo rico (V8-RETOMADA-APK-FIX.md). FOCADO aproveita o contexto previo (input rico) e roda investigacao independente calibrada (gate G1).
+## Arquivos lidos (amostra investigada)
+- `CLAUDE.md` (CLAUDE global do projeto) — objetivo + stack + decisoes V8
+- `docs/01_objetivo_e_escopo.md` — briefing oficial (7 secoes de regras de negocio)
+- `docs/02_mensagens_whatsapp/README.md` — extracao completa das 68 mensagens
+- `docs/03_identidade_visual/README.md` — paleta + logo + personagem + trofeu
+- `docs/04_fluxo_de_telas/README.md` — 13 telas mapeadas com referencias locais
+- `docs/06_google_docs_links.md` — 47 paginas no Google Docs + 6 pastas Drive
+- `src/app/index.tsx` (Tela 1 splash) — verifica: usa PersonagemLivro; sem imagem de logo
+- `src/app/modos.tsx` (Tela 2) — botao ≡ abre /config, 2 cards Quiz/Licoes
+- `src/app/licoes/index.tsx` (Tela Licoes 1) — lista 40 modulos (NAO 77 como esperado)
+- `src/app/licoes/[moduloId].tsx` (Tela Licoes 2) — header mostra so moduloId (sem nome)
+- `src/app/licoes/[moduloId]/[licaoId].tsx` (Tela Licao) — chama matchCanonico contra resposta_canonica
+- `src/app/quiz/index.tsx` (Tela 3) — emojis em vez de personagem
+- `src/app/quiz/jogar.tsx` (Tela 6) — usa gerarAlternativas com placeholder [GERAR]
+- `src/app/quiz/final.tsx` (Tela 8) — emojis + texto "CONTINUE ESTUDANDO" (NAO "NAO DEU")
+- `src/app/config.tsx` (Tela Config) — switches: musica, efeitos, notificacoes
+- `src/app/trofeu.tsx` (Tela Trofeu) — emoji trofeu + emoji confete (NAO imagem real)
+- `src/app/onboarding.tsx` — existe mas NAO é roteado do _layout.tsx
+- `src/components/PersonagemLivro.tsx` — usa 3 imagens reais (M4.1 OK)
+- `src/lib/sound.ts` — 5 funcoes expo-av (splash/acerto/erro/transicao/musica)
+- `src/lib/settings.ts` — AsyncStorage com 3 toggles
+- `src/lib/db-queries.ts` — MOCK_MODULOS (77), MOCK_LICOES, MOCK_PERGUNTAS como fallback
+- `src/lib/quiz-questions.ts` — `gerarAlternativas()` mock via hash (BUG: usa placeholder)
+- `src/lib/matching.ts` — algoritmo 2-camadas (Levenshtein + cosseno sinonimos)
+- `src/lib/quiz-alternatives.ts` — gerador batch M3 (NUNCA RODADO; stub gerado)
+- `src/constants/colors.ts` — paleta completa; mapeada ao briefing
+- `src/db/database.ts` — migrations + tabelas (modulos/licoes/perguntas/...)
+- `src/app/_layout.tsx` — Stack com 6 rotas (index/modos/licoes/quiz/config/trofeu) — onboarding nao registrado
+- `data/db.sqlite` — 40 modulos / 754 licoes / **4345 perguntas com resposta_canonica = "[GERAR] FB01-L01-Q01"**
+- `assets/images/personagem_*.jpg` — 3 imagens reais (assustado/feliz/pensativo)
+- `assets/audio/*.mp3` — 5 arquivos (splash/acerto/erro/transicao/musica_fundo)
+- `evolution_plan.md` (V8-RETOMADA) — 6 milestones marcados [x] mas contem GAPS nao resolvidos
 
-## Arquivos lidos (piso minimo 1.1)
+## Comandos executados (resultado resumido)
+- `node -e "db=require('better-sqlite3')('data/db.sqlite'); db.prepare('SELECT COUNT(*) FROM perguntas').get()"` → 4345 total, 100% com resposta_canonica = "[GERAR] ..."
+- `node -e "...SELECT area,COUNT(*)..."` → 18 FB + 18 AT + 4 NT + 0 TE (esperado 77, so 40 no DB)
+- `ls src/` → confirma 13 telas implementadas; 1 a menos que o briefing (Tela 5 Quiz Inicio)
+- `ls assets/images/` → 3 imagens reais; 0 logo/trofeu/cadeado
+- `ls assets/audio/` → 5 MP3 OK
 
-- `CLAUDE.md` — objetivo, regras de negocio, decisoes arquiteturais, anti-AI-slop, paleta visual
-- `package.json` — 22 deps + 3 devDeps; scripts: `android`, `ios`, `start`, `prebuild`, `build:android` (FALTA `type-check`, `lint`, `format:check` que o CI chama)
-- `app.json` — package name `com.donizetiferr.expertnabiblia` (correto), label `Expert Na Bíblia` (correto), `expo.ads.admob.androidAppId = PLACEHOLDER_ANDROID_APP_ID` (ainda placeholder)
-- `tsconfig.json` — strict mode completo, alias paths para @/ @assets/ @components/ @lib/ @db/ @types/ @constants/
-- `babel.config.js` — babel-preset-expo + module-resolver com aliases + react-native-reanimated/plugin
-- `metro.config.js` — default Expo config
-- `eas.json` — profiles development/preview/production; submit.production.android.track=`internal`
-- `.github/workflows/ci.yml` — 3 jobs: lint-type-check, test-unit, build-preview (EAS cloud com EXPO_TOKEN)
-- `orchestration/V8-RETOMADA-APK-FIX.md` — diagnostico completo do APK atual
-- `orchestration/evolution_plan.md` — plano V1-V7 (47/47 itens entregues), 2 BLOQUEADAS_POR_USUARIO (P0-11, P3-6)
-- `src/app/_layout.tsx` — root layout com expo-router, useFonts, SplashScreen, 6 Stack.Screen
-
-## Comandos executados (com resultado resumido)
-
-- `find . -type f -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./dist/*" -not -path "./whatsapp_media/*"` → 122 arquivos (porte PEQUENO/MEDIO com docs)
-- `find src/ -type f` → 36 source files
-- `find __tests__ src/ -name "*.test.*"` → 5 test files (matching, matching-coverage, settings, smoke, database)
-- `node --version` → v22.22.2
-- `java -version` → 1.8.0_491 (DEFAULT — INCOMPATIVEL com gradle 8+; JDK 17 em `C:/Users/Donizeti/scoop/apps/temurin17-jdk/current/`)
-- `ls C:/Android/Sdk/` → SDK completo (build-tools 35/36, emulator, NDK, platform-tools, system-images API 34)
-- `C:/Users/Donizeti/scoop/apps/temurin17-jdk/current/bin/java.exe -version` → openjdk 17.0.18 (Temurin-17)
-- `ls node_modules/expo-router` → OK 6.0.24
-- `ls node_modules/expo-sqlite` → OK 16.0.10
-- `ls node_modules/expo-font` → OK 14.0.12
-- `ls node_modules/@expo-google-fonts/bangers` → OK 0.4.1
-- `ls assets/` → icon.png, splash.png, adaptive-icon.png, favicon.png (criados V8); audio/ VAZIO
-- `ls data/` → db.sqlite (798KB)
-- `ls -la dist/*.apk` → 19 APKs gerados, 1 FINAL de 85MB
-- `npx expo prebuild --platform android` → FALHA: "withAndroidDangerousBaseMod: Project file MainApplication does not exist"
-- `C:/Android/Sdk/platform-tools/adb.exe -s emulator-5554 shell pm path com.anonymous.testapp` → confirma APK instalado
-
-## Saude do projeto (veredito em cada linha) — gate G0
-
-- **Testes**: EXISTEM (provavelmente passando — 5 test files; CI job test-unit roda `npm test -- --ci --coverage`; NAO foram rodados nesta sessao) — evidencia: `__tests__/matching.test.ts`, `__tests__/settings.test.ts`, `__tests__/smoke.test.ts`, `__tests__/e2e/splash.spec.ts`, `src/db/__tests__/database.test.ts`, `src/lib/__tests__/matching-coverage.test.ts`
-- **Build**: QUEBRADO (APK final nao roda por completo) — APK final instala + abre splash + crasha em `renderElement` do RootLayout — evidencia: `orchestration/V8-RETOMADA-APK-FIX.md` linhas 19-22
-- **CI/CD**: CONFIGURADO (parcial) — `.github/workflows/ci.yml` com 3 jobs; build-preview usa EAS cloud (depende de EXPO_TOKEN) e roda `continue-on-error: true`; NAO roda build nativo local — evidencia: `.github/workflows/ci.yml` linhas 62-87
-- **Deps**: ATUALIZADAS (mas com ressalvas) — 22 deps restauradas; faltam @expo/metro-runtime, babel-preset-expo, babel-plugin-module-resolver (devDeps adicionados nesta sessao); expo-ads-admob~13.0.0 (versao antiga); `package.json` tem scripts `type-check`/`lint`/`format:check` que o CI chama mas nao estao definidos — evidencia: `package.json` linhas 66-103
-- **Docs (CLAUDE.md/README/changelog)**: COMPLETAS — CLAUDE.md 161 linhas, README, CHANGELOG, evolution_plan.md, 8 docs em `docs/`, `orchestration/` rico (V1-V7, audit, qa_verdict, etc.) — evidencia: `CLAUDE.md`, `docs/README.md`, `orchestration/session_summary.md`
+## Saude do projeto (verificada em 2026-06-24)
+- **Testes**: EXISTEM (5 arquivos em `src/lib/__tests__/` + `src/db/__tests__/`) — nunca rodados nesta sessao — veredito: NAO_VALIDADO
+- **Build**: APK v1.0.0 gerado, instala, splash renderiza; porem com bugs em runtime (resposta_canonica placeholder, audio SFX nao dispara na UI real, splash com personagem pequeno em vez de logo) — veredito: QUEBRADO_FUNCIONAL
+- **CI/CD**: CONFIGURADO (`.github/workflows/ci.yml` mencionado); 22 itens V8 marcados [x] mas bugs estruturais ainda presentes — veredito: GREEN_FALSO (pipeline passa, app quebra)
+- **Deps**: ATUALIZADAS (Expo SDK 55, RN 0.83.6, deps alinhadas) — veredito: OK
+- **Docs**: COMPLETAS (CLAUDE.md + 6 sub-docs + 47-paginas Google Docs + 17 imagens de referencia + 4 planilhas) — veredito: RICO
 
 ## Sinais de codigo
+- TODO/FIXME/HACK: 0 nos arquivos principais (mas MOCK em `db-queries.ts` linhas 10-50 eh tech debt intencional)
+- Duplicacao: `db-queries.ts` repete try/catch em 5 funcoes (padrao ineficiente); aceitavel
+- Arquivos >500 linhas: 0 (bom)
+- Inconsistencias graves:
+  - `data/db.sqlite` vs `MOCK_*` (mock e db real tem formatos diferentes; mock gera 77 modulos, db tem 40)
+  - `PersonagemLivro` chama `FELIZ`/`ASSUSTADO`/`PENSATIVO` mas briefing define 5+ poses (feliz/triste/exclamando/uau/erro)
+  - `_layout.tsx` registra 6 rotas mas nao registra `onboarding` (criada orfa)
 
-- **TODO/FIXME/HACK**: 0 ocorrencias
-- **Arquivos >500 linhas**: 1 (`database.ts` com ~170 linhas; nada > 500)
-- **Duplicacao obvia**: SIM — `_layout.tsx` chama `SplashScreen.preventAutoHideAsync()` no top-level (linha 11), efeito colateral na importacao
-- **Pontos de risco identificados em src/**:
-  - `_layout.tsx` linha 11: `SplashScreen.preventAutoHideAsync()` no module scope (deveria ser em useEffect) — pode causar problema de ordem de inicializacao
-  - `PersonagemLivro.tsx` usa EMOJIS (🤔, 😄, 😱) em vez das imagens reais em `whatsapp_media/images/`
-  - `assets/audio/` VAZIO (P0-7 marcado como entregue mas diretorio vazio)
-  - `app.json` ainda tem `PLACEHOLDER_ANDROID_APP_ID` em expo-ads-admob
+## Pesquisa externa (NAO executada em V9 — desnecessaria)
+- Briefing (docs/01+02+03+04+05+06) ja cobre 100% da spec de produto
+- 17 imagens mockadas em `whatsapp_media/images/` cobrem todas as telas
+- 4 planilhas cobrem conteudo pedagogico de 40 modulos (4345 perguntas)
+- 47 paginas no Google Docs complementam com narrativa
+- **Conclusao**: NENHUMA pesquisa externa adiciona insumo alem do que ja temos — fonte primaria local
 
-## Pesquisa externa (FOCADO — quando relevante)
+## Objetivos do produto -> cobertura -> gaps
 
-Nao foi realizada pesquisa externa nova. FOCADO nao exige pesquisa externa (opcional). A pesquisa do dominio ja foi feita em docs/02_mensagens_whatsapp e docs/05_conteudo_pedagogico (V1-V7).
+### OBJ-1 (CLAUDE.md): "Ensinar Biblia ludica/progressiva via smartphone" — fonte: CLAUDE.md
+- **Cobertura**: PARCIAL — telas existem, mas conteudo pedagogico (4345 perguntas) tem placeholder [GERAR] nas respostas
+- **Gap CRITICO**: respostas_canonica = "[GERAR]" em 100% das 4345 perguntas — usuario nao consegue acertar nenhuma
+- **Candidato**: V9-M1.1
 
-## Objetivos do produto -> cobertura -> gaps (gate G1)
+### OBJ-2 (docs/01): "Modo Licoes com 77 modulos em 4 areas (FB+AT+NT+TE)"
+- **Cobertura**: AUSENTE — DB tem 40 modulos (FB18+AT18+NT4+TE0); NT e TE estao vazios
+- **Gap**: faltam 37 modulos (37 NT restantes + 24 TE = 61 modulos, mas briefing lista 77)
+- **Candidato**: V9-M1.2
 
-**OBJ-1**: Ensinar a Biblia de forma ludica e progressiva (2 modos: Licoes + Quiz)
-- Cobertura: PARCIAL — 14 telas em `src/app/`; db.sqlite (798KB) embarcado; 5 testes Jest
-- Gaps: APK nao roda 100% (V8); 46 resources faltando resolvidos via patch; `__DEV__=true` codificado resolve via patch; conteudo real das 4345 perguntas precisa ser injetado no SQLite embarcado
-- Fonte: CLAUDE.md:13
+### OBJ-3 (docs/01): "Modo Quiz com 20 perguntas, timer 10s, 4 alternativas, ate 20 modulos"
+- **Cobertura**: PARCIAL — UI OK; alternativas geradas via hash mostram "[GERAR] ... (verso X)" como distrator (placeholder)
+- **Gap CRITICO**: 4 alternativas do Quiz = "[GERAR] FB01-L01-Q01 (verso X)" / "(outro contexto)" / "Nenhuma das anteriores"
+- **Candidato**: V9-M1.1 (mesmo do OBJ-1)
 
-**OBJ-2**: Avaliacao de respostas por IA generativa (Minimax M2.7)
-- Cobertura: PARCIAL — `src/lib/m3.ts`, `src/lib/openai.ts`, `src/lib/avaliador.ts`, `src/lib/matching.ts` implementados
-- Gaps: precisa de credencial `MINIMAX_API_KEY` em `Tokens API e acessos/minimax/`; fallback OpenAI precisa de `OPENAI_API_KEY`
-- Fonte: CLAUDE.md:28-32
+### OBJ-4 (docs/01): "Personagem livro animado variando poses (pensativo, assustado, feliz, triste, uau)"
+- **Cobertura**: PARCIAL — 3 poses reais (pensativo/feliz/assustado); faltam TRISTE e UAU
+- **Gap**: 2 imagens de personagem faltando (triste e exclamando Uau)
+- **Candidato**: V9-M2.1
 
-**OBJ-3**: Progresso gamificado (cadeado sequencial, 100% para liberar, trofeu final)
-- Cobertura: TOTAL em codigo — `src/lib/streak.ts`, `src/app/trofeu.tsx`, regras em `src/app/licoes/[moduloId]/[licaoId]/final.tsx`
-- Fonte: CLAUDE.md:74-91
+### OBJ-5 (docs/01): "Tela Final Vitoria com trofeu dourado + confetes + faiscas + texto 'Parabens, voce e um Expert!'"
+- **Cobertura**: AUSENTE — `trofeu.tsx` usa emojis (🏆 + 🎊 ✨ 🎉) + circulo laranja; briefing pede **imagem real de trofeu** com bracos erguidos, sorriso largo, olhos brilhantes, confetes roxos/dourados
+- **Gap CRITICO**: trofeu implementacao nao segue o briefing
+- **Candidato**: V9-M2.2
 
-**OBJ-4**: Privacidade LGPD (privacy policy publica)
-- Cobertura: TOTAL — `privacy.html` em `https://donizetiferr.github.io/expert-na-biblia/privacy.html` (HTTP 200); `app.json.extra.privacyPolicyUrl` configurado
-- Fonte: CLAUDE.md:129, V7 (orchestration/audit_report.md)
+### OBJ-6 (docs/01): "Splash com animacao do logo + som" (Tela 1)
+- **Cobertura**: PARCIAL — splash renderiza PersonagemLivro (140px) com pose FELIZ + texto "Expert Na Biblia"; mas briefing pede **logo centralizado** (livro roxo com cruz dourada) com animacao
+- **Gap MEDIO**: splash exibe PersonagemLivro em vez do LOGO oficial
+- **Candidato**: V9-M2.3
 
-## Historico do plano (ATUALIZACAO)
+### OBJ-7 (docs/01): "Tela 2 (modos) com botao ≡ laranja canto superior direito + 2 botoes QUIZ/LICOES grandes"
+- **Cobertura**: TOTAL — botao ≡ existe, 2 cards Quiz/Licoes com bordas estilizadas
+- **Gap**: nenhum
+- **Candidato**: nenhum
 
-- **Categorias recorrentes**: INFRA (20), EVOLUCAO (32), MANUTENCAO (2), MELHORIA (2), CORRECAO (1) — V1-V7 entregaram 47/47 itens
-- **Areas nunca tocadas**: nenhuma (V1-V7 cobriu todas as 4 fases)
-- **Rejeitados que continuam rejeitados**: P3-5 (iOS), Backend Node.js dedicado, iOS obrigatorio no MVP, "luxury/refined" estetica, Multi-idioma no MVP, Dominio proprio Privacy
+### OBJ-8 (docs/01): "Campo de resposta roxo com borda laranja + prefixo R:"
+- **Cobertura**: TOTAL — `licao[moduloId][licaoId].tsx` linhas 79-92 implementam inputContainer com borda laranja + prefixo "R:"
+- **Gap**: nenhum
+- **Candidato**: nenhum
 
-## Cobertura por dimensao (gate G1)
+### OBJ-9 (docs/01): "Icone de som on/off em quase todas as telas + botao home"
+- **Cobertura**: AUSENTE — busca por icone de som/home em Tela Licao, Tela Final, etc = 0 resultados; apenas botao ENVIAR + Input
+- **Gap CRITICO**: briefing explicito "Icone de som on/off + icone home presentes em todas as variantes" — nao implementado
+- **Candidato**: V9-M2.4
 
-- **CORRECAO_BUGS**: 1 achado — APK nao roda (V8) | varrida com (Read codigo + adb logcat) | Fonte: CONTEXTO_PREVIO + INVESTIGACAO
-- **MELHORIA**: 1 achado — PersonagemLivro.tsx usa emojis em vez de imagens reais (P0-5 pendente) | varrida com (Read component) | Fonte: INVESTIGACAO
-- **EVOLUCAO_FEATURES**: 0 achados alem dos apontamentos (rebuild e correcao estrutural) | varrida com (Read src/) | Fonte: G1
-- **MANUTENCAO_REFACTOR**: 1 achado — `_layout.tsx` linha 11 chama `preventAutoHideAsync()` no module scope | varrida com (Read _layout.tsx) | Fonte: INVESTIGACAO
-- **INFRAESTRUTURA**: 3 achados — scripts `type-check`/`lint`/`format:check` faltando; gradle nao instalado globalmente; Java 17 nao no PATH padrao | varrida com (Bash env checks) | Fonte: INVESTIGACAO
-- **UX_UI**: 0 achados (rebuild do APK e infra) | varrida com (Read CLAUDE.md) | Fonte: G1
-- **PERFORMANCE**: 0 achados | varrida com (Read _layout.tsx) | Fonte: G1
-- **SEGURANCA**: 0 achados | varrida com (Read app.json) | Fonte: G1
+### OBJ-10 (docs/01): "Tela Feedback Licao (Certo/Errado) com livro + balao 'Errado' + quadro branco + 2 botoes redondos"
+- **Cobertura**: AUSENTE — `licao[moduloId][licaoId].tsx` linhas 41-58: apos matchCanonico, so muda a pose do PersonagemLivro e segue para proxima pergunta. NUNCA exibe tela de feedback dedicada.
+- **Gap CRITICO**: feedback inline (apenas pose) em vez de tela dedicada
+- **Candidato**: V9-M2.5
 
-## Achados independentes (gate G1 — FOCADO)
+### OBJ-11 (docs/01): "Tela Final Atividade com 3 variantes (<50% / 50-99% / 100%) + textos 'NAO DEU' / 'QUASE LA' / 'VOCE PASSOU!'"
+- **Cobertura**: TOTAL — `final.tsx` implementa 3 variantes com scores corretos; porem variante 'quase' usa COLORS.roxoPrimario (cor errada — briefing pede variacao visual de cor)
+- **Gap**: nenhum critico; cosmético
+- **Candidato**: nenhum (ou polish futuro)
 
-Investigacao INDEPENDENTE alem dos apontamentos do input (com contexto previo rico, ainda assim FASE 1 rodada):
+### OBJ-12 (docs/01): "Conclusao Total = trofeu Expert" (apos todos os modulos 100%)
+- **Cobertura**: PARCIAL — `trofeu.tsx` existe mas a logica de "todos os modulos concluidos" NAO esta implementada em lugar nenhum (busca por `todos os modulos` / `markAllDone` / `checkCompletion` = 0)
+- **Gap**: tela inacessivel na pratica
+- **Candidato**: V9-M2.6
 
-1. **`PersonagemLivro.tsx` usa emojis em vez das imagens reais** — briefing especificou livro-personagem animado com poses. Codigo tem `EMOCAO_EMOJI = { PENSATIVO: '🤔', FELIZ: '😄', ASSUSTADO: '😱' }`. 17 imagens reais estao em `whatsapp_media/images/` mas nao sao usadas.
-2. **`_layout.tsx` linha 11 chama `SplashScreen.preventAutoHideAsync()` no module scope** — efeito colateral na importacao, deveria ser em useEffect. Pode causar problema de ordem de inicializacao no native module loading.
-3. **Scripts `type-check`/`lint`/`format:check` faltando no package.json** — CI chama esses scripts mas eles nao estao definidos. CI vai falhar em qualquer PR ate isso ser resolvido.
-4. **`app.json` ainda tem `PLACEHOLDER_ANDROID_APP_ID`** — o plugin expo-ads-admob precisa do ID real do AdMob (ou pelo menos um ID de teste). Hipotese forte: este placeholder pode ser a causa do `withAndroidDangerousBaseMod` crash no prebuild.
-5. **Assets de audio (`assets/audio/`) VAZIO** — P0-7 marcado como entregue mas o diretorio esta vazio. 5 sons esperados: splash, acerto, erro, transicao, musica_fundo.
-6. **db.sqlite (798KB) tem 77 modulos mock ou 4345 perguntas reais?** — preciso verificar se o conteudo embarcado e o conteudo real das planilhas ou so mock.
-7. **Java 17 NAO esta no PATH padrao do sistema** — `java -version` retorna 1.8.0. Gradle 8+ requer 17+. Scripts de build precisam setar `JAVA_HOME=C:/Users/Donizeti/scoop/apps/temurin17-jdk/current`.
-8. **Gradle NAO esta instalado globalmente** — nao ha gradlew no projeto ainda (sera criado pelo prebuild).
+### OBJ-13 (docs/01): "A IA deve analisar respostas abertas"
+- **Cobertura**: AUSENTE — `avaliador.ts` (nao lido) provavelmente chama M3, mas a `resposta_canonica` e "[GERAR]" em 100% — entao M3 nunca e chamado para validar canonico (caminho de fallback cobre)
+- **Gap CRITICO**: IA eh a Unica saida viavel para resolver [GERAR] em escala
+- **Candidato**: V9-M1.1 (respostas geradas via M3 batch offline) + V9-M3.1 (chamada M3 runtime para casos ambiguos)
 
-## Autonomia por item (1.9 — pre-check leve de acessos)
+## Historico do plano (V8-RETOMADA)
+- 18 itens planejados, 18 marcados [x], mas 5 dos "concluidos" continham gaps estruturais nao detectados
+- Categorias recorrentes nao-concluidas: MELHORIA (PersonagemLivro incompleto) + EVOLUCAO (audio OK mas SFX nao dispara na UI)
+- Areas nunca tocadas em V8: identidade visual real (trofeu/logo com imagem oficial), 5+ poses de personagem, conteudo pedagogico real (apenas placeholder)
+- Rejeitados em V8 que continuam rejeitados: P3-5 (iOS), P3-6 (EAS Play Store), backend dedicado
 
-| Item | Autonomia | Justificativa |
+## Cobertura por dimensao (gate G4)
+
+| Dimensao | Veredito | Detalhe |
 |---|---|---|
-| A1 — Garantir app.json com package name correto | JA_RESOLVIDO | ja esta `com.donizetiferr.expertnabiblia` no app.json |
-| A2 — Garantir label correto | JA_RESOLVIDO | ja esta `Expert Na Bíblia` no app.json expo.name |
-| A3 — Restaurar package.json com todas as deps | JA_RESOLVIDO | `npm install` retornou `added 193 packages` nesta sessao V8 |
-| A4 — Resolver bug do prebuild (withAndroidDangerousBaseMod) | AUTONOMO | investigar se e `expo-ads-admob` com PLACEHOLDER; remover ou corrigir |
-| A5 — Rodar gradle assembleRelease | AUTONOMO | depende de A4; precisa `JAVA_HOME=C:/Users/Donizeti/scoop/apps/temurin17-jdk/current` |
-| A6 — Resolver __DEV__=true (signing release) | AUTONOMO | gradle assembleRelease gera bundle com `__DEV__=false` se for signed release, nao debug |
-| A7 — Validar APK no emulador | AUTONOMO | emulator-5554 ja disponivel em C:/Android/Sdk |
-| A8 — Verificar instalacao, abertura, navegacao | AUTONOMO | apos APK rodar, adb shell input + screencap |
-| A9 — Garantir assets visuais corretos | JA_RESOLVIDO | icon/splash/adaptive-icon/favicon criados em V8 |
-| A10 — Renomear app para "Expert Na Bíblia" no launcher | AUTONOMO | rebuild nativo tem label correto no app.json |
-| Achado 1 (PersonagemLivro com emojis) | AUTONOMO | substituir emojis por imagens reais de `whatsapp_media/images/` |
-| Achado 2 (SplashScreen.preventAutoHideAsync no module scope) | AUTONOMO | mover para useEffect em RootLayout |
-| Achado 3 (scripts type-check/lint/format:check faltando) | AUTONOMO | adicionar scripts em package.json |
-| Achado 5 (assets audio vazio) | DESTRAVAVEL: 5 sons royalty-free | pesquisar Pixabay/Freesound e baixar |
-| Achado 6 (db.sqlite com mock ou real) | AUTONOMO | inspecionar contagem de tabelas/registros |
-| Achado 7 (JAVA_HOME 17) | AUTONOMO | exportar antes de gradle |
-| Achado 8 (gradle nao instalado) | AUTONOMO | `npx expo prebuild` cria gradlew |
+| **CORRECAO_BUGS** | 8 achados | (1) resposta_canonica placeholder em 100% das 4345; (2) Mock fallback gera 77 modulos, DB tem 40; (3) alternativas do Quiz mostram "[GERAR] ..."; (4) splash com PersonagemLivro em vez do logo; (5) PersonagemLivro so tem 3 poses (faltam TRISTE e UAU); (6) Tela Feedback Licao nao existe (apenas mudanca de pose); (7) icone som/home nao renderizado em Tela Licao; (8) tela Trofeu inacessivel (logica "todos concluidos" nao implementada) |
+| **MELHORIA** | 4 achados | (a) audio SFX integrado no codigo mas Splash/Final disparam via callback async com race; (b) DB tem 40 modulos mas MOCK gera 77 (UI mostra contagem diferente em fallback); (c) variantes 'quase' no final.tsx nao destaca visualmente; (d) onboarding.tsx criado orfao (nao registrado no _layout) |
+| **EVOLUCAO_FEATURES** | 3 achados | (i) tela feedback dedicada (modo Licoes e Quiz) com variantes Certo/Errado; (ii) icones de som/home globais; (iii) modulo de Teologia (24 modulos) ainda nao tem conteudo |
+| **MANUTENCAO_REFACTOR** | 3 achados | (I) `db-queries.ts` com 5 funcoes try/catch identicas (refator para helper); (II) constants de cores estao OK mas nao exportam tokens semanticos (sucesso/erro/info); (III) onboarding.tsx + lib/sound.ts.bak orfaos |
+| **INFRAESTRUTURA** | 4 achados | (A) testes existem mas nao rodam no CI; (B) data/ nao versionada (esperado, mas doc esta em scripts/); (C) docs/ contem 17 imagens de referencia + 47-paginas Google Docs mas nenhum README indexando; (D) ABS (Android Backup Service) nao configurado — risco de perda de progresso |
+| **UX_UI** | 6 achados | (1) splash com PersonagemLivro em vez de logo (identidade quebrada); (2) PersonagemLivro so 3 poses; (3) Trofeu com emoji em vez de imagem real; (4) Tela Feedback inline em vez de dedicada; (5) botao ≡ so em Tela 2 (briefing pede em Tela 1 splash, Tela Licoes 1, etc); (6) variante 'quase' do final nao destaca |
+| **PERFORMANCE** | 2 achados | (P1) `listarPerguntas` carrega TODAS as 25 perguntas de uma vez (ok para licao mas ruim se for expandido); (P2) `gerarAlternativas` por hash eh O(1) mas gera lixo quando resposta_canonica = "[GERAR]" |
+| **SEGURANCA** | 1 achado | (S1) AsyncStorage guarda settings em texto plano (risco minimo, mas expo-secure-store ja esta nas deps) |
 
-## Itens apontados pelo usuario (10) — validacao FASE 2
+## Achados independentes (gate G1 — 14+ achados)
+1. Respostas canonicas = "[GERAR]" em 100% das 4345 perguntas
+2. DB tem 40 modulos (NAO 77 do briefing)
+3. Modo Quiz gera alternativas com placeholder visivel ao usuario
+4. Splash mostra PersonagemLivro (140px) em vez de logo oficial
+5. PersonagemLivro so tem 3 poses (briefing exige 5+)
+6. Tela Final (trofeu) usa emojis em vez de imagem real
+7. Tela Feedback Licao nao existe — apenas mudanca de pose inline
+8. Icones de som/home nao renderizados em Tela Licao
+9. Onboarding.tsx orfao (criado mas nao roteado)
+10. lib/sound.ts.bak (backup orfao) presente
+11. Tela Trofeu inacessivel (sem logica de "todos concluidos")
+12. modulo de Teologia (24 esperados) ausente
+13. Tipografia: Bangers + Nunito OK; mas briefing original menciona Luckiest Guy/Lilita One como alternativas (decisao 7 ja fixou Bangers)
+14. ABS / backup de progresso nao configurado
+15. Variante 'quase' do final nao destaca visualmente
 
-1. `Garantir app.json com package name correto: com.donizetiferr.expertnabiblia` → **JA_RESOLVIDO** (ja esta correto no app.json)
-2. `Garantir label correto: "Expert Na Bíblia"` → **JA_RESOLVIDO** (ja esta no app.json expo.name)
-3. `Restaurar package.json com todas as deps` → **JA_RESOLVIDO** (foi feito no V8 — `npm install` adicionou 193 packages)
-4. `Resolver o bug do prebuild (withAndroidDangerousBaseMod)` → **VALIDO** (causa raiz a investigar; hipotese forte: plugin `expo-ads-admob` com `PLACEHOLDER_ANDROID_APP_ID` causando crash)
-5. `Rodar gradle assembleRelease` → **VALIDO** (depende de #4; precisa JAVA_HOME=Java 17)
-6. `Resolver __DEV__=true (gradle properties ou signing release)` → **VALIDO** (precisa signing release, nao debug)
-7. `Validar APK final no emulador` → **VALIDO** (emulator-5554 ja disponivel)
-8. `Verificar instalacao, abertura, navegação em todas as 13 telas` → **VALIDO** (apos APK rodar, fazer adb shell input)
-9. `Garantir que assets visuais (icon, splash, adaptive-icon) estejam corretos` → **JA_RESOLVIDO** (criados em V8 a partir de `whatsapp_media/images/image_20260622_205222.jpg`)
-10. `Renomear o app para "Expert Na Bíblia" no launcher` → **VALIDO** (rebuild nativo tem label correto no app.json)
+## Autonomia por item (1.9 — pre-check leve)
+- V9-M1.1 (Gerar 4345 respostas via M3 batch) → AUTONOMO (token Minimax no cofre; plano: gerar offline + atualizar DB)
+- V9-M1.2 (Importar 24 modulos Teologia + 33 NT faltantes) → AUTONOMO (conteudo pedagogico em `docs/05_conteudo_pedagogico/README.md` ou gerar via M3)
+- V9-M2.1 (Baixar 2 imagens TRISTE e UAU) → AUTONOMO (links Drive em `docs/03_identidade_visual/README.md`)
+- V9-M2.2 (Implementar Trofeu com imagem real) → AUTONOMO (link Drive `image_20260622_215940.jpg`)
+- V9-M2.3 (Splash com logo oficial) → AUTONOMO (links Drive logo)
+- V9-M2.4 (Icones som/home em Tela Licao) → AUTONOMO (componentes)
+- V9-M2.5 (Tela Feedback dedicada) → AUTONOMO
+- V9-M2.6 (Logica de conclusao total → Trofeu) → AUTONOMO
+- V9-M3.1 (Validacao APK no emulador) → AUTONOMO (emulator-5554 online)
+- V9-M4.1 (Refator db-queries) → AUTONOMO
+- V9-M4.2 (Cleanup onbaording orfao) → AUTONOMO
 
 ## Segundo turno critico (FASE 3.5 — gate G5)
 
-### Lentes aplicadas: 7/7
+### Lentes aplicadas (7/7)
+1. **Profundidade rasa?** Itens estao detalhados (M1.1 = 4345 perguntas, M2.1 = 2 imagens, M2.2 = 1 imagem) — OK
+2. **Falta a melhor versao? (POLISH)** Milestone 0 garante pre-req; M3 rebuild + validar; faltou: M4 polish visual com **design tokens semanticos** (acerto/erro/info) para o tema escuro
+3. **Algo se perdeu?** Todo achado virou item? SIM (8 + 4 + 3 + 3 + 4 + 6 + 2 + 1 = 31 achados -> 11 milestones-itens + 4 polish)
+4. **Priorizacao errada?** CRITICO=bug de [GERAR]; ALTO=mock fallback vs real DB; MEDIO=polish visual; BAIXA=refator. OK.
+5. **Premissa nao-verificada?** Gerar 4345 respostas via M3: ~1.5-2h de batch (12s/req); ou usar 1 chamada M3 com prompt consolidado para 50 perguntas? **Verificar empiricamente** durante execucao
+6. **Falta o adjacente obvio?** ADJACENTE 1: testes E2E do fluxo de licao (ja existem unit tests mas nao E2E); ADJACENTE 2: documentar a fonte (Drive) dos assets no CLAUDE.md; ADJACENTE 3: configurar ABS (backup automatico) do progresso
+7. **Item redundante/inflado?** M2.1+M2.2+M2.3 sao 3 milestones de assets visuais (poderia ser 1) — vou **consolidar em M2 "Identidade visual real"**
 
-1. **Profundidade rasa?** — item A4 "Resolver o bug do prebuild" estava generico. Detalhar com hipotese especifica.
-2. **Falta a melhor versao? (POLISH)** — A5 "Rodar gradle assembleRelease" precisa sub-passos explicitos (JAVA_HOME, gradle.properties, validar 4 ABIs).
-3. **Algo se perdeu?** — achados independentes 1, 2, 3, 5, 6 nao estavam nos apontamentos do usuario. MANTER como milestones paralelos.
-4. **Priorizacao errada?** — A1, A2, A3, A9 ja foram resolvidos nesta sessao. Rebaixar para `JA_RESOLVIDO`.
-5. **Premissas verificadas** — emulator-5554 precisa estar online. Confirmar via `adb devices` antes de A7.
-6. **Falta o adjacente obvio?** — apos rebuild, faltam 2 acoes logicas: limpar `dist/*.apk` (19 APKs antigos); atualizar `CHANGELOG.md` com V8.
-7. **Item redundante/inflado?** — A7 (validar) + A8 (navegacao em 13 telas) sao a mesma coisa. Consolidar.
+### Ajustes (aplicados)
+- [POLISH] Adicionado V9-M4.2 (design tokens semanticos para tema escuro)
+- [RECUPERADO] ADJACENTE 1 virou V9-M3.2 (smoke test E2E com adb screencap)
+- [RECUPERADO] ADJACENTE 2 virou V9-M4.3 (CLAUDE.md atualizado com fontes dos assets)
+- [RECUPERADO] ADJACENTE 3 virou V9-M4.4 (configurar ABS ou AsyncStorage com migration)
+- [CONSOLIDADO] M2.1+M2.2+M2.3+M2.4+M2.5+M2.6 → **M2 unico: "Identidade visual real + Telas de feedback"**
+- [PREMISSA] M1.1: batch M3 com 50 perguntas/req ou 1/req? — empírico durante execução
 
-### Ajustes apos segundo turno
-
-1. **DETALHADO (lente 1)**: A4 "Resolver o bug do prebuild" — hipotese forte: `expo-ads-admob` com `PLACEHOLDER_ANDROID_APP_ID` causa o crash `withAndroidDangerousBaseMod`. Acao: REMOVER o plugin `expo-ads-admob` do `app.json` temporariamente OU substituir placeholder por um ID de teste real.
-2. **ENRIQUECIDO (POLISH, lente 2)**: A5 "Rodar gradle assembleRelease" — adicionar sub-passos: setar `JAVA_HOME=C:/Users/Donizeti/scoop/apps/temurin17-jdk/current`, validar 4 ABIs no output, validar `app.json.android.package` = `com.donizetiferr.expertnabiblia`.
-3. **RECUPERADO (lente 3)**: achado 1 (PersonagemLivro com emojis) — MANTER como milestone paralelo.
-4. **RECUPERADO (lente 3)**: achado 2 (`SplashScreen.preventAutoHideAsync()` no module scope) — MANTER como item de manutencao.
-5. **RECUPERADO (lente 3)**: achado 3 (scripts `type-check`/`lint`/`format:check` faltando) — MANTER como pre-requisito para CI funcionar.
-6. **RECUPERADO (lente 3)**: achado 5 (assets audio vazio) e 6 (db.sqlite com mock ou real) — MANTER como pre-requisitos.
-7. **RE-PRIORIZADO (lente 4)**: A1, A2, A3, A9 — rebaixar para `JA_RESOLVIDO` e remover do escopo ativo.
-8. **CONSOLIDADO (lente 7)**: A7 + A8 — unificar em "validacao completa no emulador" com script reproduzivel (install + launch + 5 screenshots + smoke test).
-9. **PREMISSA VERIFICADA (lente 5)**: `adb devices` confirma emulator-5554 device ANTES de A7.
-10. **ADJACENTE OBVIO (lente 6)**: apos rebuild, faltam 2 acoes: limpar `dist/*.apk` (19 antigos); atualizar `CHANGELOG.md` com V8.
-- Ajustes totais: 1 detalhado, 1 enriquecido, 4 recuperados, 1 re-priorizado (cobre 4 itens), 1 consolidado, 1 premissa verificada, 1 adjacente obvio = **9 ajustes**
-
-### Re-ataque (gate G5 — guarda anti-superficialidade)
-
-Plano com >= 3 itens. Segundo turno encontrou 9 ajustes >> 0. NAO e necessario re-ataque.
+### Re-ataque: NAO aplicavel (plano tem 11+4=15 itens; segundo turno encontrou 5 ajustes)
 
 ### Top 3 ajustes mais relevantes
-
-1. **A4 detalhado**: investigar a hipotese do `expo-ads-admob` PLACEHOLDER causando o crash do prebuild (REMOVER temporariamente OU substituir por ID de teste)
-2. **A8/A7 consolidado**: unificar em "validacao completa no emulador" com script reproduzivel
-3. **Achado 2 recuperado**: mover `SplashScreen.preventAutoHideAsync()` para useEffect (causa raiz potencial do crash do app.js thread no APK final)
+1. **M1.1 (gerar 4345 respostas reais via M3)**: este é O bug. Sem isso, o app inteiro é placeholder.
+2. **M2 (consolidado)**: trocar PersonagemLivro de 3 poses para 5+, splash com logo, trofeu com imagem, telas de feedback dedicadas. Identidade visual que o usuário EXIGE do briefing.
+3. **M3.2 (E2E smoke test)**: após correção, validar no emulador que o usuario realmente vê/responde perguntas e a tela final funciona — sem isso, novo round de "abri o APK e nada funciona".

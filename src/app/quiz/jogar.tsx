@@ -1,9 +1,10 @@
 import { View, Text, Pressable, StyleSheet, ActivityIndicator } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../constants/colors';
 import { listarPerguntas } from '../../lib/db-queries';
-import { gerarAlternativas, embaralharAlternativas } from '../../lib/quiz-questions';
+import { embaralharAlternativas } from '../../lib/quiz-questions';
+import { obterAlternativas } from '../../lib/quiz-alternatives-db';
 import type { Pergunta } from '../../types';
 
 const TOTAL_PERGUNTAS = 20;
@@ -19,7 +20,6 @@ interface PerguntaQuiz {
  */
 export default function JogarQuiz() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ modo?: string; modulos?: string }>();
   const [perguntas, setPerguntas] = useState<PerguntaQuiz[]>([]);
   const [indice, setIndice] = useState(0);
   const [acertos, setAcertos] = useState(0);
@@ -59,7 +59,9 @@ export default function JogarQuiz() {
     const selecionadas = mock.slice(0, TOTAL_PERGUNTAS);
     const quiz: PerguntaQuiz[] = selecionadas.map((p) => ({
       pergunta: p,
-      alternativas: embaralharAlternativas(gerarAlternativas(p.id, p.resposta_canonica)),
+      // V9 M1.1: usa alternativas REAIS do DB (tabela quiz_alternatives populada pelo batch M2.7)
+      // Fallback para mock so se a tabela estiver vazia (defensivo)
+      alternativas: embaralharAlternativas(obterAlternativas(p.id, p.resposta_canonica)),
     }));
     setPerguntas(quiz);
     setLoading(false);

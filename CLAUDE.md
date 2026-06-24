@@ -129,12 +129,45 @@ Expert Na Biblia/
 - **Privacy Policy URL**: usar GitHub Pages free (`donizetiferr.github.io/expert-na-biblia/`)
   — zero custo. Nao precisa dominio proprio.
 
+## Fontes dos assets (V9 M4.3)
+
+Todos os assets visuais/audios estao em Google Drive publico + espelhados localmente em
+`whatsapp_media/`. Lista de fontes (todos publicos):
+
+- **Logos**: https://drive.google.com/drive/folders/1wpzcW9gs8T8BWZjlTIP07VlVmsyN919f
+- **Paleta**: https://drive.google.com/drive/folders/1i6Ahy5A1bQ1Ra4SpGVoobve4_3R8npgv
+- **Personagens**: https://drive.google.com/drive/folders/1rGy3F3q45aJCY6ipDTYyf3Ir88ykjzDm
+- **Telas mockadas**: https://drive.google.com/drive/folders/1Y-OaSvZgKRAuc7e8inXsLCBUZOhh9RxR
+- **Documento oficial (47 paginas)**: https://docs.google.com/document/d/1MqgnqjT3ALXY67atmYbdoEa7pxARIiTmjrs8uDix8nM
+
+### Assets ja embarcados (V9)
+
+| Arquivo embarcado | Fonte local (whatsapp_media/images/) | Uso |
+|---|---|---|
+| `assets/images/logo.jpg` | `image_20260622_205222.jpg` | Splash screen (300x300) |
+| `assets/images/trofeu.jpg` | `image_20260622_215940.jpg` | Tela Trofeu (280x280) |
+| `assets/images/personagem_pensativo.jpg` | V8 | PersonagemLivro pose PENSATIVO |
+| `assets/images/personagem_feliz.jpg` | V8 | PersonagemLivro pose FELIZ |
+| `assets/images/personagem_assustado.jpg` | V8 | PersonagemLivro pose ASSUSTADO |
+| `assets/images/personagem_triste.jpg` | `image_20260622_213156.jpg` | PersonagemLivro pose TRISTE (V9 M2.2) |
+| `assets/images/personagem_exclamando.jpg` | `image_20260622_213535.jpg` | PersonagemLivro pose EXCLAMANDO (V9 M2.2) |
+
+### Decisao de escopo V9 (2026-06-24)
+
+- **Modulos Teologia (24 modulos)**: adiar para V10. MVP foca FB+AT+NT com 40 modulos /
+  ~750 perguntas por modulo / ~4345 perguntas totais. Justificativa: batch M2.7 ja consome
+  ~3h para gerar respostas canonicas + distrators; gerar tambem os 24 modulos TE dobraria
+  tempo e risco. Validar qualidade no MVP beta antes.
+- **Backend deploy**: descartado (app chama M2.7 direto, sem backend dedicado).
+- **Politica de retry**: settings.efeitos desativa SFX em runtime via polling 500ms
+  (sound-runtime.ts); settings.musica idem (V9 M3.1).
+
 ## PROXIMO PASSO
 
-Apos double check profundo (APROVADO 9.4/10) e consolidacao das 10 decisoes criticas com o
-usuario, evocar a skill `solo-plan` para gerar o plano de acao detalhado (milestones,
-dependencias, criterios de pronto) e em seguida despachar `@full-cycle` para comecar a
-implementacao.
+Apos V9 (M1.1 batch M2.7 + telas corrigidas), validar via APK no emulator e publicar no
+catbox.moe. Validar empiricamente que o usuario consegue acertar perguntas reais e ver
+a tela de feedback dedicada funcionando. Em seguida, considerar V10 com modulos de Teologia
+se engajamento validar.
 
 ### Arquitetura final (decidida)
 

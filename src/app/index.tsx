@@ -1,14 +1,16 @@
 import { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Animated, Pressable, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../constants/colors';
-import { PersonagemLivro } from '../components/PersonagemLivro';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { COLORS, FONTES, ESPACAMENTOS } from '../constants/colors';
 import { playSplash } from '../lib/sound';
 
+const ONBOARDING_KEY = '@onboarding:completed';
+
 /**
- * Tela 1: Splash screen com animacao do logo + som (3s).
- * Apos 3s, avanca automaticamente para /modos.
- * Botao "PULAR" disponivel para usuarios avancados.
+ * Tela 1: Splash screen com animacao do LOGO OFICIAL + som (3s).
+ * V9 M2.1: usa imagem real do logo (whatsapp_media/images/image_20260622_205222.jpg)
+ * V9 M4.5: na primeira abertura (sem @onboarding:completed), redireciona para /onboarding.
  */
 export default function SplashScreen() {
   const router = useRouter();
@@ -29,11 +31,19 @@ export default function SplashScreen() {
       }),
     ]).start();
 
-    // Tocar splash sound (3s) ao montar a tela
     playSplash().catch(() => {});
 
-    const timer = setTimeout(() => {
-      router.replace('/modos');
+    const timer = setTimeout(async () => {
+      try {
+        const done = await AsyncStorage.getItem(ONBOARDING_KEY);
+        if (done === '1') {
+          router.replace('/modos');
+        } else {
+          router.replace('/onboarding');
+        }
+      } catch {
+        router.replace('/modos');
+      }
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -41,8 +51,20 @@ export default function SplashScreen() {
 
   return (
     <View style={styles.container}>
-      <Animated.View style={{ opacity: fadeAnim, transform: [{ scale: scaleAnim }] }}>
-        <PersonagemLivro pose="FELIZ" size={140} />
+      <Animated.View
+        style={{
+          opacity: fadeAnim,
+          transform: [{ scale: scaleAnim }],
+          marginBottom: ESPACAMENTOS.xl,
+        }}
+      >
+        <Image
+          source={require('../../assets/images/logo.jpg')}
+          style={styles.logo}
+          resizeMode="contain"
+          accessible
+          accessibilityLabel="Logo Expert Na Biblia"
+        />
       </Animated.View>
 
       <Animated.Text style={[styles.titulo, { opacity: fadeAnim }]}>
@@ -69,6 +91,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: ESPACAMENTOS.lg,
+  },
+  logo: {
+    width: 300,
+    height: 300,
   },
   titulo: {
     fontFamily: FONTES.display,

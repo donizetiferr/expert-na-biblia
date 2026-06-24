@@ -126,3 +126,39 @@ export async function resetarProgresso(): Promise<void> {
     // Mock
   }
 }
+
+/**
+ * V9 M2.6: log da resposta do usuario para revisao posterior/debug.
+ * Sem persistir (sem tabela nova); usa console.log estruturado.
+ */
+export async function registrarRespostaUsuario(
+  perguntaId: string,
+  respostaUsuario: string,
+  correto: boolean,
+  score: number,
+): Promise<void> {
+  // Log estruturado para eventual replay/auditoria.
+  // Em producao real, escreveria em uma tabela `respostas_historico`.
+  // Por enquanto, console apenas para nao inflar o schema durante V9.
+  console.log(
+    `[resposta] pergunta=${perguntaId} resposta="${respostaUsuario.slice(0, 60)}" correto=${correto} score=${score.toFixed(2)}`,
+  );
+}
+
+/**
+ * V9 M2.6: detecta se TODOS os modulos estao concluidos (true -> navegar para Trofeu).
+ * Conta modulos com concluido=1 vs total. Em mock, considera false.
+ */
+export async function todosModulosConcluidos(): Promise<boolean> {
+  try {
+    const db = getDatabase();
+    const total = db.getAllSync<{ n: number }>('SELECT COUNT(*) AS n FROM modulos');
+    const done = db.getAllSync<{ n: number }>('SELECT COUNT(*) AS n FROM modulos WHERE concluido = 1');
+    const totalCount = total[0]?.n ?? 0;
+    const doneCount = done[0]?.n ?? 0;
+    if (totalCount === 0) return false;
+    return totalCount === doneCount;
+  } catch {
+    return false;
+  }
+}

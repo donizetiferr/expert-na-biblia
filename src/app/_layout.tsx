@@ -8,6 +8,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { playMusicaFundo, stopMusicaFundo } from '../lib/sound';
+import { initSoundRuntime, stopSoundRuntime } from '../lib/sound-runtime';
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -18,7 +19,6 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    // M4.2 (V8-RETOMADA): mover SplashScreen.preventAutoHideAsync() para useEffect
     SplashScreen.preventAutoHideAsync();
   }, []);
 
@@ -28,13 +28,15 @@ export default function RootLayout() {
     }
   }, [fontsLoaded, fontError]);
 
-  // M4.5 (V8-RETOMADA): iniciar musica de fundo quando fontes carregarem
   useEffect(() => {
     if (fontsLoaded || fontError) {
       playMusicaFundo().catch(() => {});
+      // V9 M3.1: inicia runtime watcher para reagir a mudancas de settings
+      initSoundRuntime();
     }
     return () => {
       stopMusicaFundo().catch(() => {});
+      stopSoundRuntime();
     };
   }, [fontsLoaded, fontError]);
 
@@ -54,6 +56,7 @@ export default function RootLayout() {
           }}
         >
           <Stack.Screen name="index" />
+          <Stack.Screen name="onboarding" />
           <Stack.Screen name="modos" />
           <Stack.Screen name="licoes" />
           <Stack.Screen name="quiz" />

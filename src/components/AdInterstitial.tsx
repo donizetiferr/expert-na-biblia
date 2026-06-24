@@ -4,7 +4,7 @@
  * NUNCA em: splash, Tela Final, Tela Feedback (regra do projeto).
  */
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 const FREQUENCIA_MINIMA = 3; // 1 ad a cada 3 conclusoes
 

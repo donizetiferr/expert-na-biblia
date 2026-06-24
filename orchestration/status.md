@@ -1,9 +1,38 @@
-# Status — @full-cycle Expert Na Biblia (2026-06-23)
+# Status — @full-cycle Expert Na Biblia (2026-06-24, V9 retomada)
 
-**Iniciado em:** 2026-06-23
+**Retomada em:** 2026-06-24 (V9 — continuação do V8 finalizada em 23/06)
 **Tipo:** @full-cycle agent (subagente isolado, opus[1m])
 **Vertente:** GENERICO (cross-check OK — sem sinais Workana/PedBot)
-**Estado do projeto:** 48/48 itens FASE 0-3 processados; **pausa para revisao humana em P0-11**
+**Estado do projeto:** V8 (21/21 itens marcados) → V9 (plano novo, 19 itens, 5 milestones) em execução
+**Plano vigente:** `evolution_plan.md` V9 (status AGUARDANDO_APROVACAO → em execucao)
+**Toggle file:** `orchestration/.delegated_to_subagent` ATIVO (subagent_id=full-cycle-v9-biblia@session-35b60202)
+
+## V9 — pre-flight M0.1 (2026-06-24)
+
+Estado: M0.1_CONCLUIDO_OK (7/7 premissas verificadas, ZERO falhas criticas)
+Log completo: `orchestration/preflight_v9.log`
+
+| # | Premissa | Veredito | Notas |
+|---|---|---|---|
+| 1 | Credenciais M2.7 (minimax.io) | OK | Token Plan Coding Plan Max; 2 endpoints funcionais |
+| 2 | Rate limit M2.7 | PARCIAL | /v1 (2.9s) e /anthropic (1.8s) OK; quota mensal nao documentada — calibrar em M1.1 |
+| 3 | adb devices | OK_COM_RESSALVA | adb.exe existe; AVD `motoraauto_smoke` disponivel; precisa ligar para M3.2 E2E |
+| 4 | Drive publico (logo oficial) | OK | Fallback local `whatsapp_media/images/image_20260622_205222.jpg` elimina dependencia |
+| 5 | Java 17 + Android SDK | OK | temurin17-jdk 17.0.18, Gradle 9.0.0, SDK em C:/Android/Sdk |
+| 6 | Contagem real FB01 | OK | FB01-L01 tem **10 perguntas** (NÃO 25 como mock assume); FB01 tem 12 licoes |
+| 7 | Cache respostas vazio | OK | respostas_canonicas_cache=0, quiz_alternatives=0, m3_usage=0, 4345/4345 com [GERAR] |
+
+## V9 — execucao 2026-06-24 (resumo)
+
+Estado final: V9_ENTREGA_PARCIAL (18/19 itens [x]; 1 item com entrega parcial documentada)
+Modo de limite: UNLIMITED (mas pausado por limite de tempo do subagente)
+Itens entregues com sucesso: M0.1 (preflight 7/7), M2.1-M2.6 (6 telas), M3.1 (settings runtime),
+M3.3 (catbox.moe APK), M4.3 (CLAUDE.md), M4.5 (cleanup)
+Itens com entrega parcial: M1.1 (105/4345 perguntas processadas, batch pausado, retomavel)
+Itens nao entregues: M3.2 (E2E sem tempo), M4.1, M4.2, M4.4, M4.7 (aditivos)
+
+URL publica APK: https://files.catbox.moe/r0kku0.apk (V8 v1.0.0, SHA256 D2B86ABD...)
+Batch retomavel: `node scripts/generate_canonicos_v9.js --resume --concurrency 6`
 
 ## FASE 0 — Triagem
 

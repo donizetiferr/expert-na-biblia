@@ -3,22 +3,28 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../../constants/colors';
 import { PersonagemLivro } from '../../../components/PersonagemLivro';
-import { listarPerguntas, marcarLicaoConcluida } from '../../../lib/db-queries';
+import { IconeSom } from '../../../components/IconeSom';
+import { IconeHome } from '../../../components/IconeHome';
+import { listarPerguntas, registrarRespostaUsuario } from '../../../lib/db-queries';
 import { matchCanonico } from '../../../lib/matching';
 import type { Pergunta } from '../../../types';
 
-type Pose = 'PENSATIVO' | 'FELIZ' | 'ASSUSTADO';
+type Pose = 'PENSATIVO' | 'FELIZ' | 'ASSUSTADO' | 'TRISTE' | 'EXCLAMANDO';
 
 /**
- * Tela Licao: Pergunta (quadro branco + campo de resposta + personagem).
- * Layout: indicator topo "1-30", personagem livro, quadro branco com pergunta,
- * TextInput roxo com borda laranja prefixo "R:", icone som canto inferior direito.
+ * V9 M2.4+M2.5: Tela Licao com navegacao para Tela Feedback dedicada e icones globais (som/home).
+ * Apos matchCanonico, em vez de mudar pose inline (V8), faz router.push para
+ * /licoes/{moduloId}/{licaoId}/feedback?resultado=acerto|erro&resposta_correta=...
+ * IconeSom canto inferior direito (toggle efeitos em runtime).
+ * IconeHome canto superior direito (volta para /modos).
  */
 export default function LicaoScreen() {
   const router = useRouter();
-  const { moduloId, licaoId } = useLocalSearchParams<{ moduloId: string; licaoId: string }>();
+  const params = useLocalSearchParams<{ moduloId: string; licaoId: string; indice?: string }>();
+  const { moduloId, licaoId } = params;
   const [perguntas, setPerguntas] = useState<Pergunta[]>([]);
-  const [indice, setIndice] = useState(0);
+  // V9 M2.4: indice vem do param (feedback avanca via ?indice=N); default 0
+  const [indice, setIndice] = useState(parseInt(params.indice ?? '0', 10));
   const [resposta, setResposta] = useState('');
   const [pose, setPose] = useState<Pose>('PENSATIVO');
   const [acertos, setAcertos] = useState(0);
@@ -26,6 +32,16 @@ export default function LicaoScreen() {
   useEffect(() => {
     if (licaoId) listarPerguntas(licaoId).then(setPerguntas);
   }, [licaoId]);
+
+  // Quando params.indice muda (deep link do feedback), sincroniza estado
+  useEffect(() => {
+    const p = parseInt(params.indice ?? '0', 10);
+    if (!Number.isNaN(p) && p !== indice) {
+      setIndice(p);
+      setResposta('');
+      setPose('PENSATIVO');
+    }
+  }, [params.indice]);
 
   if (perguntas.length === 0 || !moduloId || !licaoId) {
     return (
@@ -40,22 +56,27 @@ export default function LicaoScreen() {
 
   const enviar = () => {
     const resultado = matchCanonico(resposta, perguntaAtual.resposta_canonica);
-    setPose(resultado.correto ? 'FELIZ' : 'ASSUSTADO');
+
+    // Log local da resposta do usuario (para revisao posterior / debug)
+    registrarRespostaUsuario(perguntaAtual.id, resposta, resultado.correto, resultado.score || 0);
+
+    // Atualiza acerto localmente (mantido no estado para o caso de voltar)
     if (resultado.correto) setAcertos((a) => a + 1);
 
-    setTimeout(() => {
-      setPose('PENSATIVO');
-      setResposta('');
-      const proximo = indice + 1;
-      if (proximo >= perguntas.length) {
-        // Final da licao
-        const pct = Math.round(((acertos + (resultado.correto ? 1 : 0)) / perguntas.length) * 100);
-        if (pct === 100) marcarLicaoConcluida(licaoId, pct);
-        router.replace(`/licoes/${moduloId}/${licaoId}/final?score=${pct}`);
-      } else {
-        setIndice(proximo);
-      }
-    }, 1200);
+    // Navega para Tela Feedback dedicada em vez de mudar pose inline
+    router.push({
+      pathname: `/licoes/${moduloId}/${licaoId}/feedback`,
+      params: {
+        resultado: resultado.correto ? 'acerto' : 'erro',
+        resposta_correta: perguntaAtual.resposta_canonica,
+        moduloId: String(moduloId),
+        licaoId: String(licaoId),
+        indice: String(indice),
+        total: String(perguntas.length),
+        total_perguntas: String(perguntas.length),
+        acertos_atual: String(acertos + (resultado.correto ? 1 : 0)),
+      },
+    });
   };
 
   return (
@@ -63,10 +84,15 @@ export default function LicaoScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
+      {/* IconeHome canto superior direito */}
       <View style={styles.header}>
+        <View style={styles.headerEsquerda} />
         <Text style={styles.indicador}>
           {indice + 1}-{perguntas.length}
         </Text>
+        <View style={styles.headerDireita}>
+          <IconeHome />
+        </View>
       </View>
 
       <View style={styles.centro}>
@@ -95,6 +121,11 @@ export default function LicaoScreen() {
           <Text style={styles.botaoTexto}>ENVIAR</Text>
         </Pressable>
       </View>
+
+      {/* IconeSom canto inferior direito */}
+      <View style={styles.rodape}>
+        <IconeSom />
+      </View>
     </KeyboardAvoidingView>
   );
 }
@@ -112,7 +143,20 @@ const styles = StyleSheet.create({
     marginTop: ESPACAMENTOS.xxl,
     fontSize: 18,
   },
-  header: { alignItems: 'center', marginTop: ESPACAMENTOS.md },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: ESPACAMENTOS.md,
+    paddingHorizontal: ESPACAMENTOS.sm,
+  },
+  headerEsquerda: { width: 40 },
+  headerDireita: { width: 40, alignItems: 'flex-end' },
+  rodape: {
+    position: 'absolute',
+    bottom: ESPACAMENTOS.lg,
+    right: ESPACAMENTOS.lg,
+  },
   indicador: {
     fontFamily: FONTES.bodyBold,
     fontSize: 18,

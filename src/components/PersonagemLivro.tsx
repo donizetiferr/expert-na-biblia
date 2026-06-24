@@ -1,14 +1,15 @@
 import { useEffect, useRef } from 'react';
-import { Animated, View, Image, StyleSheet } from 'react-native';
+import { Animated, View, StyleSheet } from 'react-native';
 import { COLORS, ESPACAMENTOS } from '../constants/colors';
 
 /**
- * Personagem livro animado com 3 poses (pensativo, feliz, assustado).
+ * Personagem livro animado com 5 poses (pensativo, feliz, assustado, TRISTE, EXCLAMANDO).
  * Troca automatica a cada 4s; pode ser controlada externamente via prop `pose`.
  * M4.1 (V8-RETOMADA): usa imagens reais em assets/images/ em vez de emojis.
+ * V9 M2.2: adiciona TRISTE e EXCLAMANDO para variantes "NAO DEU" (TRISTE) e "100%" (EXCLAMANDO/Uau!).
  */
 
-export type Pose = 'PENSATIVO' | 'FELIZ' | 'ASSUSTADO';
+export type Pose = 'PENSATIVO' | 'FELIZ' | 'ASSUSTADO' | 'TRISTE' | 'EXCLAMANDO';
 
 interface Props {
   pose?: Pose;
@@ -19,12 +20,16 @@ const IMAGENS_POSE: Record<Pose, any> = {
   PENSATIVO: require('../../assets/images/personagem_pensativo.jpg'),
   FELIZ: require('../../assets/images/personagem_feliz.jpg'),
   ASSUSTADO: require('../../assets/images/personagem_assustado.jpg'),
+  TRISTE: require('../../assets/images/personagem_triste.jpg'),
+  EXCLAMANDO: require('../../assets/images/personagem_exclamando.jpg'),
 };
 
 const CORES_POSE = {
   PENSATIVO: COLORS.laranjaEscuro,
   FELIZ: COLORS.acertoVerde,
   ASSUSTADO: COLORS.erroVermelho,
+  TRISTE: COLORS.avisoAmarelo,
+  EXCLAMANDO: COLORS.laranjaClaro,
 };
 
 export function PersonagemLivro({ pose = 'PENSATIVO', size = 120 }: Props) {
