@@ -1,209 +1,209 @@
 {
-  "generated_at": "2026-06-24T14:37:36.179Z",
-  "elapsed_s": 11460.6,
-  "total": 2027,
-  "ok": 1595,
-  "err": 432,
+  "generated_at": "2026-06-24T16:06:45.477Z",
+  "elapsed_s": 5247.8,
+  "total": 432,
+  "ok": 288,
+  "err": 144,
   "failures": [
     {
-      "id": "AT13-L08-Q01",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about what Proverbs teaches about wealth and poverty in Brazilian Portugu"
-    },
-    {
-      "id": "AT13-L10-Q04",
-      "err": "TypeError: terminated"
-    },
-    {
-      "id": "AT13-L20-Q05",
-      "err": "TypeError: terminated"
-    },
-    {
-      "id": "AT13-L20-Q07",
-      "err": "TypeError: fetch failed"
-    },
-    {
-      "id": "AT13-L21-Q06",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about the relationship between Christ, creation, redemption, and true wis"
-    },
-    {
       "id": "AT13-L21-Q05",
-      "err": "JSON nao encontrado: <think>\nThe question asks: \"How does union with Christ transform the Christian way of seeking wisdom"
+      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical/theological question in Brazilian Portuguese: \"How does union "
     },
     {
       "id": "AT14-L04-Q04",
-      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical question in Portuguese about how God, fear, love, or covenant "
-    },
-    {
-      "id": "AT14-L04-Q05",
-      "err": "JSON nao encontrado: <think>\nThe user is asking in Portuguese about biblical interpretations regarding \"work and accompli"
-    },
-    {
-      "id": "AT14-L05-Q06",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about the contribution that pleasure and wealth offer to the overall mess"
+      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical theology question in Portuguese: \"How do God, fear, love, or c"
     },
     {
       "id": "AT14-L07-Q04",
-      "err": "JSON nao encontrado: <think>\nThe question is in Portuguese and asks: \"Como Deus, temor, amor ou aliança se relacionam com"
-    },
-    {
-      "id": "AT14-L07-Q06",
-      "err": "JSON nao encontrado: <think>\nThe user is asking a question in Portuguese about a biblical book: \"Que contribuição [tempo/"
-    },
-    {
-      "id": "AT14-L09-Q01",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about what \"death\" means in the context of Ecclesiastes or Song of Songs "
-    },
-    {
-      "id": "AT14-L09-Q03",
-      "err": "JSON nao encontrado: <think>\nThe question is in Portuguese and asks: \"Que tensão ou limite da vida humana aparece em mort"
+      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical question in Portuguese: \"How do God, fear, love, or covenant r"
     },
     {
       "id": "AT14-L10-Q02",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about a biblical question regarding images, arguments, or experiences use"
-    },
-    {
-      "id": "AT14-L11-Q04",
-      "err": "JSON nao encontrado: <think>\nThe user is asking a theological/biblical question in Brazilian Portuguese: \"How does God's "
-    },
-    {
-      "id": "AT14-L11-Q05",
-      "err": "JSON nao encontrado: <think>\nThe user is asking a theological question in Brazilian Portuguese about how the fear of God "
-    },
-    {
-      "id": "AT14-L13-Q05",
-      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical question in Portuguese: \"Why is it difficult to reconstruct a "
-    },
-    {
-      "id": "AT14-L14-Q02",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about a biblical/theological question in Brazilian Portuguese: \"Quais ima"
-    },
-    {
-      "id": "AT14-L16-Q04",
-      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical/theological question in Portuguese about how God, fear, love, "
-    },
-    {
-      "id": "AT14-L16-Q06",
-      "err": "JSON nao encontrado: <think>\nThe user is asking a question in Portuguese about a biblical book: \"Que contribuição beleza "
-    },
-    {
-      "id": "AT14-L17-Q03",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about a tension or limit of human life that appears in conjugal exclusivi"
-    },
-    {
-      "id": "AT14-L18-Q05",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about misinterpretations to avoid when studying sexuality in marriage fro"
+      "err": "JSON nao encontrado: <think>\nThe user is asking about a biblical question regarding what images, arguments, or experience"
     },
     {
       "id": "AT14-L18-Q02",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about Bible questions regarding sexuality in marriage - what images, argu"
-    },
-    {
-      "id": "AT15-L01-Q02",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about the difference between biblical prophecy and simple prediction of t"
-    },
-    {
-      "id": "AT15-L01-Q04",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about a biblical prophecy question in Portuguese. The question asks: \"Wha"
-    },
-    {
-      "id": "AT15-L01-Q05",
-      "err": "JSON nao encontrado: <think>\nThe user is asking in Portuguese about how symbolic actions, visions, and oracles were used "
-    },
-    {
-      "id": "AT15-L01-Q07",
-      "err": "JSON nao encontrado: <think>\nThe user is asking a question in Portuguese about how the fulfillment and faithfulness to th"
-    },
-    {
-      "id": "AT15-L02-Q03",
-      "err": "JSON nao encontrado: <think>\nThe user is asking in Brazilian Portuguese about a biblical question: \"Which characters, vis"
-    },
-    {
-      "id": "AT15-L02-Q05",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about a historical greeting or future hope related to a prophetic calling"
-    },
-    {
-      "id": "AT15-L03-Q03",
-      "err": "JSON nao encontrado: <think>\nThe question asks: \"Which characters, visions or oracles are linked to prophecy and covenant"
-    },
-    {
-      "id": "AT15-L08-Q02",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about messianic hope in Isaiah - specifically which book, period, and his"
-    },
-    {
-      "id": "AT15-L08-Q06",
-      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical/theological question in Portuguese about how the messianic hop"
-    },
-    {
-      "id": "AT15-L10-Q04",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about how judgment, holiness, covenant, or restoration appear in the fall"
+      "err": "JSON nao encontrado: <think>\nThe user is asking about biblical images, arguments, or experiences used to address sexualit"
     },
     {
       "id": "AT15-L10-Q02",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about the book, period, and historical situation in which the fall of Jer"
+      "err": "JSON nao encontrado: <think>\nThe user is asking about which book, period, and historical situation features the fall of J"
     },
     {
       "id": "AT15-L12-Q03",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about acrostic poems and how they appear in the Bible book. This seems to"
-    },
-    {
-      "id": "AT15-L12-Q02",
-      "err": "JSON nao encontrado: <think>\nThe user is asking in Brazilian Portuguese about \"How poems express grief over the destructi"
-    },
-    {
-      "id": "AT15-L12-Q04",
-      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical question in Portuguese: \"How are sin, judgment, and accountabi"
+      "err": "JSON nao encontrado: <think>\nThe user is asking about acrostic poems and how they appear in the Bible book. This is refer"
     },
     {
       "id": "AT15-L14-Q04",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about how concepts like \"juízo\" (judgment), \"santidade\" (holiness), \"alia"
-    },
-    {
-      "id": "AT15-L14-Q03",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about which characters, visions, or oracles are linked to the glory of Go"
-    },
-    {
-      "id": "AT15-L14-Q06",
-      "err": "JSON nao encontrado: <think>\nThe question asks how the glory of God in Ezekiel connects to Christ, the New Covenant, or t"
+      "err": "JSON nao encontrado: <think>\nThe user is asking about how concepts like judgment (juízo), holiness (santidade), covenant "
     },
     {
       "id": "AT15-L15-Q03",
-      "err": "JSON nao encontrado: <think>\nThe user is asking in Portuguese about biblical characters, visions, or oracles linked to in"
-    },
-    {
-      "id": "AT15-L16-Q05",
-      "err": "JSON nao encontrado: <think>\nThe user is asking about a biblical question in Brazilian Portuguese: \"Qual promessa de rest"
-    },
-    {
-      "id": "AT15-L17-Q04",
-      "err": "JSON nao encontrado: <think>\nThe question is in Portuguese and asks: \"How do judgment, holiness, covenant or restoration "
-    },
-    {
-      "id": "AT15-L18-Q03",
-      "err": "JSON nao encontrado: <think>\nThe question asks about how narratives of fidelity and apocalyptic visions structure the boo"
+      "err": "JSON nao encontrado: <think>\nThe user is asking in Portuguese: \"Which characters, visions, or oracles are linked to indiv"
     },
     {
       "id": "AT15-L15-Q04",
-      "err": "TypeError: fetch failed"
+      "err": "JSON nao encontrado: <think>\nThe user is asking a theological question in Portuguese about how concepts like \"juízo\" (jud"
+    },
+    {
+      "id": "AT15-L17-Q04",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical question in Portuguese: \"Como juízo, santidade, aliança ou res"
+    },
+    {
+      "id": "AT15-L18-Q03",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about how narratives of fidelity and apocalyptic visions structure a book"
     },
     {
       "id": "AT15-L18-Q05",
-      "err": "JSON nao encontrado: <think>\nThe user is asking a question in Portuguese about the Bible, specifically about how Daniel d"
-    },
-    {
-      "id": "AT15-L18-Q07",
-      "err": "JSON nao encontrado: <think>\nThe user is asking in Portuguese: \"How do Jesus and the New Testament resume/take up images "
-    },
-    {
-      "id": "AT15-L19-Q04",
-      "err": "JSON nao encontrado: <think>\nThe question asks about how \"judgment, holiness, covenant or restoration appear in faithfuln"
-    },
-    {
-      "id": "AT15-L19-Q06",
-      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical question in Portuguese about how faithfulness in exile connect"
+      "err": "JSON nao encontrado: <think>\nThe user is asking a biblical question in Portuguese about how Daniel demonstrates faithfuln"
     },
     {
       "id": "AT15-L20-Q06",
       "err": "JSON nao encontrado: <think>\nThe user is asking about how \"sonhos e impérios\" (dreams and empires) connects to Christ, th"
+    },
+    {
+      "id": "AT15-L23-Q06",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a question in Portuguese about how the resurrection in Daniel connects to"
+    },
+    {
+      "id": "AT16-L01-Q03",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about how the names of Hosea's children communicate judgment. This is a b"
+    },
+    {
+      "id": "AT16-L08-Q01",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about the historical context and central message of the Book of Nahum and"
+    },
+    {
+      "id": "AT16-L11-Q01",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about the historical context and central message of Zephaniah and the \"Da"
+    },
+    {
+      "id": "AT16-L12-Q01",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about the historical context and central message of Haggai and the recons"
+    },
+    {
+      "id": "AT16-L15-Q01",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about the historical context and central message of Malachi regarding the"
+    },
+    {
+      "id": "AT17-L14-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about characters, kingdoms, or events linked to religious reforms in the "
+    },
+    {
+      "id": "AT17-L14-Q06",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a question in Portuguese about how religious reforms contributed to the h"
+    },
+    {
+      "id": "AT18-L04-Q06",
+      "err": "JSON nao encontrado: <think>\nThe user is asking in Portuguese: \"How did the fall of the southern kingdom contribute to th"
+    },
+    {
+      "id": "FB01-L05-Q03",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about which books are classified as historical books in the Protestant Ol"
+    },
+    {
+      "id": "FB01-L08-Q05",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a question in Portuguese about how knowledge of essential biblical charac"
+    },
+    {
+      "id": "FB01-L09-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about \"Quais são os principais elementos relacionados a lugares bíblicos "
+    },
+    {
+      "id": "FB01-L08-Q03",
+      "err": "JSON nao encontrado: <think>\nThe user is asking in Portuguese about how essential biblical characters help to read and st"
+    },
+    {
+      "id": "FB01-L10-Q03",
+      "err": "JSON nao encontrado: <think>\nThe question is in Portuguese and asks: \"How do essential biblical peoples help to read and "
+    },
+    {
+      "id": "FB02-L04-Q05",
+      "err": "JSON nao encontrado: <think>\nThe question asks how the flood and the dispersion of nations contribute to the message of r"
+    },
+    {
+      "id": "FB02-L05-Q04",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about a biblical question in Portuguese (Brazilian): \"What problem, promi"
+    },
+    {
+      "id": "FB02-L06-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking in Brazilian Portuguese about essential characters, peoples, or events to"
+    },
+    {
+      "id": "FB02-L06-Q05",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a theological question about how the exodus and formation of Israel contr"
+    },
+    {
+      "id": "FB02-L10-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking in Portuguese about essential characters, peoples, or events to understan"
+    },
+    {
+      "id": "FB02-L13-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking in Brazilian Portuguese about which characters, peoples, or events are es"
+    },
+    {
+      "id": "FB03-L07-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about the Minor Prophets in the Bible - which books, parts, or characteri"
+    },
+    {
+      "id": "FB03-L06-Q04",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about the function of major prophets in the composition and message of th"
+    },
+    {
+      "id": "FB03-L10-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about the Pauline epistles (cartas paulinas) - which books, parts, or cha"
+    },
+    {
+      "id": "FB03-L09-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about the Book of Acts (Atos dos Apóstolos) in the Bible. The question as"
+    },
+    {
+      "id": "FB03-L13-Q06",
+      "err": "JSON nao encontrado: <think>\nThe question asks why a chapter division in the Bible doesn't always indicate a complete cha"
+    },
+    {
+      "id": "FB03-L14-Q05",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about how to distinguish Jewish divisions of the Old Testament from other"
+    },
+    {
+      "id": "FB04-L07-Q04",
+      "err": "JSON nao encontrado: <think>\nThe user is asking in Portuguese about how the liberation from Egypt connects to the previou"
+    },
+    {
+      "id": "FB04-L12-Q05",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a theological question in Brazilian Portuguese about how exile and prophe"
+    },
+    {
+      "id": "FB04-L13-Q03",
+      "err": "JSON nao encontrado: <think>\nThe user is asking in Brazilian Portuguese about promises, covenants, or events linked to th"
+    },
+    {
+      "id": "FB04-L17-Q05",
+      "err": "JSON nao encontrado: <think>\nThe user is asking a theological question in Brazilian Portuguese about how the consummation"
+    },
+    {
+      "id": "FB05-L04-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about the main events that should be placed in order within the chronolog"
+    },
+    {
+      "id": "FB05-L05-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about the main events that should be placed in order during the period of"
+    },
+    {
+      "id": "FB05-L07-Q03",
+      "err": "JSON nao encontrado: <think>\nThe question is in Portuguese and asks: \"Which characters, kingdoms, or empires belong to th"
+    },
+    {
+      "id": "FB05-L10-Q03",
+      "err": "JSON nao encontrado: <think>\nThe user is asking about characters, kingdoms, or empires that belong to the exile chronolog"
+    },
+    {
+      "id": "FB05-L10-Q04",
+      "err": "JSON nao encontrado: <think>\nThe user is asking in Brazilian Portuguese about biblical chronology: \"What events came imme"
+    },
+    {
+      "id": "FB05-L14-Q02",
+      "err": "JSON nao encontrado: <think>\nThe user is asking in Portuguese about the main events that should be placed in order within"
     }
   ]
 }
