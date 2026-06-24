@@ -7,7 +7,7 @@ const path = require('path');
 const Database = require('better-sqlite3');
 
 const M2_ENDPOINT = 'https://api.minimax.io/v1/chat/completions';
-const M2_MODEL = 'MiniMax-M2.7';
+const M2_MODEL = 'MiniMax-M3';
 const THINK_REGEX = /<think[^>]*>.*?<\/think>/gs;
 const SYSTEM_PROMPT = `Voce gera a resposta canonica e 3 distrators para perguntas biblicas em portugues brasileiro.
 REGRAS:
@@ -55,7 +55,7 @@ async function callM2(pergunta, token) {
       { role: 'user', content: `Pergunta: ${pergunta}` },
     ],
     temperature: 0.2,
-    max_tokens: 1000,
+    max_tokens: 2000,
   };
 
   const res = await fetch(M2_ENDPOINT, {
