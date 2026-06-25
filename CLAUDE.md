@@ -164,6 +164,31 @@ Todos os assets visuais/audios estao em Google Drive publico + espelhados localm
 
 ## PROXIMO PASSO
 
+**V20 entregue (2026-06-25, v1.10.0/vc5)** — 2 lacunas de conformidade do briefing fechadas e
+COMPROVADAS no emulador hi-res (rede restaurada): (A) **mascote DOURADO no modo Licoes** (Personagem 1,
+regra de identidade) — `PersonagemLivro` ganhou prop `variante: 'licoes'|'quiz'`; as 3 telas de Licoes
+usam o livro DOURADO (3 poses reais baixadas do Drive "Personagens"; set parcial — sem assustado/triste
+dedicado, usa "questionando"), o Quiz mantem o ROXO. (B) **IA obrigatoria nas licoes** (regra #4) —
+`enviar()` agora usa o orquestrador hibrido `avaliarResposta` (match local >=85% -> M2.7 -> OpenAI) com
+loading "AVALIANDO..." + fallback; bug REAL corrigido (M2.7 envolve JSON em `<think>`+cercas markdown ->
+novo `src/lib/parse-json.ts`). Comprovado: golden nas Licoes + roxo no Quiz; IA online (m3_usage + cache
+score 1.0) + integracao Node real M2.7 4/4; jornada licao->100%->amarela->desbloqueio integra.
+Evidencias `orchestration/v20_validation/`. APK `dist/ExpertNaBiblia-v20.0.0.apk`
+(https://files.catbox.moe/kjvgi4.apk). Detalhes: `evolution_plan.md` (PLANO V20) + changelog 1.10.0.
+
+Pendencias (pos-V20, nao bloqueiam):
+- Poses DOURADAS assustado/triste dedicadas: Drive so tem 3 poses douradas (positivas/neutras);
+  feedback de erro nas Licoes usa a pose dourada "questionando". Reabrir se a designer subir as poses.
+- `quiz-alternatives.ts` tem o MESMO padrao de parsing fragil do M2.7 (sem strip de cercas) na geracao
+  de distratores — batch offline, fora do escopo V20; aplicar `extrairAvaliacaoJson` se for usado em runtime.
+- Batch M2.7 para pre-gerar canonicas das ~497 perguntas abertas (hoje a IA avalia em runtime quando
+  online; offline cai no guard SEM_GABARITO).
+- MD.7 (icones home/som/config desenhados): pasta Drive "Elementos" vazia — emoji/glyph funcionais.
+- Publicacao na Play Store: `orchestration/play_store_checklist.md` (2FA Google = execucao humana).
+- Backlog: modulos de Teologia (24); surfacing de streak/XP. Avaliar pos-engajamento.
+
+---
+
 **V19 entregue (2026-06-25, v1.9.0/vc4)** — correcao do RELEASE-BLOCKER do modo Licoes (a
 pontuacao da licao nao acumulava: o V18 ALEGOU progressao OK, mas a QA independente REFUTOU).
 Corrigidos BUG-1 (scoring), BUG-2 (canonicas placeholder invenciveis + guard SEM_GABARITO),

@@ -13,6 +13,41 @@
 
 - [x] [2026-06-25] [fonte: USUARIO] Bugs visuais e de layout ainda presentes no app — **TRIADO V18**: VALIDO. Causa-raiz encontrada (SIST-1 sem degrade + SIST-2 assets JPG com fundo + regra "amarelo" ausente). Promovido para milestones MA/MB/MC/MD.
 - [x] [2026-06-25] [fonte: USUARIO] Looping infinito em um dos modulos — **TRIADO V18**: VALIDO mas causa diferente da catalogada. Causa real = Quiz travado em spinner eterno (IDs M001-M004 inexistentes no DB). Promovido para milestone M-LOOP. M17 (hipoteses antigas) SUPERSEDED.
+- [x] [2026-06-25] [fonte: USUARIO] Mascote dourado nas Licoes (BUG-6/V19 diferido) — **ENTREGUE V20** (milestone V20.A).
+- [x] [2026-06-25] [fonte: USUARIO] IA obrigatoria nas licoes (regra #4, diferido V19) — **ENTREGUE V20** (milestone V20.B).
+
+---
+
+# ===== PLANO V20 (2026-06-25) — CONFORMIDADE DO BRIEFING (mascote dourado + IA obrigatoria) =====
+
+> Ciclo @full-cycle (agent). 2 lacunas de conformidade do briefing que impediam o "100%".
+> Gates: tsc 0 | jest 94/94 | eslint 0 | APK V20 vc5/1.10.0. Evidencias: orchestration/v20_validation/.
+
+## Milestone V20.A: Mascote DOURADO no modo Licoes — ENTREGUE
+- [x] V20.A.1 **Obter set DOURADO da designer** — INFRA | ALTA | USUARIO | DESTRAVAVEL(Drive)
+  - Drive "Personagens" (compartilhada) -> 3 poses DOURADAS reais baixadas via Playwright (Chrome
+    logado): golden_13 (exclamando/dedo p/ cima), golden_14 (pensativo/queixo), golden_15
+    (questionando). Set dourado eh PARCIAL (so 3 poses positivas/neutras; SEM assustado/triste).
+    Processadas p/ transparente ~760px em assets/images/personagem_licoes_*.png.
+- [x] V20.A.2 **PersonagemLivro prop `variante: 'licoes'|'quiz'`** — MELHORIA | ALTA | AUTONOMO
+  - Default 'quiz' (roxo, preserva legado). 2 mapas (IMAGENS_LICOES dourado / IMAGENS_QUIZ roxo).
+- [x] V20.A.3 **Wire variante='licoes' nas 3 telas de Licoes** — MELHORIA | ALTA | AUTONOMO
+  - [licaoId].tsx (pergunta), feedback.tsx, final.tsx. Quiz mantem roxo (default).
+  - LIMITACAO HONESTA: assustado/triste nas licoes usam a pose dourada "questionando" (set dourado
+    nao tem essas emocoes). Reabrir se a designer subir poses dourado-assustado/triste.
+
+## Milestone V20.B: IA obrigatoria nas licoes (regra #4) — ENTREGUE
+- [x] V20.B.1 **Wire `avaliarResposta` (hibrido) no enviar() da licao** — CORRECAO | ALTA | AUTONOMO
+  - Substitui matchCanonico cru. Loading "AVALIANDO..." + bloqueio duplo-envio + feedback da IA na tela.
+- [x] V20.B.2 **[BUG REAL] Parser do M2.7 (think + cercas markdown) quebrava a IA** — CORRECAO | ALTA | INVESTIGACAO(integracao real)
+  - novo src/lib/parse-json.ts (extrairAvaliacaoJson) aplicado em m3.ts/openai.ts. +7 testes regressao.
+  - COMPROVADO: integracao Node real vs MiniMax-M2.7 (4/4 casos).
+
+## Itens rejeitados / backlog V20
+- quiz-alternatives.ts tem o MESMO padrao de parsing fragil (filtrarThink + JSON.parse sem strip de
+  cercas) na geracao de distratores — fora do escopo V20 (batch offline). FOLLOW-UP: aplicar
+  extrairAvaliacaoJson la se for usado em runtime.
+- Poses dourado assustado/triste dedicadas: dependem da designer (DESTRAVAVEL).
 
 ---
 

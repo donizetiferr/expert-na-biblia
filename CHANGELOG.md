@@ -2,6 +2,50 @@
 
 Todas as mudancas relevantes neste projeto.
 
+## [1.10.0] (V20) - 2026-06-25 (Conformidade do briefing: mascote DOURADO nas Licoes + IA obrigatoria)
+
+> 2 lacunas de conformidade do briefing fechadas e COMPROVADAS. Modo Licoes agora usa o
+> mascote DOURADO (regra de identidade) e a "IA obrigatoria" (regra #4) passou a rodar de
+> verdade nas licoes. Teste de integracao real contra o MiniMax-M2.7 revelou e corrigiu um
+> bug de parsing que mantinha a IA sempre offline.
+
+### Adicionado
+- **[ALTO] Mascote DOURADO no modo Licoes (Personagem 1, regra de identidade)**: `PersonagemLivro`
+  ganhou a prop `variante: 'licoes' | 'quiz'` (default 'quiz' = roxo, preserva o legado). As 3
+  telas de Licoes (pergunta, feedback, final de licao) passam `variante="licoes"` e renderizam o
+  livro DOURADO; o Quiz mantem o livro ROXO. Assets dourados originais da designer baixados da
+  pasta Drive "Personagens" (compartilhada) via Playwright no Chrome logado, processados para
+  transparente ~760px (`assets/images/personagem_licoes_*.png`).
+  - NOTA HONESTA DE ASSET: a pasta so contem 3 poses DOURADAS (positivas/neutras): pensativo
+    (queixo), feliz/exclamando (dedo p/ cima) e "questionando". Nao ha pose dourada ASSUSTADO/TRISTE
+    dedicada — nesses estados de feedback das licoes reutilizamos a pose dourada "questionando"
+    (a mais neutra). O set ROXO do Quiz tem as 5 poses completas.
+- **[ALTO] "IA obrigatoria" nas licoes (regra de negocio #4)**: `licoes/[moduloId]/[licaoId].tsx`
+  `enviar()` agora chama o orquestrador HIBRIDO `avaliarResposta` (match local canonico >=85% ->
+  cache SQLite -> M2.7 -> OpenAI fallback) em vez do `matchCanonico` cru. As ~497 perguntas abertas
+  sem gabarito real (match local 0.7 < 0.85) caem para a IA quando ha rede; offline, o avaliador
+  devolve veredito amigavel (nunca lanca, nunca trava a licao). UX: botao ENVIAR com estado de
+  LOADING ("AVALIANDO...") + bloqueio de duplo-envio; a tela de feedback exibe a explicacao da IA.
+
+### Corrigido
+- **[ALTO / bug encontrado em teste de integracao real] Parsing da resposta do M2.7 quebrava a IA**:
+  o MiniMax-M2.7 envolve a saida JSON em tags `<think>...</think>` E em cercas markdown ` ```json `.
+  O parser antigo (`m3.ts`) so removia `<think>`, entao `JSON.parse` lancava SEMPRE -> a avaliacao
+  por IA caia para o fallback offline mesmo ONLINE (a "IA obrigatoria" nunca rodava de fato). FIX:
+  novo extrator robusto `src/lib/parse-json.ts` (`extrairAvaliacaoJson`) remove think + cercas e
+  isola o objeto `{...}` balanceado; aplicado em `m3.ts` e `openai.ts`. COMPROVADO: teste de
+  integracao Node contra o endpoint real do M2.7 (4 casos: "66 livros"->correto, "Adao"->correto,
+  "Apocalipse"->errado com explicacao, pergunta aberta "graca de Deus"->correto score 0.9). +7
+  testes unitarios de regressao do extrator (`parse-json.test.ts`).
+
+### Validacao
+- Gates: `tsc --noEmit` 0 erros | `jest` 94/94 (10 suites, +7 do parse-json) | `eslint` 0.
+- IA: teste de integracao REAL contra MiniMax-M2.7 — 4/4 casos, think+cercas confirmados na saida
+  bruta e filtrados corretamente.
+- Emulador: rede restaurada (V18/V19 rodaram OFFLINE) — restart com `-dns-server 8.8.8.8` + svc
+  wifi/data; `dumpsys connectivity` = `MOBILE CONNECTED IS_VALIDATED INTERNET` (ICMP bloqueado pelo
+  NAT do QEMU eh esperado). Evidencias em `orchestration/v20_validation/`.
+
 ## [1.9.0] (V19) - 2026-06-25 (Correcao dos bugs reais da QA independente — comprovado em emulador)
 
 > Origem: validacao INDEPENDENTE cetica do V18 (`orchestration/v18_validation_independent/VERDICT.md`)

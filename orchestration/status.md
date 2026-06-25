@@ -30,8 +30,30 @@
 
 Estado: IMPLEMENTANDO_V19
 
-## V20 — EM ANDAMENTO (2026-06-25)
-Estado: IMPLEMENTANDO_V20
+## V20 — CONCLUIDO COMPROVADO (2026-06-25)
+Estado: V20_ENTREGUE_COMPROVADO
+- Codigo: (A) PersonagemLivro prop `variante: 'licoes'|'quiz'` + 5 assets dourados (3 poses reais
+  do Drive); wire nas 3 telas de Licoes; Quiz mantem roxo (default). (B) avaliarResposta (hibrido)
+  wired no enviar() da licao com loading "AVALIANDO..." + fallback. (C) BUG REAL corrigido: parser
+  M2.7 (think + cercas markdown) -> novo src/lib/parse-json.ts em m3.ts/openai.ts.
+- Gates: tsc 0 | jest 94/94 (+7 parse-json) | eslint 0 | APK vc5/1.10.0 (109MB).
+- Build com MINIMAX_API_KEY+OPENAI_API_KEY baked em assets/app.config (verificado).
+- VALIDACAO EMPIRICA emulador hi-res 1080x1920 (rede RESTAURADA: IS_VALIDATED INTERNET):
+  - Mascote DOURADO nas Licoes (pergunta/feedback-acerto/feedback-erro/final 100%) — screenshots
+    05/07b/11/journey_final_100. Quiz ROXO — screenshot 13_quiz_final_ROXO.
+  - IA online: Q1 CORRETO via M2.7 (m3_usage chamadas=2; cache score 1.0); loading "AVALIANDO..."
+    (10_burst_2). Fallback gracioso em erro transitorio (11). Integracao Node real M2.7: 4/4.
+  - Gate de entrada (sem regressao): licao FB01-L01 -> 100% "VOCE PASSOU" -> L01 AMARELA "100/100"
+    -> L02 DESBLOQUEADA (journey_amarelo_unlock). Acertos acumulando ate 9 (journey_q9).
+- Evidencias: orchestration/v20_validation/. APK: dist/ + C:\ENB\dist\ ExpertNaBiblia-v20.0.0.apk
+  (regra das 5). URL catbox: https://files.catbox.moe/kjvgi4.apk (HTTP 206 + PK verificado).
+- Pendencias honestas: (1) set dourado PARCIAL — sem pose assustado/triste dedicada (usa
+  "questionando"); depende da designer. (2) quiz-alternatives.ts tem mesmo padrao de parsing fragil
+  (batch offline, fora do escopo) — follow-up no evolution_plan.
+- Git: commit LOCAL apenas (usuario pediu SEM push).
+
+## V20 — historico de implementacao
+Estado: IMPLEMENTADO_V20
 - 0.0 parser: rigor=ALTO (exige prova empirica) | modo_continuo=ATIVO | objetivo=DERIVADO | flags=()
 - Objetivo (DERIVADO): fechar 2 lacunas de conformidade do briefing e COMPROVAR no emulador:
   (1) mascote DOURADO no modo Licoes (roxo no Quiz); (2) IA obrigatoria nas licoes (avaliador.ts wired).
