@@ -1,6 +1,7 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../constants/colors';
+import { GradienteRoxo } from '../../components/Gradiente';
 
 /**
  * Tela 3: Quiz Biblico - escolha de modo (Aleatorio vs Licoes personalizadas).
@@ -18,26 +19,24 @@ export default function QuizIndex() {
       <Text style={styles.subtitulo}>20 perguntas · Timer 10s</Text>
 
       <View style={styles.cards}>
-        <Pressable
-          style={[styles.card, styles.cardAleatorio]}
-          onPress={() => router.push('/quiz/jogar?modo=aleatorio')}
-        >
-          <Text style={styles.cardEmoji}>🎲</Text>
-          <Text style={styles.cardTitulo}>
-            <Text style={styles.palavraChave}>ALEATÓRIO</Text>
-          </Text>
-          <Text style={styles.cardSubtitulo}>20 perguntas de modulos aleatorios</Text>
+        <Pressable style={styles.cardShadow} onPress={() => router.push('/quiz/jogar?modo=aleatorio')}>
+          <GradienteRoxo diagonal style={styles.card}>
+            <Text style={styles.cardEmoji}>🎲</Text>
+            <Text style={styles.cardTitulo}>
+              <Text style={styles.palavraChave}>ALEATÓRIO</Text>
+            </Text>
+            <Text style={styles.cardSubtitulo}>20 perguntas de modulos aleatorios</Text>
+          </GradienteRoxo>
         </Pressable>
 
-        <Pressable
-          style={[styles.card, styles.cardCustom]}
-          onPress={() => router.push('/quiz/customizar')}
-        >
-          <Text style={styles.cardEmoji}>📚</Text>
-          <Text style={styles.cardTitulo}>
-            <Text style={styles.palavraChavePreta}>PERSONALIZADO</Text>
-          </Text>
-          <Text style={styles.cardSubtitulo}>Escolha ate 20 modulos</Text>
+        <Pressable style={styles.cardShadow} onPress={() => router.push('/quiz/customizar')}>
+          <GradienteRoxo diagonal style={styles.card}>
+            <Text style={styles.cardEmoji}>📚</Text>
+            <Text style={styles.cardTitulo}>
+              <Text style={styles.palavraChave}>PERSONALIZADO</Text>
+            </Text>
+            <Text style={styles.cardSubtitulo}>Escolha ate 20 modulos</Text>
+          </GradienteRoxo>
         </Pressable>
       </View>
     </View>
@@ -67,14 +66,23 @@ const styles = StyleSheet.create({
     marginBottom: ESPACAMENTOS.xxl,
   },
   cards: { width: '100%', gap: ESPACAMENTOS.lg },
+  // V18.3 MC.2/MD.2: ambos os cards = degrade roxo + borda laranja (nao laranja solido).
+  cardShadow: {
+    borderRadius: BORDAS.raioGrande,
+    shadowColor: COLORS.preto,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 4,
+  },
   card: {
     padding: ESPACAMENTOS.xl,
     borderRadius: BORDAS.raioGrande,
-    borderWidth: 4, // V14 M15.2: borda mais grossa (4px) consistente com /modos
+    borderWidth: 4,
+    borderColor: COLORS.laranjaBorda,
     alignItems: 'center',
+    overflow: 'hidden',
   },
-  cardAleatorio: { backgroundColor: COLORS.roxoPrimario, borderColor: COLORS.laranjaEscuro },
-  cardCustom: { backgroundColor: COLORS.laranjaEscuro, borderColor: COLORS.roxoPrimario },
   // V14 M15.2: emoji size 48 -> 64 (nota 15.9 rejeitado)
   cardEmoji: { fontSize: 64, marginBottom: ESPACAMENTOS.sm },
   cardTitulo: {
@@ -82,14 +90,9 @@ const styles = StyleSheet.create({
     fontSize: 32,
     color: COLORS.branco,
   },
-  // V14 M15.2: "ALEATÓRIO" laranja sobre roxo
+  // V18.3: palavra-chave laranja-claro sobre o degrade roxo (ambos os cards)
   palavraChave: {
-    color: COLORS.laranjaEscuro,
-    fontFamily: FONTES.bodyExtraBold,
-  },
-  // V14 M15.2: "PERSONALIZADO" preto sobre laranjaEscuro
-  palavraChavePreta: {
-    color: COLORS.preto,
+    color: COLORS.laranjaClaro,
     fontFamily: FONTES.bodyExtraBold,
   },
   cardSubtitulo: {

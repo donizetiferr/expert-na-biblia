@@ -28,6 +28,28 @@ Todas as mudancas relevantes neste projeto.
 - **Troféu transparente** (MB.5): `trofeu.tsx` usa `trofeu.png`.
 - Removidos os `.jpg` antigos de `assets/images/` (reduz o APK).
 
+## [V18.3] - 2026-06-25 (Gradientes da identidade + fidelidade tela-a-tela)
+
+### Adicionado / Melhorado
+- **Degradês da identidade** (MC.2): componentes `GradienteRoxo/GradienteLaranja/GradienteLaranjaForte/GradienteTrofeu` (expo-linear-gradient) aplicados em cards (modos, quiz, lições) e fundos (pergunta, feedback, finais, onboarding) — antes tudo em cor sólida.
+- **Regra de negócio #3 — concluído = AMARELO** (MD.1): módulo/lição concluído fica amarelo com borda e texto pretos (era roxo + ✓ verde).
+- **Cards secundários roxo + borda laranja** (MD.2) em vez de laranja sólido.
+- **Quiz: alternativa selecionada amarela** com borda preta grossa e letra preta (MD.3).
+- **Quiz placar usa o personagem** (pose por faixa) em vez de emoji gigante (MD.5).
+- **Quadro da pergunta com borda preta** (MD.6); **header do quiz com ícone home** (MD.8).
+- **Onboarding com o personagem** (não emojis) e **confetes do troféu on-palette** (formas roxas/douradas) (MD.9).
+- **Splash**: logo PNG transparente + subtítulo com contraste alto (MD.10).
+- **Títulos de resultado/"Expert!"** com contorno preto forte sobre fundo em degradê (MD.4; gradiente-fill de texto via MaskedView não adotado para não arriscar o build — o "Expert!" hero usa a imagem da designer).
+- Copy "77 módulos" → "40 módulos" (MD.11).
+
+### Corrigido
+- Feedback toca o som 1x (estava no corpo do componente → re-disparava a cada render).
+- Onboarding usa `useWindowDimensions` (rotação não corta mais os slides).
+- Cards bloqueados da lista de lições agora visíveis (cinza médio em vez de cinza escuro a 50%).
+
+### Pendente
+- MD.7 (ícones home/som/config desenhados): a pasta Drive "Elementos" está vazia — sem assets de ícone. Mantidos os ícones atuais (funcionais) até a designer subir os arquivos.
+
 ## [V17.0.0] - 2026-06-25 (Play Store prep + EAS build — 6 tarefas)
 
 ### Added

@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { Text, Pressable, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../../../constants/colors';
 import { PersonagemLivro } from '../../../../components/PersonagemLivro';
+import { GradienteLaranjaForte } from '../../../../components/Gradiente';
 import { playCombo, playShake } from '../../../../lib/sound';
 import {
   marcarLicaoConcluida,
@@ -100,15 +101,15 @@ export default function FinalAtividadeScreen() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: cfg.fundo }]}>
-      <PersonagemLivro pose={cfg.pose} size={140} />
+    <GradienteLaranjaForte style={styles.container}>
+      <PersonagemLivro pose={cfg.pose} size={160} />
       <Text style={styles.titulo}>{cfg.titulo}</Text>
       <Text style={styles.subtitulo}>{cfg.subtitulo}</Text>
 
       <Pressable style={styles.botao} onPress={handleAvancar}>
         <Text style={styles.botaoTexto}>{cfg.botao}</Text>
       </Pressable>
-    </View>
+    </GradienteLaranjaForte>
   );
 }
 

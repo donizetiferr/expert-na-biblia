@@ -3,6 +3,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../../constants/colors';
 import { PersonagemLivro } from '../../../components/PersonagemLivro';
+import { GradienteRoxo } from '../../../components/Gradiente';
 import { IconeSom } from '../../../components/IconeSom';
 import { IconeHome } from '../../../components/IconeHome';
 import { listarPerguntas, registrarRespostaUsuario } from '../../../lib/db-queries';
@@ -102,6 +103,7 @@ export default function LicaoScreen() {
   };
 
   return (
+    <GradienteRoxo style={styles.fundo}>
     <KeyboardAvoidingView
       style={styles.container}
       // V14 M15.6: 'height' no Android funciona (undefined NAO funcionava).
@@ -162,14 +164,16 @@ export default function LicaoScreen() {
         <IconeSom />
       </View>
     </KeyboardAvoidingView>
+    </GradienteRoxo>
   );
 }
 
 const styles = StyleSheet.create({
+  fundo: { flex: 1 },
   container: {
     flex: 1,
-    // V10 M5.5: briefing usa #3e036f (roxo claro), NAO #3c026d (roxoEscuro)
-    backgroundColor: COLORS.roxoClaro,
+    // V18.3: fundo agora e' degrade roxo (GradienteRoxo) — container transparente.
+    backgroundColor: 'transparent',
     padding: ESPACAMENTOS.lg,
   },
   loading: {
@@ -213,6 +217,9 @@ const styles = StyleSheet.create({
     borderRadius: BORDAS.raioMedio,
     minHeight: 120,
     justifyContent: 'center',
+    // V18.3 MD.6: quadro branco da pergunta com borda preta (briefing).
+    borderWidth: BORDAS.larguraGrossa,
+    borderColor: COLORS.preto,
   },
   pergunta: {
     fontFamily: FONTES.bodyBold,

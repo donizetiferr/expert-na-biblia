@@ -1,6 +1,7 @@
 import { View, Text, Pressable, StyleSheet, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../constants/colors';
+import { GradienteRoxo } from '../components/Gradiente';
 
 /**
  * Tela 2: Selecao de modo (Quiz Biblico / Licoes).
@@ -29,25 +30,23 @@ export default function ModosScreen() {
       />
 
       <View style={styles.cards}>
-        <Pressable
-          style={[styles.card, styles.cardQuiz]}
-          onPress={() => router.push('/quiz')}
-        >
-          <Text style={styles.cardTitulo}>
-            <Text style={styles.palavraChave}>QUIZ </Text>
-            <Text style={styles.palavraChave}>BÍBLICO</Text>
-          </Text>
-          <Text style={styles.cardSubtitulo}>20 perguntas · Timer 10s</Text>
+        <Pressable style={styles.cardShadow} onPress={() => router.push('/quiz')}>
+          <GradienteRoxo diagonal style={styles.card}>
+            <Text style={styles.cardTitulo}>
+              <Text style={styles.palavraChave}>QUIZ </Text>
+              <Text style={styles.palavraChave}>BÍBLICO</Text>
+            </Text>
+            <Text style={styles.cardSubtitulo}>20 perguntas · Timer 10s</Text>
+          </GradienteRoxo>
         </Pressable>
 
-        <Pressable
-          style={[styles.card, styles.cardLicoes]}
-          onPress={() => router.push('/licoes')}
-        >
-          <Text style={styles.cardTitulo}>
-            <Text style={styles.palavraChaveLaranja}>LIÇÕES</Text>
-          </Text>
-          <Text style={styles.cardSubtitulo}>77 módulos progressivos</Text>
+        <Pressable style={styles.cardShadow} onPress={() => router.push('/licoes')}>
+          <GradienteRoxo diagonal style={styles.card}>
+            <Text style={styles.cardTitulo}>
+              <Text style={styles.palavraChave}>LIÇÕES</Text>
+            </Text>
+            <Text style={styles.cardSubtitulo}>40 módulos progressivos</Text>
+          </GradienteRoxo>
         </Pressable>
       </View>
     </View>
@@ -84,27 +83,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: ESPACAMENTOS.lg,
   },
-  card: {
-    padding: ESPACAMENTOS.xl,
+  // V18.3 MC.2/MD.2: sombra fica no Pressable externo; o degrade roxo + borda
+  // laranja ficam no card interno (overflow hidden para o degrade respeitar o raio).
+  cardShadow: {
     borderRadius: BORDAS.raioGrande,
-    borderWidth: 4,  // BORDAS.larguraExtraGrossa (4px) — mais grossa que default
-    alignItems: 'center',
-    minHeight: 140,
-    justifyContent: 'center',
     shadowColor: COLORS.preto,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 4,
   },
-  cardQuiz: {
-    backgroundColor: COLORS.roxoCard,        // #4d0a7d (briefing)
-    borderColor: COLORS.laranjaBorda,        // #f9ea59 (briefing)
-  },
-  cardLicoes: {
-    // V12 7.3: card "LIÇÕES" em laranjaEscuro #fd8414 (cor exata briefing, sem opacity/transform).
-    backgroundColor: COLORS.laranjaEscuro,   // #fd8414
-    borderColor: COLORS.preto,               // contraste contra laranja
+  card: {
+    padding: ESPACAMENTOS.xl,
+    borderRadius: BORDAS.raioGrande,
+    borderWidth: 4,
+    borderColor: COLORS.laranjaBorda,        // #f9ea59 (briefing): borda laranja
+    alignItems: 'center',
+    minHeight: 140,
+    justifyContent: 'center',
+    overflow: 'hidden',
   },
   cardTitulo: {
     fontFamily: FONTES.display,
@@ -115,12 +112,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
   palavraChave: {
-    color: COLORS.laranjaEscuro,             // #fd8414 — "BÍBLICO" no card roxo: laranja em cima de roxo
-    fontFamily: FONTES.bodyExtraBold,
-  },
-  // V12 7.3: "LIÇÕES" no card laranja precisa de cor com contraste (preto).
-  palavraChaveLaranja: {
-    color: COLORS.preto,                     // preto em cima de laranjaEscuro
+    color: COLORS.laranjaClaro,              // amarelo-laranja sobre o degrade roxo
     fontFamily: FONTES.bodyExtraBold,
   },
   cardSubtitulo: {

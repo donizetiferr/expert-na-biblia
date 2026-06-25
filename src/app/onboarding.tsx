@@ -1,39 +1,43 @@
-import { View, Text, Pressable, StyleSheet, FlatList, Dimensions } from 'react-native';
+import { View, Text, Pressable, StyleSheet, FlatList, useWindowDimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../constants/colors';
+import { PersonagemLivro, type Pose } from '../components/PersonagemLivro';
+import { GradienteRoxo } from '../components/Gradiente';
 
 interface Slide {
-  emoji: string;
+  pose: Pose;
   titulo: string;
   subtitulo: string;
 }
 
 const SLIDES: Slide[] = [
   {
-    emoji: '📖',
+    pose: 'FELIZ',
     titulo: 'Bem-vindo!',
     subtitulo: 'Torne-se um Expert na Bíblia de forma ludica e progressiva.',
   },
   {
-    emoji: '🧠',
+    pose: 'PENSATIVO',
     titulo: 'Como funciona',
-    subtitulo: '2 modos: Licoes progressivas (77 modulos) + Quiz Biblico rapido (20 perguntas).',
+    subtitulo: '2 modos: Licoes progressivas (40 modulos) + Quiz Biblico rapido (20 perguntas).',
   },
   {
-    emoji: '🚀',
+    pose: 'EXCLAMANDO',
     titulo: 'Vamos comecar!',
     subtitulo: 'Conclua cada licao com 100% para liberar a proxima e ganhar o trofeu Expert!',
   },
 ];
 
-const { width } = Dimensions.get('window');
 const ONBOARDING_KEY = '@onboarding:completed';
 
 export default function Onboarding() {
   const router = useRouter();
   const [indice, setIndice] = useState(0);
+  // V18.3 (16.5): useWindowDimensions atualiza em rotacao (antes Dimensions.get no
+  // module scope nao atualizava -> slides cortados em landscape).
+  const { width } = useWindowDimensions();
 
   const proximo = async () => {
     if (indice < SLIDES.length - 1) {
@@ -48,7 +52,7 @@ export default function Onboarding() {
   if (!slide) return null;
 
   return (
-    <View style={styles.container}>
+    <GradienteRoxo style={styles.container}>
       <FlatList
         data={[slide]}
         horizontal
@@ -56,7 +60,7 @@ export default function Onboarding() {
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => (
           <View style={[styles.slide, { width }]}>
-            <Text style={styles.emoji}>{item.emoji}</Text>
+            <PersonagemLivro pose={item.pose} size={180} />
             <Text style={styles.titulo}>{item.titulo}</Text>
             <Text style={styles.subtitulo}>{item.subtitulo}</Text>
           </View>
@@ -87,14 +91,13 @@ export default function Onboarding() {
           <Text style={styles.pular}>Pular</Text>
         </Pressable>
       )}
-    </View>
+    </GradienteRoxo>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.roxoEscuro,
     alignItems: 'center',
     justifyContent: 'center',
     padding: ESPACAMENTOS.lg,
@@ -104,8 +107,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: ESPACAMENTOS.xl,
+    gap: ESPACAMENTOS.lg,
   },
-  emoji: { fontSize: 100, marginBottom: ESPACAMENTOS.xl },
   titulo: {
     fontFamily: FONTES.display,
     fontSize: 42,

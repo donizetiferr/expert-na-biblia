@@ -12,15 +12,23 @@ import { playVitoria } from '../lib/sound';
  * Acionada quando TODOS os modulos estao concluida = true (ver todosModulosConcluidos em db-queries).
  */
 
-const CONFETE_EMOJIS = ['🎊', '✨', '🎉', '⭐', '💫', '🥳', '🎈'];
-const CONFETE_COUNT = 12;
+// V18.3 MD.9: confetes on-palette (roxos/dourados/laranja) em vez de emojis.
+const CONFETE_CORES = [
+  COLORS.roxoPrimario,
+  COLORS.laranjaClaro,
+  COLORS.laranjaEscuro,
+  COLORS.laranjaTrofeuBottom,
+  COLORS.roxoMedio,
+];
+const CONFETE_COUNT = 14;
 
 function ConfetePiece({ index }: { index: number }) {
   const fallAnim = useRef(new Animated.Value(0)).current;
   const swayAnim = useRef(new Animated.Value(0)).current;
-  const emoji = CONFETE_EMOJIS[index % CONFETE_EMOJIS.length] ?? '✨';
+  const cor = CONFETE_CORES[index % CONFETE_CORES.length] ?? COLORS.laranjaClaro;
   const startX = (index * 37) % 100; // 0-100% spread
-  const size = 24 + (index % 3) * 8;
+  const size = 10 + (index % 3) * 6;
+  const isCirculo = index % 2 === 0;
   const duration = 3500 + (index % 5) * 700;
   const delay = (index * 280) % 2500;
 
@@ -59,18 +67,19 @@ function ConfetePiece({ index }: { index: number }) {
   });
 
   return (
-    <Animated.Text
+    <Animated.View
       style={{
         position: 'absolute',
         top: 0,
         left: `${startX}%`,
-        fontSize: size,
+        width: size,
+        height: size,
+        borderRadius: isCirculo ? size / 2 : 2,
+        backgroundColor: cor,
         opacity,
         transform: [{ translateX }, { translateY }, { rotate: `${index * 30}deg` }],
       }}
-    >
-      {emoji}
-    </Animated.Text>
+    />
   );
 }
 
@@ -134,9 +143,11 @@ export default function TrofeuScreen() {
         ]}
       />
 
+      {/* V18.3: imagem hero da designer (ja traz "Parabens, voce e um Expert!" com
+          degrade + contorno) com bounce — evita duplicar o titulo em texto. */}
       <Animated.View
         style={{
-          transform: [{ scale: trofeuScale }],
+          transform: [{ scale: trofeuScale }, { translateY: bounceAnim }],
         }}
       >
         <Image
@@ -144,31 +155,9 @@ export default function TrofeuScreen() {
           style={styles.trofeuImg}
           resizeMode="contain"
           accessible
-          accessibilityLabel="Trofeu dourado Expert Na Biblia"
+          accessibilityLabel="Trofeu dourado: Parabens, voce e um Expert"
         />
       </Animated.View>
-
-      <Animated.Text
-        style={[
-          styles.titulo,
-          {
-            transform: [{ translateY: bounceAnim }],
-          },
-        ]}
-      >
-        Parabéns,
-      </Animated.Text>
-      <Animated.Text
-        style={[
-          styles.titulo,
-          styles.tituloExpert,
-          {
-            transform: [{ translateY: bounceAnim }],
-          },
-        ]}
-      >
-        você é um <Text style={styles.expertWord}>Expert</Text>!
-      </Animated.Text>
 
       <Text style={styles.subtitulo}>
         Concluiu todos os módulos da Bíblia
@@ -200,27 +189,9 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   trofeuImg: {
-    width: 280,
-    height: 280,
-    marginVertical: ESPACAMENTOS.xl,
-  },
-  titulo: {
-    fontFamily: FONTES.display,
-    fontSize: 42,
-    color: COLORS.roxoPrimario,
-    textAlign: 'center',
-    textShadowColor: COLORS.laranjaClaro,
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 4,
-  },
-  tituloExpert: {
-    color: COLORS.laranjaEscuro,
-    fontSize: 48,
-  },
-  expertWord: {
-    color: COLORS.laranjaEscuro,
-    fontFamily: FONTES.display,
-    textDecorationLine: 'underline',
+    width: 320,
+    height: 360,
+    marginVertical: ESPACAMENTOS.lg,
   },
   subtitulo: {
     fontFamily: FONTES.bodyBold,

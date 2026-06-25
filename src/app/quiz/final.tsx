@@ -1,8 +1,10 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { Text, Pressable, StyleSheet } from 'react-native';
 import { useEffect } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../constants/colors';
 import { getDatabase } from '../../db/database';
+import { PersonagemLivro, type Pose } from '../../components/PersonagemLivro';
+import { GradienteLaranjaForte } from '../../components/Gradiente';
 
 /**
  * Tela Quiz: Placar final (3 variantes <50%/>50%/100%).
@@ -16,22 +18,20 @@ export default function QuizFinal() {
   const variante = s >= 100 ? 'vitoria' : s >= 50 ? 'quase' : 'nao_deu';
 
   // V10 M5.6: briefing usa laranja forte, nao roxo/vermelho
+  // V18.3 MD.5: pose do PersonagemLivro por faixa (em vez de emoji gigante).
   const configs = {
     vitoria: {
-      fundo: COLORS.laranjaForte,
-      emoji: '🎉',
+      pose: 'EXCLAMANDO' as Pose,
       titulo: 'PARABÉNS!',
       subtitulo: `${s}% de acerto — você é um Expert!`,
     },
     quase: {
-      fundo: COLORS.laranjaMedio,
-      emoji: '💪',
+      pose: 'PENSATIVO' as Pose,
       titulo: 'QUASE LÁ',
       subtitulo: `${s}% — Tente novamente para melhorar`,
     },
     nao_deu: {
-      fundo: COLORS.laranjaForte,
-      emoji: '📖',
+      pose: 'TRISTE' as Pose,
       titulo: 'CONTINUE ESTUDANDO',
       subtitulo: `${s}% — Reforce os modulos com mais erros`,
     },
@@ -60,8 +60,8 @@ export default function QuizFinal() {
   }, [s]);
 
   return (
-    <View style={[styles.container, { backgroundColor: cfg.fundo }]}>
-      <Text style={styles.emoji}>{cfg.emoji}</Text>
+    <GradienteLaranjaForte style={styles.container}>
+      <PersonagemLivro pose={cfg.pose} size={160} />
       <Text style={styles.titulo}>{cfg.titulo}</Text>
       <Text style={styles.subtitulo}>{cfg.subtitulo}</Text>
 
@@ -75,7 +75,7 @@ export default function QuizFinal() {
       >
         <Text style={styles.botaoSecundarioTexto}>JOGAR NOVAMENTE</Text>
       </Pressable>
-    </View>
+    </GradienteLaranjaForte>
   );
 }
 
@@ -87,7 +87,6 @@ const styles = StyleSheet.create({
     padding: ESPACAMENTOS.lg,
     gap: ESPACAMENTOS.xl,
   },
-  emoji: { fontSize: 100 },
   titulo: {
     fontFamily: FONTES.display,
     fontSize: 48,

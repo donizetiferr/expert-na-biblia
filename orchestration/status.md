@@ -39,3 +39,8 @@ Estado: EVOLVE_V18.2_CONCLUIDO_AGUARDANDO_ORQUESTRADOR
 MB.1 DESBLOQUEADO autonomamente (Drive publico via uc?export=download; 12 PNGs RGBA). MB.2-MB.5 entregues.
 tsc: 0 erros | jest: 79/82 (inalterado) | audit 9.6/10 APROVADO
 Assets: 5 poses + logo + trofeu transparentes em assets/images (trim+resize ~120-180KB)
+
+## solo-evolve V18.3 (2026-06-25)
+Estado: EVOLVE_V18.3_CONCLUIDO_AGUARDANDO_ORQUESTRADOR
+MC.2 (gradientes >=12 superficies) + MD.1-MD.6,MD.8-MD.11 entregues. MD.7 DEFERIDO (Elementos Drive vazio).
+Bonus: 16.4/16.5/16.6. tsc 0 | jest 79/82 | audit 9.4/10 APROVADO

@@ -3,6 +3,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../../../constants/colors';
 import { PersonagemLivro } from '../../../../components/PersonagemLivro';
+import { GradienteLaranjaForte } from '../../../../components/Gradiente';
 import { playAcerto, playErro } from '../../../../lib/sound';
 
 /**
@@ -54,15 +55,12 @@ export default function FeedbackScreen() {
     ]).start();
   }, [bounceAnim]);
 
-  if (isAcerto) {
-    playAcerto().catch((e: unknown) =>
-      console.warn('[audio] feedback acerto falhou:', e),
-    );
-  } else {
-    playErro().catch((e: unknown) =>
-      console.warn('[audio] feedback erro falhou:', e),
-    );
-  }
+  // V18.3 (16.4): tocar o SFX 1x em useEffect (antes estava no body -> re-disparava
+  // o som a cada re-render do componente).
+  useEffect(() => {
+    const fn = isAcerto ? playAcerto : playErro;
+    fn().catch((e: unknown) => console.warn('[audio] feedback falhou:', e));
+  }, [isAcerto]);
 
   const handleProsseguir = () => {
     const isLast = indice >= total - 1;
@@ -90,16 +88,9 @@ export default function FeedbackScreen() {
     });
   };
 
-  // V14 M15.8: fundo laranja em AMBOS os casos (briefing unifica o feedback visual)
-  const fundoCor = COLORS.laranjaForte;
-
+  // V18.3: fundo em degrade laranja (briefing unifica o feedback visual).
   return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: fundoCor },
-      ]}
-    >
+    <GradienteLaranjaForte style={styles.container}>
       <Animated.View
         style={{
           transform: [{ scale: bounceAnim }],
@@ -148,7 +139,7 @@ export default function FeedbackScreen() {
           </Pressable>
         </View>
       )}
-    </View>
+    </GradienteLaranjaForte>
   );
 }
 

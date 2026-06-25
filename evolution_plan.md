@@ -96,35 +96,36 @@ O plano V18 ataca as 3 camadas + saude do projeto (5 erros tsc, 2 deps ausentes 
 
 - [x] MC.1 **Instalar expo-linear-gradient** — INFRA | CRITICA | INVESTIGACAO | AUTONOMO
   - `npx expo install expo-linear-gradient`. DoD: import resolve, build OK.
-- [ ] MC.2 **Componentes reutilizaveis GradienteRoxo / GradienteLaranja + aplicar nas ~12 superficies** — MELHORIA | ALTA | INVESTIGACAO (lente 2 POLISH) | AUTONOMO
+- [x] MC.2 **Componentes reutilizaveis GradienteRoxo / GradienteLaranja + aplicar nas ~12 superficies** — MELHORIA | ALTA | INVESTIGACAO (lente 2 POLISH) | AUTONOMO
   - Cards (modos/quiz/licoes), fundos (feedback/final/pergunta), trofeu, "Expert!", titulos de resultado, palavras-chave. Cores ja em colors.ts (roxoClaro->roxoMedio; laranjaForte->laranjaMedio; trofeu top/bottom).
   - DoD: degrades visiveis onde o briefing pede, comparados aos mocks.
 
 ## Milestone MD: Fidelidade tela-a-tela vs mocks (MELHORIA/CORRECAO) — V18 — PENDENTE
 > Divergencias concretas (subagente de fidelidade). Cada item cita arquivo:linha.
 
-- [ ] MD.1 **Regra de negocio #3: modulo/licao concluido fica AMARELO (borda/texto pretos)** — CORRECAO | ALTA | INVESTIGACAO (lente 4 re-priorizado) | AUTONOMO
+- [x] MD.1 **Regra de negocio #3: modulo/licao concluido fica AMARELO (borda/texto pretos)** — CORRECAO | ALTA | INVESTIGACAO (lente 4 re-priorizado) | AUTONOMO
   - Hoje fica roxo + ✓ verde (licoes/index.tsx:69,160; [moduloId].tsx:56-60). Implementar estado amarelo. E REGRA DE NEGOCIO, nao cosmetico.
   - DoD: licao 100% fica amarela; modulo com todas licoes amarelas fica amarelo.
-- [ ] MD.2 **Card secundario roxo+borda laranja (nao laranja solido)** — MELHORIA | ALTA | INVESTIGACAO | AUTONOMO
+- [x] MD.2 **Card secundario roxo+borda laranja (nao laranja solido)** — MELHORIA | ALTA | INVESTIGACAO | AUTONOMO
   - modos.tsx:104-108 (card "LICOES") e quiz/index.tsx:77 (card "PERSONALIZADO"). DoD: ambos os cards no padrao roxo/borda laranja/texto branco.
-- [ ] MD.3 **Quiz: alternativa selecionada = degrade amarelo circulado de preto, letra preta** — CORRECAO | ALTA | INVESTIGACAO | AUTONOMO
+- [x] MD.3 **Quiz: alternativa selecionada = degrade amarelo circulado de preto, letra preta** — CORRECAO | ALTA | INVESTIGACAO | AUTONOMO
   - jogar.tsx:180-181,234 hoje fica verde/vermelho. DoD: ao clicar, alternativa fica degrade amarelo com borda preta grossa e letra preta (briefing docs/04:135).
-- [ ] MD.4 **Titulos de resultado + "Expert!" em degrade roxo com borda preta** — MELHORIA | ALTA | INVESTIGACAO | AUTONOMO
+- [x] MD.4 **Titulos de resultado + "Expert!" em degrade roxo com borda preta** — MELHORIA | ALTA | INVESTIGACAO | AUTONOMO
   - final.tsx:109-117 ("NAO DEU/QUASE LA/VOCE PASSOU!"), quiz/final.tsx:91, trofeu.tsx:170,216-224 ("Expert!"). DoD: degrade roxo + borda preta (text stroke) nos titulos.
-- [ ] MD.5 **quiz/final.tsx usa PersonagemLivro (nao emoji gigante)** — MELHORIA | ALTA | INVESTIGACAO | AUTONOMO
+- [x] MD.5 **quiz/final.tsx usa PersonagemLivro (nao emoji gigante)** — MELHORIA | ALTA | INVESTIGACAO | AUTONOMO
   - :88 emoji 100px -> PersonagemLivro com pose por faixa (<50 TRISTE, >50 PENSATIVO, 100 EXCLAMANDO). DoD: placar com personagem coerente com licao/feedback.
-- [ ] MD.6 **Quadro branco da pergunta com borda preta** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
+- [x] MD.6 **Quadro branco da pergunta com borda preta** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
   - licaoId.tsx:218 e jogar.tsx:214. DoD: quadro branco com borda preta (briefing).
 - [ ] MD.7 **Icones home/som/config como assets desenhados (nao emoji)** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO (depende de MB.1)
+  - V18.3 DEFERIDO: pasta Drive "Elementos" enumerou VAZIA (sem assets de icone); icones emoji/glyph atuais mantidos (funcionais). Reabrir quando a designer subir os icones.
   - IconeHome.tsx:18 (🏠), IconeSom.tsx:33 (🔊), modos.tsx:71 (≡ glyph). DoD: icones on-palette desenhados.
-- [ ] MD.8 **Header do quiz com icone home** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
+- [x] MD.8 **Header do quiz com icone home** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
   - jogar.tsx:163-170 sem home. DoD: nº questao + home no topo (briefing).
-- [ ] MD.9 **Substituir emojis gigantes/confete-emoji por arte on-palette** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
+- [x] MD.9 **Substituir emojis gigantes/confete-emoji por arte on-palette** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
   - onboarding.tsx:14-28 (📖🧠🚀), trofeu.tsx:15 (confete emoji), quiz/index.tsx (🎲📚 — manter so se briefing validar). DoD: visual on-palette (confetes roxos/dourados no trofeu).
-- [ ] MD.10 **Splash: logo transparente + contraste do subtitulo** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
+- [x] MD.10 **Splash: logo transparente + contraste do subtitulo** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
   - index.tsx:83 (logo .jpg -> .png transparente), :133 subtitulo laranja sobre roxo (baixo contraste). DoD: splash legivel e sem retangulo no logo.
-- [ ] MD.11 **Alinhar copy "77 modulos" vs 40 reais** — CORRECAO | BAIXA | INVESTIGACAO | AUTONOMO
+- [x] MD.11 **Alinhar copy "77 modulos" vs 40 reais** — CORRECAO | BAIXA | INVESTIGACAO | AUTONOMO
   - "77" hardcoded em onboarding.tsx/modos.tsx E no comentario/`MOCK_MODULOS` (db-queries.ts:10, gera 77 com area TE). DoD: copy + mock refletem os 40 modulos do MVP (ou texto neutro); alinhar mock ao esquema/contagem real evita mascarar bugs (ver MA.1).
 
 ## Milestone ME: Saude / regressoes (CORRECAO/INFRA) — V18 — PENDENTE

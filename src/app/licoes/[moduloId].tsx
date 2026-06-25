@@ -3,6 +3,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../constants/colors';
 import { listarLicoes, listarModulos } from '../../lib/db-queries';
+import { GradienteRoxo } from '../../components/Gradiente';
 import type { Licao, Modulo } from '../../types';
 
 /**
@@ -37,27 +38,52 @@ export default function ModuloScreen() {
 
   const renderItem = ({ item, index }: { item: Licao; index: number }) => {
     const livre = liberado(index);
-    return (
-      <Pressable
+    const concluida = item.concluida === true;
+    const onPress = () => livre && moduloId && router.push(`/licoes/${moduloId}/${item.id}`);
+
+    const numero = (
+      <Text
         style={[
-          styles.card,
-          livre ? styles.cardLiberado : styles.cardBloqueado,
+          styles.numero,
+          concluida ? styles.numeroConcluida : livre ? styles.numeroLiberado : styles.numeroBloqueado,
         ]}
-        disabled={!livre}
-        onPress={() =>
-          livre && moduloId && router.push(`/licoes/${moduloId}/${item.id}`)
-        }
       >
-        <Text style={[styles.numero, livre ? styles.numeroLiberado : styles.numeroBloqueado]}>
-          {item.ordem.toString().padStart(2, '0')}
-        </Text>
-        <Text style={styles.nome}>{item.nome}</Text>
-        {!livre && <Text style={styles.cadeado}>🔒</Text>}
-        {item.concluida && (
+        {item.ordem.toString().padStart(2, '0')}
+      </Text>
+    );
+    const nome = (
+      <Text style={[styles.nome, concluida && styles.nomeConcluida]}>{item.nome}</Text>
+    );
+
+    // V18.3 MD.1: licao concluida = AMARELA com borda/texto pretos.
+    if (concluida) {
+      return (
+        <Pressable style={[styles.card, styles.cardConcluida]} onPress={onPress}>
+          {numero}
+          {nome}
           <View style={styles.badgeConcluida}>
             <Text style={styles.badgeTexto}>✓ {item.score_max}/100</Text>
           </View>
-        )}
+        </Pressable>
+      );
+    }
+    // Liberada: degrade roxo + borda laranja.
+    if (livre) {
+      return (
+        <Pressable style={styles.cardShadow} onPress={onPress}>
+          <GradienteRoxo diagonal style={styles.card}>
+            {numero}
+            {nome}
+          </GradienteRoxo>
+        </Pressable>
+      );
+    }
+    // Bloqueada: cinza visivel (16.6 — era cinzaEscuro+opacity 0.5, quase invisivel).
+    return (
+      <Pressable style={[styles.card, styles.cardBloqueado]} disabled>
+        {numero}
+        {nome}
+        <Text style={styles.cadeado}>🔒</Text>
       </Pressable>
     );
   };
@@ -101,22 +127,34 @@ const styles = StyleSheet.create({
   lista: {
     gap: ESPACAMENTOS.sm,
   },
+  cardShadow: {
+    borderRadius: BORDAS.raioMedio,
+    shadowColor: COLORS.preto,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.22,
+    shadowRadius: 4,
+    elevation: 3,
+  },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: ESPACAMENTOS.md,
     borderRadius: BORDAS.raioMedio,
     borderWidth: BORDAS.larguraGrossa,
-    gap: ESPACAMENTOS.md,
-  },
-  cardLiberado: {
-    backgroundColor: COLORS.roxoCard,           // M5.5: briefing diz roxo
     borderColor: COLORS.laranjaBorda,
+    gap: ESPACAMENTOS.md,
+    overflow: 'hidden',
   },
+  // V18.3 MD.1: licao concluida amarela.
+  cardConcluida: {
+    backgroundColor: COLORS.laranjaClaro,
+    borderColor: COLORS.preto,
+  },
+  // 16.6: cinzaMedio + opacity 0.85 (era cinzaEscuro + 0.5, quase invisivel).
   cardBloqueado: {
-    backgroundColor: COLORS.cinzaEscuro,
-    borderColor: COLORS.cinzaMedio,
-    opacity: 0.5,
+    backgroundColor: COLORS.cinzaMedio,
+    borderColor: COLORS.cinzaEscuro,
+    opacity: 0.85,
   },
   numero: {
     fontFamily: FONTES.display,
@@ -124,14 +162,16 @@ const styles = StyleSheet.create({
     width: 50,
     textAlign: 'center',
   },
-  numeroLiberado: { color: COLORS.laranjaEscuro },
-  numeroBloqueado: { color: COLORS.cinzaMedio },
+  numeroLiberado: { color: COLORS.laranjaClaro },
+  numeroBloqueado: { color: COLORS.preto },
+  numeroConcluida: { color: COLORS.preto },
   nome: {
     fontFamily: FONTES.bodyBold,
     fontSize: 16,
     color: COLORS.branco,
     flex: 1,
   },
+  nomeConcluida: { color: COLORS.preto, fontFamily: FONTES.bodyExtraBold },
   cadeado: { fontSize: 22 },
   badgeConcluida: {
     backgroundColor: COLORS.laranjaEscuro,

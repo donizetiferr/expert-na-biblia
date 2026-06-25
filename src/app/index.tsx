@@ -128,12 +128,16 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   subtitulo: {
-    fontFamily: FONTES.bodyRegular,
+    fontFamily: FONTES.bodyBold,
     fontSize: 20,
-    color: COLORS.laranjaEscuro,
+    // V18.3 MD.10: laranjaClaro (#fded48) tem contraste alto sobre o roxo do splash
+    // (laranjaEscuro #fd8414 ficava escuro demais). + sombra preta para legibilidade.
+    color: COLORS.laranjaClaro,
     textAlign: 'center',
     marginTop: ESPACAMENTOS.md,
-    fontWeight: 'bold',
+    textShadowColor: COLORS.preto,
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   botaoPular: {
     position: 'absolute',

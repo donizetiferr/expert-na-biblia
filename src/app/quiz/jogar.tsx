@@ -5,6 +5,7 @@ import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../constants/colors';
 import { carregarPerguntasQuiz } from '../../lib/quiz-loader';
 import { embaralharAlternativas } from '../../lib/quiz-questions';
 import { obterAlternativas } from '../../lib/quiz-alternatives-db';
+import { IconeHome } from '../../components/IconeHome';
 import type { Pergunta } from '../../types';
 
 const TOTAL_PERGUNTAS = 20;
@@ -193,6 +194,8 @@ export default function JogarQuiz() {
           {indice + 1}/{TOTAL_PERGUNTAS}
         </Text>
         <Text style={[styles.timer, { color: corTempo }]}>{tempo}s</Text>
+        {/* V18.3 MD.8: icone home no header do quiz */}
+        <IconeHome />
       </View>
 
       <View style={styles.quadro}>
@@ -202,19 +205,18 @@ export default function JogarQuiz() {
       <View style={styles.alternativas}>
         {p.alternativas.map((alt, i) => {
           const isSel = selecionada === i;
-          const isCorreta = alt.correta;
-          const bg = isSel
-            ? isCorreta ? COLORS.acertoVerde : COLORS.erroVermelho
-            : COLORS.roxoPrimario;
+          // V18.3 MD.3: alternativa selecionada = amarelo, borda preta grossa, letra preta.
           return (
             <Pressable
               key={i}
-              style={[styles.alternativa, { backgroundColor: bg }]}
+              style={[styles.alternativa, isSel ? styles.alternativaSelecionada : styles.alternativaNormal]}
               onPress={() => selecionar(i)}
               disabled={selecionada !== null}
             >
-              <Text style={styles.altLetra}>{String.fromCharCode(65 + i)}</Text>
-              <Text style={styles.altTexto}>{alt.texto}</Text>
+              <Text style={[styles.altLetra, isSel && styles.altTextoSelecionado]}>
+                {String.fromCharCode(65 + i)}
+              </Text>
+              <Text style={[styles.altTexto, isSel && styles.altTextoSelecionado]}>{alt.texto}</Text>
             </Pressable>
           );
         })}
@@ -268,6 +270,9 @@ const styles = StyleSheet.create({
     borderRadius: BORDAS.raioMedio,
     minHeight: 100,
     justifyContent: 'center',
+    // V18.3 MD.6: quadro branco da pergunta com borda preta.
+    borderWidth: BORDAS.larguraGrossa,
+    borderColor: COLORS.preto,
   },
   pergunta: {
     fontFamily: FONTES.bodyBold,
@@ -281,9 +286,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: ESPACAMENTOS.md,
     borderRadius: BORDAS.raioMedio,
+    gap: ESPACAMENTOS.md,
+  },
+  alternativaNormal: {
+    backgroundColor: COLORS.roxoPrimario,
     borderWidth: BORDAS.larguraMedia,
     borderColor: COLORS.laranjaEscuro,
-    gap: ESPACAMENTOS.md,
+  },
+  // V18.3 MD.3: selecionada = amarelo + borda preta grossa.
+  alternativaSelecionada: {
+    backgroundColor: COLORS.laranjaClaro,
+    borderWidth: BORDAS.larguraGrossa,
+    borderColor: COLORS.preto,
   },
   altLetra: {
     fontFamily: FONTES.display,
@@ -297,5 +311,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.branco,
     flex: 1,
+  },
+  // V18.3 MD.3: texto/letra pretos quando selecionada (sobre o amarelo).
+  altTextoSelecionado: {
+    color: COLORS.preto,
+    fontFamily: FONTES.bodyBold,
   },
 });
