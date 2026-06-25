@@ -1,10 +1,41 @@
-# Status — @full-cycle Expert Na Biblia (2026-06-25, V14)
+# Status — @full-cycle Expert Na Biblia (2026-06-25, V17)
 
-**Finalizado em:** 2026-06-25 (V14 — 8 fixes UX profundos)
+**Finalizado em:** 2026-06-25 (V17 — Play Store prep + EAS build)
 **Tipo:** @full-cycle agent (subagente isolado, opus[1m])
 **Vertente:** GENERICO (cross-check OK)
-**Estado do projeto:** V14 entregue (8/8 itens M15 [x] + 15.9 rejeitado) + APK V14 publicado
-**Toggle file:** `orchestration/.delegated_to_subagent` criado no spawn
+**Estado do projeto:** **V17 entregue (6/6 tarefas)** + AAB v17.0.0 + APK universal + keystore release + EAS config + docs atualizadas
+**Toggle file:** `orchestration/.delegated_to_subagent` criado no spawn (limpo apos conclusao)
+
+## V17 — execucao (2026-06-25)
+
+Status final: **V17_ENTREGA_COMPLETA** (6/6 tarefas [x])
+Modo de limite: UNLIMITED (concluiu em 1 iter — escopo fechado de 6 tarefas sequenciais)
+Itens entregues:
+- 17.1 [CRITICA] — Keystore release dedicado (RSA 2048, 10000 dias)
+- 17.2 [CRITICA] — Gradle signing.release configurado (NAO mais debug)
+- 17.3 [CRITICA] — eas.json verificado (ja em ordem)
+- 17.4 [ALTA] — Doc Play Store atualizada (asset checklist oficial)
+- 17.5 [CRITICA] — AAB v17.0.0 gerado (73MB, BUILD SUCCESSFUL 8m54s)
+- 17.6 [ALTA] — AAB validado com bundletool (exit 0) + APK universal extraido
+
+## AAB V17
+
+- **Local**: `C:\ENB\dist\ExpertNaBiblia-v17.0.0.aab`
+- **Size**: 73.432.746 bytes (~70 MB)
+- **SHA256**: `1bbcef4fe3a8787d5fc6d26813aefcdae28796913dca6dabbb9d46b10d715e34`
+- **versionCode**: 2 (incrementado de 1)
+- **versionName**: 1.7.0
+- **Build**: `gradlew :app:bundleRelease` — BUILD SUCCESSFUL em 8m 54s
+
+## APK Universal V17
+
+- **Local**: `C:\ENB\dist\ExpertNaBiblia-v17.0.0-universal.apk`
+- **Size**: 45.026.598 bytes (~43 MB)
+- **SHA256**: `35d83415acbb25d1bd08d74a8c3d74a4b62c3e1961bdee20bb78b617c261ddef`
+- **Extraido via**: `bundletool extract-apks --device-spec` (arm64-v8a + pt-BR + xxhdpi)
+
+## Commit
+`2721dc4` — V17: Play Store prep + EAS build config (18 files, +286/-148)
 
 ## V14 — execucao (2026-06-25)
 
