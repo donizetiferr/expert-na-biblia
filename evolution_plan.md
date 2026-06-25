@@ -441,6 +441,83 @@ Ordem recomendada: **M0 → M6 → M1 → M2 → M3 → M5** (com M4 em paralelo
 - Nenhuma (somente edicoes de codigo e recursos).
 
 
+## Milestone 15: Bugs UX profundos (MIX) — V14
+
+> O usuario testou V13 e listou varios bugs reais. Apos investigacao (captura de 10 telas),
+> encontrei 9 bugs que afetam UX direto. Foco: 15.1 (splash), 15.3 (onboarding), 15.4 (loop quiz).
+> Estimativa: 4-6h de trabalho autonomo.
+
+- [x] 15.1 **Splash com logo grande "EXPERT NA BÍBLIA" (sem adaptive icon minúsculo)** — CORRECAO | CRITICA | USUARIO + INVESTIGACAO (auditoria V14) | AUTONOMO | [lente 1 detalhado]
+  - **Causa**: index.tsx (JSX) tem `<Image source={require('../../assets/images/logo.jpg')}>` de 340x340 que renderiza ADICIONAL ao splash nativo
+  - **Acao em `src/app/index.tsx`**:
+    1. **Remover o `<Image>` JSX duplicado** — deixar só o splash nativo do Android (que ja tem o logo cropped 750x900 em `assets/splash.png`)
+    2. **OU**: aumentar o `<Image>` JSX para 340x340 e remover o `splash.png` nativo
+    3. Garantir que `SplashScreen.hideAsync()` é chamado em ~500ms (nao esperar 3s)
+  - DoD: splash mostra "EXPERT NA BÍBLIA" grande (não adaptive icon 96x96 minúsculo)
+
+- [x] 15.2 **Identidade visual em /modos e /quiz conforme briefing** — MELHORIA | CRITICA | USUARIO + INVESTIGACAO (auditoria V14) | AUTONOMO | [lente 2 enriquecido]
+  - **Causa**: /modos e /quiz não seguem briefing — cards sem personagem livro, fundo roxo em vez de creme, palavras-chave não em laranja
+  - **Acao**:
+    1. `modos.tsx`: aplicar fundo creme (`COLORS.creme`), adicionar logo grande no topo (já existe em `licoes/index.tsx`), manter cards roxos com borda laranja (já está)
+    2. `quiz/index.tsx`: substituir emojis 🎲/💪 por PersonagemLivro com poses diferentes (aleatório=PENSATIVO, personalizado=FELIZ)
+    3. Validar pixel-perfect #f7f4ed em todas as telas
+  - DoD: /modos e /quiz seguem briefing (fundo creme, logo grande, personagem livro)
+
+- [x] 15.3 **Onboarding aparece só 1x (não toda vez que abre o app)** — CORRECAO | CRITICA | USUARIO + INVESTIGACAO (auditoria V14) | AUTONOMO | [lente 5 premissa verificada]
+  - **Causa**: o `useEffect` em `index.tsx` sempre redireciona para `/onboarding` independente do valor de `@onboarding:completed`
+  - **Acao em `src/app/index.tsx`**:
+    1. Verificar se `AsyncStorage.getItem(ONBOARDING_KEY)` retorna '1' (caso sim, ir direto para /modos)
+    2. Log para debug: `console.log('[onboarding] key:', done)`
+  - DoD: onboarding aparece SÓ na primeira vez (depois disso vai direto para /modos)
+
+- [x] 15.4 **Fix loop infinito no quiz (aleatório/personalizado)** — CORRECAO | CRITICA | USUARIO + INVESTIGACAO (auditoria V14) | AUTONOMO | [lente 1 detalhado]
+  - **Causa provável**: o `useEffect` que faz `carregarPerguntas()` em `src/app/quiz/jogar.tsx` tem dep array `[indice, loading, selecionada]`. Quando o usuario responde, `setIndice()` é chamado, que trigga `useEffect` novamente, que pode chamar `proxima()` em loop.
+  - **Acao em `src/app/quiz/jogar.tsx`**:
+    1. **Adicionar cleanup** com `return () => clearTimeout/clearInterval` no `useEffect` do timer
+    2. **Usar ref** para o timer: `const timerRef = useRef<any>(null);` e `timerRef.current = setInterval(...)`
+    3. **Verificar se `proxima()` está sendo chamado em loop** — adicionar guard `if (carregando) return;`
+  - DoD: quiz nao fica em loop infinito apos responder
+
+- [x] 15.5 **Personagem livro grande (300-400px) com moldura elegante** — MELHORIA | ALTA | USUARIO + INVESTIGACAO (auditoria V14) | AUTONOMO | [lente 4 re-priorizado]
+  - **Causa**: `<PersonagemLivro pose="PENSATIVO" size={110} />` em `licao[moduloId][licaoId].tsx` — size 110 é muito pequeno
+  - **Acao em `src/app/licoes/[moduloId]/[licaoId].tsx`**:
+    1. Mudar `size={110}` para `size={300}` (ou maior)
+    2. Adicionar moldura elegante ao redor (borderRadius, shadow, padding) — briefing tem moldura colorida
+    3. Adicionar `Animated` com fade-in/zoom para dar sensação de "vivo"
+  - DoD: personagem livro aparece grande com moldura elegante (não quadradinho minúsculo)
+
+- [x] 15.6 **Teclado nao tampa input dissertativo (KeyboardAvoidingView height + adjustResize)** — CORRECAO | ALTA | USUARIO + INVESTIGACAO (auditoria V14) | AUTONOMO | [lente 1 detalhado]
+  - **Causa**: `KeyboardAvoidingView` em `licao[moduloId][licaoId].tsx` tem `behavior={Platform.OS === 'ios' ? 'padding' : undefined}`. No Android, `behavior` é `undefined`, o que NAO funciona.
+  - **Acao em `src/app/licoes/[moduloId]/[licaoId].tsx`**:
+    1. Mudar `behavior={Platform.OS === 'ios' ? 'padding' : 'height'}` (height funciona no Android)
+    2. Adicionar `keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 64}` (compensar status bar)
+    3. Em `AndroidManifest.xml`, garantir que `android:windowSoftInputMode="adjustResize"` está setado
+  - DoD: teclado nao tampa o campo de input; usuario ve o que esta digitando
+
+- [x] 15.7 **Som de fundo sem glitch (regenerar ou trim)** — MELHORIA | **ALTA** | USUARIO + INVESTIGACAO (auditoria V14) | AUTONOMO | [lente 4 re-priorizado]
+  - **Causa provável**: o `musica_fundo_v2.mp3` (60-90s) tem glitches
+  - **Acao**:
+    1. Gerar novo `musica_fundo_v3.mp3` via `mcp__elevenlabs__text_to_sound_effects` com texto: "A seamless 60-90 second calm mystical ambient music loop for Bible study app, no glitches, seamless loop point"
+    2. Verificar `ensureAudioMode()` em `src/lib/sound.ts` — não chamar `setAudioModeAsync` múltiplas vezes (causa glitch)
+    3. Adicionar fade in/out ao iniciar/parar música (volume 0 → settings.volumeMusica em 1s)
+    4. Substituir `musica_fundo_v2.mp3` por `musica_fundo_v3.mp3` no `src/lib/sound.ts` linha 145
+  - DoD: musica de fundo toca sem estouro recorrente
+
+- [x] 15.8 **Feedback de acerto/erro conforme briefing (personagem livro grande, fundo laranja, balao de fala)** — MELHORIA | MEDIA | USUARIO + INVESTIGACAO (auditoria V14) | AUTONOMO
+  - **Causa**: feedback acerto/erro nao segue briefing
+  - **Acao em `src/app/licoes/[moduloId]/[licaoId]/feedback.tsx`**:
+    1. Aumentar `PersonagemLivro size={110}` para `size={200}` (briefing diz grande)
+    2. Adicionar fundo laranja (`COLORS.laranjaForte`) ao container de feedback (ja esta)
+    3. Adicionar balao de fala (View com borderRadius + position absolute) com texto "Correto!" / "Errado" em destaque
+    4. Adicionar animacao: bounce no personagem ao acertar
+  - DoD: feedback acerto/erro segue briefing (fundo laranja, personagem livro grande, balao de fala)
+
+- [ ] 15.9 **Substituir emojis por personagem livro em /modos** — REJEITADO (briefing valida emojis) | BAIXA | USUARIO + INVESTIGACAO (auditoria V14) | AUTONOMO | [lente 4 re-priorizado]
+  - **Causa**: card "ALEATORIO" tem emoji 🎲, "PERSONALIZADO" tem 📚
+  - **POR QUE REJEITADO**: o briefing oficial (`whatsapp_media/images/image_20260622_223032.jpg`) USA emojis (🎲/💪/📚) como parte do design — NÃO há personagem livro nos cards de /modos no briefing
+  - **NÃO IMPLEMENTAR** — emojis do briefing são intencionais
+  - Se quiser refinar, melhorar o tamanho dos emojis (size 48-64) e cor (laranjaEscuro)
+
 ## STATUS V13 — EXECUCAO 2026-06-25 (@full-cycle agent, opus[1m])
 
 ### Entregues (5/5 itens [x] no M14)

@@ -1,22 +1,17 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Animated, Easing } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useRef } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../../../constants/colors';
-import { TEMA } from '../../../../lib/design-tokens';
 import { PersonagemLivro } from '../../../../components/PersonagemLivro';
 import { playAcerto, playErro } from '../../../../lib/sound';
 
 /**
  * V9 M2.4: Tela Feedback Licao dedicada.
- * - Variante 'acerto': fundo verde, PersonagemLivro pose FELIZ, "Acertou!", quadro branco com resposta correta,
- *                      1 botao redondo roxo "PROSSEGUIR".
- * - Variante 'erro':   fundo laranja, PersonagemLivro pose ASSUSTADO, balao "Errado!", quadro branco com resposta correta,
- *                      2 botoes redondos (voltar + prosseguir).
- *
- * Apos PROSSEGUIR:
- * - Se indice === total-1 (ultima pergunta): navega para /final?score=... (final.tsx cuida do resto)
- * - Senão: navega para /licoes/{m}/{l}?indice=indice+1 (proxima pergunta)
- *
- * Apos VOLTAR (erro): navega para /licoes/{m}/{l}?indice=indice (mesma pergunta)
+ * V14 M15.8:
+ *   - PersonagemLivro 150 -> 200 (briefing diz grande)
+ *   - Fundo laranja (ja estava) — usado em AMBOS os casos (acerto E erro) conforme briefing
+ *   - Balao de fala em AMBOS os casos (acerto E erro)
+ *   - Bounce animation (scale 1 -> 1.1 -> 1) no personagem
  */
 type Resultado = 'acerto' | 'erro';
 
@@ -39,6 +34,25 @@ export default function FeedbackScreen() {
   const total = parseInt(params.total ?? '1', 10);
   const acertos = parseInt(params.acertos_atual ?? '0', 10);
   const totalPerguntas = parseInt(params.total_perguntas ?? String(total), 10);
+
+  // V14 M15.8: bounce animation no personagem (scale 1 -> 1.15 -> 1)
+  const bounceAnim = useRef(new Animated.Value(0.7)).current;
+  useEffect(() => {
+    Animated.sequence([
+      Animated.timing(bounceAnim, {
+        toValue: 1.15,
+        duration: 250,
+        easing: Easing.out(Easing.back(1.5)),
+        useNativeDriver: true,
+      }),
+      Animated.spring(bounceAnim, {
+        toValue: 1.0,
+        friction: 4,
+        tension: 80,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [bounceAnim]);
 
   if (isAcerto) {
     playAcerto().catch((e: unknown) =>
@@ -76,30 +90,30 @@ export default function FeedbackScreen() {
     });
   };
 
+  // V14 M15.8: fundo laranja em AMBOS os casos (briefing unifica o feedback visual)
+  const fundoCor = COLORS.laranjaForte;
+
   return (
     <View
       style={[
         styles.container,
-        {
-          backgroundColor: isAcerto
-            ? TEMA.feedback.acerto.fundo
-            : TEMA.feedback.erro.fundo,
-        },
+        { backgroundColor: fundoCor },
       ]}
     >
-      {isAcerto ? (
-        <>
-          <PersonagemLivro pose="FELIZ" size={150} />
-          <Text style={styles.titulo}>Acertou!</Text>
-        </>
-      ) : (
-        <>
-          <PersonagemLivro pose="ASSUSTADO" size={150} />
-          <View style={styles.balaoFala}>
-            <Text style={styles.balaoTexto}>Errado!</Text>
-          </View>
-        </>
-      )}
+      <Animated.View
+        style={{
+          transform: [{ scale: bounceAnim }],
+          alignItems: 'center',
+        }}
+      >
+        {/* V14 M15.8: PersonagemLivro 150 -> 200 */}
+        <PersonagemLivro pose={isAcerto ? 'FELIZ' : 'ASSUSTADO'} size={200} />
+      </Animated.View>
+
+      {/* V14 M15.8: balao de fala em AMBOS os casos (acerto E erro) */}
+      <View style={styles.balaoFala}>
+        <Text style={styles.balaoTexto}>{isAcerto ? 'Correto!' : 'Errado!'}</Text>
+      </View>
 
       <View style={styles.quadroResposta}>
         <Text style={styles.quadroLabel}>Resposta correta:</Text>
@@ -145,22 +159,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     padding: ESPACAMENTOS.lg,
   },
-  titulo: {
-    fontFamily: FONTES.display,
-    fontSize: 64,
-    color: COLORS.branco,
-    textShadowColor: COLORS.preto,
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 4,
-  },
   balaoFala: {
+    // V14 M15.8: balao unificado (acerto E erro), borda mais grossa, com sombra
     backgroundColor: COLORS.roxoPrimario,
     paddingHorizontal: ESPACAMENTOS.xl,
     paddingVertical: ESPACAMENTOS.md,
     borderRadius: BORDAS.raioGrande,
-    borderWidth: 4,
+    borderWidth: 5,
     borderColor: COLORS.branco,
     transform: [{ rotate: '-3deg' }],
+    shadowColor: COLORS.preto,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 6,
   },
   balaoTexto: {
     fontFamily: FONTES.display,

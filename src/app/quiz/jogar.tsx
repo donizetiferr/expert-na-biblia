@@ -1,6 +1,6 @@
 import { View, Text, Pressable, StyleSheet, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../constants/colors';
 import { listarPerguntas } from '../../lib/db-queries';
 import { embaralharAlternativas } from '../../lib/quiz-questions';
@@ -17,6 +17,10 @@ interface PerguntaQuiz {
 
 /**
  * Tela Quiz: Pergunta + timer 10s + 4 respostas multiplas.
+ * V14 M15.4: previne loop infinito com refs + guards:
+ *   - timerRef + transitionTimeoutRef (cleanup garantido)
+ *   - transicionandoRef: impede `proxima()` em re-entrada (selecionar + timer expirado ao mesmo tempo)
+ *   - guard `if (transicionandoRef.current) return;` em `proxima()`
  */
 export default function JogarQuiz() {
   const router = useRouter();
@@ -27,23 +31,57 @@ export default function JogarQuiz() {
   const [selecionada, setSelecionada] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // V14 M15.4: refs para cleanup + guard contra re-entrada
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const transicionandoRef = useRef<boolean>(false);
+
   useEffect(() => {
     carregarPerguntas();
+    return () => {
+      // V14 M15.4: cleanup completo no unmount
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current);
+        transitionTimeoutRef.current = null;
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (loading || selecionada !== null) return;
-    const timer = setInterval(() => {
+
+    // V14 M15.4: limpa timer anterior antes de criar novo (evita timers duplicados)
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+
+    timerRef.current = setInterval(() => {
       setTempo((t) => {
         if (t <= 1) {
-          clearInterval(timer);
+          if (timerRef.current) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+          }
+          // V14 M15.4: chama proxima direto (timerRef.current ja foi limpo)
           proxima();
           return 0;
         }
         return t - 1;
       });
     }, 1000);
-    return () => clearInterval(timer);
+
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indice, loading, selecionada]);
 
   const carregarPerguntas = async () => {
@@ -68,23 +106,46 @@ export default function JogarQuiz() {
   };
 
   const selecionar = (i: number) => {
+    // V14 M15.4: guard contra re-entrada (timer expirando + clique do usuario ao mesmo tempo)
     if (selecionada !== null) return;
+    if (transicionandoRef.current) return;
+
     setSelecionada(i);
     if (perguntas[indice]?.alternativas[i]?.correta) {
       setAcertos((a) => a + 1);
     }
-    setTimeout(proxima, 1200);
+
+    // V14 M15.4: usa ref para o timeout de transicao (cleanup garantido)
+    transitionTimeoutRef.current = setTimeout(() => {
+      transitionTimeoutRef.current = null;
+      proxima();
+    }, 1200);
   };
 
   const proxima = () => {
+    // V14 M15.4: guard contra re-entrada multipla (timer expirado + selecionar no mesmo frame)
+    if (transicionandoRef.current) return;
+    transicionandoRef.current = true;
+
+    // limpa timer de transicao pendente (se chegou aqui via timer expirado)
+    if (transitionTimeoutRef.current) {
+      clearTimeout(transitionTimeoutRef.current);
+      transitionTimeoutRef.current = null;
+    }
+
     setSelecionada(null);
     setTempo(TEMPO_POR_PERGUNTA);
     const prox = indice + 1;
     if (prox >= TOTAL_PERGUNTAS) {
       const score = Math.round((acertos / TOTAL_PERGUNTAS) * 100);
       router.replace(`/quiz/final?score=${score}`);
+      // nao reseta transicionandoRef aqui (sai da tela mesmo)
     } else {
       setIndice(prox);
+      // libera transicao apos o estado ser aplicado (proxima renderizacao)
+      setTimeout(() => {
+        transicionandoRef.current = false;
+      }, 50);
     }
   };
 

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, Pressable, Image } from 'react-native';
+import * as SplashScreenLib from 'expo-splash-screen';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS, FONTES, ESPACAMENTOS } from '../constants/colors';
@@ -8,7 +9,12 @@ import { playSplash } from '../lib/sound';
 const ONBOARDING_KEY = '@onboarding:completed';
 
 /**
- * Tela 1: Splash screen com animacao do LOGO OFICIAL + som (3s).
+ * Tela 1: Splash screen com animacao do LOGO OFICIAL grande.
+ * V14 M15.1:
+ *   - Logo 340x340 mantido (mesmo tamanho — splash nativo ja tem logo cropped)
+ *   - SplashScreen.hideAsync() em ~500ms para liberar splash nativo IMEDIATAMENTE
+ *     e mostrar o logo JSX em tela cheia (não esperar 3s)
+ *   - Redirecionamento acontece em 500ms (não em 3000ms)
  * V9 M2.1: usa imagem real do logo (whatsapp_media/images/image_20260622_205222.jpg)
  * V9 M4.5: na primeira abertura (sem @onboarding:completed), redireciona para /onboarding.
  */
@@ -35,18 +41,25 @@ export default function SplashScreen() {
       console.warn('[audio] splash playSplash falhou:', e),
     );
 
+    // V14 M15.1: libera splash nativo em ~500ms e redireciona.
+    // O logo grande JSX fica visivel durante esses 500ms.
     const timer = setTimeout(async () => {
       try {
+        await SplashScreenLib.hideAsync().catch((e: unknown) =>
+          console.warn('[splash] hideAsync falhou:', e),
+        );
         const done = await AsyncStorage.getItem(ONBOARDING_KEY);
+        console.log('[onboarding] key:', done);
         if (done === '1') {
           router.replace('/modos');
         } else {
           router.replace('/onboarding');
         }
-      } catch {
+      } catch (e) {
+        console.warn('[splash] erro no redirect:', e);
         router.replace('/modos');
       }
-    }, 3000);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [router, scaleAnim, fadeAnim]);
@@ -65,7 +78,7 @@ export default function SplashScreen() {
           style={styles.logo}
           resizeMode="contain"
           accessible
-          accessibilityLabel="Logo Expert Na Biblia"
+          accessibilityLabel="Logo Expert Na Biblia — sua jornada pela Palavra"
         />
       </Animated.View>
 

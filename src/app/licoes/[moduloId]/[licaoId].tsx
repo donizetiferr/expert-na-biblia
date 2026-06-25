@@ -1,6 +1,6 @@
-import { View, Text, TextInput, Pressable, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, KeyboardAvoidingView, Platform, Animated } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../../constants/colors';
 import { PersonagemLivro } from '../../../components/PersonagemLivro';
 import { IconeSom } from '../../../components/IconeSom';
@@ -17,6 +17,11 @@ type Pose = 'PENSATIVO' | 'FELIZ' | 'ASSUSTADO' | 'TRISTE' | 'EXCLAMANDO';
  * /licoes/{moduloId}/{licaoId}/feedback?resultado=acerto|erro&resposta_correta=...
  * IconeSom canto inferior direito (toggle efeitos em runtime).
  * IconeHome canto superior direito (volta para /modos).
+ *
+ * V14 M15.5: PersonagemLivro 110 -> 280, moldura elegante (border, shadow, padding, fundo),
+ *                  Animated fade-in/zoom de entrada.
+ * V14 M15.6: KeyboardAvoidingView behavior 'height' no Android + keyboardVerticalOffset=64
+ *                  (compensa status bar). AndroidManifest ja tem adjustResize.
  */
 export default function LicaoScreen() {
   const router = useRouter();
@@ -29,11 +34,25 @@ export default function LicaoScreen() {
   const [pose, setPose] = useState<Pose>('PENSATIVO');
   const [acertos, setAcertos] = useState(0);
 
+  // V14 M15.5: animacao fade-in/zoom de entrada do personagem
+  const personagemFade = useRef(new Animated.Value(0)).current;
+  const personagemZoom = useRef(new Animated.Value(0.7)).current;
+
   // V10 M5.4: deps incluem [licaoId, moduloId] (não só licaoId) para garantir reset
   // ao trocar de módulo/lição (evita o looping infinito que ocorria antes).
   useEffect(() => {
     if (licaoId) listarPerguntas(licaoId).then(setPerguntas);
   }, [licaoId, moduloId]);
+
+  // V14 M15.5: dispara animacao de entrada do personagem ao montar ou trocar licao
+  useEffect(() => {
+    personagemFade.setValue(0);
+    personagemZoom.setValue(0.7);
+    Animated.parallel([
+      Animated.timing(personagemFade, { toValue: 1, duration: 500, useNativeDriver: true }),
+      Animated.spring(personagemZoom, { toValue: 1, useNativeDriver: true, friction: 6 }),
+    ]).start();
+  }, [licaoId, moduloId, indice, personagemFade, personagemZoom]);
 
   // V10 M5.4: quando params.indice muda (deep link do feedback), sincroniza estado
   // com guard contra loops (p undefined ou igual ao indice atual).
@@ -85,7 +104,10 @@ export default function LicaoScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      // V14 M15.6: 'height' no Android funciona (undefined NAO funcionava).
+      // No iOS mantemos 'padding' (padrao Apple).
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 64}
     >
       {/* IconeHome canto superior direito */}
       <View style={styles.header}>
@@ -99,7 +121,15 @@ export default function LicaoScreen() {
       </View>
 
       <View style={styles.centro}>
-        <PersonagemLivro pose={pose} size={110} />
+        {/* V14 M15.5: PersonagemLivro grande (280) com moldura elegante */}
+        <Animated.View
+          style={[
+            styles.personagemMoldura,
+            { opacity: personagemFade, transform: [{ scale: personagemZoom }] },
+          ]}
+        >
+          <PersonagemLivro pose={pose} size={280} />
+        </Animated.View>
 
         <View style={styles.quadro}>
           <Text style={styles.pergunta}>{perguntaAtual.texto}</Text>
@@ -170,6 +200,20 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     gap: ESPACAMENTOS.lg,
+  },
+  // V14 M15.5: moldura elegante em volta do personagem (border, shadow, padding)
+  personagemMoldura: {
+    alignSelf: 'center',
+    padding: ESPACAMENTOS.md,
+    backgroundColor: COLORS.creme,
+    borderRadius: BORDAS.raioGrande,
+    borderWidth: 4,
+    borderColor: COLORS.laranjaEscuro,
+    shadowColor: COLORS.preto,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 8,
   },
   quadro: {
     backgroundColor: COLORS.branco,

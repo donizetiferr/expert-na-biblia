@@ -107,9 +107,16 @@ export async function playShake(): Promise<void> {
  * - moduloId 'FB*' -> musica_fundo_fb.mp3 (místico)
  * - moduloId 'AT*' -> musica_fundo_at.mp3 (épico)
  * - moduloId 'NT*' -> musica_fundo_nt.mp3 (luminoso)
- * - outros/sem param -> musica_fundo.mp3 (default)
+ * - outros/sem param -> musica_fundo_v3.mp3 (default, V14 M15.7 — sem glitch)
  *
  * V13 14.1.4: detecta erro de `isAudioPlayingAsync` e faz fallback gracioso.
+ *
+ * V14 M15.7:
+ *   - musica_fundo_v2 -> musica_fundo_v3 (gerado via ElevenLabs SFX chunks 5s
+ *     concatenados com crossfade — sem glitches)
+ *   - fade in (1s) do volume 0 → settings.volumeMusica ao iniciar
+ *   - fade out (0.5s) ao parar antes de stopAsync
+ *   - ensureAudioMode ja idempotente (controlado por flag `initialized`)
  */
 export async function playMusicaFundo(moduloId?: string): Promise<void> {
   try {
@@ -129,20 +136,20 @@ export async function playMusicaFundo(moduloId?: string): Promise<void> {
       }
     }
 
-    // V10 M6.4: seleciona variante por area
+    // V10 M6.4: seleciona variante por area (fallback musica_fundo_v3)
     let source: number;
     if (moduloId?.startsWith('FB')) {
       try { source = require('../../assets/audio/musica_fundo_fb.mp3'); }
-      catch { source = require('../../assets/audio/musica_fundo_v2.mp3'); }
+      catch { source = require('../../assets/audio/musica_fundo_v3.mp3'); }
     } else if (moduloId?.startsWith('AT')) {
       try { source = require('../../assets/audio/musica_fundo_at.mp3'); }
-      catch { source = require('../../assets/audio/musica_fundo_v2.mp3'); }
+      catch { source = require('../../assets/audio/musica_fundo_v3.mp3'); }
     } else if (moduloId?.startsWith('NT')) {
       try { source = require('../../assets/audio/musica_fundo_nt.mp3'); }
-      catch { source = require('../../assets/audio/musica_fundo_v2.mp3'); }
+      catch { source = require('../../assets/audio/musica_fundo_v3.mp3'); }
     } else {
-      try { source = require('../../assets/audio/musica_fundo_v2.mp3'); }
-      catch { source = require('../../assets/audio/musica_fundo.mp3'); }
+      // V14 M15.7: default agora eh v3 (sem glitch)
+      source = require('../../assets/audio/musica_fundo_v3.mp3');
     }
 
     // Para anterior se existir (e salva posição para resume)
@@ -158,10 +165,12 @@ export async function playMusicaFundo(moduloId?: string): Promise<void> {
       musicaFundoSound = null;
     }
 
+    // V14 M15.7: cria com volume 0 e faz fade in de 1s ate settings.volumeMusica
+    const targetVolume = settings.volumeMusica;
     const { sound } = await Audio.Sound.createAsync(source, {
       shouldPlay: true,
       isLooping: true,
-      volume: settings.volumeMusica,
+      volume: 0,
     });
     // V10 M6.7: retoma de onde parou (se salvamos posição > 0)
     if (savedPositionMillis > 0) {
@@ -169,6 +178,22 @@ export async function playMusicaFundo(moduloId?: string): Promise<void> {
       catch (e) { console.warn('[sound] setStatusAsync falhou:', e); }
     }
     musicaFundoSound = sound;
+
+    // V14 M15.7: fade in 1s (volume 0 -> targetVolume)
+    const fadeSteps = 20;
+    const fadeIntervalMs = 50;
+    for (let i = 1; i <= fadeSteps; i++) {
+      const v = (targetVolume * i) / fadeSteps;
+      setTimeout(async () => {
+        try {
+          if (musicaFundoSound === sound) {
+            await sound.setStatusAsync({ volume: v });
+          }
+        } catch {
+          // ignore — track pode ter sido parado
+        }
+      }, i * fadeIntervalMs);
+    }
   } catch (e) {
     console.warn('[sound] playMusicaFundo failed:', e);
   }
@@ -176,11 +201,26 @@ export async function playMusicaFundo(moduloId?: string): Promise<void> {
 
 export async function stopMusicaFundo(): Promise<void> {
   if (!musicaFundoSound) return;
+  const sound = musicaFundoSound;
   try {
-    const s = await musicaFundoSound.getStatusAsync();
-    if (s.isLoaded) savedPositionMillis = s.positionMillis ?? 0;
-    await musicaFundoSound.stopAsync();
-    await musicaFundoSound.unloadAsync();
+    const s = await sound.getStatusAsync();
+    if (!s.isLoaded) {
+      musicaFundoSound = null;
+      return;
+    }
+    savedPositionMillis = s.positionMillis ?? 0;
+    // V14 M15.7: fade out 0.5s antes de stop
+    const fadeSteps = 10;
+    const fadeIntervalMs = 50;
+    const startVolume = s.volume ?? 1;
+    for (let i = 1; i <= fadeSteps; i++) {
+      const v = (startVolume * (fadeSteps - i)) / fadeSteps;
+      try { await sound.setStatusAsync({ volume: v }); }
+      catch { /* ignore */ }
+      await new Promise<void>((r) => setTimeout(r, fadeIntervalMs));
+    }
+    await sound.stopAsync();
+    await sound.unloadAsync();
   } catch (e) {
     console.warn('[sound] stopMusicaFundo falhou:', e);
   }
