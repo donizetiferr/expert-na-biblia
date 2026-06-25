@@ -55,3 +55,7 @@ Estado: EVOLVE_V18.5_CONCLUIDO_AGUARDANDO_ORQUESTRADOR
 MF.1 (14 telas score 5/5 hi-res) + MF.2 (E2E: spinner FIX + modulo amarelo/desbloqueio + trofeu, sem FATAL) + MF.3 (APK V18 + catbox + dist 5) entregues.
 build.gradle restaurado (truncado por auto-push) + vc3/vn1.8.0. APK: https://files.catbox.moe/6q6vst.apk
 audit 9.7/10 APROVADO. V18: 30/31 itens (so MD.7 deferido — Drive Elementos vazio).
+
+## save-state (2026-06-25)
+Estado: SAVE_STATE_CONCLUIDO_AGUARDANDO_ORQUESTRADOR
+Docs validados: CLAUDE.md, README, CHANGELOG, evolution_plan, session_summary. Version sync app.config.ts<->build.gradle (1.8.0/vc3). Git limpo apos commit.
