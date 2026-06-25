@@ -145,16 +145,16 @@ O plano V18 ataca as 3 camadas + saude do projeto (5 erros tsc, 2 deps ausentes 
 ## Milestone MF: Validacao empirica mock-a-mock + entrega (INFRA) — V18 — PENDENTE
 > CAUSA-RAIZ do ciclo de 17 versoes. Sem isso, o plano repete o fracasso.
 
-- [ ] MF.1 **Protocolo de validacao visual tela-a-tela** — INFRA | CRITICA | INVESTIGACAO (lente 6) | AUTONOMO
+- [x] MF.1 **Protocolo de validacao visual tela-a-tela** — INFRA | CRITICA | INVESTIGACAO (lente 6) | AUTONOMO
   - **AVD de resolucao real (nota double-check)**: usar um AVD Pixel ~1080x1920 (NAO o `motoraauto_smoke` 320x640 usado em V10-V14 — low-res foi parte do trap de validacao). Criar AVD se preciso.
   - Build APK -> emulator hi-res -> screenshot de CADA uma das 14 telas -> comparar contra o mock correspondente (whatsapp_media/images + telas Drive) -> score 1-5 por tela -> iterar telas com score <4. Registrar evidencia em orchestration/.
   - DoD: todas as 14 telas com score >=4 vs mock, em resolucao real.
-- [ ] MF.2 **Jornada completa E2E no emulador (sem FATAL no logcat)** — INFRA | CRITICA | INVESTIGACAO | AUTONOMO
+- [x] MF.2 **Jornada completa E2E no emulador (sem FATAL no logcat)** — INFRA | CRITICA | INVESTIGACAO | AUTONOMO
   - Quiz Aleatorio: 20 perguntas -> placar (NAO spinner). Quiz Personalizado: so modulos escolhidos.
   - **Completar um MODULO INTEIRO (nota double-check)**: todas as licoes do modulo 1 a 100% -> licao fica amarela -> **modulo 2 desbloqueia** (prova MA.5) -> seguir ate o **Trofeu**. Exatamente o caminho que nunca foi validado nas 17 versoes.
   - adb logcat limpo (sem FATAL EXCEPTION).
   - DoD: jornada inteira percorrida com screenshots, sem crash, sem loop, com desbloqueio de modulo e trofeu comprovados.
-- [ ] MF.3 **ux-polish final + entrega** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
+- [x] MF.3 **ux-polish final + entrega** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
   - Rodar ux-polish (score before/after) nas telas principais. Recomendacao /design-sync: NAO usar (documentado). Limpar dist/ (regra das 5). Atualizar changelog + CLAUDE.md (status real). APK final + catbox.
   - DoD: APK V18 validado publicado; docs atualizadas; dist/ com 5 APKs.
 

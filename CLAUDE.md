@@ -144,13 +144,13 @@ Todos os assets visuais/audios estao em Google Drive publico + espelhados localm
 
 | Arquivo embarcado | Fonte local (whatsapp_media/images/) | Uso |
 |---|---|---|
-| `assets/images/logo.jpg` | `image_20260622_205222.jpg` | Splash screen (300x300) |
-| `assets/images/trofeu.jpg` | `image_20260622_215940.jpg` | Tela Trofeu (280x280) |
-| `assets/images/personagem_pensativo.jpg` | V8 | PersonagemLivro pose PENSATIVO |
-| `assets/images/personagem_feliz.jpg` | V8 | PersonagemLivro pose FELIZ |
-| `assets/images/personagem_assustado.jpg` | V8 | PersonagemLivro pose ASSUSTADO |
-| `assets/images/personagem_triste.jpg` | `image_20260622_213156.jpg` | PersonagemLivro pose TRISTE (V9 M2.2) |
-| `assets/images/personagem_exclamando.jpg` | `image_20260622_213535.jpg` | PersonagemLivro pose EXCLAMANDO (V9 M2.2) |
+| `assets/images/logo.png` | `image_20260622_205222.jpg` | Splash screen (300x300) |
+| `assets/images/trofeu.png` | `image_20260622_215940.jpg` | Tela Trofeu (280x280) |
+| `assets/images/personagem_pensativo.png` | V8 | PersonagemLivro pose PENSATIVO |
+| `assets/images/personagem_feliz.png` | V8 | PersonagemLivro pose FELIZ |
+| `assets/images/personagem_assustado.png` | V8 | PersonagemLivro pose ASSUSTADO |
+| `assets/images/personagem_triste.png` | `image_20260622_213156.jpg` | PersonagemLivro pose TRISTE (V9 M2.2) |
+| `assets/images/personagem_exclamando.png` | `image_20260622_213535.jpg` | PersonagemLivro pose EXCLAMANDO (V9 M2.2) |
 
 ### Decisao de escopo V9 (2026-06-24)
 
@@ -164,10 +164,20 @@ Todos os assets visuais/audios estao em Google Drive publico + espelhados localm
 
 ## PROXIMO PASSO
 
-Apos V9 (M1.1 batch M2.7 + telas corrigidas), validar via APK no emulator e publicar no
-catbox.moe. Validar empiricamente que o usuario consegue acertar perguntas reais e ver
-a tela de feedback dedicada funcionando. Em seguida, considerar V10 com modulos de Teologia
-se engajamento validar.
+**V18 entregue (2026-06-25, v1.8.0)** — fidelidade visual REAL ao briefing + fim do bug de
+loop/spinner do Quiz + progressao de modulo (amarelo/desbloqueio/trofeu), validado
+empiricamente em emulador hi-res (1080x1920). APK: `dist/ExpertNaBiblia-v18.0.0.apk`
+(https://files.catbox.moe/6q6vst.apk). Detalhes: `orchestration/test_report_v18.md` +
+`evolution_plan.md` (PLANO V18). Causa-raiz das 17 versoes anteriores (IDs hardcoded
+M001-M004 inexistentes no DB real + assets JPG com fundo + lib de degrade ausente)
+RESOLVIDA. Assets do personagem/logo/trofeu agora sao PNG transparentes (designer, via Drive).
+
+Pendencias:
+- MD.7 (icones home/som/config desenhados): pasta Drive "Elementos" esta vazia — aguardando
+  a designer subir os assets de icone. Icones emoji/glyph atuais sao funcionais.
+- Publicacao na Play Store: seguir `orchestration/play_store_checklist.md` (2FA Google =
+  execucao humana irredutivel).
+- V19+ (backlog): modulos de Teologia (24); surfacing de streak/XP. Avaliar pos-engajamento.
 
 ### Arquitetura final (decidida)
 
@@ -185,8 +195,8 @@ se engajamento validar.
        v                              v
 +---------------------+
 | SQLite embarcado   |
-| - 77 modulos       |
-| - ~7500 perguntas  |
+| - 40 modulos       |
+| - ~4345 perguntas  |
 | - respostas        |
 |   canonicas        |
 +---------------------+

@@ -57,6 +57,22 @@ Todas as mudancas relevantes neste projeto.
 - **Lint limpo** (ME.4): 0 warnings (era 8). `console.log`→`console.debug` (nível correto, removido em release); `prefer-const`.
 - **4 perguntas sem resposta** (ME.5): respostas canônicas reais preenchidas (livros históricos do AT, profetas maiores/menores, alfabeto hebraico, poemas acrósticos) em `seed-perguntas.ts` + `data/db.sqlite`. 0 placeholders `[GERAR]` restantes.
 
+## [V18.5 / v1.8.0] - 2026-06-25 (Validação empírica mock-a-mock + entrega APK)
+
+### Validado (emulador hi-res 1080x1920 — a correção da causa-raiz de 17 versões)
+- **Quiz Aleatório carrega 20 perguntas reais** (sem spinner eterno) — o bug que travou o app por 17 versões está RESOLVIDO, comprovado no emulador.
+- **Quiz Personalizado** carrega perguntas dos módulos escolhidos (MA.2).
+- **Conclusão de módulo**: ao concluir o módulo 1, ele fica AMARELO e o módulo 2 DESBLOQUEIA (MA.5/MD.1); concluindo todos, o Troféu é alcançável.
+- **Personagem frameless** sobre fundo em degradê (fim da "imagem com fundo num quadrado").
+- 14 telas com score 5/5 vs briefing; adb logcat sem FATAL EXCEPTION; native modules (haptics/TTS/slider/gradiente) OK. Evidências: `orchestration/test_report_v18.md` + `orchestration/v18_mf/`.
+
+### Build / entrega
+- Corrigido `android/app/build.gradle` (estava truncado por um auto-push — restaurado o signing release V17 + versionCode 3 / versionName 1.8.0).
+- APK release V18: `dist/ExpertNaBiblia-v18.0.0.apk` (108MB). SHA256 `003914b50d0b103a3e9fcf72c2f3db8498cef3ea6cf021b26b64e509ba0fb9fb`.
+- URL pública: https://files.catbox.moe/6q6vst.apk
+- `dist/` com 5 APKs (regra das 5) + AAB v17.
+- Pendência única: MD.7 (ícones desenhados) — pasta Drive "Elementos" vazia; reabrir quando a designer subir os assets.
+
 ## [V17.0.0] - 2026-06-25 (Play Store prep + EAS build — 6 tarefas)
 
 ### Added
