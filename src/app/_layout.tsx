@@ -11,10 +11,14 @@ import { playMusicaFundo, stopMusicaFundo } from '../lib/sound';
 import { initSoundRuntime, stopSoundRuntime } from '../lib/sound-runtime';
 import { startMonitoring, stopMonitoring } from '../lib/network';
 import { BannerOffline } from '../components/BannerOffline';
-import { BackHandlerOffline } from '../components/BackHandlerOffline';
+import { useBackHandlerRoot } from '../hooks/useBackHandlerRoot';
 import { runMigrations } from '../db/database';
 
 export default function RootLayout() {
+  // V12 7.2: hook de back handler que mostra modal "Deseja sair?" SOMENTE em /modos.
+  // Substitui o BackHandlerOffline global.
+  useBackHandlerRoot();
+
   const [fontsLoaded, fontError] = useFonts({
     Bangers_400Regular,
     Nunito_400Regular,
@@ -83,7 +87,7 @@ export default function RootLayout() {
           <Stack.Screen name="trofeu" />
         </Stack>
         <BannerOffline />
-        <BackHandlerOffline />
+        {/* V12 7.2: BackHandlerOffline removido. Modal "Sair" agora vive em useBackHandlerRoot (só em /modos). */}
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

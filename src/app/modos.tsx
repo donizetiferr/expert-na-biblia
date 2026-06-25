@@ -45,7 +45,7 @@ export default function ModosScreen() {
           onPress={() => router.push('/licoes')}
         >
           <Text style={styles.cardTitulo}>
-            <Text style={styles.palavraChave}>LIÇÕES</Text>
+            <Text style={styles.palavraChaveLaranja}>LIÇÕES</Text>
           </Text>
           <Text style={styles.cardSubtitulo}>77 módulos progressivos</Text>
         </Pressable>
@@ -102,8 +102,9 @@ const styles = StyleSheet.create({
     borderColor: COLORS.laranjaBorda,        // #f9ea59 (briefing)
   },
   cardLicoes: {
-    backgroundColor: COLORS.roxoCard,        // #4d0a7d (briefing — fundo roxo)
-    borderColor: COLORS.laranjaBorda,        // #f9ea59 (briefing)
+    // V12 7.3: card "LIÇÕES" em laranjaEscuro #fd8414 (cor exata briefing, sem opacity/transform).
+    backgroundColor: COLORS.laranjaEscuro,   // #fd8414
+    borderColor: COLORS.preto,               // contraste contra laranja
   },
   cardTitulo: {
     fontFamily: FONTES.display,
@@ -114,7 +115,12 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
   palavraChave: {
-    color: COLORS.laranjaEscuro,             // #fd8414 — "BÍBLICO"/"LIÇÕES" em laranja
+    color: COLORS.laranjaEscuro,             // #fd8414 — "BÍBLICO" no card roxo: laranja em cima de roxo
+    fontFamily: FONTES.bodyExtraBold,
+  },
+  // V12 7.3: "LIÇÕES" no card laranja precisa de cor com contraste (preto).
+  palavraChaveLaranja: {
+    color: COLORS.preto,                     // preto em cima de laranjaEscuro
     fontFamily: FONTES.bodyExtraBold,
   },
   cardSubtitulo: {

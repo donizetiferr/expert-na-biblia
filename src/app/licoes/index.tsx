@@ -116,9 +116,10 @@ const styles = StyleSheet.create({
     borderColor: COLORS.laranjaEscuro,
   },
   cardBloqueado: {
-    backgroundColor: COLORS.cinzaEscuro,
-    borderColor: COLORS.cinzaMedio,
-    opacity: 0.6,
+    // V12 7.4: cards bloqueados mais visíveis. Cor cinza médio sem opacity (era 0.6 sobre cinzaEscuro).
+    backgroundColor: COLORS.cinzaMedio,       // #9ca3af — cinza claro, distinto do liberado roxo
+    borderColor: COLORS.cinzaEscuro,          // #4b5563 — borda mais escura
+    opacity: 0.85,                            // leve opacidade para indicar "bloqueado" sem esconder
   },
   numero: {
     fontFamily: FONTES.display,
@@ -127,7 +128,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   numeroLiberado: { color: COLORS.laranjaEscuro },
-  numeroBloqueado: { color: COLORS.cinzaMedio },
+  numeroBloqueado: { color: COLORS.preto },  // V12 7.4: número preto fica legível em fundo cinzaMedio
   info: {
     flex: 1,
   },

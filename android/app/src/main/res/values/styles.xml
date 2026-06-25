@@ -4,6 +4,8 @@
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="android:statusBarColor">@android:color/transparent</item>
     <item name="android:navigationBarColor">@android:color/transparent</item>
+    <!-- V12 7.1: windowBackground = splash.png grande "EXPERT NA BÍBLIA" (1284x2778) -->
+    <item name="android:windowBackground">@drawable/splash</item>
   </style>
   <style name="Theme.App.SplashScreen" parent="Theme.SplashScreen">
     <item name="windowSplashScreenBackground">@color/splashscreen_background</item>
