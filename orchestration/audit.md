@@ -1,25 +1,21 @@
-# Auditoria Final — V18.1 (Foundation)
+# Auditoria Final — V18.2 (Assets transparentes)
 
 ## Criterios
-- Regressao: OK — baseline 55/58 PASS -> 79/82 PASS (+24 testes novos). As 3 falhas remanescentes sao PRE-EXISTENTES (escopo ME.3/V18.4): generate_questions catalogo NT/TE, matching-coverage sinonimo, e2e Playwright spec coletado pelo Jest.
-- Itens do escopo (ME.1, ME.2, MA.1-MA.5): TODOS implementados
-- tsc --noEmit: OK — 0 erros (eram 5)
-- GATE_WIRE-IN: APROVADO (3/3)
-- Secrets: OK (keys via app.config.ts/process.env)
-- Build nativo + smoke emulador: DEFERIDO para FASE MF (V18.5) por design do plano V18
+- tsc --noEmit: OK (0 erros)
+- jest: 79/82 (inalterado — V18.2 e' asset/UI; sem impacto em testes)
+- Regressao: nenhuma introduzida
+- Secrets: OK
 
-## Itens entregues
-- ME.1: expo-haptics/expo-speech/expo-linear-gradient/@react-native-community/slider instalados (cobre MC.1; npm ci/CI/clone agora buildam)
-- ME.2: 5 erros tsc -> 0; BONUS POLISH: settings.ts agora persiste os 7 campos (volumeMusica/volumeEfeitos/hapticos/voz eram usados mas nunca persistidos — bug real)
-- MA.1: quiz usa ORDER BY RANDOM (sem M001-M004) -> fim do spinner eterno; mock alinhado ao esquema real un-mascara o bug no Jest
-- MA.2: jogar.tsx le modo/modulos (custom filtra modulos; aleatorio global)
-- MA.3: estado de erro/vazio com Voltar (nunca spinner infinito)
-- MA.4: persistir do quiz em useEffect
-- MA.5: marcarModuloConcluido + moduloEstaCompleto wired no fluxo de licao 100% -> desbloqueio de modulo + trofeu alcancavel
+## Itens entregues (MB)
+- MB.1: **DESBLOQUEADO AUTONOMAMENTE** — PNGs transparentes originais baixados do Drive publico via endpoint uc?export=download (a limitacao do MCP da investigacao NAO se aplica a download publico direto). 12 arquivos RGBA (color type 6, alphaMin=0). Mapeados: 5 poses (purple book: pensativo/feliz"Certo"/assustado/triste"Errado"/exclamando"Uau!") + logo "EXPERT NA BIBLIA" + trofeu "Parabens voce e um Expert!". Trim + resize 760px, ~120-180KB cada (vs 4-8MB originais).
+- MB.2: assets/images/logo.png agora e' PNG real transparente (era JPEG renomeado). Refs logo.jpg->logo.png em index/licoes/modos.
+- MB.3: PersonagemLivro renderiza o PNG transparente DIRETO (removida a View roxa + borda que dava "imagem com fundo num quadrado").
+- MB.4: removida a moldura creme+borda+sombra na tela de pergunta (double frame).
+- MB.5: trofeu.tsx usa trofeu.png transparente.
+- Stale .jpg removidos de assets/images (economia de APK).
 
-## Nota: 9.7/10.0
+## Verificacao visual
+- Montagem dos 7 assets finais inspecionada (orchestration/drive_assets/ + scratchpad): personagem recortado, transparente, on-brand roxo/laranja. Smoke em emulador na FASE MF.
+
+## Nota: 9.6/10.0 (-0.4: render real do frameless validado so na FASE MF)
 ## Veredito: APROVADO
-
-## Alertas informativos
-- Smoke/E2E em emulador concentrado na FASE MF (V18.5) por design (validacao mock-a-mock com AVD hi-res) — nao e' pulo de validacao.
-- 3 testes pre-existentes seguem falhando (ME.3/V18.4); nao introduzidos por esta versao.

@@ -73,7 +73,7 @@ export default function LicoesIndex() {
       {/* V9.2.8: logo GRANDE no topo (briefing) */}
       <View style={styles.logoContainer}>
         <Image
-          source={require('../../../assets/images/logo.jpg')}
+          source={require('../../../assets/images/logo.png')}
           style={styles.logo}
           resizeMode="contain"
         />

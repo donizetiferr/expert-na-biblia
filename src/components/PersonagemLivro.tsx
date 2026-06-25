@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
-import { Animated, View, StyleSheet } from 'react-native';
-import { COLORS, ESPACAMENTOS } from '../constants/colors';
+import { Animated, StyleSheet, type ImageSourcePropType } from 'react-native';
 
 /**
  * Personagem livro animado com 5 poses (pensativo, feliz, assustado, TRISTE, EXCLAMANDO).
- * Troca automatica a cada 4s; pode ser controlada externamente via prop `pose`.
- * M4.1 (V8-RETOMADA): usa imagens reais em assets/images/ em vez de emojis.
- * V9 M2.2: adiciona TRISTE e EXCLAMANDO para variantes "NAO DEU" (TRISTE) e "100%" (EXCLAMANDO/Uau!).
+ * V18.2 (MB.3): usa os PNGs TRANSPARENTES originais da designer (Drive) renderizados
+ * DIRETO sobre o fundo da tela — sem a moldura roxa + borda que dava o efeito de
+ * "imagem com fundo dentro de um quadrado". Os assets ja vem com o livro recortado
+ * (alpha real), entao o personagem se integra ao fundo.
  */
 
 export type Pose = 'PENSATIVO' | 'FELIZ' | 'ASSUSTADO' | 'TRISTE' | 'EXCLAMANDO';
@@ -16,20 +16,12 @@ interface Props {
   size?: number;
 }
 
-const IMAGENS_POSE: Record<Pose, any> = {
-  PENSATIVO: require('../../assets/images/personagem_pensativo.jpg'),
-  FELIZ: require('../../assets/images/personagem_feliz.jpg'),
-  ASSUSTADO: require('../../assets/images/personagem_assustado.jpg'),
-  TRISTE: require('../../assets/images/personagem_triste.jpg'),
-  EXCLAMANDO: require('../../assets/images/personagem_exclamando.jpg'),
-};
-
-const CORES_POSE = {
-  PENSATIVO: COLORS.laranjaEscuro,
-  FELIZ: COLORS.acertoVerde,
-  ASSUSTADO: COLORS.erroVermelho,
-  TRISTE: COLORS.avisoAmarelo,
-  EXCLAMANDO: COLORS.laranjaClaro,
+const IMAGENS_POSE: Record<Pose, ImageSourcePropType> = {
+  PENSATIVO: require('../../assets/images/personagem_pensativo.png') as ImageSourcePropType,
+  FELIZ: require('../../assets/images/personagem_feliz.png') as ImageSourcePropType,
+  ASSUSTADO: require('../../assets/images/personagem_assustado.png') as ImageSourcePropType,
+  TRISTE: require('../../assets/images/personagem_triste.png') as ImageSourcePropType,
+  EXCLAMANDO: require('../../assets/images/personagem_exclamando.png') as ImageSourcePropType,
 };
 
 export function PersonagemLivro({ pose = 'PENSATIVO', size = 120 }: Props) {
@@ -55,23 +47,12 @@ export function PersonagemLivro({ pose = 'PENSATIVO', size = 120 }: Props) {
 
   return (
     <Animated.View style={[styles.container, { transform: [{ translateY: bounceAnim }] }]}>
-      <View
-        style={[
-          styles.livro,
-          {
-            width: size,
-            height: size * 1.3,
-            backgroundColor: COLORS.roxoPrimario,
-            borderColor: CORES_POSE[pose],
-          },
-        ]}
-      >
-        <Animated.Image
-          source={IMAGENS_POSE[pose]}
-          style={[styles.imagem, { width: size * 0.85, height: size * 1.1, opacity: blinkAnim }]}
-          resizeMode="contain"
-        />
-      </View>
+      <Animated.Image
+        source={IMAGENS_POSE[pose]}
+        // PNG transparente direto sobre o fundo da tela (sem moldura/caixa).
+        style={{ width: size, height: size * 1.3, opacity: blinkAnim }}
+        resizeMode="contain"
+      />
     </Animated.View>
   );
 }
@@ -80,15 +61,5 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  livro: {
-    borderRadius: 8,
-    borderWidth: 4,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: ESPACAMENTOS.sm,
-  },
-  imagem: {
-    // imagem do personagem com animacao
   },
 });

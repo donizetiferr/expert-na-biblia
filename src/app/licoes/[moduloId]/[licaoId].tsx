@@ -121,14 +121,16 @@ export default function LicaoScreen() {
       </View>
 
       <View style={styles.centro}>
-        {/* V14 M15.5: PersonagemLivro grande (280) com moldura elegante */}
+        {/* V18.2 MB.4: personagem PNG transparente SEM moldura (a caixa creme+borda
+            duplicava a moldura e dava o efeito de "imagem com fundo"). Mantem so a
+            animacao de entrada (fade + zoom). */}
         <Animated.View
           style={[
-            styles.personagemMoldura,
+            styles.personagemWrapper,
             { opacity: personagemFade, transform: [{ scale: personagemZoom }] },
           ]}
         >
-          <PersonagemLivro pose={pose} size={280} />
+          <PersonagemLivro pose={pose} size={240} />
         </Animated.View>
 
         <View style={styles.quadro}>
@@ -201,19 +203,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: ESPACAMENTOS.lg,
   },
-  // V14 M15.5: moldura elegante em volta do personagem (border, shadow, padding)
-  personagemMoldura: {
+  // V18.2 MB.4: wrapper apenas para centralizar/animar (sem caixa/borda/sombra).
+  personagemWrapper: {
     alignSelf: 'center',
-    padding: ESPACAMENTOS.md,
-    backgroundColor: COLORS.creme,
-    borderRadius: BORDAS.raioGrande,
-    borderWidth: 4,
-    borderColor: COLORS.laranjaEscuro,
-    shadowColor: COLORS.preto,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    elevation: 8,
   },
   quadro: {
     backgroundColor: COLORS.branco,

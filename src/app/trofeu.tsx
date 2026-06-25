@@ -140,7 +140,7 @@ export default function TrofeuScreen() {
         }}
       >
         <Image
-          source={require('../../assets/images/trofeu.jpg')}
+          source={require('../../assets/images/trofeu.png')}
           style={styles.trofeuImg}
           resizeMode="contain"
           accessible

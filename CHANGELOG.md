@@ -18,6 +18,16 @@ Todas as mudancas relevantes neste projeto.
 - `src/lib/quiz-loader.ts` e `src/lib/progressao.ts` (logica testavel extraida das telas).
 - Testes de regressao: `quiz-loader.test.ts`, `progressao.test.ts`, `db-queries-v18.test.ts`; catalogo do mock alinhado ao esquema real (FB/AT/NT) — un-mascarando o bug do quiz no Jest. Suite: 55/58 -> 79/82 PASS.
 
+## [V18.2] - 2026-06-25 (Assets transparentes — fim do "personagem com fundo")
+
+### Adicionado / Corrigido
+- **Assets originais transparentes da designer baixados do Drive** (MB.1): logo, 5 poses do personagem (livro roxo), troféu — todos PNG RGBA com alpha real. Substituem os JPG com fundo (screenshots do WhatsApp) que causavam o efeito "imagem com fundo dentro de um quadrado". Otimizados (trim + resize 760px, ~120-180KB cada).
+- **logo.png agora é PNG real** transparente (era um JPEG renomeado). (MB.2)
+- **PersonagemLivro sem moldura** (MB.3): renderiza o PNG transparente direto sobre o fundo da tela; removida a `View` roxa + borda que emoldurava.
+- **Tela de pergunta sem moldura dupla** (MB.4): removida a caixa creme+borda+sombra ao redor do personagem.
+- **Troféu transparente** (MB.5): `trofeu.tsx` usa `trofeu.png`.
+- Removidos os `.jpg` antigos de `assets/images/` (reduz o APK).
+
 ## [V17.0.0] - 2026-06-25 (Play Store prep + EAS build — 6 tarefas)
 
 ### Added

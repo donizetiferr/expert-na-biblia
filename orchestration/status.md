@@ -33,3 +33,9 @@ Estado: EVOLVE_V18.1_CONCLUIDO_AGUARDANDO_ORQUESTRADOR
 tsc: 0 erros (eram 5) | jest: 79/82 PASS (baseline 55/58; +24 testes; 3 falhas pre-existentes ME.3/V18.4)
 Itens: ME.1, ME.2, MA.1, MA.2, MA.3, MA.4, MA.5 = entregues | MC.1 coberto por ME.1
 audit: 9.7/10 APROVADO | wire-in: 3/3 OK
+
+## solo-evolve V18.2 (2026-06-25)
+Estado: EVOLVE_V18.2_CONCLUIDO_AGUARDANDO_ORQUESTRADOR
+MB.1 DESBLOQUEADO autonomamente (Drive publico via uc?export=download; 12 PNGs RGBA). MB.2-MB.5 entregues.
+tsc: 0 erros | jest: 79/82 (inalterado) | audit 9.6/10 APROVADO
+Assets: 5 poses + logo + trofeu transparentes em assets/images (trim+resize ~120-180KB)

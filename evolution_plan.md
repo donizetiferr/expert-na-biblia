@@ -76,19 +76,19 @@ O plano V18 ataca as 3 camadas + saude do projeto (5 erros tsc, 2 deps ausentes 
 ## Milestone MB: Pipeline de assets transparentes (INFRA/MELHORIA) — V18 — PENDENTE
 > Base de TODA a fidelidade. Sem PNG transparente, o personagem/logo/trofeu sempre aparecem "com fundo num quadrado".
 
-- [ ] MB.1 **Obter assets originais transparentes** — INFRA | CRITICA | INVESTIGACAO | DESTRAVAVEL: PNGs originais do Drive (pastas Personagens/Logo/Elementos)
+- [x] MB.1 **Obter assets originais transparentes** — INFRA | CRITICA | INVESTIGACAO | DESTRAVAVEL: PNGs originais do Drive (pastas Personagens/Logo/Elementos)
   - Tentativa autonoma: Playwright no Chrome logado -> abrir pastas Drive (folder IDs em docs/06) -> baixar logo, 5 personagens, trofeu, icones (home/som/config), confetes como PNG transparente.
   - Fallback: usuario baixa da pasta Drive e dropa em `assets/images/`. Ultimo recurso: background-removal/regeneracao via media-generation (qualidade inferior — marcar como provisorio).
   - DoD: PNGs transparentes reais em assets/images/ (verificar canal alfa, nao JPEG renomeado).
-- [ ] MB.2 **Corrigir logo.png (hoje JPEG renomeado, magic bytes ffd8ffe0)** — INFRA | ALTA | INVESTIGACAO | AUTONOMO
+- [x] MB.2 **Corrigir logo.png (hoje JPEG renomeado, magic bytes ffd8ffe0)** — INFRA | ALTA | INVESTIGACAO | AUTONOMO
   - DoD: assets/images/logo.png e PNG real com transparencia.
-- [ ] MB.3 **Refatorar PersonagemLivro.tsx (remover moldura)** — MELHORIA | CRITICA | USUARIO+INVESTIGACAO | AUTONOMO
+- [x] MB.3 **Refatorar PersonagemLivro.tsx (remover moldura)** — MELHORIA | CRITICA | USUARIO+INVESTIGACAO | AUTONOMO
   - Remover `<View>` com `backgroundColor: roxoPrimario` + `borderWidth:4` + `borderRadius`; renderizar `<Image>` PNG transparente direto sobre o fundo da tela (resizeMode contain). Trocar requires .jpg -> .png.
   - DoD: personagem aparece sem caixa/fundo, integrado ao fundo da tela.
-- [ ] MB.4 **Remover moldura dupla na tela de pergunta** — MELHORIA | ALTA | INVESTIGACAO | AUTONOMO
+- [x] MB.4 **Remover moldura dupla na tela de pergunta** — MELHORIA | ALTA | INVESTIGACAO | AUTONOMO
   - licoes/[moduloId]/[licaoId].tsx:205-217 `personagemMoldura` (fundo creme+borda+sombra) envolve o componente que ja tinha moldura. Remover.
   - DoD: personagem frameless na tela de pergunta.
-- [ ] MB.5 **trofeu.jpg -> PNG transparente em trofeu.tsx:143** — MELHORIA | ALTA | USUARIO | AUTONOMO
+- [x] MB.5 **trofeu.jpg -> PNG transparente em trofeu.tsx:143** — MELHORIA | ALTA | USUARIO | AUTONOMO
   - DoD: trofeu sem retangulo de fundo sobre o creme.
 
 ## Milestone MC: Gradientes da identidade (INFRA/MELHORIA) — V18 — PENDENTE
