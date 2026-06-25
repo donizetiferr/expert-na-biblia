@@ -486,6 +486,51 @@ Ordem recomendada: **M0 → M1 → M2 → M3.1 → (M4 em paralelo) → M3.2 →
 
 ---
 
+## Milestone 7: Divergências UX finais (MEDIA/BAIXA) — V12
+
+> V11 entregou cores oficiais pixel-perfect (5/5 conformes). Restam 4 divergências UX
+> identificadas na auditoria completa (V11.0.0). Estimativa: 1-2h de trabalho autônomo.
+
+- [x] 7.1 **DIV 1: Splash com logo grande "EXPERT NA BÍBLIA" (sem adaptive icon)** — CORRECAO | CRITICA | INVESTIGACAO (auditoria V12) | AUTONOMO | [lente 5 premissa verificada]
+  - **Causa**: `app.config.ts` tem `splash.image: "./assets/splash.png"` mas o `splash.png` (1284x2778 com logo grande) NAO é bundled no APK final pelo Gradle/Metro (asset só referenciado em config, nunca por `require()`).
+  - **Acao**:
+    1. Em `app.config.ts`, instalar o plugin `expo-splash-screen` se ainda não estiver
+    2. Mover `splash.png` para `android/app/src/main/res/drawable/splash.png` (forçar include)
+    3. OU: em `src/app/index.tsx`, fazer `import splash from '../../assets/splash.png'` (incluir no JS bundle)
+    4. Garantir que `SplashScreen.hideAsync()` é chamado ANTES do JSX assumir
+  - DoD: splash mostra "EXPERT NA BÍBLIA" grande (não adaptive icon 96x96)
+
+- [x] 7.2 **DIV 2: Modal "Modo Offline" não deve aparecer em todo focus de tela** — CORRECAO | MEDIA | INVESTIGACAO (auditoria V12) | AUTONOMO | [lente 6 adjacente]
+  - **Causa**: `BackHandlerOffline` está hookado globalmente em `_layout.tsx` como listener de focus. Briefing diz que modal só aparece QUANDO o usuário tenta sair do app via back button.
+  - **Acao em `src/app/_layout.tsx`**:
+    1. Mover o `<BackHandlerOffline />` para um hook que escute APENAS o `BackHandler` global do Android (não focus)
+    2. OU: usar `useFocusEffect` com `BackHandler.addEventListener('hardwareBackPress', ...)` (não o `BackHandlerOffline` atual)
+    3. Mostrar modal APENAS em `/modos` (raiz do app) ou na raiz da navegação
+  - DoD: modal aparece só quando o usuário pressiona back na raiz /modos
+
+- [x] 7.3 **DIV 3: Card "LIÇÕES" cor #fd8414 (sem opacity)** — CORRECAO | BAIXA | INVESTIGACAO (auditoria V12) | AUTONOMO | [lente 6 adjacente]
+  - **Causa**: `modos.tsx` `cardLicoes.backgroundColor: COLORS.laranjaEscuro` mas algo aplica opacity/transform que muda o tom para #f98214 (visualmente mais claro).
+  - **Acao em `src/app/modos.tsx`**:
+    1. Verificar se há `opacity` ou `transform` no `cardLicoes` style
+    2. Forçar `backgroundColor: COLORS.laranjaEscuro` SEM opacity
+    3. Confirmar pixel-perfect #fd8414 no APK instalado
+  - DoD: card "LIÇÕES" tem cor exata #fd8414 (briefing)
+
+- [x] 7.4 **DIV 4: Cards bloqueados em /licoes com cor mais visível** — MELHORIA | BAIXA | INVESTIGACAO (auditoria V10) | AUTONOMO | [lente 6 adjacente]
+  - **Causa**: `licoes/index.tsx` `cardBloqueado` tem `opacity: 0.6` sobre fundo cinza escuro, deixando cards muito escuros.
+  - **Acao em `src/app/licoes/index.tsx`**:
+    1. Aumentar `opacity` para 0.85 (mais visível)
+    2. OU: usar cor de fundo cinza médio (#9ca3af) sem opacity
+  - DoD: cards bloqueados são visíveis mas claramente distintos dos liberados
+
+### Validacao de apontamentos do usuario (V12)
+- DIV 1 splash: VALIDO (auditoria V12 confirmou 96x96 adaptive icon)
+- DIV 2 modal: VALIDO (BackHandlerOffline hookado globalmente)
+- DIV 3 cor LIÇÕES: VALIDO (1% RGB diff confirmado)
+- DIV 4 cards bloqueados: VALIDO (opacity 0.6 confirmado)
+
+---
+
 ## STATUS V9 (execucao 2026-06-24 — @full-cycle v9-biblia)
 
 ### Entregas CONCLUIDAS (marcadas [x] acima)

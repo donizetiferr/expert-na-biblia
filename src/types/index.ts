@@ -74,4 +74,11 @@ export interface Settings {
   musica: boolean;
   efeitos: boolean;
   notificacoes: boolean;
+  // V10 M6.2: volumes independentes
+  volumeMusica: number;   // 0-1
+  volumeEfeitos: number;  // 0-1
+  // V10 M6.5: haptic feedback
+  hapticos: boolean;
+  // V10 M6.6: TTS para perguntas
+  voz: boolean;
 }

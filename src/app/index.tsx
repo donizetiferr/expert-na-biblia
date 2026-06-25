@@ -84,7 +84,8 @@ export default function SplashScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.roxoEscuro,
+    // V11: briefing oficial — splash roxo escuro #3f0170 (image_20260622_205222.jpg)
+    backgroundColor: '#3f0170',
     alignItems: 'center',
     justifyContent: 'center',
     padding: ESPACAMENTOS.lg,

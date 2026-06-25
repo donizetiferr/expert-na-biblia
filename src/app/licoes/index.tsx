@@ -83,7 +83,8 @@ export default function LicoesIndex() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.roxoEscuro,
+    // V11: briefing oficial — fundo creme #f7f4ed (image_20260622_205916.jpg)
+    backgroundColor: COLORS.creme,
   },
   logoContainer: {
     alignItems: 'center',
