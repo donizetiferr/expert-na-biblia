@@ -22,15 +22,21 @@ export default function SplashScreen() {
   const router = useRouter();
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  // V15 M15.1: refs estáveis (não mudam entre renders) para o useEffect
+  // NAO re-rodar e causar loop. O bug anterior era colocar `scaleAnim, fadeAnim`
+  // nas deps — como `current` muda a cada render, useEffect re-rodava
+  // criando setTimeout infinitos.
+  const scaleAnimRef = useRef(scaleAnim);
+  const fadeAnimRef = useRef(fadeAnim);
 
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(scaleAnim, {
+      Animated.timing(scaleAnimRef.current, {
         toValue: 1.0,
         duration: 600,
         useNativeDriver: true,
       }),
-      Animated.timing(fadeAnim, {
+      Animated.timing(fadeAnimRef.current, {
         toValue: 1,
         duration: 800,
         useNativeDriver: true,
@@ -41,7 +47,7 @@ export default function SplashScreen() {
       console.warn('[audio] splash playSplash falhou:', e),
     );
 
-    // V14 M15.1: libera splash nativo em ~500ms e redireciona.
+    // V15 M15.1: libera splash nativo em ~500ms e redireciona.
     // O logo grande JSX fica visivel durante esses 500ms.
     const timer = setTimeout(async () => {
       try {
@@ -62,7 +68,7 @@ export default function SplashScreen() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [router, scaleAnim, fadeAnim]);
+  }, [router]);
 
   return (
     <View style={styles.container}>
