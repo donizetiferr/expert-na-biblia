@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { subscribe, isOnline, getNetworkStats } from '../lib/network';
 import { COLORS, FONTES, ESPACAMENTOS } from '../constants/colors';
 
@@ -21,6 +22,9 @@ export function BannerOffline() {
   // Forca re-render a cada 10s (atualiza contador "ha Xs")
   const [, setTick] = useState<number>(0);
   const [online, setOnline] = useState<boolean>(isOnline());
+  // V19 BUG-8: cobre a status bar (inset top) de forma intencional em vez de
+  // sobrepor o conteudo abaixo dela.
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     const unsub = subscribe((status) => {
@@ -41,7 +45,7 @@ export function BannerOffline() {
   const offlineSeconds = Math.floor((Date.now() - stats.lastChange) / 1000);
 
   return (
-    <View style={styles.banner} pointerEvents="none">
+    <View style={[styles.banner, { paddingTop: insets.top + ESPACAMENTOS.xs }]} pointerEvents="none">
       <Text style={styles.texto}>⚠ MODO OFFLINE</Text>
       <Text style={styles.subtexto}>
         Conteudo local OK · sem avaliacao por IA ({formatDuration(offlineSeconds)})
@@ -59,14 +63,12 @@ function formatDuration(s: number): string {
 }
 
 const styles = StyleSheet.create({
+  // V19 BUG-8: banner em fluxo normal (nao mais absolute) — empurra o conteudo
+  // para baixo quando offline em vez de sobrepor titulos/icones.
   banner: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 9999,
+    width: '100%',
     backgroundColor: COLORS.erroVermelho,
-    paddingVertical: ESPACAMENTOS.xs,
+    paddingBottom: ESPACAMENTOS.xs,
     paddingHorizontal: ESPACAMENTOS.sm,
     alignItems: 'center',
     justifyContent: 'center',

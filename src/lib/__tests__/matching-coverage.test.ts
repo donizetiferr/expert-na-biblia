@@ -161,4 +161,32 @@ describe('matching V5 - matchCanonico 2-camadas', () => {
     const r = matchCanonico('Caridade', 'Amor');
     expect(r.correto).toBe(true);
   });
+
+  // V19 BUG-2 (regressao): canonica placeholder NAO pode tornar a pergunta invencivel.
+  describe('V19 BUG-2 — guard anti-invencibilidade (canonica placeholder)', () => {
+    it('canonica "..." + resposta substantiva => aceita (SEM_GABARITO)', () => {
+      const r = matchCanonico('A Biblia tem 66 livros no total', '...');
+      expect(r.correto).toBe(true);
+      expect(r.metodo).toBe('SEM_GABARITO');
+    });
+    it('canonica "NAO SEI" + resposta substantiva => aceita', () => {
+      const r = matchCanonico('Genesis fala da criacao do mundo', 'NAO SEI');
+      expect(r.correto).toBe(true);
+      expect(r.metodo).toBe('SEM_GABARITO');
+    });
+    it('canonica placeholder + resposta trivial => FALHOU (nao passa de graca)', () => {
+      const r = matchCanonico('ok', '...');
+      expect(r.correto).toBe(false);
+    });
+    it('canonica curta VALIDA ("Deus") nao vira SEM_GABARITO', () => {
+      const r = matchCanonico('Senhor', 'Deus');
+      expect(r.metodo).not.toBe('SEM_GABARITO');
+      expect(r.correto).toBe(true);
+    });
+    it('resposta placeholder do usuario sempre FALHOU', () => {
+      const r = matchCanonico('...', 'A Palavra de Deus');
+      expect(r.correto).toBe(false);
+      expect(r.metodo).toBe('FALHOU');
+    });
+  });
 });

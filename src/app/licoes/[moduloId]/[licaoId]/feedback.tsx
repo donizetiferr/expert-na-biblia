@@ -72,19 +72,36 @@ export default function FeedbackScreen() {
         params: { score: String(scoreFinal), moduloId: String(params.moduloId), licaoId: String(params.licaoId) },
       });
     } else {
-      // Avancar para proxima pergunta
+      // Avancar para proxima pergunta.
+      // V19 BUG-1 (release-blocker): REPASSA `acertos` acumulado. Antes este
+      // router.replace omitia `acertos`, entao a tela de licao remontava com
+      // useState(0) e o placar nunca passava de 1 -> 100% impossivel -> progressao
+      // de licoes morta. Agora o placar atravessa toda a jornada.
       router.replace({
         pathname: `/licoes/${params.moduloId}/${params.licaoId}`,
-        params: { indice: String(indice + 1), moduloId: String(params.moduloId), licaoId: String(params.licaoId) },
+        params: {
+          indice: String(indice + 1),
+          moduloId: String(params.moduloId),
+          licaoId: String(params.licaoId),
+          acertos: String(acertos),
+        },
       });
     }
   };
 
   const handleVoltar = () => {
-    // Mesma pergunta (re-tentar)
+    // Mesma pergunta (re-tentar). V19 BUG-1: preserva o placar acumulado.
+    // Ao re-tentar, descontamos o acerto desta pergunta (se houve), pois o usuario
+    // vai responde-la de novo e o placar sera recontado no envio.
+    const acertosBase = Math.max(0, acertos - (isAcerto ? 1 : 0));
     router.replace({
       pathname: `/licoes/${params.moduloId}/${params.licaoId}`,
-      params: { indice: String(indice), moduloId: String(params.moduloId), licaoId: String(params.licaoId) },
+      params: {
+        indice: String(indice),
+        moduloId: String(params.moduloId),
+        licaoId: String(params.licaoId),
+        acertos: String(acertosBase),
+      },
     });
   };
 

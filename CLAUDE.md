@@ -164,20 +164,26 @@ Todos os assets visuais/audios estao em Google Drive publico + espelhados localm
 
 ## PROXIMO PASSO
 
-**V18 entregue (2026-06-25, v1.8.0)** — fidelidade visual REAL ao briefing + fim do bug de
-loop/spinner do Quiz + progressao de modulo (amarelo/desbloqueio/trofeu), validado
-empiricamente em emulador hi-res (1080x1920). APK: `dist/ExpertNaBiblia-v18.0.0.apk`
-(https://files.catbox.moe/6q6vst.apk). Detalhes: `orchestration/test_report_v18.md` +
-`evolution_plan.md` (PLANO V18). Causa-raiz das 17 versoes anteriores (IDs hardcoded
-M001-M004 inexistentes no DB real + assets JPG com fundo + lib de degrade ausente)
-RESOLVIDA. Assets do personagem/logo/trofeu agora sao PNG transparentes (designer, via Drive).
+**V19 entregue (2026-06-25, v1.9.0/vc4)** — correcao do RELEASE-BLOCKER do modo Licoes (a
+pontuacao da licao nao acumulava: o V18 ALEGOU progressao OK, mas a QA independente REFUTOU).
+Corrigidos BUG-1 (scoring), BUG-2 (canonicas placeholder invenciveis + guard SEM_GABARITO),
+BUG-3/4 (teclado/ENVIAR + envio vazio), BUG-5 (placar Quiz), BUG-7 (titulos), BUG-8 (banner),
+BUG-9 (travados roxo+cadeado), BUG-10 (gradientes). TUDO COMPROVADO em emulador hi-res
+(1080x1920) com screenshots frescos da jornada real: licao 100% -> amarela -> proxima licao ->
+modulo amarelo -> proximo modulo -> TROFEU; Quiz aleatorio jogavel sem spinner. Evidencias:
+`orchestration/v19_validation/`. APK: `dist/ExpertNaBiblia-v19.0.0.apk`
+(https://files.catbox.moe/i9ktqe.apk). Detalhes: `evolution_plan.md` (PLANO V19) + changelog 1.9.0.
 
-Pendencias:
-- MD.7 (icones home/som/config desenhados): pasta Drive "Elementos" esta vazia — aguardando
-  a designer subir os assets de icone. Icones emoji/glyph atuais sao funcionais.
+Pendencias (V20, nao bloqueiam):
+- BUG-6: mascote do modo Licoes deveria ser o livro DOURADO (briefing); app usa 1 set de PNG
+  (livro roxo) para Licoes e Quiz. Requer asset dourado do designer/Drive.
+- IA nas licoes: `enviar()` usa `matchCanonico` cru — `avaliador.ts` (LLM M2.7/OpenAI) NAO esta
+  wired no fluxo da licao (regra "IA obrigatoria" pendente). + batch M2.7 para ~497 canonicas
+  abertas "NAO SEI" (hoje cobertas pelo guard SEM_GABARITO offline).
+- MD.7 (icones home/som/config desenhados): pasta Drive "Elementos" vazia — emoji/glyph funcionais.
 - Publicacao na Play Store: seguir `orchestration/play_store_checklist.md` (2FA Google =
   execucao humana irredutivel).
-- V19+ (backlog): modulos de Teologia (24); surfacing de streak/XP. Avaliar pos-engajamento.
+- Backlog: modulos de Teologia (24); surfacing de streak/XP. Avaliar pos-engajamento.
 
 ### Arquitetura final (decidida)
 

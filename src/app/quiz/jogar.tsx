@@ -29,7 +29,10 @@ export default function JogarQuiz() {
   const { modo, modulos } = useLocalSearchParams<{ modo?: string; modulos?: string }>();
   const [perguntas, setPerguntas] = useState<PerguntaQuiz[]>([]);
   const [indice, setIndice] = useState(0);
-  const [acertos, setAcertos] = useState(0);
+  // V19 BUG-5: placar mantido em ref (nao em state — nao eh renderizado). proxima()
+  // pode rodar via setTimeout cujo closure capturaria `acertos` ANTES de um setState
+  // aplicar, subcontando o ultimo acerto. O ref evita essa defasagem e da o total exato.
+  const acertosRef = useRef(0);
   const [tempo, setTempo] = useState(TEMPO_POR_PERGUNTA);
   const [selecionada, setSelecionada] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
@@ -124,7 +127,7 @@ export default function JogarQuiz() {
 
     setSelecionada(i);
     if (perguntas[indice]?.alternativas[i]?.correta) {
-      setAcertos((a) => a + 1);
+      acertosRef.current += 1;
     }
 
     // V14 M15.4: usa ref para o timeout de transicao (cleanup garantido)
@@ -149,8 +152,11 @@ export default function JogarQuiz() {
     setTempo(TEMPO_POR_PERGUNTA);
     const prox = indice + 1;
     if (prox >= TOTAL_PERGUNTAS) {
-      const score = Math.round((acertos / TOTAL_PERGUNTAS) * 100);
-      router.replace(`/quiz/final?score=${score}`);
+      // V19 BUG-5: usa o ref (exato) e passa acertos + total para o placar exibir
+      // "Voce acertou X de N" conforme o briefing.
+      const acertosFinais = acertosRef.current;
+      const score = Math.round((acertosFinais / TOTAL_PERGUNTAS) * 100);
+      router.replace(`/quiz/final?score=${score}&acertos=${acertosFinais}&total=${TOTAL_PERGUNTAS}`);
       // nao reseta transicionandoRef aqui (sai da tela mesmo)
     } else {
       setIndice(prox);

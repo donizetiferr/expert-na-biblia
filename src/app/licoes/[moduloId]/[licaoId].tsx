@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable, StyleSheet, KeyboardAvoidingView, Platform, Animated } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, KeyboardAvoidingView, Platform, Animated, ScrollView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../../constants/colors';
@@ -26,14 +26,21 @@ type Pose = 'PENSATIVO' | 'FELIZ' | 'ASSUSTADO' | 'TRISTE' | 'EXCLAMANDO';
  */
 export default function LicaoScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ moduloId: string; licaoId: string; indice?: string }>();
+  const params = useLocalSearchParams<{ moduloId: string; licaoId: string; indice?: string; acertos?: string }>();
   const { moduloId, licaoId } = params;
   const [perguntas, setPerguntas] = useState<Pergunta[]>([]);
   // V9 M2.4: indice vem do param (feedback avanca via ?indice=N); default 0
   const [indice, setIndice] = useState(parseInt(params.indice ?? '0', 10));
   const [resposta, setResposta] = useState('');
   const [pose, setPose] = useState<Pose>('PENSATIVO');
-  const [acertos, setAcertos] = useState(0);
+  // V19 BUG-1 (release-blocker): o placar agora EH propagado por params em toda a
+  // jornada licao->feedback->licao. Antes `acertos` reiniciava em 0 a cada
+  // remontagem (feedback fazia router.replace SEM repassar acertos), entao o score
+  // final nunca passava de 1/total. Inicializa do param e mantem sincronizado.
+  const [acertos, setAcertos] = useState(parseInt(params.acertos ?? '0', 10));
+  // V19 BUG-4: mensagem de validacao para envio de resposta vazia (antes navegava
+  // para fora/feedback silenciosamente).
+  const [erroValidacao, setErroValidacao] = useState('');
 
   // V14 M15.5: animacao fade-in/zoom de entrada do personagem
   const personagemFade = useRef(new Animated.Value(0)).current;
@@ -62,9 +69,19 @@ export default function LicaoScreen() {
     if (Number.isNaN(p)) return;              // guard: p inválido
     if (p === indice) return;                 // guard: já está no estado certo
     setResposta('');                          // ANTES de setIndice (estado coerente)
+    setErroValidacao('');
     setPose('PENSATIVO');
     setIndice(p);
   }, [params.indice, indice]);
+
+  // V19 BUG-1: sincroniza o placar acumulado vindo do feedback (caso a tela seja
+  // REUTILIZADA em vez de remontada — alem da init via useState). Garante que
+  // `acertos` reflita o total real ao longo da jornada.
+  useEffect(() => {
+    const a = parseInt(params.acertos ?? '0', 10);
+    if (Number.isNaN(a)) return;
+    setAcertos(a);
+  }, [params.acertos]);
 
   if (perguntas.length === 0 || !moduloId || !licaoId) {
     return (
@@ -78,13 +95,22 @@ export default function LicaoScreen() {
   if (!perguntaAtual) return null;
 
   const enviar = () => {
+    // V19 BUG-4: bloqueia envio de resposta vazia (antes navegava para feedback/fora
+    // silenciosamente). Mostra validacao e NAO sai da licao.
+    if (!resposta.trim()) {
+      setErroValidacao('Digite uma resposta antes de enviar.');
+      return;
+    }
+    setErroValidacao('');
+
     const resultado = matchCanonico(resposta, perguntaAtual.resposta_canonica);
 
     // Log local da resposta do usuario (para revisao posterior / debug)
     registrarRespostaUsuario(perguntaAtual.id, resposta, resultado.correto, resultado.score || 0);
 
-    // Atualiza acerto localmente (mantido no estado para o caso de voltar)
-    if (resultado.correto) setAcertos((a) => a + 1);
+    // V19 BUG-1: placar acumulado = `acertos` (vindo dos params via state) + acerto atual.
+    const acertosAtual = acertos + (resultado.correto ? 1 : 0);
+    if (resultado.correto) setAcertos(acertosAtual);
 
     // Navega para Tela Feedback dedicada em vez de mudar pose inline
     router.push({
@@ -97,7 +123,7 @@ export default function LicaoScreen() {
         indice: String(indice),
         total: String(perguntas.length),
         total_perguntas: String(perguntas.length),
-        acertos_atual: String(acertos + (resultado.correto ? 1 : 0)),
+        acertos_atual: String(acertosAtual),
       },
     });
   };
@@ -106,10 +132,12 @@ export default function LicaoScreen() {
     <GradienteRoxo style={styles.fundo}>
     <KeyboardAvoidingView
       style={styles.container}
-      // V14 M15.6: 'height' no Android funciona (undefined NAO funcionava).
-      // No iOS mantemos 'padding' (padrao Apple).
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 64}
+      // V19 BUG-3: no Android o AndroidManifest ja usa adjustResize; combinar com
+      // behavior 'height' do KAV conflitava e mantinha o botao ENVIAR atras do
+      // teclado. Deixamos o KAV so para iOS ('padding') e usamos ScrollView no
+      // Android para garantir que ENVIAR sempre seja alcancavel (scroll ate ele).
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={0}
     >
       {/* IconeHome canto superior direito */}
       <View style={styles.header}>
@@ -122,7 +150,12 @@ export default function LicaoScreen() {
         </View>
       </View>
 
-      <View style={styles.centro}>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.centro}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         {/* V18.2 MB.4: personagem PNG transparente SEM moldura (a caixa creme+borda
             duplicava a moldura e dava o efeito de "imagem com fundo"). Mantem so a
             animacao de entrada (fade + zoom). */}
@@ -144,7 +177,10 @@ export default function LicaoScreen() {
           <TextInput
             style={styles.input}
             value={resposta}
-            onChangeText={setResposta}
+            onChangeText={(t) => {
+              setResposta(t);
+              if (erroValidacao) setErroValidacao('');
+            }}
             placeholder="Digite sua resposta..."
             placeholderTextColor={COLORS.cinzaMedio}
             autoCapitalize="sentences"
@@ -154,10 +190,13 @@ export default function LicaoScreen() {
           />
         </View>
 
+        {/* V19 BUG-4: validacao de resposta vazia (sem sair da licao) */}
+        {erroValidacao ? <Text style={styles.erroValidacao}>{erroValidacao}</Text> : null}
+
         <Pressable style={styles.botaoEnviar} onPress={enviar}>
           <Text style={styles.botaoTexto}>ENVIAR</Text>
         </Pressable>
-      </View>
+      </ScrollView>
 
       {/* IconeSom canto inferior direito */}
       <View style={styles.rodape}>
@@ -202,10 +241,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: COLORS.laranjaClaro,
   },
-  centro: {
+  // V19 BUG-3: ScrollView ocupa o espaco; o content centraliza quando ha espaco e
+  // permite rolar ate o botao ENVIAR quando o teclado reduz a area visivel.
+  scroll: {
     flex: 1,
+  },
+  centro: {
+    flexGrow: 1,
     justifyContent: 'center',
     gap: ESPACAMENTOS.lg,
+    paddingBottom: ESPACAMENTOS.xl,
+  },
+  erroValidacao: {
+    fontFamily: FONTES.bodyBold,
+    fontSize: 14,
+    color: COLORS.laranjaClaro,
+    textAlign: 'center',
+    marginTop: -ESPACAMENTOS.sm,
   },
   // V18.2 MB.4: wrapper apenas para centralizar/animar (sem caixa/borda/sombra).
   personagemWrapper: {

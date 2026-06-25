@@ -22,12 +22,17 @@ type GradProps = {
 const vert = { start: { x: 0, y: 0 }, end: { x: 0, y: 1 } } as const;
 const diag = { start: { x: 0, y: 0 }, end: { x: 1, y: 1 } } as const;
 
-/** Degrade roxo (fundos, cards, botoes) — #5c0d8d -> #3c026d. */
+/**
+ * Degrade roxo (fundos, cards, botoes) — V19: #8b16c7 -> #3c026d (degrade OFICIAL
+ * do briefing). Antes usava #5c0d8d -> #3c026d (dois roxos quase identicos) que
+ * parecia COR SOLIDA ("chapado") em onboarding e na tela de pergunta. A amplitude
+ * maior torna o degrade visivel.
+ */
 export function GradienteRoxo({ children, style, diagonal }: GradProps) {
   const dir = diagonal ? diag : vert;
   return (
     <LinearGradient
-      colors={[COLORS.roxoMedio, COLORS.roxoEscuro]}
+      colors={[COLORS.roxoPrimario, COLORS.roxoEscuro]}
       start={dir.start}
       end={dir.end}
       style={style}

@@ -2,6 +2,59 @@
 
 Todas as mudancas relevantes neste projeto.
 
+## [1.9.0] (V19) - 2026-06-25 (Correcao dos bugs reais da QA independente — comprovado em emulador)
+
+> Origem: validacao INDEPENDENTE cetica do V18 (`orchestration/v18_validation_independent/VERDICT.md`)
+> REFUTOU a alegacao do V18. Modo Licoes estava com a progressao QUEBRADA (scoring nunca acumulava).
+> Toda correcao foi COMPROVADA empiricamente em emulador hi-res (1080x1920); evidencias em
+> `orchestration/v19_validation/` (screenshots frescos da jornada real).
+
+### Corrigido
+- **[CRITICO / release-blocker] Pontuacao da licao nao acumulava (BUG-1)**: `feedback.tsx` fazia
+  `router.replace` de volta a licao SEM repassar `acertos`, e `[licaoId].tsx` reiniciava
+  `acertos = useState(0)` a cada remontagem -> score final no maximo 1/total -> nenhuma licao chegava
+  a 100% -> progressao de Licoes morta. FIX: threading do placar via params em TODA a jornada
+  licao<->feedback (licao inicializa o state do param + sync effect; feedback repassa `acertos`).
+  COMPROVADO: jornada real da FB01-L01 (10 perguntas) com o contador indo 1->2->...->10 (Acertos: N)
+  -> "VOCE PASSOU! 100%" -> licao AMARELA "100/100" -> licao 2 desbloqueada.
+- **[CRITICO] Desbloqueio de modulo + trofeu (MA.5)**: com o scoring corrigido, concluir todas
+  as licoes do modulo marca o modulo (amarelo), desbloqueia o proximo e o trofeu fica alcancavel.
+  COMPROVADO: modulo FB01 -> amarelo + checkmark, FB02 desbloqueado; trofeu "Parabens, voce e um Expert!".
+- **[ALTO] Canonicas placeholder tornavam perguntas invenciveis (BUG-2)**: `matchCanonico` com
+  canonica `'...'`/'NAO SEI'/vazia -> `normalizar()` '' -> sempre FALHOU. FIX em 2 camadas:
+  (a) guard `SEM_GABARITO` — sem gabarito, resposta substantiva (>=8 chars OU >=2 palavras) e aceita
+  (nunca invencivel); (b) 11 canonicas reais preenchidas (7 `'...'` + 4 "NAO SEI" do FB01) no seed TS
+  + `data/db.sqlite`. ACHADO ALEM DO VERDICT: nao eram 8 e sim ~508 placeholders (maioria "NAO SEI",
+  perguntas abertas de compreensao); as 497 restantes ficam cobertas pelo guard offline (ver V20).
+- **[ALTO] Teclado cobria ENVIAR / envio vazio abandonava a licao (BUG-3/BUG-4)**: ScrollView dentro
+  do KeyboardAvoidingView (ENVIAR sempre alcancavel via scroll) + guard de resposta vazia com mensagem
+  de validacao (nao navega para fora). COMPROVADO no emulador.
+- **[MEDIO] Placar do Quiz divergente do briefing (BUG-5)**: agora "NAO DEU/QUASE LA/VOCE PASSOU!" +
+  quadro branco "Voce acertou X de N" + "RECOMECAR". COMPROVADO ("NAO DEU" / "Voce acertou 0 de 20").
+- **[MEDIO] Titulos sem espaco na lista de modulos (BUG-7)**: `slice(palavraChave.length + 1)`
+  consumia o espaco ("AlfabetizacaoBiblica"). FIX: slice sem `+1` -> "Alfabetizacao Biblica".
+- **[MEDIO] Banner MODO OFFLINE sobrepunha headers (BUG-8)**: era `position: absolute`. Agora vive no
+  fluxo normal (acima do Stack) com safe-area inset — empurra o conteudo, nao cobre titulos/icone.
+- **[MEDIO] Modulos/licoes travados em cinza (BUG-9)**: agora roxo (degrade) escurecido + cadeado
+  sobreposto, como o mock.
+- **[MEDIO] Gradientes "chapados" (BUG-10)**: `GradienteRoxo` passou de `#5c0d8d->#3c026d` (quase
+  identicos) para o degrade oficial `#8b16c7->#3c026d` (visivel em onboarding e tela de pergunta).
+- Correcao latente: placar do Quiz subcontava o ultimo acerto (closure de `setTimeout` capturava
+  `acertos` pre-incremento) -> agora via `acertosRef` (exato).
+
+### Testes / Qualidade
+- `tsc --noEmit`: 0 erros. `jest`: 87/87 PASS (9 suites; +5 testes de regressao do guard SEM_GABARITO).
+  `eslint`: 0. Build `gradlew assembleRelease`: SUCCESSFUL (vc4 / 1.9.0).
+
+### Entrega
+- APK: `dist/ExpertNaBiblia-v19.0.0.apk` + `C:\ENB\dist\ExpertNaBiblia-v19.0.0.apk` (regra das 5 aplicada).
+- URL publica (verificada HTTP 206 + magic bytes PK): https://files.catbox.moe/i9ktqe.apk
+
+### Pendencias (V20 — nao bloqueiam)
+- Mascote do modo Licoes deveria ser o livro DOURADO (briefing); app usa 1 set (livro roxo) (BUG-6).
+- Wirar `avaliador.ts` (LLM M2.7/OpenAI) no fluxo da licao (`enviar()` usa matchCanonico cru — rule #4
+  "IA obrigatoria") + batch M2.7 para as ~497 canonicas "NAO SEI" (hoje cobertas pelo guard offline).
+
 ## [V18.1] - 2026-06-25 (Foundation: fix loop do Quiz + progressao de modulo + saude)
 
 ### Corrigido

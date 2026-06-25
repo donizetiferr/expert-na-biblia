@@ -780,3 +780,46 @@ Ordem recomendada: **M0 → M6 → M1 → M2 → M3 → M5** (com M4 em paralelo
 - **SHA256**: `4b8b4a647c12305f0dd2c44df8be68e1f0aae6b91bbf24b1df0676d48567fb05`
 - **URL publica**: `https://files.catbox.moe/i1bpj8.apk`
 - **Build**: `gradlew assembleRelease --no-daemon` — BUILD SUCCESSFUL em 3m 40s
+
+---
+
+# ===== PLANO V19 (2026-06-25) — CORRECAO DOS BUGS REAIS DA QA INDEPENDENTE =====
+
+> Origem: validacao INDEPENDENTE cetica do V18 (orchestration/v18_validation_independent/VERDICT.md)
+> REFUTOU a alegacao V18 ("14 telas 5/5 + modulo desbloqueia"). Modo Licoes estava com progressao
+> QUEBRADA (scoring nunca acumulava). @full-cycle agent (opus[1m]).
+
+## Milestone V19 — bugs do VERDICT
+
+- [x] **MV19.1 [CRITICA / release-blocker]** Scoring da licao nao acumulava (acertos resetava a cada
+  remontagem). FIX: threading de `acertos` via params em licao<->feedback (licao inicializa state do
+  param + sync effect; feedback repassa acertos no router.replace). (entregue 2026-06-25)
+- [x] **MV19.2 [CRITICA]** Desbloqueio de modulo + trofeu: com o scoring corrigido, marcarLicaoConcluida
+  /moduloEstaCompleto/marcarModuloConcluido/todosModulosConcluidos passam a ser alcancaveis. Validado
+  empiricamente (cenarios A/B/C). (entregue 2026-06-25)
+- [x] **MV19.3 [ALTO]** Canonicas placeholder. FIX em 2 camadas: (a) guard em matchCanonico — canonica
+  placeholder ('...', 'NAO SEI', vazia) + resposta substantiva => aceita (metodo SEM_GABARITO), nunca
+  invencivel; (b) 11 canonicas reais preenchidas (7 '...' + 4 "NAO SEI" do FB01) no seed TS + db.sqlite.
+  ACHADO ALEM DO VERDICT: nao eram 8 e sim ~508 placeholders (maioria "NAO SEI"); 497 restantes ficam
+  cobertos pelo guard offline. (entregue 2026-06-25)
+- [x] **MV19.4 [ALTO]** Teclado cobria ENVIAR + envio vazio abandonava a licao. FIX: ScrollView dentro
+  do KeyboardAvoidingView (botao sempre alcancavel) + guard de resposta vazia com mensagem de validacao
+  (nao navega para fora). (entregue 2026-06-25)
+- [x] **MV19.5 [MEDIO]** Placar do Quiz: copy "NAO DEU/QUASE LA/VOCE PASSOU!" + quadro branco "Voce
+  acertou X de N" + RECOMECAR + pose por faixa. (entregue 2026-06-25)
+- [x] **MV19.7 [MEDIO]** Titulos sem espaco na lista de modulos ("AlfabetizacaoBiblica"). FIX: slice
+  sem +1 (mantem o espaco). (entregue 2026-06-25)
+- [x] **MV19.8 [MEDIO]** Banner MODO OFFLINE sobrepunha headers. FIX: banner em fluxo normal (acima do
+  Stack) com safe-area inset, em vez de position:absolute. (entregue 2026-06-25)
+- [x] **MV19.9 [MEDIO]** Modulos/licoes travados em cinza. FIX: roxo (degrade) escurecido + cadeado
+  sobreposto (mock). (entregue 2026-06-25)
+- [x] **MV19.10 [MEDIO]** Gradientes "chapados" (onboarding/pergunta). FIX: GradienteRoxo passou de
+  #5c0d8d->#3c026d (quase identicos) para #8b16c7->#3c026d (degrade oficial visivel). (entregue 2026-06-25)
+
+## Pendencias V19 (honestidade — nao bloqueiam release)
+
+- [ ] **MV19.6 [MEDIO]** Mascote do modo Licoes deveria ser o livro DOURADO (briefing); o app usa 1 set
+  de PNG (livro roxo) para Licoes e Quiz. Requer asset dourado do designer/Drive. DEFERIDO p/ V20.
+- [ ] **MV19.11 [ALTO->V20]** Wirar avaliador.ts (LLM M2.7/OpenAI) no fluxo da licao (enviar() usa
+  matchCanonico cru — rule #4 "IA obrigatoria" nao cumprida online) + batch M2.7 para as ~497 canonicas
+  "NAO SEI" (perguntas abertas de compreensao). Hoje cobertas pelo guard SEM_GABARITO offline.

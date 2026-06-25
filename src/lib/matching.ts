@@ -34,7 +34,7 @@
 export interface MatchingResultado {
   score: number;          // 0-1
   correto: boolean;
-  metodo: 'EXATO' | 'SEMANTICO' | 'SUBCONJUNTO' | 'NUMERICO' | 'FALHOU';
+  metodo: 'EXATO' | 'SEMANTICO' | 'SUBCONJUNTO' | 'NUMERICO' | 'SEM_GABARITO' | 'FALHOU';
 }
 
 const SINONIMOS: Record<string, string[]> = {
@@ -231,8 +231,28 @@ export function matchCanonico(respostaUsuario: string, respostaCanonica: string)
     return { score: 0, correto: false, metodo: 'FALHOU' };
   }
 
+  // V19 BUG-2 (guard anti-invencibilidade): se a resposta CANONICA eh um placeholder
+  // (ex: '...', 'NAO SEI', vazia, <= 5 chars sem digitos), nao temos gabarito para
+  // comparar — `normalizar('...')` => '' tornava a pergunta IMPOSSIVEL de acertar
+  // (FALHOU sempre) e travava a progressao da licao. Como nao ha gabarito, NAO
+  // penalizamos o usuario: qualquer resposta substantiva (>= 2 palavras OU >= 8
+  // chars) eh aceita. Perguntas abertas sem gabarito sao casos de avaliacao por IA
+  // (avaliador.ts / M2.7) quando online — ver evolution_plan V20.
+  const canonNorm = normalizar(respostaCanonica);
+  // So tratamos como "sem gabarito" os placeholders REAIS ('...', 'NAO SEI', '',
+  // 'tbd', so pontuacao). NAO usar heuristica de tamanho: respostas curtas legitimas
+  // como "Deus", "Jesus", "66", "39" sao gabaritos validos e devem seguir o matching.
+  const canonSemGabarito = ehPlaceholder(respostaCanonica);
+  if (canonSemGabarito) {
+    const u = normalizar(respostaUsuario);
+    const substantiva = u.length >= 8 || u.split(' ').filter((t) => t.length > 1).length >= 2;
+    return substantiva
+      ? { score: 0.7, correto: true, metodo: 'SEM_GABARITO' }
+      : { score: 0, correto: false, metodo: 'FALHOU' };
+  }
+
   const normUsuario = normalizar(respostaUsuario);
-  const normCanonica = normalizar(respostaCanonica);
+  const normCanonica = canonNorm;
 
   if (!normUsuario || !normCanonica) {
     return { score: 0, correto: false, metodo: 'FALHOU' };

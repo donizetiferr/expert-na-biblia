@@ -1,4 +1,4 @@
-import { Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useEffect } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../constants/colors';
@@ -12,28 +12,35 @@ import { GradienteLaranjaForte } from '../../components/Gradiente';
  */
 export default function QuizFinal() {
   const router = useRouter();
-  const { score } = useLocalSearchParams<{ score?: string }>();
+  // V19 BUG-5: le acertos + total para exibir "Voce acertou X de N" (briefing).
+  const { score, acertos, total } = useLocalSearchParams<{
+    score?: string;
+    acertos?: string;
+    total?: string;
+  }>();
   const s = parseInt(score ?? '0', 10);
+  const nAcertos = parseInt(acertos ?? '0', 10);
+  const nTotal = parseInt(total ?? '20', 10);
 
   const variante = s >= 100 ? 'vitoria' : s >= 50 ? 'quase' : 'nao_deu';
 
-  // V10 M5.6: briefing usa laranja forte, nao roxo/vermelho
-  // V18.3 MD.5: pose do PersonagemLivro por faixa (em vez de emoji gigante).
+  // V19 BUG-5: copy alinhada ao briefing — "NAO DEU" (<50%) / "QUASE LA" (50-99%) /
+  // "VOCE PASSOU!" (100%). Antes era "PARABENS!"/"CONTINUE ESTUDANDO" (divergente).
   const configs = {
     vitoria: {
       pose: 'EXCLAMANDO' as Pose,
-      titulo: 'PARABÉNS!',
-      subtitulo: `${s}% de acerto — você é um Expert!`,
+      titulo: 'VOCÊ PASSOU!',
+      subtitulo: 'Você é um Expert!',
     },
     quase: {
       pose: 'PENSATIVO' as Pose,
       titulo: 'QUASE LÁ',
-      subtitulo: `${s}% — Tente novamente para melhorar`,
+      subtitulo: 'Tente novamente para melhorar',
     },
     nao_deu: {
       pose: 'TRISTE' as Pose,
-      titulo: 'CONTINUE ESTUDANDO',
-      subtitulo: `${s}% — Reforce os modulos com mais erros`,
+      titulo: 'NÃO DEU',
+      subtitulo: 'Reforce os módulos com mais erros',
     },
   };
 
@@ -63,6 +70,14 @@ export default function QuizFinal() {
     <GradienteLaranjaForte style={styles.container}>
       <PersonagemLivro pose={cfg.pose} size={160} />
       <Text style={styles.titulo}>{cfg.titulo}</Text>
+
+      {/* V19 BUG-5: quadro branco "Voce acertou X de N" (briefing) */}
+      <View style={styles.quadroAcertos}>
+        <Text style={styles.quadroAcertosTexto}>
+          Você acertou {nAcertos} de {nTotal}
+        </Text>
+      </View>
+
       <Text style={styles.subtitulo}>{cfg.subtitulo}</Text>
 
       <Pressable style={styles.botao} onPress={() => router.replace('/modos')}>
@@ -73,7 +88,7 @@ export default function QuizFinal() {
         style={[styles.botao, styles.botaoSecundario]}
         onPress={() => router.replace('/quiz')}
       >
-        <Text style={styles.botaoSecundarioTexto}>JOGAR NOVAMENTE</Text>
+        <Text style={styles.botaoSecundarioTexto}>RECOMEÇAR</Text>
       </Pressable>
     </GradienteLaranjaForte>
   );
@@ -100,6 +115,21 @@ const styles = StyleSheet.create({
     fontFamily: FONTES.bodyBold,
     fontSize: 18,
     color: COLORS.branco,
+    textAlign: 'center',
+  },
+  // V19 BUG-5: quadro branco do placar "Voce acertou X de N".
+  quadroAcertos: {
+    backgroundColor: COLORS.branco,
+    paddingHorizontal: ESPACAMENTOS.xl,
+    paddingVertical: ESPACAMENTOS.md,
+    borderRadius: BORDAS.raioMedio,
+    borderWidth: BORDAS.larguraGrossa,
+    borderColor: COLORS.preto,
+  },
+  quadroAcertosTexto: {
+    fontFamily: FONTES.bodyExtraBold,
+    fontSize: 22,
+    color: COLORS.roxoEscuro,
     textAlign: 'center',
   },
   botao: {

@@ -78,12 +78,14 @@ export default function ModuloScreen() {
         </Pressable>
       );
     }
-    // Bloqueada: cinza visivel (16.6 — era cinzaEscuro+opacity 0.5, quase invisivel).
+    // V19 BUG-9: bloqueada = roxo (degrade) escurecido + cadeado (mock), nao cinza.
     return (
-      <Pressable style={[styles.card, styles.cardBloqueado]} disabled>
-        {numero}
-        {nome}
-        <Text style={styles.cadeado}>🔒</Text>
+      <Pressable style={styles.cardShadow} disabled>
+        <GradienteRoxo diagonal style={[styles.card, styles.cardBloqueado]}>
+          {numero}
+          {nome}
+          <Text style={styles.cadeado}>🔒</Text>
+        </GradienteRoxo>
       </Pressable>
     );
   };
@@ -150,11 +152,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.laranjaClaro,
     borderColor: COLORS.preto,
   },
-  // 16.6: cinzaMedio + opacity 0.85 (era cinzaEscuro + 0.5, quase invisivel).
+  // V19 BUG-9: roxo (degrade) escurecido + borda laranja + cadeado.
   cardBloqueado: {
-    backgroundColor: COLORS.cinzaMedio,
-    borderColor: COLORS.cinzaEscuro,
-    opacity: 0.85,
+    borderColor: COLORS.laranjaBorda,
+    opacity: 0.5,
   },
   numero: {
     fontFamily: FONTES.display,
@@ -163,7 +164,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   numeroLiberado: { color: COLORS.laranjaClaro },
-  numeroBloqueado: { color: COLORS.preto },
+  numeroBloqueado: { color: COLORS.laranjaClaro },
   numeroConcluida: { color: COLORS.preto },
   nome: {
     fontFamily: FONTES.bodyBold,

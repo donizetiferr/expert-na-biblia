@@ -1,3 +1,4 @@
+import { View } from 'react-native';
 import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { Bangers_400Regular } from '@expo-google-fonts/bangers';
@@ -76,22 +77,29 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <StatusBar style="light" />
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: '#3c026d' },
-            animation: 'fade',
-          }}
-        >
-          <Stack.Screen name="index" />
-          <Stack.Screen name="onboarding" />
-          <Stack.Screen name="modos" />
-          <Stack.Screen name="licoes" />
-          <Stack.Screen name="quiz" />
-          <Stack.Screen name="config" />
-          <Stack.Screen name="trofeu" />
-        </Stack>
-        <BannerOffline />
+        {/* V19 BUG-8: o BannerOffline era `position: absolute; top: 0` e cobria os
+            titulos/icone ≡ das telas (Configuracoes, "Escolher modulos"). Agora ele
+            vive no FLUXO normal (coluna), acima do Stack: quando offline empurra o
+            conteudo para baixo (sem sobrepor); quando online retorna null (zero
+            altura) e o Stack ocupa tudo como antes. */}
+        <View style={{ flex: 1, backgroundColor: '#3c026d' }}>
+          <BannerOffline />
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: '#3c026d' },
+              animation: 'fade',
+            }}
+          >
+            <Stack.Screen name="index" />
+            <Stack.Screen name="onboarding" />
+            <Stack.Screen name="modos" />
+            <Stack.Screen name="licoes" />
+            <Stack.Screen name="quiz" />
+            <Stack.Screen name="config" />
+            <Stack.Screen name="trofeu" />
+          </Stack>
+        </View>
         {/* V12 7.2: BackHandlerOffline removido. Modal "Sair" agora vive em useBackHandlerRoot (só em /modos). */}
       </SafeAreaProvider>
     </GestureHandlerRootView>

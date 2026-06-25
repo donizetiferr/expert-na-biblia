@@ -37,9 +37,12 @@ export default function LicoesIndex() {
       );
     }
     // Briefing: divide nome em 2 partes: palavra-chave (laranja) + complemento (branco)
+    // V19 BUG-7: o `+1` consumia o espaco entre as palavras e os dois <Text> eram
+    // concatenados sem separador ("AlfabetizacaoBiblica"). Mantemos o espaco no
+    // complemento (slice SEM +1) para renderizar "Alfabetizacao Biblica".
     const nomePartes = item.nome.split(' ', 1);
     const palavraChave = nomePartes[0] || item.nome;
-    const complemento = item.nome.slice(palavraChave.length + 1);
+    const complemento = item.nome.slice(palavraChave.length);
     const concluido = item.concluido === true;
 
     // V18.3 MD.1 (regra de negocio #3): modulo concluido fica AMARELO com borda/texto pretos.
@@ -88,12 +91,15 @@ export default function LicoesIndex() {
         </Pressable>
       );
     }
-    // Bloqueado: cinza com cadeado.
+    // V19 BUG-9: bloqueado = roxo (degrade) escurecido + cadeado sobreposto, como o
+    // mock (antes era cinza, divergente do briefing).
     return (
-      <Pressable style={[styles.card, styles.cardBloqueado]} disabled>
-        {numero}
-        {info}
-        <Text style={styles.cadeado}>🔒</Text>
+      <Pressable style={styles.cardShadow} disabled>
+        <GradienteRoxo diagonal style={[styles.card, styles.cardBloqueado]}>
+          {numero}
+          {info}
+          <Text style={styles.cadeado}>🔒</Text>
+        </GradienteRoxo>
       </Pressable>
     );
   };
@@ -167,10 +173,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.laranjaClaro,     // amarelo
     borderColor: COLORS.preto,
   },
+  // V19 BUG-9: roxo (degrade) escurecido (opacity) + borda laranja + cadeado.
   cardBloqueado: {
-    backgroundColor: COLORS.cinzaMedio,       // #9ca3af
-    borderColor: COLORS.cinzaEscuro,
-    opacity: 0.85,
+    borderColor: COLORS.laranjaBorda,
+    opacity: 0.5,
   },
   numero: {
     fontFamily: FONTES.display,
@@ -179,7 +185,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   numeroLiberado: { color: COLORS.laranjaClaro },
-  numeroBloqueado: { color: COLORS.preto },
+  numeroBloqueado: { color: COLORS.laranjaClaro },
   numeroConcluido: { color: COLORS.preto },
   info: {
     flex: 1,
