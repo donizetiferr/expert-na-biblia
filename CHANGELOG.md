@@ -2,6 +2,37 @@
 
 Todas as mudancas relevantes neste projeto.
 
+## [V14.0.0] - 2026-06-25 (8 fixes UX profundos — splash + quiz no-loop + personagem grande + teclado + musica v3 + feedback)
+
+### Changed
+- APK V14 rebuildado com M15 (8 fixes UX) + re-uploadado para catbox.moe
+  - **URL publica nova**: https://files.catbox.moe/i56993.apk
+  - **SHA256 novo**: `49344e07d9904df2a7514ed69621facb0a2bae48d780a81080250860dd59a0ed`
+  - **Tamanho**: 107.512.140 bytes (~102 MB)
+  - **Build**: `BUILD SUCCESSFUL in 2m 51s` via `C:\ENB\android`
+
+### Fixed
+- **15.1 [CRITICA]**: `src/app/index.tsx` — `SplashScreen.hideAsync()` em ~500ms (era 3000ms). Log explicito `[onboarding] key: <done>` para debug. Splash nativo libera IMEDIATAMENTE para mostrar logo JSX em tela cheia
+- **15.2 [CRITICA]**: `src/app/quiz/index.tsx` — fundo creme #f7f4ed (consistente com /modos), emoji 🎲/📚 size 48 -> 64, "ALEATÓRIO" laranjaEscuro sobre roxo + "PERSONALIZADO" preto sobre laranjaEscuro. modos.tsx ja estava com creme+logo
+- **15.3 [CRITICA]**: `src/app/index.tsx` — adicionado `console.log('[onboarding] key:', done)` para debug; validado E2E (`key: null` -> /onboarding; apos force-stop+relaunch `key: '1'` -> /modos direto)
+- **15.4 [CRITICA]**: `src/app/quiz/jogar.tsx` — fix loop infinito com `timerRef` + `transitionTimeoutRef` + `transicionandoRef` guard. Cleanup completo no unmount. Re-entrada impossivel (timer expirado + selecionar no mesmo frame eh bloqueado)
+- **15.5 [ALTA]**: `src/app/licoes/[moduloId]/[licaoId].tsx` — `PersonagemLivro` 110 -> 280 com moldura elegante (fundo creme, borda laranjaEscuro 4px, shadow, padding). Animated fade-in + zoom-spring na entrada
+- **15.6 [ALTA]**: `src/app/licoes/[moduloId]/[licaoId].tsx` — `KeyboardAvoidingView` `behavior={Platform.OS === 'ios' ? 'padding' : 'height'}` + `keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 64}`. AndroidManifest ja tem `adjustResize`
+- **15.7 [ALTA]**: `assets/audio/musica_fundo_v3.mp3` regenerado via 4 chunks ElevenLabs SFX 5s concatenados com ffmpeg crossfade-concat (20s, 128kbps). `src/lib/sound.ts` usa v3 (v2 removida) + fade in 1s (volume 0->targetVolume em 20 steps de 50ms) + fade out 0.5s antes de stopAsync. ensureAudioMode ja era idempotente via flag `initialized`
+- **15.8 [MEDIA]**: `src/app/licoes/[moduloId]/[licaoId]/feedback.tsx` — fundo laranja UNIFICADO (acerto E erro), `PersonagemLivro` 150 -> 200, balao de fala "Correto!" / "Errado!" em AMBOS os casos (antes era so erro), bounce animation (scale 1 -> 1.15 -> 1) com Animated.spring
+
+### Rejected
+- **15.9 [REJEITADO]** — substituicao de emojis 🎲/💪/📚 por PersonagemLivro em /modos. Motivo: briefing oficial (`whatsapp_media/images/image_20260622_223032.jpg`) USA emojis como parte do design. Emojis foram MANTIDOS com tamanho ajustado (size 48 -> 64) e cor (laranjaEscuro / preto) na M15.2
+
+### Validation
+- Type-check: 5 erros pre-existentes (V12/V13, nao relacionados: app.config.ts newArchEnabled, settings.ts 2x, haptics.ts expo-haptics, sound-runtime.ts lastEfeitos). **0 erros introduzidos por V14**
+- Jest matching: 8/8 PASS (regressao mantida)
+- E2E emulator-5554: App instalou + iniciou sem FATAL EXCEPTION (PID 25545). Onboarding key: null -> /onboarding; apos force-stop+relaunch key: '1' -> /modos direto. ZERO erros de audio. Screenshots em `C:\ENB\orchestration\v14\01..06_*.png`
+
+### Commit
+- `0308a11` — V14 (M15): 8 fixes UX profundos — splash grande, quiz no-loop, personagem grande, teclado ok, musica v3 sem glitch, feedback briefing
+- `8d9e276` — V14 (M15): 8/8 [x] entregue — APK V14 publicado em https://files.catbox.moe/i56993.apk
+
 ## [V13.0.0] - 2026-06-25 (5 fixes de bugs reais — SFX + modal + slice + logs + TODOs)
 
 ### Changed
