@@ -24,7 +24,12 @@ const M3_MODEL =
 const M3_CHAT_COMPLETIONS = `${M3_ENDPOINT}/chat/completions`;
 const THINK_REGEX = /<think[^>]*>.*?<\/think>/gs;
 const SECURE_KEY_NAME = 'minimax_api_key';
-const TIMEOUT_MS = 10000;
+// V21 I1: MiniMax-M2.7 e um modelo de raciocinio com latencia muito variavel
+// (medido 4.4s / 9.4s / 20.4s em rede real). 10s abortava ~1/3 das respostas e
+// caia para fallback, deixando o recurso-ancora do produto pouco confiavel.
+// 27s cobre a cauda de latencia sem travar a UX (botao fica em "AVALIANDO...").
+// No AbortError NAO ha retry (lanca M3_TIMEOUT direto), entao nao compoe 3x27s.
+const TIMEOUT_MS = 27000;
 const RETRY_MAX = 3;
 const RETRY_BACKOFF_MS = 1500;
 

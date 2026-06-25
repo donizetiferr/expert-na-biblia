@@ -84,7 +84,7 @@ export default function SplashScreen() {
           style={styles.logo}
           resizeMode="contain"
           accessible
-          accessibilityLabel="Logo Expert Na Biblia — sua jornada pela Palavra"
+          accessibilityLabel="Logo Expert Na Bíblia — sua jornada pela Palavra"
         />
       </Animated.View>
 

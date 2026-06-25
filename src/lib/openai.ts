@@ -18,7 +18,9 @@ import { extrairAvaliacaoJson } from './parse-json';
 const OPENAI_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
 const OPENAI_MODEL = 'gpt-4o-mini';
 const SECURE_KEY_NAME = 'openai_api_key';
-const TIMEOUT_MS = 10000;
+// V21 I1: alinhado ao M3 (fallback acionado apos M3 timeout de 27s). gpt-4o-mini
+// e rapido, mas 20s da folga para a cauda de latencia sem travar a jornada.
+const TIMEOUT_MS = 20000;
 
 export const SYSTEM_PROMPT_AVALIADOR = `Voce eh um avaliador de respostas biblicas em portugues brasileiro.
 Responda em JSON estrito:

@@ -16,17 +16,17 @@ const SLIDES: Slide[] = [
   {
     pose: 'FELIZ',
     titulo: 'Bem-vindo!',
-    subtitulo: 'Torne-se um Expert na Bíblia de forma ludica e progressiva.',
+    subtitulo: 'Torne-se um Expert na Bíblia de forma lúdica e progressiva.',
   },
   {
     pose: 'PENSATIVO',
     titulo: 'Como funciona',
-    subtitulo: '2 modos: Licoes progressivas (40 modulos) + Quiz Biblico rapido (20 perguntas).',
+    subtitulo: '2 modos: Lições progressivas (40 módulos) + Quiz Bíblico rápido (20 perguntas).',
   },
   {
     pose: 'EXCLAMANDO',
-    titulo: 'Vamos comecar!',
-    subtitulo: 'Conclua cada licao com 100% para liberar a proxima e ganhar o trofeu Expert!',
+    titulo: 'Vamos começar!',
+    subtitulo: 'Conclua cada lição com 100% para liberar a próxima e ganhar o troféu Expert!',
   },
 ];
 
@@ -79,7 +79,7 @@ export default function Onboarding() {
 
       <Pressable style={styles.botao} onPress={proximo}>
         <Text style={styles.botaoTexto}>
-          {indice < SLIDES.length - 1 ? 'PROXIMO' : 'COMECAR!'}
+          {indice < SLIDES.length - 1 ? 'PRÓXIMO' : 'COMEÇAR!'}
         </Text>
       </Pressable>
 

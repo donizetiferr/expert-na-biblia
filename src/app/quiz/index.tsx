@@ -25,7 +25,7 @@ export default function QuizIndex() {
             <Text style={styles.cardTitulo}>
               <Text style={styles.palavraChave}>ALEATÓRIO</Text>
             </Text>
-            <Text style={styles.cardSubtitulo}>20 perguntas de modulos aleatorios</Text>
+            <Text style={styles.cardSubtitulo}>20 perguntas de módulos aleatórios</Text>
           </GradienteRoxo>
         </Pressable>
 
@@ -35,7 +35,7 @@ export default function QuizIndex() {
             <Text style={styles.cardTitulo}>
               <Text style={styles.palavraChave}>PERSONALIZADO</Text>
             </Text>
-            <Text style={styles.cardSubtitulo}>Escolha ate 20 modulos</Text>
+            <Text style={styles.cardSubtitulo}>Escolha até 20 módulos</Text>
           </GradienteRoxo>
         </Pressable>
       </View>

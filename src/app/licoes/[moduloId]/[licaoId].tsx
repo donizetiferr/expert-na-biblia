@@ -124,7 +124,7 @@ export default function LicaoScreen() {
         correto: false,
         resposta_esperada: perguntaAtual.resposta_canonica,
         score: 0,
-        feedback: 'Nao foi possivel avaliar agora. Confira a resposta exibida.',
+        feedback: 'Não foi possível avaliar agora. Confira a resposta exibida.',
         origem: 'FALHOU' as const,
       };
     } finally {

@@ -155,7 +155,7 @@ export default function TrofeuScreen() {
           style={styles.trofeuImg}
           resizeMode="contain"
           accessible
-          accessibilityLabel="Trofeu dourado: Parabens, voce e um Expert"
+          accessibilityLabel="Troféu dourado: Parabéns, você é um Expert"
         />
       </Animated.View>
 

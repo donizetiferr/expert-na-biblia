@@ -171,9 +171,9 @@ export default function JogarQuiz() {
   if (erro) {
     return (
       <View style={[styles.container, styles.centro]}>
-        <Text style={styles.erroTitulo}>Nao foi possivel carregar o quiz</Text>
+        <Text style={styles.erroTitulo}>Não foi possível carregar o quiz</Text>
         <Text style={styles.erroTexto}>
-          Nenhuma pergunta encontrada. Tente novamente ou escolha outros modulos.
+          Nenhuma pergunta encontrada. Tente novamente ou escolha outros módulos.
         </Text>
         <Pressable style={styles.botaoVoltar} onPress={() => router.replace('/quiz')}>
           <Text style={styles.botaoVoltarTexto}>VOLTAR</Text>

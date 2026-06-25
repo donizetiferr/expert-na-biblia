@@ -75,9 +75,14 @@ export async function avaliarResposta(
       // parcial: se local.score >= 0.5, mostra "Provavelmente correto, mas sem
       // conexao para confirmar" e considera correto. Senao, mostra mensagem
       // amigavel de offline.
+      // V21 I1: M3/OpenAI lancam 'M3_TIMEOUT'/'OPENAI_TIMEOUT' no AbortError. Antes o
+      // regex /network|fetch|abort/i NAO casava "TIMEOUT", entao um timeout (latencia
+      // alta do M2.7) caia na mensagem dura "Avaliacao automatica indisponivel" em vez
+      // do caminho gracioso (usa match local + mensagem "sem conexao para confirmar").
+      // Incluir 'timeout' classifica corretamente o timeout como falha de conexao.
       const semConexao = (
-        (errM3 instanceof Error && /network|fetch|abort/i.test(errM3.message)) ||
-        (errOpenAI instanceof Error && /network|fetch|abort/i.test(errOpenAI.message))
+        (errM3 instanceof Error && /network|fetch|abort|timeout/i.test(errM3.message)) ||
+        (errOpenAI instanceof Error && /network|fetch|abort|timeout/i.test(errOpenAI.message))
       );
       const provavel = local.score >= 0.5;
       return {
@@ -86,9 +91,9 @@ export async function avaliarResposta(
         score: local.score,
         feedback: semConexao
           ? provavel
-            ? 'Sem conexao para confirmar. Sua resposta parece correta (match local).'
-            : 'Sem conexao. Sua resposta foi salva e sera avaliada quando voltar online.'
-          : 'Avaliacao automatica indisponivel. Confirme com a resposta exibida.',
+            ? 'Sem conexão para confirmar. Sua resposta parece correta.'
+            : 'Sem conexão. Sua resposta foi salva e será avaliada quando voltar online.'
+          : 'Avaliação automática indisponível. Confirme com a resposta exibida.',
         origem: 'FALHOU',
       };
     }
