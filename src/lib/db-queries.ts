@@ -7,18 +7,31 @@ import type { Modulo, Licao, Pergunta } from '../types';
 
 import { getDatabase } from '../db/database';
 
-const MOCK_MODULOS: Modulo[] = Array.from({ length: 77 }, (_, i) => {
-  const num = i + 1;
-  const id = `M${String(num).padStart(3, '0')}`;
-  const area: Modulo['area'] = i < 10 ? 'FB' : i < 30 ? 'AT' : i < 53 ? 'NT' : 'TE';
-  return {
-    id,
-    ordem: num,
-    area,
-    nome: `${area} Modulo ${num}`,
-    concluido: false,
-  };
-});
+/**
+ * V18.1 (MA.1): mock ALINHADO ao esquema REAL do DB (FB##/AT##/NT##, 40 modulos:
+ * FB 18, AT 18, NT 4). Antes o mock usava M001..M077 — esquema que NAO existe no DB
+ * real — e por isso mascarava o bug do quiz (IDs hardcoded M001-M004) em Jest: a
+ * query mockada respondia para qualquer ID. Com o mock fiel, qualquer codigo que use
+ * o esquema fake (M###) retorna vazio tambem nos testes, expondo regressoes.
+ */
+const MOCK_AREA_COUNTS: Array<{ area: Modulo['area']; count: number }> = [
+  { area: 'FB', count: 18 },
+  { area: 'AT', count: 18 },
+  { area: 'NT', count: 4 },
+];
+
+const MOCK_MODULOS: Modulo[] = (() => {
+  const mods: Modulo[] = [];
+  let ordem = 0;
+  for (const { area, count } of MOCK_AREA_COUNTS) {
+    for (let i = 1; i <= count; i++) {
+      ordem += 1;
+      const id = `${area}${String(i).padStart(2, '0')}`;
+      mods.push({ id, ordem, area, nome: `${area} Modulo ${i}`, concluido: false });
+    }
+  }
+  return mods;
+})();
 
 function gerarMockLicoes(moduloId: string): Licao[] {
   return Array.from({ length: 8 }, (_, i) => {
@@ -146,12 +159,91 @@ export async function listarPerguntas(licaoId: string): Promise<Pergunta[]> {
   }
 }
 
+/**
+ * V18.1 (MA.1): retorna `total` perguntas aleatorias de TODO o banco numa unica query
+ * (ORDER BY RANDOM() LIMIT ?). Substitui o loop hardcoded M001..M004 da tela de quiz,
+ * que retornava [] no DB real (IDs FB/AT/NT) -> spinner eterno. Sem dependencia de
+ * nenhum ID de modulo.
+ */
+export async function listarPerguntasAleatorias(total: number): Promise<Pergunta[]> {
+  const n = Math.max(0, Math.floor(total));
+  try {
+    const db = getDatabase();
+    const rows = db.getAllSync<{
+      id: string;
+      licao_id: string;
+      ordem: number;
+      texto: string;
+      resposta_canonica: string;
+      tipo: 'ABERTA' | 'MULTIPLA_ESCOLHA';
+      dificuldade: 'FACIL' | 'MEDIO' | 'DIFICIL';
+    }>(
+      'SELECT id, licao_id, ordem, texto, resposta_canonica, tipo, dificuldade FROM perguntas ORDER BY RANDOM() LIMIT ?',
+      [n],
+    );
+    return rows;
+  } catch {
+    // Mock (Jest): gera `n` perguntas a partir de licoes de modulos reais (esquema FB/AT/NT).
+    const out: Pergunta[] = [];
+    let idx = 0;
+    while (out.length < n && MOCK_MODULOS.length > 0) {
+      const modulo = MOCK_MODULOS[idx % MOCK_MODULOS.length]!;
+      const licoes = gerarMockLicoes(modulo.id);
+      for (const licao of licoes) {
+        for (const p of gerarMockPerguntas(licao.id)) {
+          out.push(p);
+          if (out.length >= n) break;
+        }
+        if (out.length >= n) break;
+      }
+      idx += 1;
+      if (idx > MOCK_MODULOS.length) break; // guarda contra loop infinito
+    }
+    return out.slice(0, n);
+  }
+}
+
 export async function marcarLicaoConcluida(licaoId: string, score: number): Promise<void> {
   try {
     const db = getDatabase();
     db.runSync('UPDATE licoes SET concluida = 1, score_max = ? WHERE id = ?', [score, licaoId]);
   } catch {
     // Silencioso em modo mock
+  }
+}
+
+/**
+ * V18.1 (MA.5): grava conclusao de MODULO. Antes NENHUM codigo gravava
+ * `modulos.concluido = 1` (so existia o reset `= 0`), entao o modulo 2+ ficava
+ * travado para sempre (licoes/index liberado() exige modulos[N-1].concluido) e o
+ * trofeu era inalcancavel (todosModulosConcluidos nunca true).
+ */
+export async function marcarModuloConcluido(moduloId: string): Promise<void> {
+  try {
+    const db = getDatabase();
+    db.runSync('UPDATE modulos SET concluido = 1 WHERE id = ?', [moduloId]);
+  } catch {
+    // Silencioso em modo mock
+  }
+}
+
+/**
+ * V18.1 (MA.5): true quando TODAS as licoes do modulo estao concluidas.
+ * Usado para decidir, ao concluir uma licao 100%, se o modulo inteiro deve ser
+ * marcado como concluido (desbloqueia o proximo + caminha para o trofeu).
+ */
+export async function moduloEstaCompleto(moduloId: string): Promise<boolean> {
+  try {
+    const db = getDatabase();
+    const rows = db.getAllSync<{ total: number; concluidas: number }>(
+      'SELECT COUNT(*) AS total, SUM(CASE WHEN concluida = 1 THEN 1 ELSE 0 END) AS concluidas FROM licoes WHERE modulo_id = ?',
+      [moduloId],
+    );
+    const r = rows[0];
+    if (!r || r.total === 0) return false;
+    return r.total === r.concluidas;
+  } catch {
+    return false;
   }
 }
 

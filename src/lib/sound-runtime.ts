@@ -17,12 +17,11 @@ import { loadSettings } from './settings';
 import { stopMusicaFundo, playMusicaFundo } from './sound';
 
 let lastMusica: boolean | null = null;
-let lastEfeitos: boolean | null = null;
 let initialized = false;
 
 export async function checkAndReact(): Promise<void> {
   const settings = await loadSettings();
-  const { musica, efeitos } = settings;
+  const { musica } = settings;
 
   if (lastMusica !== null && musica !== lastMusica) {
     if (musica) {
@@ -32,7 +31,6 @@ export async function checkAndReact(): Promise<void> {
     }
   }
   lastMusica = musica;
-  lastEfeitos = efeitos;
 }
 
 export async function notifySettingsChanged(): Promise<void> {
@@ -50,5 +48,4 @@ export function initSoundRuntime(): void {
 export function stopSoundRuntime(): void {
   initialized = false;
   lastMusica = null;
-  lastEfeitos = null;
 }

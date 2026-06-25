@@ -1,21 +1,183 @@
-# Plano de Evolucao — Expert Na Biblia (V13, 2026-06-25)
+# Plano de Evolucao — Expert Na Biblia (V18, 2026-06-25)
 
-> Gerado em 2026-06-25 por solo-plan (V13, MODO_ORQUESTRADO) | Escopo: **ATUALIZACAO** | Profundidade: **FOCADO**
+> Atualizado em 2026-06-25 por solo-plan (V18, COMPLETO, sessao principal) | Escopo: **ATUALIZACAO** | Profundidade: **COMPLETO**
 > Ultima atualizacao: 2026-06-25
-> Status: **APROVADO**
+> Status: **APROVADO** (V18 aprovado pelo usuario em 2026-06-25 — despachado @full-cycle)
 >
-> Investigacao + segundo turno critico: `orchestration/plan_investigation_v13.md`
-> Historico: V1-V7 (47/47), V8 (18 [x] c/ 5 gaps), V9 (19 itens, 18/19 [x]), V9.3.4, V10 (M5 + M6), V11 (correcoes de cor), V12 (M7 5 fixes UX), V13 (este plano, 5 fixes de bugs reais).
->
-> Investigacao + ajustes do segundo turno critico: `orchestration/plan_investigation.md`
-> Historico: V1-V7 (47/47 itens implementados), V8-RETOMADA (8+9 ajustes do APK, 19 APKs gerados em `dist/` sem sucesso pleno)
+> Investigacao + segundo turno critico V18: `orchestration/plan_investigation.md`
+> Historico: V1-V7 (47/47), V8 (18 [x]), V9 (18/19 [x]), V10 (M5+M6), V11, V12 (M7), V13 (M14), V14 (M15), V17 (Play Store prep). V18 = este push (fidelidade visual REAL + fix loop do Quiz + validacao mock-a-mock).
 
 ## Inbox (apontamentos a triar)
 
 > Apontamentos informais registrados a qualquer momento. Items triados vao para milestones ou "Itens rejeitados".
 
-- [ ] [2026-06-25] [fonte: USUARIO] Bugs visuais e de layout ainda presentes no app (NAO corrigir agora — apenas catalogar)
-- [ ] [2026-06-25] [fonte: USUARIO] Looping infinito em um dos modulos (NAO corrigir agora — apenas catalogar)
+- [x] [2026-06-25] [fonte: USUARIO] Bugs visuais e de layout ainda presentes no app — **TRIADO V18**: VALIDO. Causa-raiz encontrada (SIST-1 sem degrade + SIST-2 assets JPG com fundo + regra "amarelo" ausente). Promovido para milestones MA/MB/MC/MD.
+- [x] [2026-06-25] [fonte: USUARIO] Looping infinito em um dos modulos — **TRIADO V18**: VALIDO mas causa diferente da catalogada. Causa real = Quiz travado em spinner eterno (IDs M001-M004 inexistentes no DB). Promovido para milestone M-LOOP. M17 (hipoteses antigas) SUPERSEDED.
+
+---
+
+# ===== PLANO V18 (2026-06-25) — FIDELIDADE VISUAL + FIX LOOP + VALIDACAO MOCK-A-MOCK =====
+
+> Este bloco e a ATUALIZACAO V18. Os milestones antigos (M0-M17) permanecem abaixo como historico.
+> M16.1/M16.2/M17 do plano antigo foram CONSOLIDADOS aqui (mesma causa-raiz) e marcados superseded.
+
+## Resumo Executivo V18
+
+Apos 5 ciclos (V8/V10/V11/V12/V14) atacando "fidelidade visual" sem resolver, a investigacao V18 encontrou a **causa-raiz do ciclo** — e ela tem 3 camadas:
+
+1. **Loop do Quiz = bug de DADOS, nunca corrigido.** O Quiz trava num spinner eterno ("nem entra na tela") porque `src/app/quiz/jogar.tsx:90-93` monta IDs hardcoded `M001..M004` que **nao existem** no DB (IDs reais sao `FB##/AT##/NT##`). A query retorna `[]` sem lancar erro -> o fallback mock nao dispara -> `ActivityIndicator` para sempre. As tentativas V10/V14 corrigiram loops de re-render (que estavam OK) e nunca tocaram o bug de dados. Afeta Aleatorio E Personalizado (que tambem ignora os params da rota).
+
+2. **Design infiel por impossibilidade fisica, nao por ajuste fino.** (a) `expo-linear-gradient` **nao esta instalado** — ha ZERO degrades no app inteiro; ~12 superficies que o briefing pede em degrade estao em cor solida. (b) **Todos os assets sao JPG com fundo** (screenshots do WhatsApp), inclusive `logo.png` que e um JPEG renomeado. O `PersonagemLivro` renderiza esse JPG dentro de um `<View>` roxo com borda -> exatamente "imagem com fundo dentro de um quadrado". Nenhum CSS conserta um JPG com fundo embutido + lib de degrade ausente. Os PNGs transparentes originais (Drive da designer) nunca foram baixados.
+
+3. **Validacao insuficiente perpetuou o ciclo.** As validacoes "E2E no emulator" usavam screenshots low-res (320x640), cobriam so splash/modos/licoes e **nunca jogaram o Quiz** (por isso o spinner-eterno passou 17 versoes), nem compararam tela-a-tela contra os mocks.
+
+O plano V18 ataca as 3 camadas + saude do projeto (5 erros tsc, 2 deps ausentes que dao crash, 3 testes falhando) + um milestone dedicado de **validacao mock-a-mock** que e o que quebra o ciclo. **Recomendacao /design-sync: NAO usar** (serve para design-system no claude.ai, nao para app RN; os tokens ja estao corretos). Fazer design direto + `ux-polish` (Playwright score) no fim.
+
+**Unica dependencia de voce**: os PNGs transparentes originais (pasta Drive "Personagens"/"Logo"/"Elementos"). Tentarei baixar autonomamente via Playwright no Chrome logado; se o Drive bloquear, peco os arquivos.
+
+## Estatisticas V18
+
+- Milestones novos: 6 (MA loop+progressao, MB assets, MC gradientes, MD fidelidade tela-a-tela, ME saude, MF validacao+entrega)
+- Itens: ~31 ( CRITICA: 9 | ALTA: 12 | MEDIA: 8 | BAIXA: 2+backlog )
+- Por fonte: USUARIO 4 | INVESTIGACAO 23 | PESQUISA_EXTERNA 2 (backlog) | OBJECTIVE_GAP 2
+- Autonomia: ~29 AUTONOMO | 1 DESTRAVAVEL (assets do Drive) | 0 DEPENDE_VOCE irredutivel
+- Achados independentes: 11 (gate G1/G4 satisfeito); dimensoes 8/8 com veredito
+- Segundo turno critico (2 passadas): 6 detalhados + 2 POLISH + 2 recuperados + 1 re-priorizado + 1 consolidado + 2 correcoes de premissa
+- **2a passada (double-check pedido pelo usuario)**: +MA.5 (conclusao de modulo ausente = trofeu/desbloqueio quebrados, CRITICO recuperado); ME.1 corrigido (secure-store ja existe; faltam haptics/speech/linear-gradient); MA.1 enriquecido (mock M001 mascara bug em Jest); MF enriquecido (AVD hi-res + completar modulo inteiro)
+
+## Saude do projeto V18 (verificada em 2026-06-25)
+- Testes: EXISTEM+FALHANDO PARCIAL (55/58 PASS; 3 FAIL + 2 suites mal configuradas) | Build: OK mas PRODUTO QUEBRADO em runtime (Quiz) | CI/CD: CONFIGURADO parcial | Deps: RISCO (linear-gradient/haptics/secure-store ausentes) | Docs: COMPLETAS (copy "77 vs 40" a alinhar)
+- Evidencias: `orchestration/plan_investigation.md`
+
+---
+
+## Milestone MA: Fix do "loop infinito" do Quiz (CORRECAO) — V18 — PENDENTE
+> CONSOLIDA M16.1, M16.2 e M17 do plano antigo (superseded). Causa-raiz confirmada por evidencia de DB.
+
+- [ ] MA.1 **Corrigir IDs em `carregarPerguntas` (quiz/jogar.tsx:87-106)** — CORRECAO | CRITICA | INVESTIGACAO | AUTONOMO
+  - Trocar loop hardcoded `M001..M004` por IDs reais: `listarModulos()` -> `listarLicoes(id)` -> `listarPerguntas(licaoId)` (ambos JA existem em db-queries.ts:91/107). Ideal: 1 funcao `listarPerguntasAleatorias(n)` em db-queries.ts com `ORDER BY RANDOM() LIMIT 20`.
+  - **Nota double-check (por que passou nos testes 17 versoes)**: `MOCK_MODULOS` em db-queries.ts:10 usa o esquema `M001..M077` — em Jest (que cai no mock) o quiz "funciona"; no device (DB real, IDs `FB##/AT##/NT##`) a query volta `[]` sem lancar -> spinner eterno. Adicionar teste de regressao que exercite `carregarPerguntas` com o esquema de ID REAL (ou alinhar o mock ao real) para capturar regressao futura.
+  - DoD: Quiz Aleatorio carrega 20 perguntas reais (verificado no emulador, sem spinner) + teste de regressao verde com IDs reais.
+- [ ] MA.2 **Ler `useLocalSearchParams` (modo/modulos) em jogar.tsx** — CORRECAO | CRITICA | USUARIO+INVESTIGACAO | AUTONOMO
+  - jogar.tsx hoje nao importa useLocalSearchParams -> ignora `modo`/`modulos`. Adicionar e ramificar: custom = so modulos do CSV; aleatorio = amostra global.
+  - DoD: Personalizar 5 modulos resulta em perguntas APENAS desses 5.
+- [ ] MA.3 **Guard anti-spinner-eterno (empty/error state)** — CORRECAO | ALTA | INVESTIGACAO (lente 3) | AUTONOMO
+  - Se apos load `perguntas.length === 0`, renderizar estado de erro/vazio com botao "Voltar" em vez de `ActivityIndicator` infinito (jogar.tsx:152-158). Mesmo padrao aplicado a avaliacao por IA (loading/erro).
+  - DoD: nenhum caminho deixa o usuario preso num spinner.
+- [ ] MA.4 **persistir() em useEffect (quiz/final.tsx:56-58)** — CORRECAO | MEDIA | INVESTIGACAO | AUTONOMO
+  - Mover `setTimeout(persistir)` do body do componente para `useEffect(()=>{...},[])` (evita ranking duplicado / side-effect em render).
+  - DoD: 1 linha em user_rankings por quiz concluido.
+
+- [ ] MA.5 **[ACHADO DOUBLE-CHECK — CRITICO] Persistir conclusao de MODULO (desbloqueio + trofeu)** — CORRECAO | CRITICA | INVESTIGACAO (double-check, recuperado) | AUTONOMO
+  - **Bug confirmado**: `licoes/index.tsx:26-29` desbloqueia o modulo N apenas se `modulos[N-1].concluido === true`, mas NENHUM codigo grava `modulos.concluido = 1` (grep em src/: so existe `UPDATE modulos SET concluido = 0` no reset). Logo o **modulo 2+ fica travado para sempre** e `todosModulosConcluidos()` nunca e true -> **trofeu inalcancavel**. Falha do objetivo central ("libera proximo modulo ao concluir o anterior" + "trofeu ao concluir todos").
+  - **Acao**: criar `marcarModuloConcluido(moduloId)` em db-queries.ts (`UPDATE modulos SET concluido = 1`); no fluxo de licao 100% (licoes/[moduloId]/[licaoId]/final.tsx), apos `marcarLicaoConcluida`, checar se TODAS as licoes do modulo estao `concluida` -> se sim, marcar o modulo concluido; ao concluir o ultimo modulo, navegar para /trofeu (via `todosModulosConcluidos`).
+  - DoD: completar todas as licoes do modulo 1 desbloqueia o modulo 2 (verificado no emulador); concluir todos os modulos abre o Trofeu.
+
+## Milestone MB: Pipeline de assets transparentes (INFRA/MELHORIA) — V18 — PENDENTE
+> Base de TODA a fidelidade. Sem PNG transparente, o personagem/logo/trofeu sempre aparecem "com fundo num quadrado".
+
+- [ ] MB.1 **Obter assets originais transparentes** — INFRA | CRITICA | INVESTIGACAO | DESTRAVAVEL: PNGs originais do Drive (pastas Personagens/Logo/Elementos)
+  - Tentativa autonoma: Playwright no Chrome logado -> abrir pastas Drive (folder IDs em docs/06) -> baixar logo, 5 personagens, trofeu, icones (home/som/config), confetes como PNG transparente.
+  - Fallback: usuario baixa da pasta Drive e dropa em `assets/images/`. Ultimo recurso: background-removal/regeneracao via media-generation (qualidade inferior — marcar como provisorio).
+  - DoD: PNGs transparentes reais em assets/images/ (verificar canal alfa, nao JPEG renomeado).
+- [ ] MB.2 **Corrigir logo.png (hoje JPEG renomeado, magic bytes ffd8ffe0)** — INFRA | ALTA | INVESTIGACAO | AUTONOMO
+  - DoD: assets/images/logo.png e PNG real com transparencia.
+- [ ] MB.3 **Refatorar PersonagemLivro.tsx (remover moldura)** — MELHORIA | CRITICA | USUARIO+INVESTIGACAO | AUTONOMO
+  - Remover `<View>` com `backgroundColor: roxoPrimario` + `borderWidth:4` + `borderRadius`; renderizar `<Image>` PNG transparente direto sobre o fundo da tela (resizeMode contain). Trocar requires .jpg -> .png.
+  - DoD: personagem aparece sem caixa/fundo, integrado ao fundo da tela.
+- [ ] MB.4 **Remover moldura dupla na tela de pergunta** — MELHORIA | ALTA | INVESTIGACAO | AUTONOMO
+  - licoes/[moduloId]/[licaoId].tsx:205-217 `personagemMoldura` (fundo creme+borda+sombra) envolve o componente que ja tinha moldura. Remover.
+  - DoD: personagem frameless na tela de pergunta.
+- [ ] MB.5 **trofeu.jpg -> PNG transparente em trofeu.tsx:143** — MELHORIA | ALTA | USUARIO | AUTONOMO
+  - DoD: trofeu sem retangulo de fundo sobre o creme.
+
+## Milestone MC: Gradientes da identidade (INFRA/MELHORIA) — V18 — PENDENTE
+> SIST-1: sem a lib instalada, e impossivel qualquer degrade do briefing.
+
+- [ ] MC.1 **Instalar expo-linear-gradient** — INFRA | CRITICA | INVESTIGACAO | AUTONOMO
+  - `npx expo install expo-linear-gradient`. DoD: import resolve, build OK.
+- [ ] MC.2 **Componentes reutilizaveis GradienteRoxo / GradienteLaranja + aplicar nas ~12 superficies** — MELHORIA | ALTA | INVESTIGACAO (lente 2 POLISH) | AUTONOMO
+  - Cards (modos/quiz/licoes), fundos (feedback/final/pergunta), trofeu, "Expert!", titulos de resultado, palavras-chave. Cores ja em colors.ts (roxoClaro->roxoMedio; laranjaForte->laranjaMedio; trofeu top/bottom).
+  - DoD: degrades visiveis onde o briefing pede, comparados aos mocks.
+
+## Milestone MD: Fidelidade tela-a-tela vs mocks (MELHORIA/CORRECAO) — V18 — PENDENTE
+> Divergencias concretas (subagente de fidelidade). Cada item cita arquivo:linha.
+
+- [ ] MD.1 **Regra de negocio #3: modulo/licao concluido fica AMARELO (borda/texto pretos)** — CORRECAO | ALTA | INVESTIGACAO (lente 4 re-priorizado) | AUTONOMO
+  - Hoje fica roxo + ✓ verde (licoes/index.tsx:69,160; [moduloId].tsx:56-60). Implementar estado amarelo. E REGRA DE NEGOCIO, nao cosmetico.
+  - DoD: licao 100% fica amarela; modulo com todas licoes amarelas fica amarelo.
+- [ ] MD.2 **Card secundario roxo+borda laranja (nao laranja solido)** — MELHORIA | ALTA | INVESTIGACAO | AUTONOMO
+  - modos.tsx:104-108 (card "LICOES") e quiz/index.tsx:77 (card "PERSONALIZADO"). DoD: ambos os cards no padrao roxo/borda laranja/texto branco.
+- [ ] MD.3 **Quiz: alternativa selecionada = degrade amarelo circulado de preto, letra preta** — CORRECAO | ALTA | INVESTIGACAO | AUTONOMO
+  - jogar.tsx:180-181,234 hoje fica verde/vermelho. DoD: ao clicar, alternativa fica degrade amarelo com borda preta grossa e letra preta (briefing docs/04:135).
+- [ ] MD.4 **Titulos de resultado + "Expert!" em degrade roxo com borda preta** — MELHORIA | ALTA | INVESTIGACAO | AUTONOMO
+  - final.tsx:109-117 ("NAO DEU/QUASE LA/VOCE PASSOU!"), quiz/final.tsx:91, trofeu.tsx:170,216-224 ("Expert!"). DoD: degrade roxo + borda preta (text stroke) nos titulos.
+- [ ] MD.5 **quiz/final.tsx usa PersonagemLivro (nao emoji gigante)** — MELHORIA | ALTA | INVESTIGACAO | AUTONOMO
+  - :88 emoji 100px -> PersonagemLivro com pose por faixa (<50 TRISTE, >50 PENSATIVO, 100 EXCLAMANDO). DoD: placar com personagem coerente com licao/feedback.
+- [ ] MD.6 **Quadro branco da pergunta com borda preta** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
+  - licaoId.tsx:218 e jogar.tsx:214. DoD: quadro branco com borda preta (briefing).
+- [ ] MD.7 **Icones home/som/config como assets desenhados (nao emoji)** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO (depende de MB.1)
+  - IconeHome.tsx:18 (🏠), IconeSom.tsx:33 (🔊), modos.tsx:71 (≡ glyph). DoD: icones on-palette desenhados.
+- [ ] MD.8 **Header do quiz com icone home** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
+  - jogar.tsx:163-170 sem home. DoD: nº questao + home no topo (briefing).
+- [ ] MD.9 **Substituir emojis gigantes/confete-emoji por arte on-palette** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
+  - onboarding.tsx:14-28 (📖🧠🚀), trofeu.tsx:15 (confete emoji), quiz/index.tsx (🎲📚 — manter so se briefing validar). DoD: visual on-palette (confetes roxos/dourados no trofeu).
+- [ ] MD.10 **Splash: logo transparente + contraste do subtitulo** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
+  - index.tsx:83 (logo .jpg -> .png transparente), :133 subtitulo laranja sobre roxo (baixo contraste). DoD: splash legivel e sem retangulo no logo.
+- [ ] MD.11 **Alinhar copy "77 modulos" vs 40 reais** — CORRECAO | BAIXA | INVESTIGACAO | AUTONOMO
+  - "77" hardcoded em onboarding.tsx/modos.tsx E no comentario/`MOCK_MODULOS` (db-queries.ts:10, gera 77 com area TE). DoD: copy + mock refletem os 40 modulos do MVP (ou texto neutro); alinhar mock ao esquema/contagem real evita mascarar bugs (ver MA.1).
+
+## Milestone ME: Saude / regressoes (CORRECAO/INFRA) — V18 — PENDENTE
+- [ ] ME.1 **[CORRIGIDO no double-check] Listar/instalar deps importadas mas AUSENTES do package.json** — INFRA | ALTA | INVESTIGACAO | AUTONOMO
+  - **Correcao do double-check**: `expo-secure-store` JA esta no package.json (linha 96) — NAO instalar. Faltam de fato: `expo-haptics` (importado em haptics.ts:6), `expo-speech` (TTS) e `expo-linear-gradient` (= MC.1); verificar tambem `@react-native-community/slider` (usado em config.tsx).
+  - **Risco de reprodutibilidade (elevado)**: deps importadas mas nao listadas fazem `npm ci`/CI/clone novo QUEBRAR o build (hoje so funciona porque estao em node_modules local). Adicionar todas ao package.json.
+  - Acao: `npx expo install expo-haptics expo-speech expo-linear-gradient @react-native-community/slider`. DoD: `npx tsc --noEmit` sem TS2307; `npm ci` limpo builda; sem crash ao chamar haptics/TTS.
+- [ ] ME.2 **Corrigir 5 erros tsc** — CORRECAO | ALTA | INVESTIGACAO | AUTONOMO
+  - app.config.ts:23 (newArchEnabled), settings.ts:23/62 (tipo Settings sem volumeMusica/volumeEfeitos/hapticos/voz), sound-runtime.ts:20 (lastEfeitos). DoD: `npx tsc --noEmit` = 0 erros.
+- [ ] ME.3 **Corrigir suites jest + 1 teste de logica** — CORRECAO | MEDIA | INVESTIGACAO | AUTONOMO
+  - Excluir Playwright spec do testMatch do Jest; transform/mocar expo-secure-store; corrigir matching-coverage (sinonimo) e 2 asserts de catalogo desatualizado. DoD: jest verde.
+- [ ] ME.4 **Lint cleanup** — MANUTENCAO | BAIXA | INVESTIGACAO | AUTONOMO
+  - console.log->debug/remover (4), any em PersonagemLivro:19, eslint-disable inutil jogar.tsx:52, prefer-const network.ts:47. DoD: 0 warnings relevantes.
+- [ ] ME.5 **Backfill 4 perguntas sem quiz_alternatives** — CORRECAO | BAIXA | INVESTIGACAO (recuperado) | AUTONOMO
+  - DoD: toda pergunta tem alternativas (ou fallback gerado validado).
+
+## Milestone MF: Validacao empirica mock-a-mock + entrega (INFRA) — V18 — PENDENTE
+> CAUSA-RAIZ do ciclo de 17 versoes. Sem isso, o plano repete o fracasso.
+
+- [ ] MF.1 **Protocolo de validacao visual tela-a-tela** — INFRA | CRITICA | INVESTIGACAO (lente 6) | AUTONOMO
+  - **AVD de resolucao real (nota double-check)**: usar um AVD Pixel ~1080x1920 (NAO o `motoraauto_smoke` 320x640 usado em V10-V14 — low-res foi parte do trap de validacao). Criar AVD se preciso.
+  - Build APK -> emulator hi-res -> screenshot de CADA uma das 14 telas -> comparar contra o mock correspondente (whatsapp_media/images + telas Drive) -> score 1-5 por tela -> iterar telas com score <4. Registrar evidencia em orchestration/.
+  - DoD: todas as 14 telas com score >=4 vs mock, em resolucao real.
+- [ ] MF.2 **Jornada completa E2E no emulador (sem FATAL no logcat)** — INFRA | CRITICA | INVESTIGACAO | AUTONOMO
+  - Quiz Aleatorio: 20 perguntas -> placar (NAO spinner). Quiz Personalizado: so modulos escolhidos.
+  - **Completar um MODULO INTEIRO (nota double-check)**: todas as licoes do modulo 1 a 100% -> licao fica amarela -> **modulo 2 desbloqueia** (prova MA.5) -> seguir ate o **Trofeu**. Exatamente o caminho que nunca foi validado nas 17 versoes.
+  - adb logcat limpo (sem FATAL EXCEPTION).
+  - DoD: jornada inteira percorrida com screenshots, sem crash, sem loop, com desbloqueio de modulo e trofeu comprovados.
+- [ ] MF.3 **ux-polish final + entrega** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
+  - Rodar ux-polish (score before/after) nas telas principais. Recomendacao /design-sync: NAO usar (documentado). Limpar dist/ (regra das 5). Atualizar changelog + CLAUDE.md (status real). APK final + catbox.
+  - DoD: APK V18 validado publicado; docs atualizadas; dist/ com 5 APKs.
+
+## Dependencias entre milestones V18
+- MB.1 (assets) destrava MB.3/MB.4/MB.5/MD.7/MD.10 (qualquer coisa que use PNG transparente).
+- MC.1 (instalar lib) antes de MC.2 e dos itens de degrade em MD.
+- MA (loop) e pre-requisito de MF.2 (so da pra jogar o quiz depois do fix).
+- MF (validacao) por ultimo, mas MF.1 deve rodar incrementalmente apos cada tela tocada.
+- Ordem recomendada: **MA -> MC.1 -> MB -> MC.2 -> MD -> ME -> MF** (ME pode rodar em paralelo).
+
+## Dependencias de voce (V18)
+- **PNGs transparentes originais (MB.1)** — falta de voce: confirmar que posso baixar do Drive via Playwright no seu Chrome logado, OU baixar voce mesmo as pastas "Personagens"/"Logo"/"Elementos" e dropar em `assets/images/`. Destrava: toda a fidelidade de personagem/logo/trofeu/icones. (Tentarei autonomamente primeiro; so peco se o Drive bloquear.)
+
+## Recomendacao /design-sync (resposta a pergunta do usuario)
+- **NAO usar /design-sync.** A ferramenta sincroniza biblioteca de componentes com um projeto Design System no claude.ai/design — nao aplica template de marca a app React Native, nao instala lib de degrade, nao gera assets. Os tokens (cores/fontes) JA estao corretos no codigo (colors.ts/FONTES). O gargalo e assets transparentes + lib de degrade + layout por tela + bug de dados — nada disso e endereçado por design-sync.
+- **Fazer design direto** (milestones MB/MC/MD) e, no fim, **ux-polish** (agente que usa Playwright para score visual before/after) para o acabamento. Isso aproveita os mocks como fonte de verdade.
+
+## Itens rejeitados / backlog V18
+- Teologia (24 modulos): BACKLOG (ja adiado V10; reavaliar pos-MVP).
+- Streak/XP/badges surfacing: BACKLOG BAIXA (PESQUISA_EXTERNA; streak.ts existe subutilizado).
+- iOS / backend dedicado / multi-idioma: REJEITADO (decisoes anteriores mantidas).
+- M17 do plano antigo (hipoteses de race em licoes): SUPERSEDED por MA (causa real = dados do quiz).
+
+
 
 ## Resumo Executivo
 

@@ -11,7 +11,11 @@ import type { ExpoConfig, ConfigContext } from 'expo/config';
  * - EAS Build:   setar via eas.json > build > env
  * - Gradle:      setar em android/gradle.properties e ler via app.config.ts
  */
-const config = ({ config }: ConfigContext): ExpoConfig => ({
+const config = ({ config }: ConfigContext): ExpoConfig => {
+  // newArchEnabled e um campo valido do app config (lido pelo prebuild) mas ainda
+  // nao declarado no tipo ExpoConfig desta versao do SDK — tipar o literal com a
+  // extensao evita o erro de excess-property sem perder a flag.
+  const cfg: ExpoConfig & { newArchEnabled?: boolean } = {
   ...config,
   name: 'Expert Na Bíblia',
   slug: 'expert-na-biblia',
@@ -67,6 +71,8 @@ const config = ({ config }: ConfigContext): ExpoConfig => ({
     minimaxBaseUrl: 'https://api.minimax.io/v1',
     minimaxModel: 'MiniMax-M2.7',
   },
-});
+  };
+  return cfg;
+};
 
 export default config;
