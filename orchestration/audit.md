@@ -1,23 +1,45 @@
-# Auditoria Final — V18.5 (MF: validacao empirica + entrega)
+# Auditoria Final — V21 (ciclo de FECHAMENTO)
+
+## Itens implementados
+- I1 [ALTO] Confiabilidade IA (timeout M2.7):
+  - src/lib/m3.ts: TIMEOUT_MS 10000 -> 27000 (cobre cauda de latencia 4-20s do modelo de raciocinio).
+  - src/lib/openai.ts: TIMEOUT_MS 10000 -> 20000 (alinhado ao fallback).
+  - src/lib/avaliador.ts: regex semConexao /network|fetch|abort/i -> /network|fetch|abort|timeout/i.
+    Agora M3_TIMEOUT/OPENAI_TIMEOUT caem no caminho gracioso (match local + msg "sem conexao")
+    em vez da msg dura "Avaliacao automatica indisponivel".
+  - LOADING ("AVALIANDO...") da tela de licao ja cobre toda a espera (estado `avaliando` ligado ate
+    o avaliarResposta resolver) — sem trabalho extra; UX nao trava.
+- I2 [MEDIO] Canonica FB01-L01-Q07:
+  - src/db/seed-perguntas.ts (fonte do runtime): acentos PT-BR corrigidos na resposta real.
+  - data/db.sqlite (master dev de generate_seed_ts.cjs): Q07 "..." -> resposta real acentuada
+    (evita regressao em regeneracao). FB01 confirmado com 0 canonicas "..."
+- I3 [BAIXO] Acentuacao/copy UI (src/app + src/components + msgs user-facing de avaliador.ts):
+  - onboarding (lúdica, Lições, módulos, Bíblico, rápido, começar, lição, próxima, troféu, PRÓXIMO, COMEÇAR!)
+  - quiz/index (módulos aleatórios, até 20 módulos), quiz/jogar (Não foi possível.../módulos)
+  - feedback/erro avaliar (Não foi possível avaliar agora...), avaliador (Sem conexão.../Avaliação automática indisponível...)
+  - a11y labels: index splash (Bíblia), trofeu (Troféu dourado: Parabéns, você é um Expert)
 
 ## Criterios
-- MF.1 fidelidade tela-a-tela: 14 telas score 5/5 vs briefing (alvo >=4) em emulador 1080x1920
-- MF.2 jornada E2E: Quiz Aleatorio (sem spinner), Quiz Personalizado, conclusao de modulo (amarelo+desbloqueio) + trofeu — sem FATAL
-- MF.3 entrega: APK V18 (108MB) assinado, dist regra das 5, catbox, docs
-- tsc 0 | jest 82/82 | lint 0 (heranca V18.1-4)
+- Regressao (jest): baseline 94 -> 97 (+3 regressao timeout). TODOS passam. OK
+- tsc --noEmit: 0 erros. OK
+- lint (eslint): 0 erros/warnings. OK
+- Itens do brainstorm: I1/I2/I3 IMPLEMENTADOS. OK
+- Teste novo para o fix (avaliador-timeout.test.ts: 3 casos — timeout=conexao, HTTP500=dura, network/abort nao regrediu). OK
+- GATE_WIRE-IN: APROVADO trivial (0 itens em escopo — sem modulo novo). OK
+- Sem secrets no codigo. OK
+- NAO regrediu o que funciona: nenhuma alteracao em scoring/progressao, mascotes, quiz logic.
 
-## Itens entregues
-- MF.1/MF.2: ver orchestration/test_report_v18.md (+ screenshots orchestration/v18_mf/)
-- MF.3: dist/ExpertNaBiblia-v18.0.0.apk | SHA256 003914b5...0fb9fb | https://files.catbox.moe/6q6vst.apk
-- FIX build: android/app/build.gradle restaurado (estava truncado por auto-push) + versionCode 3/versionName 1.8.0
-- ux-polish: N/A (APK nativo, sem URL web p/ Playwright) — substituido pela validacao mock-a-mock hi-res
+## Design QA (UI)
+- Mudancas de UI sao apenas TEXTO (acentuacao). Layout/estilo/componentes intactos. Sem risco visual.
+- Validacao empirica visual (emulador) fica para o solo-qa (FASE seguinte do wrapper).
 
-## Causa-raiz das 17 versoes — RESOLVIDA e comprovada no emulador
-1. Quiz spinner eterno (IDs M001-M004) -> listarPerguntasAleatorias; carrega 20 perguntas reais
-2. Assets JPG com fundo -> PNGs transparentes da designer (frameless)
-3. Sem degrade (lib ausente) -> expo-linear-gradient + componentes Gradiente
-4. Validacao insuficiente -> emulador hi-res + jornada completa (modulo->amarelo->trofeu)
+## Smoke test
+- N/A nesta etapa de solo-evolve (mobile RN; validacao empirica no emulador eh responsabilidade do
+  solo-qa na FASE seguinte, conforme instrucao do orquestrador). Sem dev server web.
 
-## Pendencia: MD.7 (icones desenhados) — Drive "Elementos" vazio (asset inexistente).
+## PRD
+- Sem divergencias com PRD (correcoes de qualidade/copy/confiabilidade, dentro do escopo do briefing).
 
-## Nota: 9.7/10.0 | Veredito: APROVADO
+## Nota: 10.0/10.0
+
+## Veredito: APROVADO

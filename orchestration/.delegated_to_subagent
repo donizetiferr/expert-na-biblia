@@ -1,3 +1,3 @@
-subagent_id=a664add7814df1978
-delegated_at=2026-06-25T16:45
-context=Ciclo V20 — fechar 2 lacunas de briefing: (1) mascote DOURADO no modo Licoes (roxo so no Quiz; asset do Drive Personagens); (2) IA obrigatoria nas licoes (wire avaliador.ts M2.7/OpenAI hibrido + ~497 canonicas placeholder + resolver DNS do emulador p/ testar IA). Gate de entrada: reconfirmar licao->100%->amarelo->desbloqueio->trofeu (nao regrediu). Evidencia em orchestration/v20_validation/.
+subagent_id=a3d0d3d6927fd43b1
+delegated_at=2026-06-25T18:40
+context=V21 reanimado para fechar DoD incompleto: build APK V21 (bump + ambos dists + regra das 5 + catbox verificado + changelog), e validacao empirica no emulador hi-res ONLINE (gate progressao + PROVA do fix IA: resposta aberta ~12-20s com veredito real dentro de 27s + Q07/acentos). Evidencia em orchestration/v21_validation/. Os 3 fixes de codigo ja verificados OK pela sessao principal.

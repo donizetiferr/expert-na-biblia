@@ -72,3 +72,20 @@ Estado: V19_ENTREGUE_COMPROVADO
   Acertos comprovados acumulando 1->10 (prova do release-blocker BUG-1).
 - APK: dist/ + C:\ENB\dist\ ExpertNaBiblia-v19.0.0.apk (regra das 5). URL: https://files.catbox.moe/i9ktqe.apk (HTTP 206 + PK)
 - Git: commit LOCAL apenas (usuario pediu SEM push ao GitHub).
+
+## V21 — ciclo de FECHAMENTO (2026-06-25)
+Estado: INVOCANDO_SOLO_EVOLVE_V21 | Modo: AGENT (subagente isolado opus[1m]) | MODO_ORQUESTRADO_FULL_CYCLE
+- 0.0 parser: rigor=ALTO (exige prova empirica emulador+IA online) | modo_continuo=INATIVO (+um-ciclo: ciclo de fechamento V21, escopo = 3 itens nao-bloqueantes) | objetivo=EXPLICITO
+- Objetivo: fechar os 3 itens nao-bloqueantes do VERDICT V20 sem regredir (scoring/progressao, mascotes, quiz).
+- 0.1 vertente: GENERICO_CONFIRMADO (sem sinais Workana/PedBot) | 0.2 EXISTENTE | 0.7 deps: M2.7+OpenAI keys baked (cache valido) | 0.9 Dev Server: SKIPPED (mobile RN, sem dev server web)
+- FASE 1: solo-roadmap DISPENSADO (roadmap dado = V21 com 3 itens explicitos; version_plan V21 escrito direto)
+- Diagnostico previo (agent): 
+  - Item1 m3.ts:27 TIMEOUT_MS=10000 -> abort vira 'M3_TIMEOUT' que NAO casa /network|fetch|abort/i em avaliador.ts:79 -> msg dura. Fix: 27000ms + regex incluir timeout.
+  - Item2 seed-perguntas.ts ja tem Q07 real (FB01 sem '...'/'NAO SEI'); data/db.sqlite (dev master) ainda '...'. Polir acentos Q07 + sync db.sqlite. (489 'NAO SEI' em NT/locked = follow-up fora de escopo.)
+  - Item3 ~127 strings UI sem acento em src/app+src/components.
+- Runtime DB: seeda de seed-*.ts bundled (NAO de data/db.sqlite; este eh artefato dev/master do generate_seed_ts).
+FASE_0_9: SKIPPED | motivo=projeto_mobile_RN_sem_dev_server_web
+
+## solo-evolve V21 2026-06-25 19:48:29
+Estado: EVOLVE_V21_CONCLUIDO_AGUARDANDO_ORQUESTRADOR
+commit: d3b4ca1 | audit 10.0/10 | jest 94->97 (+3) | tsc 0 | lint 0

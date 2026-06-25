@@ -15,6 +15,7 @@
 - [x] [2026-06-25] [fonte: USUARIO] Looping infinito em um dos modulos — **TRIADO V18**: VALIDO mas causa diferente da catalogada. Causa real = Quiz travado em spinner eterno (IDs M001-M004 inexistentes no DB). Promovido para milestone M-LOOP. M17 (hipoteses antigas) SUPERSEDED.
 - [x] [2026-06-25] [fonte: USUARIO] Mascote dourado nas Licoes (BUG-6/V19 diferido) — **ENTREGUE V20** (milestone V20.A).
 - [x] [2026-06-25] [fonte: USUARIO] IA obrigatoria nas licoes (regra #4, diferido V19) — **ENTREGUE V20** (milestone V20.B).
+- [ ] [2026-06-25] [fonte: INVESTIGACAO] PRIVACIDADE GitHub: auto-push hook sobe orchestration/, CLAUDE.md, evolution_plan.md e a palavra "claude" (CHANGELOG/README/smoke.test.ts/docs) ao remoto privado donizetiferr/expert-na-biblia — viola a politica. Usuario decidiu "NAO MEXER AGORA" (2026-06-25); repo e privado. Reabrir para remediar: opcao A (gitignore + git rm --cached + scrub "claude" + git filter-repo + force-push) ou B (so daqui pra frente + corrigir auto-push hook).
 
 ---
 
