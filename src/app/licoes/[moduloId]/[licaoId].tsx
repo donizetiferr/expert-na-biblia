@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable, StyleSheet, KeyboardAvoidingView, Platform, Animated, ScrollView } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, KeyboardAvoidingView, Platform, Animated, ScrollView, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../../constants/colors';
@@ -7,7 +7,7 @@ import { GradienteRoxo } from '../../../components/Gradiente';
 import { IconeSom } from '../../../components/IconeSom';
 import { IconeHome } from '../../../components/IconeHome';
 import { listarPerguntas, registrarRespostaUsuario } from '../../../lib/db-queries';
-import { matchCanonico } from '../../../lib/matching';
+import { avaliarResposta } from '../../../lib/avaliador';
 import type { Pergunta } from '../../../types';
 
 type Pose = 'PENSATIVO' | 'FELIZ' | 'ASSUSTADO' | 'TRISTE' | 'EXCLAMANDO';
@@ -41,6 +41,9 @@ export default function LicaoScreen() {
   // V19 BUG-4: mensagem de validacao para envio de resposta vazia (antes navegava
   // para fora/feedback silenciosamente).
   const [erroValidacao, setErroValidacao] = useState('');
+  // V20: "IA obrigatoria" (regra #4). Estado de LOADING enquanto o avaliador hibrido
+  // (match local -> M2.7 -> OpenAI) processa a resposta aberta. Bloqueia duplo-envio.
+  const [avaliando, setAvaliando] = useState(false);
 
   // V14 M15.5: animacao fade-in/zoom de entrada do personagem
   const personagemFade = useRef(new Animated.Value(0)).current;
@@ -94,16 +97,39 @@ export default function LicaoScreen() {
   const perguntaAtual = perguntas[indice];
   if (!perguntaAtual) return null;
 
-  const enviar = () => {
+  const enviar = async () => {
     // V19 BUG-4: bloqueia envio de resposta vazia (antes navegava para feedback/fora
     // silenciosamente). Mostra validacao e NAO sai da licao.
     if (!resposta.trim()) {
       setErroValidacao('Digite uma resposta antes de enviar.');
       return;
     }
+    if (avaliando) return; // guard anti duplo-envio enquanto a IA processa
     setErroValidacao('');
 
-    const resultado = matchCanonico(resposta, perguntaAtual.resposta_canonica);
+    // V20 (regra #4 "IA obrigatoria"): a avaliacao das licoes agora passa pelo
+    // orquestrador HIBRIDO `avaliarResposta`:
+    //   match local canonico (>=85%) -> cache SQLite -> M2.7 (LLM) -> OpenAI (fallback).
+    // Perguntas abertas/sem gabarito (~497 "NAO SEI"/placeholder) tem match local 0.7
+    // (< 0.85), entao caem para a IA quando ha rede; offline, o avaliador devolve um
+    // veredito amigavel (nunca lanca excecao, nunca trava a licao).
+    setAvaliando(true);
+    let resultado;
+    try {
+      resultado = await avaliarResposta(perguntaAtual, resposta);
+    } catch {
+      // Defesa extra: o avaliador ja trata tudo internamente, mas garantimos que um
+      // erro inesperado NAO trave a licao — cai para "nao confirmado" e segue.
+      resultado = {
+        correto: false,
+        resposta_esperada: perguntaAtual.resposta_canonica,
+        score: 0,
+        feedback: 'Nao foi possivel avaliar agora. Confira a resposta exibida.',
+        origem: 'FALHOU' as const,
+      };
+    } finally {
+      setAvaliando(false);
+    }
 
     // Log local da resposta do usuario (para revisao posterior / debug)
     registrarRespostaUsuario(perguntaAtual.id, resposta, resultado.correto, resultado.score || 0);
@@ -112,12 +138,16 @@ export default function LicaoScreen() {
     const acertosAtual = acertos + (resultado.correto ? 1 : 0);
     if (resultado.correto) setAcertos(acertosAtual);
 
-    // Navega para Tela Feedback dedicada em vez de mudar pose inline
+    // Navega para Tela Feedback dedicada em vez de mudar pose inline.
+    // V20: repassa o feedback da IA + a resposta esperada (que pode vir do LLM) e a
+    // origem da avaliacao (CACHE/M3/OPENAI/FALHOU) para exibir na tela de feedback.
     router.push({
       pathname: `/licoes/${moduloId}/${licaoId}/feedback`,
       params: {
         resultado: resultado.correto ? 'acerto' : 'erro',
-        resposta_correta: perguntaAtual.resposta_canonica,
+        resposta_correta: resultado.resposta_esperada || perguntaAtual.resposta_canonica,
+        feedback_ia: resultado.feedback ?? '',
+        origem: resultado.origem ?? '',
         moduloId: String(moduloId),
         licaoId: String(licaoId),
         indice: String(indice),
@@ -165,7 +195,7 @@ export default function LicaoScreen() {
             { opacity: personagemFade, transform: [{ scale: personagemZoom }] },
           ]}
         >
-          <PersonagemLivro pose={pose} size={240} />
+          <PersonagemLivro pose={pose} size={240} variante="licoes" />
         </Animated.View>
 
         <View style={styles.quadro}>
@@ -186,6 +216,7 @@ export default function LicaoScreen() {
             autoCapitalize="sentences"
             autoCorrect={false}
             returnKeyType="send"
+            editable={!avaliando}
             onSubmitEditing={enviar}
           />
         </View>
@@ -193,8 +224,20 @@ export default function LicaoScreen() {
         {/* V19 BUG-4: validacao de resposta vazia (sem sair da licao) */}
         {erroValidacao ? <Text style={styles.erroValidacao}>{erroValidacao}</Text> : null}
 
-        <Pressable style={styles.botaoEnviar} onPress={enviar}>
-          <Text style={styles.botaoTexto}>ENVIAR</Text>
+        {/* V20: botao com estado de LOADING enquanto a IA avalia a resposta aberta. */}
+        <Pressable
+          style={[styles.botaoEnviar, avaliando && styles.botaoEnviarDesabilitado]}
+          onPress={enviar}
+          disabled={avaliando}
+        >
+          {avaliando ? (
+            <View style={styles.botaoLoadingRow}>
+              <ActivityIndicator color={COLORS.branco} />
+              <Text style={styles.botaoTexto}>AVALIANDO...</Text>
+            </View>
+          ) : (
+            <Text style={styles.botaoTexto}>ENVIAR</Text>
+          )}
         </Pressable>
       </ScrollView>
 
@@ -306,6 +349,14 @@ const styles = StyleSheet.create({
     padding: ESPACAMENTOS.md,
     borderRadius: BORDAS.raioMedio,
     alignItems: 'center',
+  },
+  botaoEnviarDesabilitado: {
+    opacity: 0.7,
+  },
+  botaoLoadingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: ESPACAMENTOS.sm,
   },
   botaoTexto: {
     fontFamily: FONTES.display,

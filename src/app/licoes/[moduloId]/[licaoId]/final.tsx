@@ -102,7 +102,7 @@ export default function FinalAtividadeScreen() {
 
   return (
     <GradienteLaranjaForte style={styles.container}>
-      <PersonagemLivro pose={cfg.pose} size={160} />
+      <PersonagemLivro pose={cfg.pose} size={160} variante="licoes" />
       <Text style={styles.titulo}>{cfg.titulo}</Text>
       <Text style={styles.subtitulo}>{cfg.subtitulo}</Text>
 

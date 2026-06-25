@@ -7,16 +7,31 @@ import { Animated, StyleSheet, type ImageSourcePropType } from 'react-native';
  * DIRETO sobre o fundo da tela — sem a moldura roxa + borda que dava o efeito de
  * "imagem com fundo dentro de um quadrado". Os assets ja vem com o livro recortado
  * (alpha real), entao o personagem se integra ao fundo.
+ *
+ * V20: DOIS mascotes por regra de identidade (docs/03_identidade_visual):
+ *   - Personagem 1 = livro DOURADO/laranja -> modo LICOES (variante='licoes')
+ *   - Personagem 2 = livro ROXO -> modo QUIZ (variante='quiz', DEFAULT)
+ * O default 'quiz' preserva o comportamento legado (roxo) em todas as telas que nao
+ * declaram variante. As telas de Licoes passam variante='licoes'.
+ *
+ * NOTA DE ASSET (honestidade): a pasta Drive "Personagens" so contem 3 poses DOURADAS
+ * (positivas/neutras): pensativo (queixo), feliz/exclamando (dedo p/ cima), questionando.
+ * Nao ha pose dourada ASSUSTADO/TRISTE dedicada — para esses estados de feedback nas
+ * licoes usamos a pose dourada "questionando" (a mais neutra disponivel). O set ROXO do
+ * Quiz tem as 5 poses completas.
  */
 
 export type Pose = 'PENSATIVO' | 'FELIZ' | 'ASSUSTADO' | 'TRISTE' | 'EXCLAMANDO';
+export type Variante = 'licoes' | 'quiz';
 
 interface Props {
   pose?: Pose;
   size?: number;
+  variante?: Variante;
 }
 
-const IMAGENS_POSE: Record<Pose, ImageSourcePropType> = {
+// Set ROXO (Personagem 2 — modo Quiz). 5 poses completas.
+const IMAGENS_QUIZ: Record<Pose, ImageSourcePropType> = {
   PENSATIVO: require('../../assets/images/personagem_pensativo.png') as ImageSourcePropType,
   FELIZ: require('../../assets/images/personagem_feliz.png') as ImageSourcePropType,
   ASSUSTADO: require('../../assets/images/personagem_assustado.png') as ImageSourcePropType,
@@ -24,7 +39,18 @@ const IMAGENS_POSE: Record<Pose, ImageSourcePropType> = {
   EXCLAMANDO: require('../../assets/images/personagem_exclamando.png') as ImageSourcePropType,
 };
 
-export function PersonagemLivro({ pose = 'PENSATIVO', size = 120 }: Props) {
+// Set DOURADO (Personagem 1 — modo Licoes). Origem: 3 poses reais da designer
+// (golden_13/14/15); ASSUSTADO/TRISTE reutilizam a pose dourada "questionando".
+const IMAGENS_LICOES: Record<Pose, ImageSourcePropType> = {
+  PENSATIVO: require('../../assets/images/personagem_licoes_pensativo.png') as ImageSourcePropType,
+  FELIZ: require('../../assets/images/personagem_licoes_feliz.png') as ImageSourcePropType,
+  ASSUSTADO: require('../../assets/images/personagem_licoes_assustado.png') as ImageSourcePropType,
+  TRISTE: require('../../assets/images/personagem_licoes_triste.png') as ImageSourcePropType,
+  EXCLAMANDO: require('../../assets/images/personagem_licoes_exclamando.png') as ImageSourcePropType,
+};
+
+export function PersonagemLivro({ pose = 'PENSATIVO', size = 120, variante = 'quiz' }: Props) {
+  const imagensPose = variante === 'licoes' ? IMAGENS_LICOES : IMAGENS_QUIZ;
   const bounceAnim = useRef(new Animated.Value(0)).current;
   const blinkAnim = useRef(new Animated.Value(1)).current;
 
@@ -48,7 +74,7 @@ export function PersonagemLivro({ pose = 'PENSATIVO', size = 120 }: Props) {
   return (
     <Animated.View style={[styles.container, { transform: [{ translateY: bounceAnim }] }]}>
       <Animated.Image
-        source={IMAGENS_POSE[pose]}
+        source={imagensPose[pose]}
         // PNG transparente direto sobre o fundo da tela (sem moldura/caixa).
         style={{ width: size, height: size * 1.3, opacity: blinkAnim }}
         resizeMode="contain"

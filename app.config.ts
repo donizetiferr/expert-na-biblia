@@ -19,7 +19,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
   ...config,
   name: 'Expert Na Bíblia',
   slug: 'expert-na-biblia',
-  version: '1.9.0',
+  version: '1.10.0',
   orientation: 'portrait',
   icon: './assets/icon.png',
   scheme: 'expertnabiblia',
@@ -34,7 +34,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'com.donizetiferr.expertnabiblia',
-    buildNumber: '4',
+    buildNumber: '5',
   },
   android: {
     adaptiveIcon: {
@@ -42,7 +42,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       backgroundColor: '#3c026d',
     },
     package: 'com.donizetiferr.expertnabiblia',
-    versionCode: 4,
+    versionCode: 5,
     permissions: ['NOTIFICATIONS', 'INTERNET'],
   },
   web: {

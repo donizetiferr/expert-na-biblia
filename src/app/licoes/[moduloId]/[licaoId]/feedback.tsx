@@ -27,9 +27,20 @@ export default function FeedbackScreen() {
     total: string;
     acertos_atual: string;
     total_perguntas: string;
+    feedback_ia: string;
+    origem: string;
   }>();
 
   const isAcerto = params.resultado === 'acerto';
+  // V20: feedback textual da IA (M2.7/OpenAI) quando a avaliacao passou pelo LLM.
+  // Mensagens genericas internas ("Resposta validada localmente.", "Resposta do cache.")
+  // nao agregam valor ao usuario — so exibimos explicacoes substantivas.
+  const feedbackIa = (params.feedback_ia ?? '').trim();
+  const feedbackGenerico = [
+    'Resposta validada localmente.',
+    'Resposta do cache.',
+  ].includes(feedbackIa);
+  const mostrarFeedbackIa = feedbackIa.length > 0 && !feedbackGenerico;
 
   const indice = parseInt(params.indice ?? '0', 10);
   const total = parseInt(params.total ?? '1', 10);
@@ -115,7 +126,7 @@ export default function FeedbackScreen() {
         }}
       >
         {/* V14 M15.8: PersonagemLivro 150 -> 200 */}
-        <PersonagemLivro pose={isAcerto ? 'FELIZ' : 'ASSUSTADO'} size={200} />
+        <PersonagemLivro pose={isAcerto ? 'FELIZ' : 'ASSUSTADO'} size={200} variante="licoes" />
       </Animated.View>
 
       {/* V14 M15.8: balao de fala em AMBOS os casos (acerto E erro) */}
@@ -126,6 +137,8 @@ export default function FeedbackScreen() {
       <View style={styles.quadroResposta}>
         <Text style={styles.quadroLabel}>Resposta correta:</Text>
         <Text style={styles.quadroTexto}>{params.resposta_correta || '(não disponível)'}</Text>
+        {/* V20: explicacao da IA (quando avaliada por M2.7/OpenAI) */}
+        {mostrarFeedbackIa ? <Text style={styles.feedbackIa}>{feedbackIa}</Text> : null}
       </View>
 
       <View style={styles.indicador}>
@@ -208,6 +221,13 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: COLORS.roxoEscuro,
     textAlign: 'center',
+  },
+  feedbackIa: {
+    fontFamily: FONTES.bodyRegular,
+    fontSize: 15,
+    color: COLORS.preto,
+    textAlign: 'center',
+    marginTop: ESPACAMENTOS.xs,
   },
   indicador: {
     paddingVertical: ESPACAMENTOS.xs,

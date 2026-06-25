@@ -13,6 +13,7 @@
 import * as SecureStore from 'expo-secure-store';
 import Constants from 'expo-constants';
 import type { RespostaAvaliacao } from '../types';
+import { extrairAvaliacaoJson } from './parse-json';
 
 const OPENAI_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
 const OPENAI_MODEL = 'gpt-4o-mini';
@@ -74,7 +75,9 @@ export async function avaliarResposta(
 
     const data: { choices: Array<{ message: { content: string } }> } = await res.json();
     const raw = data.choices[0]?.message?.content ?? '';
-    return JSON.parse(raw) as RespostaAvaliacao;
+    // V20: usa o mesmo extrator robusto do M2.7 como defesa (alem do response_format
+    // json_object) — remove eventuais cercas/think e isola o objeto {...}.
+    return JSON.parse(extrairAvaliacaoJson(raw)) as RespostaAvaliacao;
   } catch (err) {
     if (err instanceof Error && err.name === 'AbortError') {
       throw new Error('OPENAI_TIMEOUT');

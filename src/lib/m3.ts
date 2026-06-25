@@ -15,6 +15,7 @@
 import * as SecureStore from 'expo-secure-store';
 import Constants from 'expo-constants';
 import type { RespostaAvaliacao } from '../types';
+import { extrairAvaliacaoJson } from './parse-json';
 
 const M3_ENDPOINT =
   (Constants.expoConfig?.extra?.minimaxBaseUrl as string | undefined) || 'https://api.minimax.io/v1';
@@ -37,10 +38,6 @@ Para cada par (pergunta, resposta_usuario), responda em JSON estrito:
 }
 Use a traducao Almeida Revista e Corrigida como referencia. Tolerante a sinonimos biblicos (jesus = cristo = messias).
 NAO inclua tags <think> nem raciocinio intermediario na saida final.`;
-
-function filtrarThink(texto: string): string {
-  return texto.replace(THINK_REGEX, '').trim();
-}
 
 export async function salvarApiKey(key: string): Promise<void> {
   await SecureStore.setItemAsync(SECURE_KEY_NAME, key);
@@ -102,7 +99,11 @@ export async function avaliarResposta(
 
       const data: { choices: Array<{ message: { content: string } }> } = await res.json();
       const raw = data.choices[0]?.message?.content ?? '';
-      const limpo = filtrarThink(raw);
+      // V20: M2.7 envolve a saida em <think>...</think> E em cercas markdown ```json.
+      // `extrairAvaliacaoJson` remove ambos e isola o objeto {...} antes do parse
+      // (antes so removia <think>, e a cerca markdown quebrava o JSON.parse -> a IA
+      // nunca era usada online). THINK_REGEX segue exportado para compat de testes.
+      const limpo = extrairAvaliacaoJson(raw);
 
       const parsed = JSON.parse(limpo) as RespostaAvaliacao;
       return parsed;
