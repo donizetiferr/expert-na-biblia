@@ -45,6 +45,19 @@ Todas as mudancas relevantes neste projeto.
 - Se perder, NAO podera mais publicar atualizacoes (assinatura muda)
 - Backup local + cofre + Google Drive privado
 
+### Known Issues (catalogados em 2026-06-25 — NAO corrigidos nesta entrega)
+- 7 bugs visuais/de layout + 1 looping infinito identificados via code review (sem runtime). Detalhamento + milestones correspondentes em `evolution_plan.md` (Milestone 16 + 17):
+  - `src/app/quiz/jogar.tsx:87-106` — `carregarPerguntas()` sequencial lento + race condition (16.1)
+  - `src/app/quiz/jogar.tsx` — param `modo`/`modulos` ignorado, sempre carrega M001-M004 (16.2)
+  - `src/app/quiz/final.tsx:56-58` — `setTimeout(persistir)` fora de useEffect + nunca roda em RN (16.3)
+  - `src/app/licoes/[moduloId]/[licaoId]/feedback.tsx:57-65` — playAcerto/playErro no body (flood audio) (16.4)
+  - `src/app/onboarding.tsx:31` — `Dimensions.get('window')` no module scope (16.5)
+  - `src/app/licoes/[moduloId].tsx:131` — cards bloqueados quase invisiveis (16.6)
+  - `src/app/licoes/index.tsx:31-40` — playCadeiraDesbloqueia em batch no 1o render (16.7)
+  - **Looping infinito** em modulo (causa exata NAO confirmada via code review estatico; requer investigacao runtime) (17.1 + 17.2)
+- Status: bugs DOCUMENTADOS em `evolution_plan.md` (Inbox + Milestones 16/17) + `orchestration/status.md`. Nenhum codigo fonte foi tocado nesta entrega.
+- Para retomar correcoes: despachar `@full-cycle` apontando para Milestone 16 (V18 — 7 fixes visuais) ou Milestone 17 (V19 — debug do looping).
+
 ## [V13.0.0] - 2026-06-25 (5 fixes de bugs reais — SFX + modal + slice + logs + TODOs)
 
 ### Changed

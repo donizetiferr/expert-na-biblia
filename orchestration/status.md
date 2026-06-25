@@ -1,10 +1,26 @@
-# Status — @full-cycle Expert Na Biblia (2026-06-25, V17)
+# Status — @full-cycle Expert Na Biblia (2026-06-25, V17 + bugs pendentes)
 
 **Finalizado em:** 2026-06-25 (V17 — Play Store prep + EAS build)
 **Tipo:** @full-cycle agent (subagente isolado, opus[1m])
 **Vertente:** GENERICO (cross-check OK)
 **Estado do projeto:** **V17 entregue (6/6 tarefas)** + AAB v17.0.0 + APK universal + keystore release + EAS config + docs atualizadas
+**Bugs conhecidos:** 7 bugs visuais/de layout + 1 looping ainda presentes (catalogados, NAO corrigidos por pedido explicito do usuario)
 **Toggle file:** `orchestration/.delegated_to_subagent` criado no spawn (limpo apos conclusao)
+
+## Bugs pendentes (catalogados em 2026-06-25, NAO corrigidos por pedido do usuario)
+
+Detalhamento completo em `evolution_plan.md` (Milestone 16 + 17). Resumo:
+
+1. **quiz/jogar.tsx:87-106** — `carregarPerguntas()` faz loop sequencial `for...await` em 20 chamadas `listarPerguntas()`. Pode causar lentidao + race condition se usuario trocar de aba antes do load terminar.
+2. **quiz/jogar.tsx:23-24** — `router.push('/quiz/jogar?modo=aleatorio')` passa param `modo`, mas a tela NAO le `useLocalSearchParams` — modo customizado (com modulos selecionados) eh ignorado, sempre carrega M001-M004 fixos.
+3. **quiz/final.tsx:56-58** — `setTimeout(persistir, 100)` dentro do body do componente (NAO em useEffect). Em React Native (sem `window`), a persistencia nunca roda; mesmo se rodasse, executaria em cada re-render.
+4. **feedback.tsx:57-65** — `playAcerto()`/`playErro()` chamados FORA de useEffect no body do componente. Em cada re-render do componente, o som eh tocado novamente (potencial flood de audio).
+5. **onboarding.tsx:31** — `const { width } = Dimensions.get('window')` calculado no module scope. NAO atualiza em rotacao de tela — slides podem ficar fora de viewport em landscape.
+6. **licoes/[moduloId].tsx:131** — card bloqueado tem `opacity: 0.5` em cima de `cinzaEscuro` (#4b5563). Resultado: cinza escuro + 50% opacity = quase invisivel. Briefing exige cards bloqueados claramente distintos mas visiveis (V12 7.4 ajustou licoes/index.tsx mas nao tocou [moduloId].tsx).
+7. **licoes/index.tsx:31-40** — `playCadeiraDesbloqueia()` eh chamado DENTRO do `renderItem` do FlatList. Guarda `unlockSoundOnceRef` protege contra re-tocadas, MAS na primeira renderizacao pode tocar para varios modulos em sequencia (todos os liberados processados em batch).
+8. **LOOPING INFINITO**: foi reportado pelo usuario mas nao consegui localizar a causa exata via code review estatico. Provavelmente em alguma combinacao de useEffect + parametros deep link em `licoes/[moduloId]/[licaoId].tsx` (linhas 43-66 tem 2 useEffects com deps [licaoId, moduloId] e [params.indice, indice] — possivel loop quando feedback avanca com `params.indice=N` enquanto estado `indice` eh atualizado). Requer investigacao runtime (Playwright + adb logcat) para confirmar.
+
+Proximo passo: despachar `@full-cycle` para V18 (bug fixes de layout) ou V19 (debug do looping) — quando o usuario autorizar.
 
 ## V17 — execucao (2026-06-25)
 

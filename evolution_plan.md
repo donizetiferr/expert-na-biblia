@@ -14,7 +14,8 @@
 
 > Apontamentos informais registrados a qualquer momento. Items triados vao para milestones ou "Itens rejeitados".
 
-- (vazio apos triagem V8 — 10 apontamentos do orquestrador + 8 achados independentes triados)
+- [ ] [2026-06-25] [fonte: USUARIO] Bugs visuais e de layout ainda presentes no app (NAO corrigir agora — apenas catalogar)
+- [ ] [2026-06-25] [fonte: USUARIO] Looping infinito em um dos modulos (NAO corrigir agora — apenas catalogar)
 
 ## Resumo Executivo
 
@@ -242,6 +243,74 @@ Evidencias completas em `orchestration/plan_investigation.md`.
 
 - **AdMob ID real** — substituir `PLACEHOLDER_ANDROID_APP_ID` em `app.json` (M1.2 Solucao B) por ID real OU ID de teste `ca-app-pub-3940256099942544~3347511713` (Google oficial) — destrava: o plugin expo-ads-admob para de fazer prebuild crash
 - **5 sons royalty-free** (M4.5) — pesquisar em Pixabay/Freesound e baixar — destrava: app tem som (P0-7)
+
+## Milestone 16: Bugs visuais e de layout pendentes (MIX) — V18 (PENDENTE, NAO INICIADO)
+
+> Catalogo de bugs visuais e de layout reportados pelo usuario em 2026-06-25.
+> Pedido explicito: NAO corrigir agora, apenas catalogar para V18+.
+> Estimativa de fix: 3-5h de trabalho autonomo (refactor + QA visual).
+
+- [ ] 16.1 **FIX: quiz/jogar.tsx `carregarPerguntas` lento (20 awaits sequenciais)** — CORRECAO | ALTA | INVESTIGACAO (code review 2026-06-25) | AUTONOMO
+  - **Causa**: `src/app/quiz/jogar.tsx:87-106` faz loop sequencial `for (let m = 1; m <= 4; m++) ... await listarPerguntas(...)` — 20 chamadas SQLite em serie. Em SQLite embarcado isso eh rapido (~50ms total), MAS o loop eh fragil: se o usuario trocar de aba antes do termino, race condition + memoria segurando perguntas da tela anterior.
+  - **Acao**: substituir por `Promise.all(modulos.flatMap(m => licoes.flatMap(l => listarPerguntas(`${m}-L${l}`))))` OU criar funcao `listarPerguntasAleatorias(total: number)` em `db-queries.ts` que faz 1 unica query SQL com ORDER BY RANDOM() LIMIT 20.
+  - DoD: `carregarPerguntas()` em <=200ms no emulator, sem race condition.
+
+- [ ] 16.2 **FIX: quiz/jogar.tsx ignora param `modo` e `modulos` (sempre carrega M001-M004)** — CORRECAO | ALTA | INVESTIGACAO (code review 2026-06-25) | AUTONOMO
+  - **Causa**: `quiz/index.tsx:23` faz `router.push('/quiz/jogar?modo=aleatorio')` e `quiz/customizar.tsx:36` faz `router.push('/quiz/jogar?modo=custom&modulos=M001,M002,...')`. Porem `quiz/jogar.tsx` NAO usa `useLocalSearchParams` — sempre carrega 4 modulos fixos (M001-M004, primeiros 5 licoes de cada).
+  - **Acao**: adicionar `const { modo, modulos } = useLocalSearchParams<{modo?: string; modulos?: string}>()`; se `modo === 'custom'` e `modulos` presente, parsear CSV e usar como filtro na query; senao (aleatorio), usar `listarPerguntasAleatorias(20)`.
+  - DoD: customizar 5 modulos especificos em `/quiz/customizar` resulta em perguntas APENAS desses 5 modulos em `/quiz/jogar`.
+
+- [ ] 16.3 **FIX: quiz/final.tsx `persistir` em setTimeout fora de useEffect** — CORRECAO | MEDIA | INVESTIGACAO (code review 2026-06-25) | AUTONOMO
+  - **Causa**: `src/app/quiz/final.tsx:56-58` tem `if (typeof window !== 'undefined') { setTimeout(persistir, 100); }` no BODY do componente (NAO em useEffect). Em React Native, `window` eh undefined — entao NUNCA executa. Mesmo se executasse (web), rodaria em cada re-render.
+  - **Acao**: mover para `useEffect(() => { setTimeout(persistir, 100); return () => clearTimeout(timeout); }, []);`
+  - DoD: `user_rankings` recebe 1 linha por conclusao de quiz (verificavel via `sqlite3 data/db.sqlite 'SELECT * FROM user_rankings ORDER BY id DESC LIMIT 5'`).
+
+- [ ] 16.4 **FIX: feedback.tsx playAcerto/playErro no body (flood de audio em re-render)** — CORRECAO | MEDIA | INVESTIGACAO (code review 2026-06-25) | AUTONOMO
+  - **Causa**: `src/app/licoes/[moduloId]/[licaoId]/feedback.tsx:57-65` chama `playAcerto().catch(...)` / `playErro().catch(...)` FORA de useEffect, no body do componente. Cada re-render (ex: timer de bounce animation, state changes) re-dispara o som.
+  - **Acao**: envolver em `useEffect(() => { ... }, [isAcerto])`.
+  - DoD: som de feedback toca exatamente 1x por visita a tela.
+
+- [ ] 16.5 **FIX: onboarding.tsx `Dimensions.get('window')` no module scope** — CORRECAO | BAIXA | INVESTIGACAO (code review 2026-06-25) | AUTONOMO
+  - **Causa**: `src/app/onboarding.tsx:31` calcula `const { width } = Dimensions.get('window')` no module scope. NAO atualiza em rotacao de tela. Em landscape, slides podem ficar cortados.
+  - **Acao**: usar `useWindowDimensions()` hook (atualiza em rotacao) OU `flex: 1` no FlatList com `pagingEnabled` (sem width fixa).
+  - DoD: rotacao portrait<->landscape na tela onboarding funciona sem cortar slides.
+
+- [ ] 16.6 **FIX: licoes/[moduloId].tsx cards bloqueados quase invisiveis** — CORRECAO | MEDIA | INVESTIGACAO (code review 2026-06-25) | AUTONOMO
+  - **Causa**: `src/app/licoes/[moduloId].tsx:131-134` tem `cardBloqueado: { backgroundColor: COLORS.cinzaEscuro, ..., opacity: 0.5 }`. CinzaEscuro (#4b5563) + 50% opacity = praticamente invisivel contra fundo creme.
+  - **Contexto historico**: V12 7.4 corrigiu o ANALOGO em `licoes/index.tsx` (muda para cinzaMedio + opacity 0.85), mas esqueceu de tocar `[moduloId].tsx` (tela de licoes dentro do modulo).
+  - **Acao**: copiar o mesmo fix: `backgroundColor: COLORS.cinzaMedio, opacity: 0.85` + `numeroBloqueado.color: COLORS.preto` para legibilidade.
+  - DoD: cards bloqueados visiveis (mesmo padrao visual dos cards em `/licoes`).
+
+- [ ] 16.7 **FIX: licoes/index.tsx `playCadeiraDesbloqueia` em batch no primeiro render** — CORRECAO | BAIXA | INVESTIGACAO (code review 2026-06-25) | AUTONOMO
+  - **Causa**: `src/app/licoes/index.tsx:31-40` chama `playCadeiraDesbloqueia()` dentro do `renderItem`. A guarda `unlockSoundOnceRef` evita re-tocadas no mesmo modulo, MAS na PRIMEIRA renderizacao, todos os modulos liberados (ate 76 com progresso) sao processados em batch — o som pode tocar 1x OU NAO tocar (race entre add no Set e o proximo render), dependendo da engine.
+  - **Acao**: mover a logica para um `useEffect(() => { ... }, [modulos])` que detecta transicoes bloqueado->livre comparando snapshot anterior com estado atual.
+  - DoD: som de "cadeado abriu" toca apenas 1x quando o usuario AVANCA de progresso (nao no load inicial).
+
+---
+
+## Milestone 17: Looping infinito em modulo (MIX) — V19 (PENDENTE, NAO INICIADO)
+
+> Usuario reportou "looping infinito em um dos modulos" em 2026-06-25. NAO consegui localizar
+> a causa exata via code review estatico — requer investigacao runtime (Playwright + adb
+> logcat) para reproduzir e confirmar.
+>
+> Hipoteses provaveis (em ordem de investigacao):
+>
+> - [ ] 17.1 **DEBUG: licoes/[moduloId]/[licaoId].tsx race entre 2 useEffects** — INVESTIGACAO | CRITICA | USUARIO (2026-06-25) | AUTONOMO
+>   - **Hipotese**: 2 useEffects no arquivo reagem a `params.indice` / `indice` simultaneamente:
+>     - Linhas 43-45: `useEffect(() => { listarPerguntas(licaoId).then(setPerguntas); }, [licaoId, moduloId])`
+>     - Linhas 59-66: `useEffect(() => { const p = parseInt(params.indice ?? '0', 10); if (p === indice) return; setResposta(''); setPose('PENSATIVO'); setIndice(p); }, [params.indice, indice])`
+>   - **Cenario problematico**: usuario responde Q01 -> feedback (indice 0) -> pressiona PROSSEGUIR -> navega para `/licoes/[moduloId]/[licaoId]?indice=1` -> 1o useEffect NAO re-roda (licaoId/moduloId inalterados) -> 2o useEffect roda com params.indice=1 != indice=0 -> setIndice(1) -> componente re-renderiza com pergunta[1]. Se essa re-renderizacao disparar alguma animacao ou efeito que chame `router.replace()` novamente para o mesmo path, pode entrar em loop.
+>   - **Acao**: instrumentar logs `[licao] effect1` e `[licao] effect2` em cada useEffect; rodar app no emulator + adb logcat + reproduzir o fluxo ate o looping; capturar stack trace.
+>   - **Fix especulado** (apos confirmar): adicionar guard `if (p === indice) return` no inicio do 2o useEffect (JA EXISTE, mas talvez nao pega todos os casos) OU unificar em 1 useEffect so.
+>   - DoD: reproduzir looping em emulator, capturar causa exata, fixar e validar E2E sem loop.
+>
+> - [ ] 17.2 **DEBUG: feedback.tsx handleProsseguir pode causar loop se params malformados** — INVESTIGACAO | ALTA | INVESTIGACAO (hipotese 2026-06-25) | AUTONOMO
+>   - **Hipotese**: `feedback.tsx:67-83` chama `router.replace({ pathname: '/licoes/[moduloId]/[licaoId]', params: { indice: String(indice + 1), ... } })`. Se `params.moduloId` ou `params.licaoId` vierem undefined da query string anterior, o path pode resolver para rota inesperada que dispara nova navegacao.
+>   - **Acao**: validar `params.moduloId && params.licaoId` antes do replace; adicionar `console.log('[feedback] handleProsseguir', { isLast, indice, total, params })` para debug.
+>   - DoD: instrumentar, reproduzir, fixar se confirmado.
+
+---
 
 ## Itens rejeitados (e por que)
 
