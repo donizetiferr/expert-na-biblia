@@ -50,6 +50,13 @@ Todas as mudancas relevantes neste projeto.
 ### Pendente
 - MD.7 (ícones home/som/config desenhados): a pasta Drive "Elementos" está vazia — sem assets de ícone. Mantidos os ícones atuais (funcionais) até a designer subir os arquivos.
 
+## [V18.4] - 2026-06-25 (Saúde do projeto: testes verdes, lint limpo, dados completos)
+
+### Corrigido
+- **Suite de testes 100% verde** (ME.3): 82/82 testes, 9/9 suites (era 79/82). `jest.config.js` exclui o spec Playwright; assert de sinônimo do matching realinhado (garante o match, aceita SEMANTICO|SUBCONJUNTO); sanity bounds do catálogo de geração atualizados.
+- **Lint limpo** (ME.4): 0 warnings (era 8). `console.log`→`console.debug` (nível correto, removido em release); `prefer-const`.
+- **4 perguntas sem resposta** (ME.5): respostas canônicas reais preenchidas (livros históricos do AT, profetas maiores/menores, alfabeto hebraico, poemas acrósticos) em `seed-perguntas.ts` + `data/db.sqlite`. 0 placeholders `[GERAR]` restantes.
+
 ## [V17.0.0] - 2026-06-25 (Play Store prep + EAS build — 6 tarefas)
 
 ### Added

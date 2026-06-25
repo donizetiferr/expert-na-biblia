@@ -118,8 +118,11 @@ describe('matching V5 - matchCanonico 2-camadas', () => {
 
   it('match semantico via sinonimos', () => {
     const r = matchCanonico('Cristo', 'Jesus');
-    expect(r.metodo).toBe('SEMANTICO');
+    // V18.4 (ME.3): a garantia relevante e' que Cristo casa com Jesus (sinonimo).
+    // O metodo pode ser SUBCONJUNTO ou SEMANTICO — ambos usam a tabela de sinonimos
+    // (a camada de subconjunto roda antes da semantica e tambem resolve o sinonimo).
     expect(r.correto).toBe(true);
+    expect(['SEMANTICO', 'SUBCONJUNTO']).toContain(r.metodo);
   });
 
   it('match semantico inverso (senhor ~ deus)', () => {

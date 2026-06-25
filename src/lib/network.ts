@@ -44,7 +44,7 @@ let interval: ReturnType<typeof setInterval> | null = null;
 const listeners = new Set<(online: boolean) => void>();
 
 // Metricas
-let latencyWindow: number[] = [];
+const latencyWindow: number[] = [];
 let consecutiveFailures = 0;
 let totalProbes = 0;
 

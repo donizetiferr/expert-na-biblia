@@ -30,7 +30,9 @@ module.exports = {
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     'prefer-const': 'warn',
-    'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
+    // V18.4 (ME.4): permite console.debug (stripped em release build; nivel correto
+    // para logs de diagnostico de dev). log continua proibido (vira debug).
+    'no-console': ['warn', { allow: ['warn', 'error', 'info', 'debug'] }],
   },
   ignorePatterns: [
     'node_modules/',

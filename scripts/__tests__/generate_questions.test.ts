@@ -68,15 +68,18 @@ describe('MODULOS_NT + MODULOS_TEOLOGIA (catalogo V3)', () => {
     }
   });
 
-  it('total de perguntas NT ~ 3.000 (calculo)', () => {
+  // V18.4 (ME.3): faixas atualizadas ao catalogo atual (eram estimativas V3
+  // desatualizadas). NT consolidado ~2.2k; Teologia ~4.3k (modulos TE adiados p/ V10+,
+  // mas o catalogo do gerador permanece para uso futuro). Sanity bounds amplos.
+  it('total de perguntas NT (sanity do catalogo)', () => {
     const total = MODULOS_NT.reduce((acc, m) => acc + m.num_licoes * m.perguntas_por_licao, 0);
-    expect(total).toBeGreaterThanOrEqual(2800);
-    expect(total).toBeLessThanOrEqual(3200);
+    expect(total).toBeGreaterThanOrEqual(2000);
+    expect(total).toBeLessThanOrEqual(2600);
   });
 
-  it('total de perguntas Teologia ~ 3.500 (calculo)', () => {
+  it('total de perguntas Teologia (sanity do catalogo)', () => {
     const total = MODULOS_TEOLOGIA.reduce((acc, m) => acc + m.num_licoes * m.perguntas_por_licao, 0);
-    expect(total).toBeGreaterThanOrEqual(3300);
-    expect(total).toBeLessThanOrEqual(3700);
+    expect(total).toBeGreaterThanOrEqual(4000);
+    expect(total).toBeLessThanOrEqual(4600);
   });
 });

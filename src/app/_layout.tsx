@@ -35,7 +35,7 @@ export default function RootLayout() {
   useEffect(() => {
     if (fontsLoaded || fontError) {
       runMigrations().then(() => {
-        console.log('[layout] migrations+seed OK');
+        console.debug('[layout] migrations+seed OK');
       }).catch((e) => {
         console.warn('[layout] migrations falharam:', e && e.stack ? e.stack : e);
       });

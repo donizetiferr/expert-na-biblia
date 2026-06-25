@@ -55,7 +55,7 @@ export default function SplashScreen() {
           console.warn('[splash] hideAsync falhou:', e),
         );
         const done = await AsyncStorage.getItem(ONBOARDING_KEY);
-        console.log('[onboarding] key:', done);
+        console.debug('[onboarding] key:', done);
         if (done === '1') {
           router.replace('/modos');
         } else {

@@ -44,3 +44,8 @@ Assets: 5 poses + logo + trofeu transparentes em assets/images (trim+resize ~120
 Estado: EVOLVE_V18.3_CONCLUIDO_AGUARDANDO_ORQUESTRADOR
 MC.2 (gradientes >=12 superficies) + MD.1-MD.6,MD.8-MD.11 entregues. MD.7 DEFERIDO (Elementos Drive vazio).
 Bonus: 16.4/16.5/16.6. tsc 0 | jest 79/82 | audit 9.4/10 APROVADO
+
+## solo-evolve V18.4 (2026-06-25)
+Estado: EVOLVE_V18.4_CONCLUIDO_AGUARDANDO_ORQUESTRADOR
+ME.3 (jest 82/82, 9 suites) + ME.4 (lint 0) + ME.5 (4 respostas backfilladas) entregues.
+tsc 0 | jest 82/82 | lint 0 | audit 9.8/10 APROVADO

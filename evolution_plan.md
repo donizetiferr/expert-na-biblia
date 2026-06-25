@@ -135,11 +135,11 @@ O plano V18 ataca as 3 camadas + saude do projeto (5 erros tsc, 2 deps ausentes 
   - Acao: `npx expo install expo-haptics expo-speech expo-linear-gradient @react-native-community/slider`. DoD: `npx tsc --noEmit` sem TS2307; `npm ci` limpo builda; sem crash ao chamar haptics/TTS.
 - [x] ME.2 **Corrigir 5 erros tsc** — CORRECAO | ALTA | INVESTIGACAO | AUTONOMO
   - app.config.ts:23 (newArchEnabled), settings.ts:23/62 (tipo Settings sem volumeMusica/volumeEfeitos/hapticos/voz), sound-runtime.ts:20 (lastEfeitos). DoD: `npx tsc --noEmit` = 0 erros.
-- [ ] ME.3 **Corrigir suites jest + 1 teste de logica** — CORRECAO | MEDIA | INVESTIGACAO | AUTONOMO
+- [x] ME.3 **Corrigir suites jest + 1 teste de logica** — CORRECAO | MEDIA | INVESTIGACAO | AUTONOMO
   - Excluir Playwright spec do testMatch do Jest; transform/mocar expo-secure-store; corrigir matching-coverage (sinonimo) e 2 asserts de catalogo desatualizado. DoD: jest verde.
-- [ ] ME.4 **Lint cleanup** — MANUTENCAO | BAIXA | INVESTIGACAO | AUTONOMO
+- [x] ME.4 **Lint cleanup** — MANUTENCAO | BAIXA | INVESTIGACAO | AUTONOMO
   - console.log->debug/remover (4), any em PersonagemLivro:19, eslint-disable inutil jogar.tsx:52, prefer-const network.ts:47. DoD: 0 warnings relevantes.
-- [ ] ME.5 **Backfill 4 perguntas sem quiz_alternatives** — CORRECAO | BAIXA | INVESTIGACAO (recuperado) | AUTONOMO
+- [x] ME.5 **Backfill 4 perguntas sem quiz_alternatives** — CORRECAO | BAIXA | INVESTIGACAO (recuperado) | AUTONOMO
   - DoD: toda pergunta tem alternativas (ou fallback gerado validado).
 
 ## Milestone MF: Validacao empirica mock-a-mock + entrega (INFRA) — V18 — PENDENTE

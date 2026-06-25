@@ -51,7 +51,9 @@ module.exports = [
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
       'prefer-const': 'warn',
-      'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
+      // V18.4 (ME.4): console.debug permitido (stripped em release; nivel correto
+      // para logs de diagnostico). console.log continua proibido (convertido p/ debug).
+      'no-console': ['warn', { allow: ['warn', 'error', 'info', 'debug'] }],
     },
   },
   prettierConfig,
