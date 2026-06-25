@@ -58,7 +58,9 @@ async function playOneShot(source: number, overrideVolume?: number): Promise<voi
     sfxAtual = sound;
     sound.setOnPlaybackStatusUpdate((status) => {
       if (status.isLoaded && status.didJustFinish) {
-        sound.unloadAsync().catch(() => {});
+        sound.unloadAsync().catch((e: unknown) =>
+          console.warn('[sound] unloadAsync failed:', e),
+        );
         if (sfxAtual === sound) sfxAtual = null;
       }
     });
@@ -106,6 +108,8 @@ export async function playShake(): Promise<void> {
  * - moduloId 'AT*' -> musica_fundo_at.mp3 (épico)
  * - moduloId 'NT*' -> musica_fundo_nt.mp3 (luminoso)
  * - outros/sem param -> musica_fundo.mp3 (default)
+ *
+ * V13 14.1.4: detecta erro de `isAudioPlayingAsync` e faz fallback gracioso.
  */
 export async function playMusicaFundo(moduloId?: string): Promise<void> {
   try {
@@ -116,8 +120,13 @@ export async function playMusicaFundo(moduloId?: string): Promise<void> {
 
     // Se já está tocando, não reiniciar
     if (musicaFundoSound) {
-      const status = await musicaFundoSound.getStatusAsync();
-      if (status.isLoaded && status.isPlaying) return;
+      try {
+        const status = await musicaFundoSound.getStatusAsync();
+        if (status.isLoaded && status.isPlaying) return;
+      } catch (e) {
+        console.warn('[sound] getStatusAsync falhou:', e);
+        musicaFundoSound = null;
+      }
     }
 
     // V10 M6.4: seleciona variante por area
@@ -143,8 +152,8 @@ export async function playMusicaFundo(moduloId?: string): Promise<void> {
         if (s.isLoaded) savedPositionMillis = s.positionMillis ?? 0;
         await musicaFundoSound.stopAsync();
         await musicaFundoSound.unloadAsync();
-      } catch {
-        // ignore
+      } catch (e) {
+        console.warn('[sound] stop anterior falhou:', e);
       }
       musicaFundoSound = null;
     }
@@ -156,7 +165,8 @@ export async function playMusicaFundo(moduloId?: string): Promise<void> {
     });
     // V10 M6.7: retoma de onde parou (se salvamos posição > 0)
     if (savedPositionMillis > 0) {
-      try { await sound.setStatusAsync({ positionMillis: savedPositionMillis }); } catch {}
+      try { await sound.setStatusAsync({ positionMillis: savedPositionMillis }); }
+      catch (e) { console.warn('[sound] setStatusAsync falhou:', e); }
     }
     musicaFundoSound = sound;
   } catch (e) {
@@ -171,8 +181,8 @@ export async function stopMusicaFundo(): Promise<void> {
     if (s.isLoaded) savedPositionMillis = s.positionMillis ?? 0;
     await musicaFundoSound.stopAsync();
     await musicaFundoSound.unloadAsync();
-  } catch {
-    // ignore
+  } catch (e) {
+    console.warn('[sound] stopMusicaFundo falhou:', e);
   }
   musicaFundoSound = null;
 }
@@ -183,8 +193,8 @@ export async function cleanupAllAudio(): Promise<void> {
     try {
       await sfxAtual.stopAsync();
       await sfxAtual.unloadAsync();
-    } catch {
-      // ignore
+    } catch (e) {
+      console.warn('[sound] cleanupAllAudio falhou:', e);
     }
     sfxAtual = null;
   }

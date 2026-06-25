@@ -86,7 +86,7 @@ async function callM3Alternativas(questao: Questao, apiKey: string): Promise<Alt
 async function main() {
   const apiKey = process.env.MINIMAX_API_KEY;
   if (!apiKey) {
-    console.log('[quiz-alternatives] MINIMAX_API_KEY nao definida — modo stub.');
+    console.debug('[quiz-alternatives] MINIMAX_API_KEY nao definida — modo stub.');
     const stubDir = path.join(process.cwd(), 'data');
     if (!fs.existsSync(stubDir)) fs.mkdirSync(stubDir, { recursive: true });
     const stub: Alternativas = {
@@ -100,7 +100,7 @@ async function main() {
     return;
   }
 
-  console.log('[quiz-alternatives] Carregando questoes canônicas...');
+  console.debug('[quiz-alternatives] Carregando questoes canônicas...');
   const canonicalPath = path.join(process.cwd(), 'data', 'canonical_responses.json');
   if (!fs.existsSync(canonicalPath)) {
     console.error('[quiz-alternatives] data/canonical_responses.json nao encontrado. Rode generate:canonical primeiro.');
@@ -117,7 +117,7 @@ async function main() {
     if (alt) resultados.push(alt);
 
     if (i % 100 === 0) {
-      console.log(`[quiz-alternatives] ${i}/${questoes.length} processadas`);
+      console.debug(`[quiz-alternatives] ${i}/${questoes.length} processadas`);
       fs.writeFileSync(
         path.join(process.cwd(), 'data', 'quiz_alternatives.json'),
         JSON.stringify(resultados, null, 2),
@@ -131,7 +131,7 @@ async function main() {
     JSON.stringify(resultados, null, 2),
     'utf8'
   );
-  console.log(`[quiz-alternatives] Concluido: ${resultados.length} alternativas geradas.`);
+  console.debug(`[quiz-alternatives] Concluido: ${resultados.length} alternativas geradas.`);
 }
 
 if (require.main === module) {

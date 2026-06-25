@@ -2,6 +2,38 @@
 
 Todas as mudancas relevantes neste projeto.
 
+## [V13.0.0] - 2026-06-25 (5 fixes de bugs reais — SFX + modal + slice + logs + TODOs)
+
+### Changed
+- APK V13 rebuildado com M14 (5 fixes) + re-uploadado para catbox.moe
+  - **URL publica nova**: https://files.catbox.moe/i1bpj8.apk
+  - **SHA256 novo**: `4b8b4a647c12305f0dd2c44df8be68e1f0aae6b91bbf24b1df0676d48567fb05`
+  - **Tamanho**: 107.311.167 bytes (~102 MB)
+  - **Build**: `BUILD SUCCESSFUL in 3m 40s` via `C:\ENB\android`
+- `src/lib/sound.ts`: silent catches (`catch {}`/`catch(() => {})`) trocados por `console.warn('[audio] <contexto> falhou:', e)` em 5 pontos (playMusicaFundo, stopMusicaFundo, cleanupAllAudio, playOneShot, unloadAsync)
+- `src/app/_layout.tsx`: silent catch em `playMusicaFundo().catch()` e `stopMusicaFundo().catch()` substituidos por logs explicitos
+- `src/app/index.tsx`: silent catch em `playSplash().catch()` -> log explicito
+
+### Added
+- 4 MP3s REAIS gerados via `mcp__elevenlabs__text_to_sound_effects` (splash/acerto/erro/transicao), sobrescrevendo os 4 originais de 17KB que eram quase vazios. Splash agora tem 48KB (era 48KB ja era OK; outros 3 cresceram para 17KB-48KB com audio real)
+- `src/app/trofeu.tsx`: substituiu `playAcerto()` por `playVitoria()` (SFX especifico de vitoria)
+- `src/app/licoes/[moduloId]/[licaoId]/final.tsx`: wire-up de `playCombo()` em score >=100 (substitui playAcerto generico) + `playShake()` em score <50 (substitui playErro generico). Removidos imports nao usados (TEMA, playAcerto, playErro)
+- `src/app/licoes/index.tsx`: wire-up de `playCadeiraDesbloqueia()` tocado UMA UNICA VEZ por modulo quando este passa de bloqueado para livre (useRef<Set> impede duplo-toque em re-renders)
+
+### Fixed
+- **14.2 [MEDIA]**: `src/hooks/useBackHandlerRoot.ts`: adicionado fallback `if (!pathname) return false;` antes do check `/modos` — protege contra deep link inicial onde pathname pode ser null
+- **14.3 [BAIXA]**: `src/app/licoes/index.tsx`:32: `item.nome.slice(palavraChave.length)` → `item.nome.slice(palavraChave.length + 1)` (inclui o espaco removido pelo split)
+- **14.4 [BAIXA]**: `src/lib/db-queries.ts:181`: `console.log` → `console.debug` (nao aparece em release build). `src/lib/quiz-alternatives.ts:89,103,120,134`: mesmo tratamento nos 4 logs do batch script
+
+### Removed
+- `src/components/AdBanner.tsx`, `src/components/AdInterstitial.tsx`, `src/lib/sentry.ts`: 3 arquivos com TODOs `// TODO: integrar com <BannerAd>` / `// TODO: integracao real Sentry` foram REMOVIDOS (nao estavam sendo usados em nenhum lugar do app). Total de TODOs no projeto: 0
+
+### Validado E2E
+- Emulator-5554 (Android 14 x86_64)
+- App iniciou sem FATAL EXCEPTION
+- Splash -> /modos -> /licoes funcionais
+- Zero erros de audio no logcat
+
 ## [V9-polish] - 2026-06-24 (Rebuild + catbox upload — polish incluido)
 
 ### Changed

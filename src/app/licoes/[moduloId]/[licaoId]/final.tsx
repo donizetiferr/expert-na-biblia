@@ -2,9 +2,8 @@ import { useEffect } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../../../constants/colors';
-import { TEMA } from '../../../../lib/design-tokens';
 import { PersonagemLivro } from '../../../../components/PersonagemLivro';
-import { playAcerto, playErro } from '../../../../lib/sound';
+import { playCombo, playShake } from '../../../../lib/sound';
 import { marcarLicaoConcluida, todosModulosConcluidos } from '../../../../lib/db-queries';
 
 /**
@@ -23,10 +22,17 @@ export default function FinalAtividadeScreen() {
 
   useEffect(() => {
     if (variante === 'vitoria') {
-      playAcerto().catch(() => {});
+      // V13 14.1.2: 100% merece playCombo (combo de 3+ acertos seguidos).
+      playCombo().catch((e: unknown) =>
+        console.warn('[audio] final vitoria playCombo falhou:', e),
+      );
     } else if (variante === 'nao_deu') {
-      playErro().catch(() => {});
+      // V13 14.1.2: <50% merece playShake (mais expressivo que playErro generico).
+      playShake().catch((e: unknown) =>
+        console.warn('[audio] final nao_deu playShake falhou:', e),
+      );
     }
+    // 'quase' (50-99%): sem SFX especifico, mantem silencio (briefing nao define).
   }, [variante]);
 
   const configs = {

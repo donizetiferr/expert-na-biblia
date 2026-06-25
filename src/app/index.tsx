@@ -31,7 +31,9 @@ export default function SplashScreen() {
       }),
     ]).start();
 
-    playSplash().catch(() => {});
+    playSplash().catch((e: unknown) =>
+      console.warn('[audio] splash playSplash falhou:', e),
+    );
 
     const timer = setTimeout(async () => {
       try {

@@ -3,7 +3,7 @@ import { View, Text, Pressable, StyleSheet, Animated, Image, Easing } from 'reac
 import { useRouter } from 'expo-router';
 import { COLORS, FONTES, ESPACAMENTOS } from '../constants/colors';
 import { resetarProgresso } from '../lib/db-queries';
-import { playAcerto } from '../lib/sound';
+import { playVitoria } from '../lib/sound';
 
 /**
  * Tela Final de Vitoria: Trofeu Expert.
@@ -106,7 +106,9 @@ export default function TrofeuScreen() {
       ]),
     ).start();
 
-    playAcerto().catch(() => {});
+    playVitoria().catch((e: unknown) =>
+      console.warn('[audio] trofeu playVitoria falhou:', e),
+    );
   }, [bounceAnim, glowAnim, trofeuScale]);
 
   const handleRestart = async () => {

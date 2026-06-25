@@ -14,6 +14,10 @@ export function useBackHandlerRoot(): void {
 
   useEffect(() => {
     const onBack = () => {
+      // V13 14.2: fallback — se pathname for null (deep link inicial, edge case),
+      // NAO mostrar modal: deixar back funcionar normalmente.
+      if (!pathname) return false;
+
       // So intercepta back na rota raiz
       if (pathname === '/modos' || pathname === '/') {
         Alert.alert(

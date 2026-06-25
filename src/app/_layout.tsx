@@ -50,14 +50,19 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (fontsLoaded || fontError) {
-      playMusicaFundo().catch(() => {});
+      // V13 14.1.4: log quando musica fundo falha em vez de silenciar
+      playMusicaFundo().catch((e: unknown) =>
+        console.warn('[audio] layout playMusicaFundo falhou:', e),
+      );
       // V9 M3.1: inicia runtime watcher para reagir a mudancas de settings
       initSoundRuntime();
       // V9 M4.7: inicia monitor de conectividade para o BannerOffline
       startMonitoring();
     }
     return () => {
-      stopMusicaFundo().catch(() => {});
+      stopMusicaFundo().catch((e: unknown) =>
+        console.warn('[audio] layout stopMusicaFundo falhou:', e),
+      );
       stopSoundRuntime();
       stopMonitoring();
     };

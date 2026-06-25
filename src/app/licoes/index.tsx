@@ -1,8 +1,9 @@
 import { View, Text, FlatList, Pressable, StyleSheet, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../constants/colors';
 import { listarModulos } from '../../lib/db-queries';
+import { playCadeiraDesbloqueia } from '../../lib/sound';
 import type { Modulo } from '../../types';
 
 /**
@@ -14,6 +15,9 @@ import type { Modulo } from '../../types';
 export default function LicoesIndex() {
   const router = useRouter();
   const [modulos, setModulos] = useState<Modulo[]>([]);
+  // V13 14.1.2: toca playCadeiraDesbloqueia uma unica vez quando um modulo
+  // acaba de ser desbloqueado (transicao de bloqueado -> livre).
+  const unlockSoundOnceRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     listarModulos().then(setModulos);
@@ -26,11 +30,20 @@ export default function LicoesIndex() {
 
   const renderItem = ({ item, index }: { item: Modulo; index: number }) => {
     const livre = liberado(index, modulos);
+    // V13 14.1.2: toca playCadeiraDesbloqueia na PRIMEIRA renderizacao
+    // deste modulo como livre (efeito de "cadeado abriu").
+    if (livre && index > 0 && !unlockSoundOnceRef.current.has(item.id)) {
+      unlockSoundOnceRef.current.add(item.id);
+      playCadeiraDesbloqueia().catch((e: unknown) =>
+        console.warn('[audio] licoes/index cadeira falhou:', e),
+      );
+    }
     // Briefing: divide nome em 2 partes: palavra-chave (laranja) + complemento (branco)
     // Estrategia simples: primeira palavra em laranja, resto em branco
     const nomePartes = item.nome.split(' ', 1);
     const palavraChave = nomePartes[0] || item.nome;
-    const complemento = item.nome.slice(palavraChave.length);
+    // V13 14.3: incluir o espaco removido pelo split
+    const complemento = item.nome.slice(palavraChave.length + 1);
 
     return (
       <Pressable

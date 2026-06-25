@@ -41,9 +41,13 @@ export default function FeedbackScreen() {
   const totalPerguntas = parseInt(params.total_perguntas ?? String(total), 10);
 
   if (isAcerto) {
-    playAcerto().catch(() => {});
+    playAcerto().catch((e: unknown) =>
+      console.warn('[audio] feedback acerto falhou:', e),
+    );
   } else {
-    playErro().catch(() => {});
+    playErro().catch((e: unknown) =>
+      console.warn('[audio] feedback erro falhou:', e),
+    );
   }
 
   const handleProsseguir = () => {

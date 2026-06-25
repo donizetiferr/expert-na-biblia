@@ -175,10 +175,11 @@ export async function registrarRespostaUsuario(
   correto: boolean,
   score: number,
 ): Promise<void> {
+  // V13 14.4: console.debug em vez de console.log (nao aparece em release build).
   // Log estruturado para eventual replay/auditoria.
   // Em producao real, escreveria em uma tabela `respostas_historico`.
   // Por enquanto, console apenas para nao inflar o schema durante V9.
-  console.log(
+  console.debug(
     `[resposta] pergunta=${perguntaId} resposta="${respostaUsuario.slice(0, 60)}" correto=${correto} score=${score.toFixed(2)}`,
   );
 }
