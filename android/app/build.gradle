@@ -104,15 +104,23 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        // V17 T2: keystore release para Google Play Store
+        // SHA1: B6:7B:40:DD:0D:08:96:47:CB:5E:29:7B:60:C9:BD:48:D9:BF:31:4C
+        // Detalhes: orchestration/release_keystore_credentials.md
+        release {
+            storeFile file('expert-na-biblia-release.keystore')
+            storePassword 'expert2026'
+            keyAlias 'expert-na-biblia'
+            keyPassword 'expert2026'
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            // V17 T2: assinado com keystore release dedicado (NAO debug)
+            signingConfig signingConfigs.release
             def enableShrinkResources = findProperty('android.enableShrinkResourcesInReleaseBuilds') ?: 'false'
             shrinkResources enableShrinkResources.toBoolean()
             minifyEnabled enableMinifyInReleaseBuilds

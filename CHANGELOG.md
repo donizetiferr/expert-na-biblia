@@ -2,36 +2,48 @@
 
 Todas as mudancas relevantes neste projeto.
 
-## [V14.0.0] - 2026-06-25 (8 fixes UX profundos — splash + quiz no-loop + personagem grande + teclado + musica v3 + feedback)
+## [V17.0.0] - 2026-06-25 (Play Store prep + EAS build — 6 tarefas)
+
+### Added
+- **Keystore release dedicado** (`android/app/expert-na-biblia-release.keystore`): RSA 2048, SHA256withRSA, validade 10000 dias (~2053), alias `expert-na-biblia`, storepass/keypass `expert2026`. SHA1: `B6:7B:40:DD:0D:08:96:47:CB:5E:29:7B:60:C9:BD:48:D9:BF:31:4C`
+- **AAB v17.0.0** (Android App Bundle para Play Store): `dist/ExpertNaBiblia-v17.0.0.aab` (73MB)
+  - SHA256: `1bbcef4fe3a8787d5fc6d26813aefcdae28796913dca6dabbb9d46b10d715e34`
+  - versionCode 2 (incrementado de 1), versionName 1.7.0
+  - Build: `BUILD SUCCESSFUL in 8m 54s` via `gradlew :app:bundleRelease` (570 tasks, 64 executed)
+  - JDK 17 (Temurin 17.0.18) + Android SDK 35 + Gradle 9.0.0
+- **APK universal v17**: `dist/ExpertNaBiblia-v17.0.0-universal.apk` (43MB)
+  - SHA256: `35d83415acbb25d1bd08d74a8c3d74a4b62c3e1961bdee20bb78b617c261ddef`
+  - Extraido via `bundletool extract-apks --device-spec` (arm64-v8a + pt-BR + xxhdpi)
+- **APKs set v17**: `dist/ExpertNaBiblia-v17.0.0.apks` (152MB, 88 split APKs por ABI/density/locale)
+- **`orchestration/release_keystore_credentials.md`**: backup SHA1/SHA256 do keystore + alerta CRITICO sobre backup obrigatorio (perda do keystore = impossivel atualizar app na Play Store)
+- **`orchestration/eas_setup.md`**: doc completa do EAS (build profiles, local vs cloud, submit automatico, service account config, troubleshooting, free tier 30 builds/mes)
+- **`orchestration/release_artifacts.md`**: atualizado com tabela de artefatos V17 (AAB + APK + APKs set + keystore) + stack (RN 0.83.6, JDK 17, SDK 35, Gradle 9.0.0) + pendencias para Play Store submission
+- **`orchestration/play_store_checklist.md`**: atualizado com pre-requisitos V17 ✅, asset checklist oficial Google Play 2026 (icone/feature graphic/screenshots dimensoes), Passo 1.5 de build local
 
 ### Changed
-- APK V14 rebuildado com M15 (8 fixes UX) + re-uploadado para catbox.moe
-  - **URL publica nova**: https://files.catbox.moe/i56993.apk
-  - **SHA256 novo**: `49344e07d9904df2a7514ed69621facb0a2bae48d780a81080250860dd59a0ed`
-  - **Tamanho**: 107.512.140 bytes (~102 MB)
-  - **Build**: `BUILD SUCCESSFUL in 2m 51s` via `C:\ENB\android`
+- **`android/app/build.gradle`**: adicionado `signingConfigs.release` (referencia keystore release dedicado) + `signingConfig signingConfigs.release` em `buildTypes.release` (antes usava debug keystore — INSEGURO para Play Store)
+- **`app.config.ts`**: `version: '0.1.0'` → `version: '1.7.0'`, `versionCode: 1` → `versionCode: 2`, `buildNumber: '1'` → `buildNumber: '2'`
+- **`eas.json`**: ja estava correto (profiles dev/preview/production + submit config); documentado em `eas_setup.md`
 
 ### Fixed
-- **15.1 [CRITICA]**: `src/app/index.tsx` — `SplashScreen.hideAsync()` em ~500ms (era 3000ms). Log explicito `[onboarding] key: <done>` para debug. Splash nativo libera IMEDIATAMENTE para mostrar logo JSX em tela cheia
-- **15.2 [CRITICA]**: `src/app/quiz/index.tsx` — fundo creme #f7f4ed (consistente com /modos), emoji 🎲/📚 size 48 -> 64, "ALEATÓRIO" laranjaEscuro sobre roxo + "PERSONALIZADO" preto sobre laranjaEscuro. modos.tsx ja estava com creme+logo
-- **15.3 [CRITICA]**: `src/app/index.tsx` — adicionado `console.log('[onboarding] key:', done)` para debug; validado E2E (`key: null` -> /onboarding; apos force-stop+relaunch `key: '1'` -> /modos direto)
-- **15.4 [CRITICA]**: `src/app/quiz/jogar.tsx` — fix loop infinito com `timerRef` + `transitionTimeoutRef` + `transicionandoRef` guard. Cleanup completo no unmount. Re-entrada impossivel (timer expirado + selecionar no mesmo frame eh bloqueado)
-- **15.5 [ALTA]**: `src/app/licoes/[moduloId]/[licaoId].tsx` — `PersonagemLivro` 110 -> 280 com moldura elegante (fundo creme, borda laranjaEscuro 4px, shadow, padding). Animated fade-in + zoom-spring na entrada
-- **15.6 [ALTA]**: `src/app/licoes/[moduloId]/[licaoId].tsx` — `KeyboardAvoidingView` `behavior={Platform.OS === 'ios' ? 'padding' : 'height'}` + `keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 64}`. AndroidManifest ja tem `adjustResize`
-- **15.7 [ALTA]**: `assets/audio/musica_fundo_v3.mp3` regenerado via 4 chunks ElevenLabs SFX 5s concatenados com ffmpeg crossfade-concat (20s, 128kbps). `src/lib/sound.ts` usa v3 (v2 removida) + fade in 1s (volume 0->targetVolume em 20 steps de 50ms) + fade out 0.5s antes de stopAsync. ensureAudioMode ja era idempotente via flag `initialized`
-- **15.8 [MEDIA]**: `src/app/licoes/[moduloId]/[licaoId]/feedback.tsx` — fundo laranja UNIFICADO (acerto E erro), `PersonagemLivro` 150 -> 200, balao de fala "Correto!" / "Errado!" em AMBOS os casos (antes era so erro), bounce animation (scale 1 -> 1.15 -> 1) com Animated.spring
+- Build AAB local sem depender do EAS cloud (free tier de 30 builds/mes preservado para emergencies)
 
-### Rejected
-- **15.9 [REJEITADO]** — substituicao de emojis 🎲/💪/📚 por PersonagemLivro em /modos. Motivo: briefing oficial (`whatsapp_media/images/image_20260622_223032.jpg`) USA emojis como parte do design. Emojis foram MANTIDOS com tamanho ajustado (size 48 -> 64) e cor (laranjaEscuro / preto) na M15.2
+### Security
+- Release APK agora assinado com keystore dedicado (NAO debug keystore)
+- Keystore SHA1 documentado para verificacao contra upload Play Store
 
-### Validation
-- Type-check: 5 erros pre-existentes (V12/V13, nao relacionados: app.config.ts newArchEnabled, settings.ts 2x, haptics.ts expo-haptics, sound-runtime.ts lastEfeitos). **0 erros introduzidos por V14**
-- Jest matching: 8/8 PASS (regressao mantida)
-- E2E emulator-5554: App instalou + iniciou sem FATAL EXCEPTION (PID 25545). Onboarding key: null -> /onboarding; apos force-stop+relaunch key: '1' -> /modos direto. ZERO erros de audio. Screenshots em `C:\ENB\orchestration\v14\01..06_*.png`
+### Pendencias usuario (Play Store submission — NAO automatizado por 2FA irredutivel)
+- [ ] Configurar Google Cloud Service Account + `google-service-account.json` na raiz (ver `eas_setup.md`)
+- [ ] Tirar 6 screenshots de store listing (instalar APK emulador + `adb exec-out screencap`)
+- [ ] Criar feature graphic 1024x500 PNG
+- [ ] Submeter via Play Console (2FA Google irredutivel) OU `eas submit --platform android --latest`
+- [ ] Aguardar revisao Google (1-7 dias)
+- [ ] P0-11 — Conteudo teologico revisado (BLOQUEADA_POR_USUARIO pre-existente)
 
-### Commit
-- `0308a11` — V14 (M15): 8 fixes UX profundos — splash grande, quiz no-loop, personagem grande, teclado ok, musica v3 sem glitch, feedback briefing
-- `8d9e276` — V14 (M15): 8/8 [x] entregue — APK V14 publicado em https://files.catbox.moe/i56993.apk
+### Backup CRITICO
+- Keystore `expert-na-biblia-release.keystore` EH A IDENTIDADE do app na Play Store
+- Se perder, NAO podera mais publicar atualizacoes (assinatura muda)
+- Backup local + cofre + Google Drive privado
 
 ## [V13.0.0] - 2026-06-25 (5 fixes de bugs reais — SFX + modal + slice + logs + TODOs)
 

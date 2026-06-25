@@ -1,13 +1,22 @@
 # Play Store Checklist — Expert Na Biblia
 
-> Ultima atualizacao: 2026-06-23
+> Ultima atualizacao: 2026-06-25 (V17 — Play Store prep + EAS build)
 > Conta Play Console: **donizetiferr** (JA EXISTE — decisao usuario 2026-06-23)
-> Status: PRONTO PARA SUBMISSAO MANUAL apos build do AAB
+> Status: **V17 ENTREGUE** (AAB assinado v17.0.0 + APK universal + keystore release + EAS config)
 
 ## Pre-requisitos
 
 - [x] **Conta Google Play Developer ativa**: `donizetiferr` (confirmado pelo usuario em 2026-06-23)
-- [ ] **AAB assinado gerado** (ver `orchestration/release_artifacts.md`)
+- [x] **Keystore release gerado** (V17 T1): `android/app/expert-na-biblia-release.keystore`
+  - SHA1: `B6:7B:40:DD:0D:08:96:47:CB:5E:29:7B:60:C9:BD:48:D9:BF:31:4C`
+  - Alias: `expert-na-biblia` | Validade: 10000 dias (~ate 2053)
+  - Detalhes: `orchestration/release_keystore_credentials.md`
+- [x] **Gradle signing configurado** (V17 T2): `android/app/build.gradle` usa `signingConfigs.release` (NAO debug)
+- [x] **eas.json configurado** (V17 T3): profiles development/preview/production + submit config
+  - Docs: `orchestration/eas_setup.md`
+- [x] **AAB v17 gerado** (V17 T5): `dist/ExpertNaBiblia-v17.0.0.aab` (73MB, SHA256 `1bbcef4f...`)
+- [x] **APK universal v17 gerado** (V17 T6 via bundletool): `dist/ExpertNaBiblia-v17.0.0-universal.apk` (43MB)
+- [x] **AAB validado com bundletool** (V17 T6): `bundletool validate` exit 0
 - [x] **Privacy Policy publicada**: https://donizetiferr.github.io/expert-na-biblia/privacy.html
 - [ ] **Conteudo teologico revisado** (P0-11 — BLOQUEADA_POR_USUARIO; ver `docs/qa_conteudo_para_revisar.md`)
 
@@ -21,9 +30,53 @@
    - **Gratuito ou pago**: Gratuito
 3. Aceitar termos de servico
 
+## Passo 1.5: Build AAB (JA FEITO em V17)
+
+AAB v17.0.0 ja foi gerado e esta em `dist/ExpertNaBiblia-v17.0.0.aab` (73MB).
+SHA256: `1bbcef4fe3a8787d5fc6d26813aefcdae28796913dca6dabbb9d46b10d715e34`.
+Detalhes completos em `orchestration/release_artifacts.md`.
+
+Para rebuild (caso necessario):
+```bash
+cd C:\ENB
+export JAVA_HOME="C:/Users/Donizeti/scoop/apps/temurin17-jdk/current"
+export ANDROID_HOME="C:/Android/Sdk"
+cd android
+./gradlew clean bundleRelease
+# Resultado: app/build/outputs/bundle/release/app-release.aab
+```
+
 ## Passo 2: Preencher Store Listing (Ficha da loja)
 
 Na pagina "Crescimento > Presenca na loja > Ficha da loja principal":
+
+### Asset checklist (formato oficial Google Play 2026)
+
+| Asset | Dimensao | Formato | Max | Obrigatorio? | Status |
+|-------|----------|---------|-----|--------------|--------|
+| Icone do app | 512x512 px | PNG 32-bit, sem transparencia | 1024 KB | SIM | Ja existe `assets/icon.png` |
+| Feature graphic | 1024x500 px | PNG ou JPG | 1024 KB | SIM | PENDENTE |
+| Screenshots telefone | 320-3840 px (recomendado 1080x1920) | PNG ou JPG 24-bit | 8 MB cada | min 2, ideal 4-8 | PENDENTE |
+| Privacy Policy URL | URL publica https | - | - | SIM | `https://donizetiferr.github.io/expert-na-biblia/privacy.html` (OK) |
+
+### Screenshots especificos para o app (recomendado 6)
+
+1. **Splash** — logo grande + nome do app
+2. **Modos** — 3 cards: Licao / Quiz / Biblia
+3. **Licoes** — lista de modulos com PersonagemLivro
+4. **Licao em andamento** — pergunta com personagem reagindo
+5. **Feedback acerto** — feedback positivo + personagem feliz
+6. **Trofeu** — tela de vitoria com confete
+
+**Como gerar**: instalar o APK V17 emulador, tirar screenshots via `adb exec-out screencap -p > tela.png` em cada tela, salvar em `assets/store/phone/tela-1-splash.png` etc.
+
+### Icone
+- 512x512 PNG, 32-bit, sem transparencia
+- Ja existe em `assets/icon.png` — usar como esta
+
+### Imagem destaque (feature graphic)
+- 1024x500 PNG ou JPG
+- Criar com template roxo/dourado do app + texto "Expert Na Biblia - Estudo biblico gamificado"
 
 ### Descricao curta (80 caracteres)
 "Estudo biblico gamificado com 77 modulos e avaliacao por IA."
@@ -51,27 +104,6 @@ Idioma: Portugues (Brasil).
 
 Contato: via pagina do app na Play Store.
 ```
-
-### Screenshots (minimo 2, recomendado 4-8)
-
-Tirar screenshots das telas principais (resolucao minima 320px, recomendada 1080x1920):
-
-1. **Tela Splash** (intro roxo/dourado)
-2. **Tela Modos** (3 cards: Licao / Quiz / Biblia)
-3. **Tela Licoes** (lista de modulos com PersonagemLivro)
-4. **Tela Quiz** (pergunta com alternativas)
-5. **Tela Trofeu** (conquista com confete)
-6. **Tela Configuracoes** (tema escuro, GDPR opt-out, reset)
-
-Salvar em `assets/store/phone/` e fazer upload no Play Console.
-
-### Icone do app
-- 512x512 PNG, 32-bit, sem transparencia
-- Ja existe em `assets/icon.png` — usar como esta
-
-### Imagem destaque (feature graphic)
-- 1024x500 PNG ou JPG
-- Criar com template roxo/dourado do app + texto "Expert Na Biblia - Estudo biblico gamificado"
 
 ## Passo 3: Classificacao de conteudo (Content Rating)
 
