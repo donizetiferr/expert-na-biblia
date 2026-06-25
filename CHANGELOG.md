@@ -2,6 +2,41 @@
 
 Todas as mudancas relevantes neste projeto.
 
+## [1.11.0] (V21) - 2026-06-25 (Ciclo de fechamento: confiabilidade da IA + canonica Q07 + acentuacao PT-BR)
+
+> Fechamento dos 3 itens nao-bloqueantes do VERDICT V20 (sem release-blocker) + 1 fix de UX
+> exposto pela correcao da IA. Comprovado em emulador hi-res ONLINE (orchestration/v21_validation/).
+> NAO regrediu scoring/progressao, mascotes (Licoes=dourado/Quiz=roxo) nem quiz.
+
+### Corrigido
+- **[ALTO] Confiabilidade da avaliacao por IA (timeout do M2.7)**: `src/lib/m3.ts` `TIMEOUT_MS`
+  10s -> 27s (o MiniMax-M2.7 e um modelo de raciocinio e mede 4-20s; ~1/3 das respostas abortava
+  em 10s e caia no fallback). `src/lib/openai.ts` 10s -> 20s (alinhado ao fallback). Bug de
+  classificacao em `src/lib/avaliador.ts`: o abort lancava `M3_TIMEOUT`/`OPENAI_TIMEOUT`, que NAO
+  casava o regex `/network|fetch|abort/i` -> usuario via a mensagem dura "Avaliacao automatica
+  indisponivel" em vez do caminho gracioso. Incluido `timeout` no regex -> timeout agora cai no
+  match local + mensagem amigavel. COMPROVADO: resposta aberta avaliada pela IA em ~13.7s (>10s
+  antigo) retornou veredito REAL no emulador online.
+- **[MEDIO] Resposta canonica FB01-L01-Q07**: era `'...'` no `data/db.sqlite` (master de geracao do
+  seed). Corrigida para a resposta real e acentuada em `src/db/seed-perguntas.ts` (fonte do runtime)
+  E em `data/db.sqlite` (evita regressao em regeneracao do seed). FB01 confirmado sem nenhuma
+  canonica `'...'`. (As ~489 canonicas "NAO SEI" em modulos NT/bloqueados seguem como follow-up.)
+- **[UX] Tela de feedback rolavel**: o fix do timeout tornou respostas REAIS (longas) da IA mais
+  frequentes; a tela de feedback (`feedback.tsx`) nao era rolavel (`flex:1` + `space-around`) e o
+  botao PROSSEGUIR ficava fora da area visivel com respostas longas, travando a progressao.
+  Envolvido em `ScrollView` -> PROSSEGUIR sempre alcancavel.
+
+### Melhorado
+- **[PT-BR] Acentuacao e copy das telas**: varredura de `src/app` + `src/components` (e mensagens
+  user-facing de `avaliador.ts`): onboarding ("Licoes"->"Lições", "Biblico"->"Bíblico", "comecar"->
+  "começar", "PROXIMO"->"PRÓXIMO", "lúdica", "lição", "próxima", "troféu", "módulos"), quiz
+  ("módulos aleatórios", "até 20 módulos", "Não foi possível..."), feedback de erro de avaliacao,
+  labels de acessibilidade (splash "Bíblia", trofeu "Troféu dourado: Parabéns, você é um Expert").
+
+### Testes
+- +3 testes de regressao do fix de timeout (`avaliador-timeout.test.ts`): timeout classificado como
+  conexao, HTTP 500 = mensagem dura, network/abort nao regrediu. Suite: 94 -> 97. tsc 0, lint 0.
+
 ## [1.10.0] (V20) - 2026-06-25 (Conformidade do briefing: mascote DOURADO nas Licoes + IA obrigatoria)
 
 > 2 lacunas de conformidade do briefing fechadas e COMPROVADAS. Modo Licoes agora usa o
