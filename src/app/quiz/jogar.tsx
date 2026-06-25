@@ -1,8 +1,8 @@
 import { View, Text, Pressable, StyleSheet, ActivityIndicator } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../constants/colors';
-import { listarPerguntas } from '../../lib/db-queries';
+import { carregarPerguntasQuiz } from '../../lib/quiz-loader';
 import { embaralharAlternativas } from '../../lib/quiz-questions';
 import { obterAlternativas } from '../../lib/quiz-alternatives-db';
 import type { Pergunta } from '../../types';
@@ -24,12 +24,16 @@ interface PerguntaQuiz {
  */
 export default function JogarQuiz() {
   const router = useRouter();
+  // V18.1 MA.2: le modo/modulos do deep link (antes ignorados — sempre M001-M004).
+  const { modo, modulos } = useLocalSearchParams<{ modo?: string; modulos?: string }>();
   const [perguntas, setPerguntas] = useState<PerguntaQuiz[]>([]);
   const [indice, setIndice] = useState(0);
   const [acertos, setAcertos] = useState(0);
   const [tempo, setTempo] = useState(TEMPO_POR_PERGUNTA);
   const [selecionada, setSelecionada] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  // V18.1 MA.3: estado de erro/vazio para nunca prender o usuario num spinner.
+  const [erro, setErro] = useState(false);
 
   // V14 M15.4: refs para cleanup + guard contra re-entrada
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -85,24 +89,31 @@ export default function JogarQuiz() {
   }, [indice, loading, selecionada]);
 
   const carregarPerguntas = async () => {
-    // MOCK: pega 20 perguntas aleatorias das 8x25=200 mock
-    const mock: Pergunta[] = [];
-    for (let m = 1; m <= 4; m++) {
-      const modId = `M${String(m).padStart(3, '0')}`;
-      for (let l = 1; l <= 5; l++) {
-        const lista = await listarPerguntas(`${modId}-L${String(l).padStart(2, '0')}`);
-        mock.push(...lista);
-      }
+    setLoading(true);
+    setErro(false);
+    try {
+      // V18.1 MA.1/MA.2: IDs reais via carregarPerguntasQuiz (custom = modulos escolhidos;
+      // aleatorio = amostra global ORDER BY RANDOM). Sem mais M001-M004 hardcoded.
+      const selecionadas: Pergunta[] = await carregarPerguntasQuiz(
+        TOTAL_PERGUNTAS,
+        modo,
+        modulos,
+      );
+      const quiz: PerguntaQuiz[] = selecionadas.map((p) => ({
+        pergunta: p,
+        // V9 M1.1: alternativas REAIS do DB (quiz_alternatives); fallback defensivo se vazio.
+        alternativas: embaralharAlternativas(obterAlternativas(p.id, p.resposta_canonica)),
+      }));
+      setPerguntas(quiz);
+      // V18.1 MA.3: zero perguntas = estado de erro, nunca spinner eterno.
+      setErro(quiz.length === 0);
+    } catch (e) {
+      console.warn('[quiz] falha ao carregar perguntas:', e);
+      setPerguntas([]);
+      setErro(true);
+    } finally {
+      setLoading(false);
     }
-    const selecionadas = mock.slice(0, TOTAL_PERGUNTAS);
-    const quiz: PerguntaQuiz[] = selecionadas.map((p) => ({
-      pergunta: p,
-      // V9 M1.1: usa alternativas REAIS do DB (tabela quiz_alternatives populada pelo batch M2.7)
-      // Fallback para mock so se a tabela estiver vazia (defensivo)
-      alternativas: embaralharAlternativas(obterAlternativas(p.id, p.resposta_canonica)),
-    }));
-    setPerguntas(quiz);
-    setLoading(false);
   };
 
   const selecionar = (i: number) => {
@@ -149,9 +160,24 @@ export default function JogarQuiz() {
     }
   };
 
+  // V18.1 MA.3: estado de erro/vazio com saida — nunca prende o usuario num spinner.
+  if (erro) {
+    return (
+      <View style={[styles.container, styles.centro]}>
+        <Text style={styles.erroTitulo}>Nao foi possivel carregar o quiz</Text>
+        <Text style={styles.erroTexto}>
+          Nenhuma pergunta encontrada. Tente novamente ou escolha outros modulos.
+        </Text>
+        <Pressable style={styles.botaoVoltar} onPress={() => router.replace('/quiz')}>
+          <Text style={styles.botaoVoltarTexto}>VOLTAR</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
   if (loading || !perguntas[indice]) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, styles.centro]}>
         <ActivityIndicator size="large" color={COLORS.laranjaEscuro} />
       </View>
     );
@@ -203,6 +229,31 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.roxoEscuro,
     padding: ESPACAMENTOS.lg,
     gap: ESPACAMENTOS.lg,
+  },
+  centro: { alignItems: 'center', justifyContent: 'center' },
+  erroTitulo: {
+    fontFamily: FONTES.display,
+    fontSize: 28,
+    color: COLORS.laranjaClaro,
+    textAlign: 'center',
+  },
+  erroTexto: {
+    fontFamily: FONTES.bodyRegular,
+    fontSize: 16,
+    color: COLORS.branco,
+    textAlign: 'center',
+  },
+  botaoVoltar: {
+    marginTop: ESPACAMENTOS.lg,
+    backgroundColor: COLORS.laranjaEscuro,
+    paddingHorizontal: ESPACAMENTOS.xl,
+    paddingVertical: ESPACAMENTOS.md,
+    borderRadius: BORDAS.raioMedio,
+  },
+  botaoVoltarTexto: {
+    fontFamily: FONTES.display,
+    fontSize: 20,
+    color: COLORS.branco,
   },
   header: {
     flexDirection: 'row',

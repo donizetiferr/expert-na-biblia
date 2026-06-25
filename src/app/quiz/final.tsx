@@ -1,4 +1,5 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { useEffect } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../constants/colors';
 import { getDatabase } from '../../db/database';
@@ -38,24 +39,25 @@ export default function QuizFinal() {
 
   const cfg = configs[variante];
 
-  // Persistir ranking
-  const persistir = async () => {
-    try {
-      const db = getDatabase();
-      const hoje = new Date().toISOString().split('T')[0]!;
-      db.runSync(
-        'INSERT INTO user_rankings (data, modulos, score, tipo) VALUES (?, ?, ?, ?)',
-        [hoje, '[]', s / 100, 'QUIZ']
-      );
-    } catch {
-      // Mock
-    }
-  };
-
-  // Chamar persistir em useEffect lazy (simplificado aqui)
-  if (typeof window !== 'undefined') {
-    setTimeout(persistir, 100);
-  }
+  // V18.1 MA.4: persistir ranking em useEffect (1x). Antes estava no body com guard
+  // `typeof window` — que e' sempre undefined em React Native, entao NUNCA gravava;
+  // e se rodasse (web) gravaria a cada re-render.
+  useEffect(() => {
+    const persistir = () => {
+      try {
+        const db = getDatabase();
+        const hoje = new Date().toISOString().split('T')[0]!;
+        db.runSync(
+          'INSERT INTO user_rankings (data, modulos, score, tipo) VALUES (?, ?, ?, ?)',
+          [hoje, '[]', s / 100, 'QUIZ'],
+        );
+      } catch {
+        // Mock
+      }
+    };
+    const t = setTimeout(persistir, 100);
+    return () => clearTimeout(t);
+  }, [s]);
 
   return (
     <View style={[styles.container, { backgroundColor: cfg.fundo }]}>

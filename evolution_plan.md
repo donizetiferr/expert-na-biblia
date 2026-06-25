@@ -54,21 +54,21 @@ O plano V18 ataca as 3 camadas + saude do projeto (5 erros tsc, 2 deps ausentes 
 ## Milestone MA: Fix do "loop infinito" do Quiz (CORRECAO) — V18 — PENDENTE
 > CONSOLIDA M16.1, M16.2 e M17 do plano antigo (superseded). Causa-raiz confirmada por evidencia de DB.
 
-- [ ] MA.1 **Corrigir IDs em `carregarPerguntas` (quiz/jogar.tsx:87-106)** — CORRECAO | CRITICA | INVESTIGACAO | AUTONOMO
+- [x] MA.1 **Corrigir IDs em `carregarPerguntas` (quiz/jogar.tsx:87-106)** — CORRECAO | CRITICA | INVESTIGACAO | AUTONOMO
   - Trocar loop hardcoded `M001..M004` por IDs reais: `listarModulos()` -> `listarLicoes(id)` -> `listarPerguntas(licaoId)` (ambos JA existem em db-queries.ts:91/107). Ideal: 1 funcao `listarPerguntasAleatorias(n)` em db-queries.ts com `ORDER BY RANDOM() LIMIT 20`.
   - **Nota double-check (por que passou nos testes 17 versoes)**: `MOCK_MODULOS` em db-queries.ts:10 usa o esquema `M001..M077` — em Jest (que cai no mock) o quiz "funciona"; no device (DB real, IDs `FB##/AT##/NT##`) a query volta `[]` sem lancar -> spinner eterno. Adicionar teste de regressao que exercite `carregarPerguntas` com o esquema de ID REAL (ou alinhar o mock ao real) para capturar regressao futura.
   - DoD: Quiz Aleatorio carrega 20 perguntas reais (verificado no emulador, sem spinner) + teste de regressao verde com IDs reais.
-- [ ] MA.2 **Ler `useLocalSearchParams` (modo/modulos) em jogar.tsx** — CORRECAO | CRITICA | USUARIO+INVESTIGACAO | AUTONOMO
+- [x] MA.2 **Ler `useLocalSearchParams` (modo/modulos) em jogar.tsx** — CORRECAO | CRITICA | USUARIO+INVESTIGACAO | AUTONOMO
   - jogar.tsx hoje nao importa useLocalSearchParams -> ignora `modo`/`modulos`. Adicionar e ramificar: custom = so modulos do CSV; aleatorio = amostra global.
   - DoD: Personalizar 5 modulos resulta em perguntas APENAS desses 5.
-- [ ] MA.3 **Guard anti-spinner-eterno (empty/error state)** — CORRECAO | ALTA | INVESTIGACAO (lente 3) | AUTONOMO
+- [x] MA.3 **Guard anti-spinner-eterno (empty/error state)** — CORRECAO | ALTA | INVESTIGACAO (lente 3) | AUTONOMO
   - Se apos load `perguntas.length === 0`, renderizar estado de erro/vazio com botao "Voltar" em vez de `ActivityIndicator` infinito (jogar.tsx:152-158). Mesmo padrao aplicado a avaliacao por IA (loading/erro).
   - DoD: nenhum caminho deixa o usuario preso num spinner.
-- [ ] MA.4 **persistir() em useEffect (quiz/final.tsx:56-58)** — CORRECAO | MEDIA | INVESTIGACAO | AUTONOMO
+- [x] MA.4 **persistir() em useEffect (quiz/final.tsx:56-58)** — CORRECAO | MEDIA | INVESTIGACAO | AUTONOMO
   - Mover `setTimeout(persistir)` do body do componente para `useEffect(()=>{...},[])` (evita ranking duplicado / side-effect em render).
   - DoD: 1 linha em user_rankings por quiz concluido.
 
-- [ ] MA.5 **[ACHADO DOUBLE-CHECK — CRITICO] Persistir conclusao de MODULO (desbloqueio + trofeu)** — CORRECAO | CRITICA | INVESTIGACAO (double-check, recuperado) | AUTONOMO
+- [x] MA.5 **[ACHADO DOUBLE-CHECK — CRITICO] Persistir conclusao de MODULO (desbloqueio + trofeu)** — CORRECAO | CRITICA | INVESTIGACAO (double-check, recuperado) | AUTONOMO
   - **Bug confirmado**: `licoes/index.tsx:26-29` desbloqueia o modulo N apenas se `modulos[N-1].concluido === true`, mas NENHUM codigo grava `modulos.concluido = 1` (grep em src/: so existe `UPDATE modulos SET concluido = 0` no reset). Logo o **modulo 2+ fica travado para sempre** e `todosModulosConcluidos()` nunca e true -> **trofeu inalcancavel**. Falha do objetivo central ("libera proximo modulo ao concluir o anterior" + "trofeu ao concluir todos").
   - **Acao**: criar `marcarModuloConcluido(moduloId)` em db-queries.ts (`UPDATE modulos SET concluido = 1`); no fluxo de licao 100% (licoes/[moduloId]/[licaoId]/final.tsx), apos `marcarLicaoConcluida`, checar se TODAS as licoes do modulo estao `concluida` -> se sim, marcar o modulo concluido; ao concluir o ultimo modulo, navegar para /trofeu (via `todosModulosConcluidos`).
   - DoD: completar todas as licoes do modulo 1 desbloqueia o modulo 2 (verificado no emulador); concluir todos os modulos abre o Trofeu.
@@ -94,7 +94,7 @@ O plano V18 ataca as 3 camadas + saude do projeto (5 erros tsc, 2 deps ausentes 
 ## Milestone MC: Gradientes da identidade (INFRA/MELHORIA) — V18 — PENDENTE
 > SIST-1: sem a lib instalada, e impossivel qualquer degrade do briefing.
 
-- [ ] MC.1 **Instalar expo-linear-gradient** — INFRA | CRITICA | INVESTIGACAO | AUTONOMO
+- [x] MC.1 **Instalar expo-linear-gradient** — INFRA | CRITICA | INVESTIGACAO | AUTONOMO
   - `npx expo install expo-linear-gradient`. DoD: import resolve, build OK.
 - [ ] MC.2 **Componentes reutilizaveis GradienteRoxo / GradienteLaranja + aplicar nas ~12 superficies** — MELHORIA | ALTA | INVESTIGACAO (lente 2 POLISH) | AUTONOMO
   - Cards (modos/quiz/licoes), fundos (feedback/final/pergunta), trofeu, "Expert!", titulos de resultado, palavras-chave. Cores ja em colors.ts (roxoClaro->roxoMedio; laranjaForte->laranjaMedio; trofeu top/bottom).
@@ -128,11 +128,11 @@ O plano V18 ataca as 3 camadas + saude do projeto (5 erros tsc, 2 deps ausentes 
   - "77" hardcoded em onboarding.tsx/modos.tsx E no comentario/`MOCK_MODULOS` (db-queries.ts:10, gera 77 com area TE). DoD: copy + mock refletem os 40 modulos do MVP (ou texto neutro); alinhar mock ao esquema/contagem real evita mascarar bugs (ver MA.1).
 
 ## Milestone ME: Saude / regressoes (CORRECAO/INFRA) — V18 — PENDENTE
-- [ ] ME.1 **[CORRIGIDO no double-check] Listar/instalar deps importadas mas AUSENTES do package.json** — INFRA | ALTA | INVESTIGACAO | AUTONOMO
+- [x] ME.1 **[CORRIGIDO no double-check] Listar/instalar deps importadas mas AUSENTES do package.json** — INFRA | ALTA | INVESTIGACAO | AUTONOMO
   - **Correcao do double-check**: `expo-secure-store` JA esta no package.json (linha 96) — NAO instalar. Faltam de fato: `expo-haptics` (importado em haptics.ts:6), `expo-speech` (TTS) e `expo-linear-gradient` (= MC.1); verificar tambem `@react-native-community/slider` (usado em config.tsx).
   - **Risco de reprodutibilidade (elevado)**: deps importadas mas nao listadas fazem `npm ci`/CI/clone novo QUEBRAR o build (hoje so funciona porque estao em node_modules local). Adicionar todas ao package.json.
   - Acao: `npx expo install expo-haptics expo-speech expo-linear-gradient @react-native-community/slider`. DoD: `npx tsc --noEmit` sem TS2307; `npm ci` limpo builda; sem crash ao chamar haptics/TTS.
-- [ ] ME.2 **Corrigir 5 erros tsc** — CORRECAO | ALTA | INVESTIGACAO | AUTONOMO
+- [x] ME.2 **Corrigir 5 erros tsc** — CORRECAO | ALTA | INVESTIGACAO | AUTONOMO
   - app.config.ts:23 (newArchEnabled), settings.ts:23/62 (tipo Settings sem volumeMusica/volumeEfeitos/hapticos/voz), sound-runtime.ts:20 (lastEfeitos). DoD: `npx tsc --noEmit` = 0 erros.
 - [ ] ME.3 **Corrigir suites jest + 1 teste de logica** — CORRECAO | MEDIA | INVESTIGACAO | AUTONOMO
   - Excluir Playwright spec do testMatch do Jest; transform/mocar expo-secure-store; corrigir matching-coverage (sinonimo) e 2 asserts de catalogo desatualizado. DoD: jest verde.

@@ -27,3 +27,9 @@
 - V18.5 Validacao + entrega (MF): MF.1 (mock-a-mock hi-res) + MF.2 (E2E completar modulo+trofeu) + MF.3 (ux-polish + APK + catbox + dist + docs)
 
 Estado: INICIANDO_V18.1
+
+## solo-evolve V18.1 (2026-06-25)
+Estado: EVOLVE_V18.1_CONCLUIDO_AGUARDANDO_ORQUESTRADOR
+tsc: 0 erros (eram 5) | jest: 79/82 PASS (baseline 55/58; +24 testes; 3 falhas pre-existentes ME.3/V18.4)
+Itens: ME.1, ME.2, MA.1, MA.2, MA.3, MA.4, MA.5 = entregues | MC.1 coberto por ME.1
+audit: 9.7/10 APROVADO | wire-in: 3/3 OK

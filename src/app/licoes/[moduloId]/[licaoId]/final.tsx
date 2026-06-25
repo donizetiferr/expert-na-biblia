@@ -4,7 +4,12 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../../../constants/colors';
 import { PersonagemLivro } from '../../../../components/PersonagemLivro';
 import { playCombo, playShake } from '../../../../lib/sound';
-import { marcarLicaoConcluida, todosModulosConcluidos } from '../../../../lib/db-queries';
+import {
+  marcarLicaoConcluida,
+  marcarModuloConcluido,
+  moduloEstaCompleto,
+  todosModulosConcluidos,
+} from '../../../../lib/db-queries';
 
 /**
  * V9 M2.6 + M2.2: Tela Final da Atividade (3 variantes <50%/>50%/100%) com PersonagemLivro pose
@@ -71,6 +76,15 @@ export default function FinalAtividadeScreen() {
     if (variante === 'vitoria' && params.licaoId) {
       // Marca licao como concluida no DB
       await marcarLicaoConcluida(params.licaoId, 100);
+      // V18.1 MA.5: se TODAS as licoes do modulo ficaram concluidas, marca o MODULO
+      // como concluido — isso desbloqueia o proximo modulo (licoes/index liberado())
+      // e habilita o trofeu (todosModulosConcluidos). Antes nada gravava modulo=1.
+      if (params.moduloId) {
+        const completo = await moduloEstaCompleto(params.moduloId);
+        if (completo) {
+          await marcarModuloConcluido(params.moduloId);
+        }
+      }
       // V9 M2.6: checa se todos modulos foram concluidos -> Trofeu
       const todos = await todosModulosConcluidos();
       if (todos) {

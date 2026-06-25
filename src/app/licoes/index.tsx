@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../constants/colors';
 import { listarModulos } from '../../lib/db-queries';
+import { moduloLiberado } from '../../lib/progressao';
 import { playCadeiraDesbloqueia } from '../../lib/sound';
 import type { Modulo } from '../../types';
 
@@ -23,13 +24,9 @@ export default function LicoesIndex() {
     listarModulos().then(setModulos);
   }, []);
 
-  const liberado = (index: number, modulosList: Modulo[]): boolean => {
-    if (index === 0) return true;
-    return modulosList[index - 1]?.concluido === true;
-  };
-
   const renderItem = ({ item, index }: { item: Modulo; index: number }) => {
-    const livre = liberado(index, modulos);
+    // V18.1 MA.5: regra de cadeado sequencial extraida para lib/progressao (testavel).
+    const livre = moduloLiberado(index, modulos);
     // V13 14.1.2: toca playCadeiraDesbloqueia na PRIMEIRA renderizacao
     // deste modulo como livre (efeito de "cadeado abriu").
     if (livre && index > 0 && !unlockSoundOnceRef.current.has(item.id)) {

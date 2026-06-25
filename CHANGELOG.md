@@ -2,6 +2,22 @@
 
 Todas as mudancas relevantes neste projeto.
 
+## [V18.1] - 2026-06-25 (Foundation: fix loop do Quiz + progressao de modulo + saude)
+
+### Corrigido
+- **Quiz travado em spinner eterno (causa-raiz de 17 versoes)**: `quiz/jogar.tsx` montava IDs hardcoded `M001..M004` que nao existem no DB real (FB##/AT##/NT##); a query voltava `[]` sem lancar -> `ActivityIndicator` infinito. Agora usa `listarPerguntasAleatorias` (ORDER BY RANDOM, sem IDs fixos). (MA.1)
+- **Quiz personalizado ignorava a selecao**: `jogar.tsx` nao lia `useLocalSearchParams` -> sempre carregava modulos fixos. Agora `modo=custom` filtra apenas os modulos escolhidos; `aleatorio` usa amostra global. (MA.2)
+- **Spinner sem saida**: estado de erro/vazio com botao "Voltar" quando nao ha perguntas. (MA.3)
+- **Ranking do quiz nunca gravado**: `persistir()` estava no corpo do componente com guard `typeof window` (sempre undefined em RN) -> movido para `useEffect`. (MA.4)
+- **Conclusao de MODULO nunca gravada (objetivo central quebrado)**: nenhum codigo gravava `modulos.concluido = 1` -> modulo 2+ travado para sempre e trofeu inalcancavel. Adicionados `marcarModuloConcluido` + `moduloEstaCompleto`, acionados ao concluir uma licao a 100%. (MA.5)
+- **5 erros de TypeScript** zerados (app.config newArchEnabled, Settings DEFAULTS/load, sound-runtime). (ME.2)
+- **Settings meio-ligados**: `volumeMusica/volumeEfeitos/hapticos/voz` eram usados por `config.tsx`/`sound.ts` mas nunca persistidos/carregados -> `settings.ts` agora serializa os 7 campos. (ME.2 bonus)
+
+### Adicionado
+- Deps nativas ausentes do `package.json` (quebravam `npm ci`/CI/clone): `expo-haptics`, `expo-speech`, `expo-linear-gradient`, `@react-native-community/slider`. (ME.1 / cobre MC.1)
+- `src/lib/quiz-loader.ts` e `src/lib/progressao.ts` (logica testavel extraida das telas).
+- Testes de regressao: `quiz-loader.test.ts`, `progressao.test.ts`, `db-queries-v18.test.ts`; catalogo do mock alinhado ao esquema real (FB/AT/NT) — un-mascarando o bug do quiz no Jest. Suite: 55/58 -> 79/82 PASS.
+
 ## [V17.0.0] - 2026-06-25 (Play Store prep + EAS build — 6 tarefas)
 
 ### Added
