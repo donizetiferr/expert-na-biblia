@@ -1,4 +1,4 @@
-# Play Store Checklist — Expert Na Biblia
+V17 revertido — Play Store fica para depois do APK 100% aprovado
 
 > Ultima atualizacao: 2026-06-25 (V17 — Play Store prep + EAS build)
 > Conta Play Console: **donizetiferr** (JA EXISTE — decisao usuario 2026-06-23)
