@@ -16,6 +16,12 @@
 - [x] [2026-06-25] [fonte: USUARIO] Mascote dourado nas Licoes (BUG-6/V19 diferido) — **ENTREGUE V20** (milestone V20.A).
 - [x] [2026-06-25] [fonte: USUARIO] IA obrigatoria nas licoes (regra #4, diferido V19) — **ENTREGUE V20** (milestone V20.B).
 - [ ] [2026-06-25] [fonte: INVESTIGACAO] PRIVACIDADE GitHub: auto-push hook sobe orchestration/, CLAUDE.md, evolution_plan.md e a palavra "claude" (CHANGELOG/README/smoke.test.ts/docs) ao remoto privado donizetiferr/expert-na-biblia — viola a politica. Usuario decidiu "NAO MEXER AGORA" (2026-06-25); repo e privado. Reabrir para remediar: opcao A (gitignore + git rm --cached + scrub "claude" + git filter-repo + force-push) ou B (so daqui pra frente + corrigir auto-push hook).
+- [x] [2026-06-25] [fonte: USUARIO] Confiabilidade da IA (timeout M2.7 curto) — **ENTREGUE V21**: TIMEOUT_MS 10s->27s + fallback gracioso de timeout. Comprovado no emulador (resposta IA em ~13.7s).
+- [x] [2026-06-25] [fonte: USUARIO] Canonica FB01-L01-Q07 placeholder "..." — **ENTREGUE V21**: resposta real acentuada no seed + data/db.sqlite.
+- [x] [2026-06-25] [fonte: USUARIO] Acentuacao PT-BR nas telas (onboarding/quiz/etc.) — **ENTREGUE V21**.
+- [x] [2026-06-25] [fonte: INVESTIGACAO] Tela de feedback nao rolavel travava PROSSEGUIR com respostas longas da IA — **ENTREGUE V21** (ScrollView). Exposto pela correcao do timeout (IA passou a responder de verdade com textos longos).
+- [ ] [2026-06-25] [fonte: INVESTIGACAO] ~489 canonicas "NAO SEI" em modulos NT e demais FB (alem de FB01) — qualidade de conteudo. FORA do caminho inicial (modulos bloqueados; IA avalia online). Milestone futura: regenerar canonicas reais via batch M2.7 (mesmo pipeline do data/db.sqlite).
+- [ ] [2026-06-25] [fonte: INVESTIGACAO] matchCanonico nao da match local (>=0.85) em respostas longas mesmo quase exatas (Q07/Q08 caem na IA). Avaliar normalizacao/threshold para respostas longas — reduz latencia percebida e dependencia de rede no caminho inicial.
 
 ---
 

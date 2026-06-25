@@ -164,6 +164,18 @@ Todos os assets visuais/audios estao em Google Drive publico + espelhados localm
 
 ## PROXIMO PASSO
 
+**V21 entregue (2026-06-25, v1.11.0/vc6)** — ciclo de FECHAMENTO: 3 itens nao-bloqueantes do
+VERDICT V20 + 1 fix de UX exposto pela correcao da IA, COMPROVADOS no emulador hi-res ONLINE.
+(1) **Confiabilidade da IA**: `m3.ts` TIMEOUT_MS 10s->27s (M2.7 mede 4-20s) + `openai.ts` 20s;
+`avaliador.ts` passou a classificar timeout como erro de conexao (fallback gracioso, nao a mensagem
+dura). Comprovado: resposta aberta avaliada pela IA em ~13.7s (antes abortava em 10s) retornou
+veredito REAL. (2) **Canonica FB01-L01-Q07** "..." -> resposta real acentuada em `seed-perguntas.ts`
++ `data/db.sqlite`; FB01 sem placeholders. (3) **Acentuacao PT-BR** em onboarding/quiz/feedback +
+labels a11y. (4) **Feedback rolavel** (ScrollView) — o fix do timeout tornou respostas longas da IA
+frequentes e o PROSSEGUIR ficava fora da tela. Gates: tsc 0 | jest 97/97 (+3 regressao) | eslint 0 |
+APK vc6/1.11.0. Evidencias `orchestration/v21_validation/`. Follow-up: ~489 canonicas "NAO SEI" em
+modulos NT/bloqueados (qualidade de conteudo, fora do caminho inicial).
+
 **V20 entregue (2026-06-25, v1.10.0/vc5)** — 2 lacunas de conformidade do briefing fechadas e
 COMPROVADAS no emulador hi-res (rede restaurada): (A) **mascote DOURADO no modo Licoes** (Personagem 1,
 regra de identidade) — `PersonagemLivro` ganhou prop `variante: 'licoes'|'quiz'`; as 3 telas de Licoes

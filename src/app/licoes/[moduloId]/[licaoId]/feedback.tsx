@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet, Animated, Easing } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Animated, Easing, ScrollView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../../../constants/colors';
@@ -118,7 +118,16 @@ export default function FeedbackScreen() {
 
   // V18.3: fundo em degrade laranja (briefing unifica o feedback visual).
   return (
-    <GradienteLaranjaForte style={styles.container}>
+    <GradienteLaranjaForte style={styles.fundo}>
+      {/* V21: ScrollView garante que PROSSEGUIR seja sempre alcancavel mesmo quando a
+          explicacao da IA (M2.7/OpenAI) eh longa — antes o conteudo estourava a tela
+          (container flex:1 + space-around, sem scroll) e o botao ficava fora da area
+          visivel, travando a progressao. O fix #1 (timeout maior) tornou respostas
+          reais da IA mais frequentes, expondo esse overflow. */}
+      <ScrollView
+        contentContainerStyle={styles.container}
+        showsVerticalScrollIndicator={false}
+      >
       <Animated.View
         style={{
           transform: [{ scale: bounceAnim }],
@@ -169,16 +178,25 @@ export default function FeedbackScreen() {
           </Pressable>
         </View>
       )}
+      </ScrollView>
     </GradienteLaranjaForte>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  fundo: {
     flex: 1,
+  },
+  container: {
+    // V21: contentContainerStyle do ScrollView. flexGrow:1 centraliza quando o
+    // conteudo cabe; vira rolavel quando a resposta da IA eh longa (PROSSEGUIR
+    // sempre alcancavel). paddingVertical generoso evita o botao colar na borda.
+    flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'space-around',
-    padding: ESPACAMENTOS.lg,
+    justifyContent: 'center',
+    gap: ESPACAMENTOS.lg,
+    paddingHorizontal: ESPACAMENTOS.lg,
+    paddingVertical: ESPACAMENTOS.xl,
   },
   balaoFala: {
     // V14 M15.8: balao unificado (acerto E erro), borda mais grossa, com sombra
