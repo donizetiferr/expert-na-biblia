@@ -27,16 +27,19 @@ O projeto está **funcional e estável** (97 testes passando, build OK, APK V21 
 6. **Conteúdo**: ~489 canonicas "NAO SEI" em módulos NT, matching pode falhar em respostas longas.
 7. **Privacy policy**: HTML EXISTE (HTTP 200, confirmado) — não é bug.
 
-## Estatísticas V22 (apos Rodada 2 — análise completa de 55 arquivos + pesquisa externa)
+## Estatísticas V22 (FINAL — 7 rodadas de investigação)
 
-- Milestones: 7 (V22.A bugs, V22.B UX polish, V22.C infra/deps, V22.D segurança, V22.E conteúdo, V22.F evolução/engajamento, V22.G código morto/limpeza)
-- Itens: 42 ( CRITICA: 4 | ALTA: 12 | MEDIA: 16 | BAIXA: 10 )
-- Por categoria: 7 CORRECAO, 8 MELHORIA, 9 EVOLUCAO, 8 MANUTENCAO, 8 INFRAESTRUTURA, 2 BACKLOG
-- Por fonte: INVESTIGACAO 26 | PESQUISA_EXTERNA 8 | OBJECTIVE_GAP 4 | DOUBLE_CHECK 2 | RODADA_2: 10
-- Autonomia: ~38 AUTONOMO | 1 DESTRAVAVEL (AdMob/EAS) | 2 DEPENDE_VOCE (Play Store 2FA, designer poses)
-- Achados independentes: 24 (gate G4 satisfeito)
-- Segundo turno critico (3.5 + double-check + Rodada 2): 12 detalhados + 5 POLISH + 4 recuperados + 3 re-priorizados + 2 consolidados + 5 premissas verificadas
-- Código morto encontrado: 7 arquivos (3 deletáveis, 4 a wirear)
+- Milestones: 12 (V22.A-L)
+- Itens: 78 ( CRITICA: 6 | ALTA: 23 | MEDIA: 29 | BAIXA: 20 )
+- Por categoria: 8 CORRECAO, 14 MELHORIA, 14 EVOLUCAO, 28 MANUTENCAO, 12 INFRAESTRUTURA, 2 BACKLOG
+- Por fonte: INVESTIGACAO 48 | PESQUISA_EXTERNA 8 | OBJECTIVE_GAP 4 | DOUBLE_CHECK 4 | RODADA_2-7: 44
+- Autonomia: ~70 AUTONOMO | 1 DESTRAVAVEL | 5 DEPENDE_VOCE
+- Credenciais expostas: 2 (keystore + Minimax API key)
+- Git repo: 119MB (meta: <10MB)
+- Acessibilidade: 4/30+ elementos com label (meta: 100%)
+- Catch blocks silenciados: 40 (meta: todos com log mínimo)
+- Código morto: 11 arquivos (7 .ts + 2 áudio + 2 .js)
+- Arquivos rastreados desnecessariamente: ~134MB (84 PNG + data + whatsapp_media + questions_clean.json)
 
 ## Saúde do projeto V22 (verificada em 2026-06-26)
 - Testes: EXISTEM+PASSANDO (97/97, 11 suites) | Build: OK | CI/CD: CONFIGURADO | Deps: DESATUALIZADAS (29 outdated, 16 moderate vulns) | Docs: COMPLETAS
@@ -221,16 +224,232 @@ O projeto está **funcional e estável** (97 testes passando, build OK, APK V21 
   - Acao: planejar upgrade dedicado com: (1) `npx expo install expo@latest`; (2) fixar breaking changes; (3) rodar testes + build completo; (4) validar no emulador.
   - DoD: app funcional no SDK 56 com todos os testes passando.
 
+## Milestone V22.H: Otimização de assets, dados e engajamento (RODADA 3) — PENDENTE
+
+> 10 achados da Rodada 3 — análise de assets, DB schema, seed data, git history, e padrões não-utilizados.
+
+- [ ] V22.H.1 **Remover 2 áudio mortos do APK (114KB)** — MANUTENCAO | ALTA | INVESTIGACAO (Rodada 3) | AUTONOMO
+  - `assets/audio/musica_fundo.mp3` (81KB) e `assets/audio/musica_fundo_v2.mp3` (33KB) NUNCA são referenciados em código — só `musica_fundo_v3.mp3` é usado (sound.ts:143-152). Adicionam 114KB ao APK sem benefício.
+  - Acao: deletar os 2 arquivos. Verificar que Metro bundler não inclui arquivos não-referenciados (deve ser safe com `require()`).
+  - DoD: APK ~114KB menor, zero impacto em funcionalidade.
+
+- [ ] V22.H.2 **Adicionar data/ ao .gitignore + remover db.sqlite do git** — MANUTENCAO | ALTA | INVESTIGACAO (Rodada 3) | AUTONOMO
+  - `data/` NÃO está em .gitignore. `data/db.sqlite` (2.7MB) é binário rastreado pelo git — cada rebuild gera diff gigante no histórico. `*.log` está ignorado mas `data/*.json` e `data/*.html` não.
+  - Acao: (1) adicionar `data/` ao .gitignore; (2) `git rm --cached data/db.sqlite data/*.json data/*.html` (manter no disco, remover do tracking); (3) documentar no README que `data/db.sqlite` é gerado pelo seed na primeira execução.
+  - DoD: `data/` não rastreado pelo git, repo mais leve.
+
+- [ ] V22.H.3 **Mover seed data de TS para JSON + gerar em build time** — MANUTENCAO | ALTA | INVESTIGACAO (Rodada 3) | AUTONOMO
+  - `seed-perguntas.ts` (824KB) e `seed-quiz.ts` (massivo) são arquivos TS com dados brutos. Cada commit que altera dados gera diff enorme. Dados deveriam estar em JSON (ou CSV) e o seed.ts deveria ler o JSON em runtime.
+  - Acao: (1) extrair dados dos INSERTs para `data/perguntas.json` e `data/quiz_alternatives.json`; (2) refatorar seed-perguntas.ts e seed-quiz.ts para ler JSON em vez de hardcodar SQL; (3) adicionar `data/*.json` ao .gitignore (dados são regeneráveis via batch M2.7).
+  - DoD: seed files < 10KB (lógica de leitura JSON), dados em JSON não-rastreado.
+
+- [ ] V22.H.4 **Exibir referências bíblicas no feedback** — EVOLUCAO | MEDIA | INVESTIGACAO (Rodada 3: campo existe mas nunca usado) | AUTONOMO
+  - Schema `perguntas` tem `referencias_biblicas TEXT` (database.ts:79) e tipo `string[]` (index.ts:32), mas: (a) seed-perguntas.ts define NULL para TODAS as 4345 perguntas; (b) nenhuma tela lê o campo. O campo é infraestrutura morta.
+  - Acao: (1) gerar referências via batch M2.7 para as perguntas (ex: "Gênesis 1:1" para perguntas sobre criação); (2) exibir na tela de feedback (feedback.tsx) quando disponível: "Referência: {ref}"; (3) exibir na tela de pergunta como hint opcional.
+  - DoD: referências bíblicas exibidas no feedback quando disponíveis.
+
+- [ ] V22.H.5 **Dificuldade adaptativa (FACIL/MEDIO/DIFICIL)** — EVOLUCAO | MEDIA | INVESTIGACAO (Rodada 3: infra existe, nunca implementada) | AUTONOMO
+  - Schema tem campo `dificuldade` (FACIL/MEDIO/DIFICIL) mas TODAS as 4345 perguntas são MEDIO. Nenhuma lógica filtra ou adapta por dificuldade. Infraestrutura existe mas é morta.
+  - Acao: (1) classificar ~30% das perguntas como FACIL (conceitos básicos) e ~20% como DIFICIL (análise profunda) via batch M2.7; (2) no Quiz, começar com perguntas FACIL e progredir para MEDIO/DIFICIL conforme acertos; (3) nas Lições, mostrar dificuldade atual como badge visual.
+  - DoD: perguntas classificadas por dificuldade, Quiz adapta conforme desempenho.
+
+- [ ] V22.H.6 **Botão "Reportar erro" na resposta canônica** — EVOLUCAO | MEDIA | INVESTIGACAO (Rodada 3) | AUTONOMO
+  - Se a resposta canônica de uma pergunta está errada (ex: "NAO SEI", factualmente incorreta), o usuário não tem como reportar. Com ~489 canonicas "NAO SEI" + possíveis erros nas 3856 restantes, isso é importante para qualidade.
+  - Acao: (1) adicionar botão "Reportar erro" discreto na tela de feedback; (2) gravar em tabela `reports` no SQLite (pergunta_id, resposta_usuario, timestamp); (3) exportar reports para análise offline (script que gera CSV); (4) não enviar para servidor (offline-first).
+  - DoD: usuário pode reportar erros, reports gravados localmente para análise.
+
+- [ ] V22.H.7 **Limpar artifacts de batch do diretório data/** — MANUTENCAO | BAIXA | INVESTIGACAO (Rodada 3) | AUTONOMO
+  - `data/` contém 20+ arquivos de log/checkpoint de geração M2.7 (`m2_batch_v9*.log`, `checkpoint_v9.json`, `catbox_response_v9.html`, etc.). São artifacts de processo, não dados do app.
+  - Acao: manter apenas `data/db.sqlite` (ou nem isso, se V22.H.3 mover para seed JSON). Deletar logs, checkpoints, catbox responses.
+  - DoD: `data/` limpo (apenas dados essenciais ou vazio).
+
+- [ ] V22.H.8 **Limpar screenshots antigos do dist/** — MANUTENCAO | BAIXA | INVESTIGACAO (Rodada 3) | AUTONOMO
+  - `dist/` contém `screenshot_*.png` de V9 (4 arquivos, ~140KB) que são artifacts de validação, não distribuição.
+  - Acao: mover screenshots para `orchestration/v9_validation/` ou deletar.
+  - DoD: dist/ contém apenas APKs/AABs (regra das 5).
+
+- [ ] V22.H.9 **Cache de módulos em customizar.tsx** — MELHORIA | BAIXA | INVESTIGACAO (Rodada 3) | AUTONOMO
+  - `quiz/customizar.tsx:19` chama `listarModulos()` em cada mount. Se o usuário vai e volta do quiz, refaz a query de 40 módulos.
+  - Acao: usar `useFocusEffect` (expo-router) com cache em state (só refetch se lista vazia) OU passar módulos via params da rota.
+  - DoD: módulos carregados 1x, navegação instantânea.
+
+- [ ] V22.H.10 **Dificuldade visual por pergunta (badge)** — MELHORIA | BAIXA | INVESTIGACAO (Rodada 3, depende V22.H.5) | AUTONOMO
+  - Com V22.H.5 implementado, mostrar badge de dificuldade na tela de pergunta (⭐ Fácil, ⭐⭐ Médio, ⭐⭐⭐ Difícil) dá feedback visual de progresso.
+  - Acao: adicionar badge no quadro da pergunta (licaoId.tsx e jogar.tsx) quando `dificuldade` !== 'MEDIO'.
+  - DoD: badge de dificuldade visível quando pergunta não é MEDIO.
+
+## Milestone V22.I: Segurança, git bloat e limpeza de dados (RODADA 4) — PENDENTE
+
+> 10 achados da Rodada 4 — análise de configs, git history, navegação, e segurança.
+
+- [ ] V22.I.1 **[CRÍTICO] Revogar credencial exposta no git history** — SEGURANCA | CRITICA | INVESTIGACAO (Rodada 4) | DEPENDE_VOCE
+  - `orchestration/release_keystore_credentials.md` contém senha do keystore (`expert2026`) em plaintext. Committado em V17 (2721dc4). Mesmo deletando o arquivo, a senha permanece no git history.
+  - Acao: (1) DELETAR o arquivo AGORA; (2) gerar NOVO keystore com senha diferente (`keytool -genkeypair ...`); (3) atualizar `android/app/build.gradle` com novo keystore; (4) considerar `git filter-repo` para scrub do history (OU aceitar que o repo é privado e a senha antiga não é reutilizável); (5) NUNCA mais committar credenciais.
+  - DoD: keystore antigo revogado, novo keystore com senha forte, arquivo deletado.
+
+- [ ] V22.I.2 **Limpar 84 PNGs de validação do orchestration/ (131MB)** — MANUTENCAO | ALTA | INVESTIGACAO (Rodada 4) | AUTONOMO
+  - `orchestration/` contém 84 PNG screenshots de validação (V9-V21) + XML dumps + logs. Total: 131MB rastreados pelo git. Repo tem 119MB — a maior parte são esses screenshots.
+  - Acao: (1) mover PNGs para `orchestration/archive/` e adicionar `orchestration/archive/` ao .gitignore; (2) OU manter apenas os das últimas 2 versões (V20, V21) e deletar os anteriores; (3) `git rm --cached` dos arquivos removidos.
+  - DoD: orchestration/ < 10MB, screenshots antigos fora do git.
+
+- [ ] V22.I.3 **Remover docs/questions_clean.json (1.3MB) do git** — MANUTENCAO | ALTA | INVESTIGACAO (Rodada 4) | AUTONOMO
+  - `docs/questions_clean.json` (1.3MB) é o JSON bruto das planilhas WhatsApp usado para gerar o seed. Dados já estão em `seed-perguntas.ts` e `data/db.sqlite`. Redundante e infla o repo.
+  - Acao: (1) `git rm --cached docs/questions_clean.json`; (2) adicionar ao .gitignore; (3) manter no disco para referência (não versionado).
+  - DoD: JSON não rastreado, repo mais leve.
+
+- [ ] V22.I.4 **Remover path aliases nunca usados (babel + tsconfig)** — MANUTENCAO | MEDIA | INVESTIGACAO (Rodada 4) | AUTONOMO
+  - `babel.config.js` define 7 aliases (`@/`, `@assets/`, `@components/`, `@lib/`, `@db/`, `@types/`, `@constants/`). `tsconfig.json` mapeia os mesmos. MAS: 0 arquivos fonte usam qualquer alias — todos usam paths relativos (`../../../lib/...`). Configuração morta que confunde desenvolvedores.
+  - Acao: (1) remover aliases do `babel.config.js` (plugin `module-resolver` pode ser removido entirely se não há outros usos); (2) remover `paths` do `tsconfig.json`; (3) manter `module-resolver` apenas se houver outros usos além dos aliases.
+  - DoD: config limpa, sem aliases não-usados.
+
+- [ ] V22.I.5 **Corrigir onboarding: duplo redirecionamento** — CORRECAO | MEDIA | INVESTIGACAO (Rodada 4) | AUTONOMO
+  - `onboarding.tsx:47` faz `router.replace('/')` que vai para `index.tsx` (splash) que depois redireciona para `/modos`. Duplo hop desnecessário — deveria ir direto para `/modos`.
+  - Acao: trocar `router.replace('/')` por `router.replace('/modos')` em `onboarding.tsx:47` e `:89`.
+  - DoD: onboarding → /modos direto (sem passar pelo splash).
+
+- [ ] V22.I.6 **Adicionar botão "Voltar" em quiz/index.tsx e quiz/customizar.tsx** — MELHORIA | BAIXA | INVESTIGACAO (Rodada 4) | AUTONOMO
+  - `quiz/index.tsx` e `quiz/customizar.tsx` não têm header com botão voltar. Usuário precisa usar o botão físico do Android para voltar. Inconsistente com `licoes/[moduloId].tsx` que tem "← Voltar".
+  - Acao: adicionar header com botão voltar (mesmo padrão de `[moduloId].tsx`).
+  - DoD: botão "← Voltar" visível em quiz/index e quiz/customizar.
+
+- [ ] V22.I.7 **Remover whatsapp_media/ do git (1.5MB)** — MANUTENCAO | MEDIA | INVESTIGACAO (Rodada 4) | AUTONOMO
+  - `whatsapp_media/` contém 17 imagens + 4 planilhas XLSX do WhatsApp. Dados já processados no seed/DB. 1.5MB rastreados.
+  - Acao: (1) `git rm --cached -r whatsapp_media/`; (2) adicionar ao .gitignore; (3) manter no disco para referência.
+  - DoD: whatsapp_media/ não rastreado.
+
+- [ ] V22.I.8 **Otimizar moduloLiberado() — O(n²) para O(n)** — MELHORIA | BAIXA | INVESTIGACAO (Rodada 4) | AUTONOMO
+  - `licoes/index.tsx:30` chama `moduloLiberado(index, modulos)` em cada `renderItem`. A função percorre `modulos[index-1]` — O(1) por chamada, mas com 40 módulos = 40 chamadas por render. Na prática é rápido, mas poderia ser O(1) total com pre-computação.
+  - Acao: calcular Set de IDs liberados em um `useMemo` antes do FlatList e passar para renderItem.
+  - DoD: lógica de liberação pré-computada (O(n) total).
+
+- [ ] V22.I.9 **Remover raw_whatsapp_extraction.json do git** — MANUTENCAO | BAIXA | INVESTIGACAO (Rodada 4) | AUTONOMO
+  - `docs/raw_whatsapp_extraction.json` (20KB) é extração bruta do WhatsApp, processada e não mais necessária.
+  - Acao: `git rm --cached`, adicionar ao .gitignore.
+  - DoD: arquivo não rastreado.
+
+- [ ] V22.I.10 **Adicionar orchestration/*.png e docs/*.json ao .gitignore** — MANUTENCAO | ALTA | INVESTIGACAO (Rodada 4) | AUTONOMO
+  - .gitignore atual não exclui PNGs de orchestration nem JSONs de docs. Resultado: 131MB+ de screenshots e dados rastreados.
+  - Acao: adicionar ao .gitignore:
+    ```
+    orchestration/*.png
+    orchestration/*.xml
+    orchestration/archive/
+    docs/questions_clean.json
+    docs/raw_whatsapp_extraction.json
+    whatsapp_media/
+    data/
+    ```
+  - DoD: .gitignore previne rastreamento de artifacts.
+
+## Milestone V22.J: Scripts, permissões e credenciais (RODADA 5) — PENDENTE
+
+> 10 achados da Rodada 5 — análise de scripts/, Android permissions, configs de build.
+
+- [ ] V22.J.1 **[CRÍTICO] Revogar API key Minimax hardcoded em generate_canonicos.py** — SEGURANCA | CRITICA | INVESTIGACAO (Rodada 5) | DEPENDE_VOCE
+  - `scripts/generate_canonicos.py:8` contém API key Minimax em plaintext: `sk-cp-OZy9Fk5...`. É o 2º arquivo com credencial exposta (além do keystore).
+  - Acao: (1) DELETAR o arquivo OU substituir key por `os.environ['MINIMAX_API_KEY']`; (2) revogar a key no painel Minimax; (3) gerar nova key; (4) `git filter-repo` OU aceitar que repo é privado.
+  - DoD: key hardcoded removida, key antiga revogada.
+
+- [ ] V22.J.2 **Remover 3 permissões Android desnecessárias** — MANUTENCAO | MEDIA | INVESTIGACAO (Rodada 5) | AUTONOMO
+  - `AndroidManifest.xml` declara `SYSTEM_ALERT_WINDOW`, `READ_EXTERNAL_STORAGE`, `WRITE_EXTERNAL_STORAGE`. Nenhuma é usada no código fonte. São leftovers do template Expo.
+  - Acao: remover as 3 permissões do AndroidManifest (via `app.config.ts` plugins ou editando direto no prebuild).
+  - DoD: manifest limpo, sem permissões desnecessárias.
+
+- [ ] V22.J.3 **Remover scripts mortos de V9 (5 arquivos)** — MANUTENCAO | BAIXA | INVESTIGACAO (Rodada 5) | AUTONOMO
+  - Scripts que não são mais usados:
+    1. `scripts/generate_canonicos.py` — Python script com credencial hardcoded
+    2. `scripts/debug_m2_raw.js` — debug script de V9
+    3. `scripts/preflight_v9_db_inspect.js` — preflight de V9
+    4. `scripts/preflight_v9_m2_ping.js` — preflight de V9
+    5. `scripts/restore_ids.js` — restore de V9
+  - Acao: deletar os 5 scripts (verificar que não são referenciados em package.json scripts).
+  - DoD: scripts/ limpo (apenas scripts atuais).
+
+- [ ] V22.J.4 **Remover .js duplicados de scripts (manter .ts)** — MANUTENCAO | BAIXA | INVESTIGACAO (Rodada 5) | AUTONOMO
+  - `generate_canonicos_v9.js` e `import_direct.js` são versões compiladas dos .ts correspondentes. Não deveriam estar no repositório (gerados por `tsc`).
+  - Acao: deletar os .js, adicionar `scripts/*.js` ao .gitignore (exceto os que são intencionalmente .js como `build-release.sh`).
+  - DoD: apenas .ts e .sh em scripts/.
+
+- [ ] V22.J.5 **Avaliar expo-updates: remover ou ativar** — MANUTENCAO | BAIXA | INVESTIGACAO (Rodada 5) | AUTONOMO
+  - `AndroidManifest.xml` tem `expo.modules.updates.ENABLED=false`. Plugin `expo-updates` não está no package.json mas config existe. Se não vai usar OTA updates, remover a config. Se vai usar, ativar.
+  - Acao: decidir — provavelmente remover (app usa EAS Build, não OTA).
+  - DoD: config consistente com estratégia de deploy.
+
+- [ ] V22.J.6 **Remover generate_canonicos.py do git** — SEGURANCA | ALTA | INVESTIGACAO (Rodada 5) | AUTONOMO
+  - Arquivo com credencial hardcoded NÃO deveria estar no repositório.
+  - Acao: `git rm --cached scripts/generate_canonicos.py` + adicionar ao .gitignore.
+  - DoD: arquivo com credencial não rastreado.
+
+## Milestone V22.K: Acessibilidade, testes e polish final (RODADA 6) — PENDENTE
+
+> 6 achados da Rodada 6 — análise de a11y, testes E2E, privacy policy, CI.
+
+- [ ] V22.K.1 **Adicionar accessibilityLabel em todos os elementos interativos** — MELHORIA | ALTA | INVESTIGACAO (Rodada 6) | AUTONOMO
+  - Apenas 4 de ~30+ elementos interativos têm accessibilityLabel (logo, troféu, IconeHome, IconeSom). Elementos críticos SEM label:
+    - ENVIAR button (licaoId.tsx)
+    - PROSSEGUIR/VOLTAR buttons (feedback.tsx)
+    - Quiz alternatives (jogar.tsx) — cada uma das 4 opções
+    - Config switches (config.tsx) — 6 toggles
+    - Module/Lesson cards (licoes/index.tsx, [moduloId].tsx)
+    - Onboarding buttons (onboarding.tsx)
+    - Quiz index cards (quiz/index.tsx)
+  - Acao: adicionar `accessibilityLabel` e `accessibilityRole="button"` em todos os Pressable/Switch interativos.
+  - DoD: TalkBack/VoiceOver anuncia corretamente todos os elementos interativos.
+
+- [ ] V22.K.2 **Adicionar testIDs para testes E2E** — INFRA | MEDIA | INVESTIGACAO (Rodada 6) | AUTONOMO
+  - Zero elementos têm `testID` no código fonte. O teste E2E (`splash.spec.ts`) é stub — não testa nada real. Playwright não consegue selecionar elementos sem testIDs.
+  - Acao: adicionar `testID` nos elementos-chave (botões, cards, inputs, listas) para permitir testes E2E robustos.
+  - DoD: elementos-chave têm testID para seleção E2E.
+
+- [ ] V22.K.3 **Atualizar privacy policy: remover seções AdMob e Sentry** — CORRECAO | MEDIA | INVESTIGACAO (Rodada 6) | AUTONOMO
+  - `docs/PRIVACY_POLICY.md` menciona Google AdMob (Seção 3) e Sentry (Seção 4) como serviços ativos. Nenhum está implementado — AdMob é PLACEHOLDER, Sentry foi removido V13. A privacy policy HTML (`privacy.html`) provavelmente tem o mesmo conteúdo.
+  - Acao: (1) remover ou marcar como "futuro" as seções 3 e 4; (2) atualizar `privacy.html` correspondente; (3) atualizar versão/data.
+  - DoD: privacy policy reflete apenas serviços realmente ativos (Minimax + OpenAI).
+
+- [ ] V22.K.4 **Paralelizar jobs no CI** — MELHORIA | BAIXA | INVESTIGACAO (Rodada 6) | AUTONOMO
+  - `.github/workflows/ci.yml` — `test-unit` depende de `lint-type-check` (`needs: lint-type-check`). São independentes — poderiam rodar em paralelo.
+  - Acao: remover `needs: lint-type-check` de `test-unit` (ambos rodam em paralelo).
+  - DoD: CI ~30% mais rápido (jobs paralelos).
+
+- [ ] V22.K.5 **Remover upload de coverage não-utilizado** — MANUTENCAO | BAIXA | INVESTIGACAO (Rodada 6) | AUTONOMO
+  - CI faz `upload-artifact` de `coverage/` mas nenhum job consome esse artifact. Ocupa espaço no Actions sem benefício.
+  - Acao: remover o step `Upload coverage` OU adicionar step que comenta coverage no PR (via `jest-coverage-report-action`).
+  - DoD: CI limpo, sem artifacts inúteis.
+
+- [ ] V22.K.6 **Criar testes E2E reais (substituir stub)** — INFRA | MEDIA | INVESTIGACAO (Rodada 6) | AUTONOMO
+  - `__tests__/e2e/splash.spec.ts` é stub — `page.goto('/')` + `toHaveTitle(/Expert/)`. Não testa nada real do app.
+  - Acao: criar pelo menos 1 teste E2E real: splash → modos → licoes → pergunta → feedback. Usar testIDs (V22.K.2) para seleção.
+  - DoD: teste E2E que valida jornada básica do usuário.
+
+## Milestone V22.L: Qualidade de código e edge cases (RODADA 7) — PENDENTE
+
+> 3 achados significativos da Rodada 7 — análise de catch blocks, hooks, e edge cases.
+
+- [ ] V22.L.1 **Adicionar logging em catch blocks silenciados** — MELHORIA | MEDIA | INVESTIGACAO (Rodada 7) | AUTONOMO
+  - 40 catch blocks no código, muitos com corpo vazio ou apenas comentário. Erros de DB, haptics, ranking, e avaliação são silenciados. Em produção, bugs ficam invisíveis.
+  - Acao: adicionar `console.warn('[contexto] operacao falhou:', e)` nos catch blocks críticos (db-queries, avaliador, quiz/final). Manter vazios apenas para haptics (não-crítico).
+  - DoD: erros críticos logados no logcat para diagnóstico.
+
+- [ ] V22.L.2 **Adicionar PRAGMA journal_mode=WAL para performance SQLite** — MELHORIA | BAIXA | INVESTIGACAO (Rodada 7) | AUTONOMO
+  - Nenhum pragma de performance no banco. WAL (Write-Ahead Logging) melhora performance de leitura concorrente e reduz locks.
+  - Acao: adicionar `db.execSync('PRAGMA journal_mode=WAL')` em `database.ts` após `openDatabaseSync()`.
+  - DoD: WAL mode ativo, queries de leitura não bloqueadas por writes.
+
+- [ ] V22.L.3 **listarModulos() desnecessário em [moduloId].tsx** — MELHORIA | BAIXA | INVESTIGACAO (Rodada 7, duplicata de V22.A.5) | AUTONOMO
+  - Já coberto por V22.A.5 (criar `listarModuloPorId()`). Mantido aqui como referência cruzada.
+
 ## Dependencias entre milestones V22
+- **V22.I.1 (keystore) DEVE ser PRIMEIRO** — credencial exposta é risco de segurança imediato
+- V22.I.2-3-7-9-10 (git cleanup) deve vir cedo — reduz 119MB para <10MB, melhora performance do git
 - V22.A (bugs) pode rodar em paralelo com V22.B (UX) e V22.G (limpeza)
-- V22.C.2 (error boundaries) deve vir antes de V22.D (segurança) — protege contra crashes
-- V22.D.1 (vulns) provavelmente resolve com V22.C (Expo SDK 56)
-- V22.E (conteúdo) independente dos demais
-- V22.G (limpeza/código morto) deve rodar antes de V22.F (evoluções) — wirear streak/deep-link/notifications antes de adicionar features que dependem deles
-- V22.F (evoluções/engajamento) depende parcialmente de V22.G (streak.ts precisa ser wired antes de freeze/notificações)
-- Ordem recomendada: **V22.A → V22.B → V22.C → V22.D → V22.G → V22.E → V22.F**
+- V22.C.2 (error boundaries) deve vir antes de V22.D (segurança)
+- V22.G (código morto) antes de V22.F (evoluções) — wirear streak/deep-link/notifications
+- V22.H.3 (seed JSON) antes de V22.H.4 (referências) e V22.H.5 (dificuldade)
+- V22.H.5 (dificuldade) antes de V22.H.10 (badge visual)
+- Ordem recomendada: **V22.I.1 → V22.I.2-10 → V22.A → V22.B → V22.H.1-3 → V22.C → V22.D → V22.G → V22.E → V22.H.4-6 → V22.F → V22.H.7-10**
 
 ## Dependencias de voce (V22)
+- **Revogar keystore antigo** (V22.I.1) — CRÍTICO: gerar novo keystore com senha diferente (o antigo `expert2026` está no git history). Destrava: segurança do app.
 - **EAS projectId + eas.json** (V22.C.1) — falta de voce: rodar `eas init` no projeto OU fornecer ID existente. Destrava: EAS Build funcional.
 - **AdMob real IDs** (backlog V8) — falta de voce: criar conta AdMob + obter App ID. Destrava: monetização.
 - **Poses douradas assustado/triste** (backlog V20) — falta de voce: designer subir assets. Destrava: mascote completo nas lições.

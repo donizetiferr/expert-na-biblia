@@ -117,9 +117,38 @@ Escopo: ATUALIZACAO | Profundidade: COMPLETO — razão: input "auditoria profun
 - Ajustes Rodada 2: 12 achados novos | 7 código morto | 3 bugs ocultos | 6 features estratégicas
 - Re-ataque: executado (plano > 3 itens, 3 passadas)
 - Top achados Rodada 2:
-  1. **7 arquivos de código morto** (0 imports): streak.ts, deep-link.ts, quota-monitor.ts, sqlcipher.ts, design-tokens.ts, BackHandlerOffline.tsx, quiz-alternatives.ts — 3 deletáveis, 4 a wirear
+  1. **7 arquivos de código morto** (0 imports): streak.ts, deep-link.ts, quota-monitor.ts, sqlcipher.ts, design-tokens.ts, BackHandlerOffline.tsx, quiz-alternatives.ts — 4 deletáveis, 3 a wirear
   2. **Streak (#1 driver retenção) completamente invisível** — streak.ts existe mas NUNCA é importado por nenhuma tela
   3. **haptics.ts cache bug** — toggle em config não tem efeito imediato (cache nunca invalidado)
-  4. **Distratores triviais** — Quiz fallback gera alternativas óbvias (`${resposta} (verso X)`)
+  4. **Distratores: fallback é código morto** — 4341/4345 perguntas JÁ têm quiz_alternativas no seed; fallback nunca acionado (premissa corrigida)
   5. **Mascote não evolui** — PersonagemLivro estático (mesmo tamanho do início ao fim), contraste com Ascend/Manna
   6. **Notificações nunca agendadas** — toggle existe mas agendarLembreteDiario() nunca é chamado
+  7. **user_rankings populada mas nunca lida** — quiz/final grava mas ninguém exibe histórico
+- Top achados Rodada 3:
+  1. **2 áudio mortos no APK** (114KB) — musica_fundo.mp3 + musica_fundo_v2.mp3, 0 refs em código
+  2. **data/db.sqlite (2.7MB) rastreado pelo git** — binário em repo = diff gigante a cada rebuild
+  3. **seed-perguntas.ts (824KB) no git** — dados brutos em arquivo TS, deveria ser JSON
+  4. **referencias_biblicas: campo existe mas NULL para todas 4345 perguntas** — infraestrutura morta
+  5. **dificuldade: sempre MEDIO** — schema suporta FACIL/MEDIO/DIFICIL mas nenhuma lógica usa
+  6. **Sem mecanismo de report de erro** — usuário não pode reportar canônica incorreta
+  7. **Dificuldade adaptativa: infra existe mas nunca implementada** — campo no DB + tipos definidos
+- Top achados Rodada 5:
+  1. **2ª CREDENCIAL EXPOSTA** — `scripts/generate_canonicos.py:8` tem API key Minimax hardcoded
+  2. **3 permissões Android desnecessárias** — SYSTEM_ALERT_WINDOW, READ/WRITE_EXTERNAL_STORAGE
+  3. **5 scripts mortos de V9** — .py, debug_*.js, preflight_*.js, restore_ids.js
+- Top achados Rodada 6:
+  1. **Acessibilidade: 4/30+ elementos com label** — apenas logo, troféu, IconeHome, IconeSom
+  2. **Zero testIDs** — E2E tests não conseguem selecionar elementos
+  3. **Privacy policy menciona AdMob e Sentry** — nenhum implementado
+- Top achados Rodada 7:
+  1. **40 catch blocks silenciados** — erros de DB, ranking, avaliação invisíveis
+  2. **Zero `as any`** — TypeScript strict OK
+  3. **Zero console.log** — migrados para debug/warn (V13)
+- Top achados Rodada 4:
+  1. **CREDENCIAL EXPosta** — `orchestration/release_keystore_credentials.md` tem senha `expert2026` em plaintext (commit V17). CRÍTICO.
+  2. **orchestration/ 131MB no git** — 84 PNG screenshots de validação V9-V21, todos rastreados
+  3. **Repo git 119.48 MiB** — inflado por screenshots + dados (meta: <10MB)
+  4. **questions_clean.json 1.3MB no git** — dados brutos redundantes com seed
+  5. **Path aliases NUNCA usados** — 7 aliases em babel+tsconfig, 0 imports
+  6. **Onboarding: duplo redirecionamento** — `router.replace('/')` → splash → `/modos`
+  7. **whatsapp_media/ 1.5MB no git** — imagens/planilhas brutas rastreadas
