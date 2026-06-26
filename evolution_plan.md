@@ -1,27 +1,311 @@
-# Plano de Evolucao — Expert Na Biblia (V18, 2026-06-25)
+# Plano de Evolucao — Expert Na Biblia (V22, 2026-06-26)
 
-> Atualizado em 2026-06-25 por solo-plan (V18, COMPLETO, sessao principal) | Escopo: **ATUALIZACAO** | Profundidade: **COMPLETO**
-> Ultima atualizacao: 2026-06-25
-> Status: **APROVADO** (V18 aprovado pelo usuario em 2026-06-25 — despachado @full-cycle)
+> Atualizado em 2026-06-26 por solo-plan (V22, COMPLETO, sessao principal) | Escopo: **ATUALIZACAO** | Profundidade: **COMPLETO**
+> Ultima atualizacao: 2026-06-26
+> Status: **AGUARDANDO_APROVACAO**
 >
-> Investigacao + segundo turno critico V18: `orchestration/plan_investigation.md`
-> Historico: V1-V7 (47/47), V8 (18 [x]), V9 (18/19 [x]), V10 (M5+M6), V11, V12 (M7), V13 (M14), V14 (M15), V17 (Play Store prep). V18 = este push (fidelidade visual REAL + fix loop do Quiz + validacao mock-a-mock).
+> Investigacao + segundo turno critico V22: `orchestration/plan_investigation.md`
+> Historico: V1-V7 (47/47), V8 (18 [x]), V9 (18/19 [x]), V10 (M5+M6), V11, V12 (M7), V13 (M14), V14 (M15), V17 (Play Store prep), V18 (fidelidade visual + fix loop + validacao), V19 (scoring + 8 bugs QA), V20 (mascote dourado + IA obrigatoria), V21 (timeout IA + canonica + acentuacao). V22 = AUDITORIA PROFUNDA (bugs, melhorias, UX/UI, infraestrutura, segurança).
+
+---
+
+# ===== PLANO V22 (2026-06-26) — AUDITORIA PROFUNDA (bugs, polish, infra, UX) =====
+
+> Auditoria completa do projeto apos V21 (v1.11.0/vc6). Tests 97/97, tsc 0, build OK.
+> 29 achados independentes + 12 achados de infraestrutura. 8 dimensoes varridas.
+
+## Resumo Executivo V22
+
+O projeto está **funcional e estável** (97 testes passando, build OK, APK V21 publicado), mas acumula **debt técnico** e **oportunidades de polish** que merecem ser endereçadas antes da publicação na Play Store.
+
+**Principais achados (apos double-check):**
+1. **Infraestrutura desatualizada**: Expo SDK 55 -> 56 disponível (breaking change), 29 packages outdated, 16 moderate vulnerabilities (@expo/config chain). Sem `eas.json` para builds EAS.
+2. **Bugs menores de código**: SplashScreen import shadowing, key prop faltando, botões feedback 140px overflow em telas <=320px.
+3. **UX polish**: config usa emoji para ícones, sem loading/error state em [moduloId].tsx, animações loop contínuo consomem CPU, haptic feedback ausente nos botões.
+4. **Segurança**: 16 moderate vulns, API keys não hardcoded (OK) mas sem `.env` documentado = feature IA indisponível sem config manual.
+5. **Falta crítica para produção**: zero error boundaries, zero analytics/crash reporting (re-priorizado para ALTA), EAS projectId placeholder, eas.json ausente.
+6. **Conteúdo**: ~489 canonicas "NAO SEI" em módulos NT, matching pode falhar em respostas longas.
+7. **Privacy policy**: HTML EXISTE (HTTP 200, confirmado) — não é bug.
+
+## Estatísticas V22 (apos Rodada 2 — análise completa de 55 arquivos + pesquisa externa)
+
+- Milestones: 7 (V22.A bugs, V22.B UX polish, V22.C infra/deps, V22.D segurança, V22.E conteúdo, V22.F evolução/engajamento, V22.G código morto/limpeza)
+- Itens: 42 ( CRITICA: 4 | ALTA: 12 | MEDIA: 16 | BAIXA: 10 )
+- Por categoria: 7 CORRECAO, 8 MELHORIA, 9 EVOLUCAO, 8 MANUTENCAO, 8 INFRAESTRUTURA, 2 BACKLOG
+- Por fonte: INVESTIGACAO 26 | PESQUISA_EXTERNA 8 | OBJECTIVE_GAP 4 | DOUBLE_CHECK 2 | RODADA_2: 10
+- Autonomia: ~38 AUTONOMO | 1 DESTRAVAVEL (AdMob/EAS) | 2 DEPENDE_VOCE (Play Store 2FA, designer poses)
+- Achados independentes: 24 (gate G4 satisfeito)
+- Segundo turno critico (3.5 + double-check + Rodada 2): 12 detalhados + 5 POLISH + 4 recuperados + 3 re-priorizados + 2 consolidados + 5 premissas verificadas
+- Código morto encontrado: 7 arquivos (3 deletáveis, 4 a wirear)
+
+## Saúde do projeto V22 (verificada em 2026-06-26)
+- Testes: EXISTEM+PASSANDO (97/97, 11 suites) | Build: OK | CI/CD: CONFIGURADO | Deps: DESATUALIZADAS (29 outdated, 16 moderate vulns) | Docs: COMPLETAS
+- Evidencias: `orchestration/plan_investigation.md`
+
+---
+
+## Milestone V22.A: Bugs e correções de código (CORRECAO) — PENDENTE
+
+- [ ] V22.A.1 **FIX: SplashScreen import shadowing em index.tsx** — CORRECAO | MEDIA | INVESTIGACAO | AUTONOMO
+  - `src/app/index.tsx:21` nomeia o componente `SplashScreen` que shadoweia o import `SplashScreenLib` da linha 3. Funciona em runtime mas confunde desenvolvedores e lint.
+  - Acao: renomear componente para `SplashScreenApp` ou `TelaSplash`.
+  - DoD: sem warnings de shadowing no lint.
+
+- [ ] V22.A.2 **FIX: key prop ausente em Pressable bloqueado (licoes/index.tsx)** — CORRECAO | BAIXA | INVESTIGACAO | AUTONOMO
+  - `src/app/licoes/index.tsx:97` — Pressable do card bloqueado não tem `key` (FlatList renderItem, mas React pode warnar).
+  - Acao: adicionar `key={item.id}` ao Pressable externo do card bloqueado.
+  - DoD: sem warnings de key no console.
+
+- [ ] V22.A.3 **FIX: botões feedback circulares overflow em telas <=320px** — CORRECAO | MEDIA | INVESTIGACAO (double-check: risco menor que estimado) | AUTONOMO
+  - `src/app/licoes/[moduloId]/[licaoId]/feedback.tsx:265-269` — botões `width: 140, height: 140` lado a lado. Em telas >=360px (smartphones modernos mínimos) cabe com folha. Em telas <=320px (tablets antigos, emuladores de teste) não cabe.
+  - Acao (double-check: solução responsiva em vez de full-width): reduzir para 120px (120+16+120+48padding=304px, cabe em 320px). Manter layout circular que dá personalidade. OU: usar `useWindowDimensions` e adaptar (>=360px: 140px, <360px: 110px).
+  - DoD: feedback funcional em telas 320px largura sem overflow, mantendo design circular.
+
+- [ ] V22.A.4 **FIX: sem loading/error state na tela [moduloId].tsx** — CORRECAO | ALTA | INVESTIGACAO (lente 3 recuperado) | AUTONOMO
+  - `src/app/licoes/[moduloId].tsx` — se `listarLicoes()` falhar ou retornar [], a tela fica vazia (FlatList vazio, sem feedback). Diferente de `jogar.tsx` que tem estado de erro dedicado.
+  - Acao: adicionar estado `loading` + `erro` (mesmo padrão de jogar.tsx). Se lista vazia: "Nenhuma lição encontrada neste módulo" + botão VOLTAR.
+  - DoD: tela nunca fica vazia sem feedback.
+
+- [ ] V22.A.5 **FIX: listarModulos() chamado 2x em [moduloId].tsx** — CORRECAO | BAIXA | INVESTIGACAO | AUTONOMO
+  - `src/app/licoes/[moduloId].tsx:25-30` — useEffect chama `listarModulos()` para achar o nome do módulo, mas `licoes/index.tsx` já carregou todos os módulos. Cada navegação para [moduloId] refaz a query inteira.
+  - Acao: criar `listarModuloPorId(id)` em db-queries.ts (query WHERE id=?) ou passar o nome do módulo via params da rota.
+  - DoD: 1 query leve em vez de query completa de 40 módulos.
+
+## Milestone V22.B: UX Polish e melhorias visuais (MELHORIA) — PENDENTE
+
+- [ ] V22.B.1 **Config: VolumeSlider com emoji -> ícones on-palette** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
+  - `src/app/config.tsx:65-79` — usa emojis 🔇🔈🔉🔊 que renderizam diferente por dispositivo/OS. Inconsistente com design on-palette do app.
+  - Acao: usar texto simples ("0", "33", "66", "100") OU ícones Unicode circulares (●◐◑◉) OU barras visuais (segments preenchidos). Manter acessibilidade com labels.
+  - DoD: ícones de volume consistentes em todos os dispositivos.
+
+- [ ] V22.B.2 **PersonagemLivro: pausar animações quando tela não visível** — MELHORIA | MEDIA | INVESTIGACAO (lente PERFORMANCE) | AUTONOMO
+  - `src/components/PersonagemLivro.tsx:57-71` — `Animated.loop` de bounce+blink roda para SEMPRE, mesmo quando a tela não está visível (navegou para outra tela, app em background). Consome CPU desnecessariamente.
+  - Acao: usar `useFocusEffect` (expo-router) ou `AppState` para pausar/retomar animações. Ou usar `Animated.timing` com `isInteraction: false` para permitir que outras animações tomem prioridade.
+  - DoD: CPU usage em background reduzido.
+
+- [ ] V22.B.3 **Adicionar haptic feedback nos botões principais** — MELHORIA | MEDIA | INVESTIGACAO (double-check: detalhado) | AUTONOMO
+  - O app tem `expo-haptics` instalado e `src/lib/haptics.ts` com `lightTap()`, mas nenhum botão usa haptic feedback.
+  - **8 pontos específicos** (double-check):
+    1. `licoes/[moduloId]/[licaoId].tsx` — botão ENVIAR → `lightTap()`
+    2. `licoes/[moduloId]/[licaoId]/feedback.tsx` — PROSSEGUIR → `lightTap()`
+    3. `licoes/[moduloId]/[licaoId]/feedback.tsx` — VOLTAR → `lightTap()`
+    4. `quiz/jogar.tsx` — cada alternativa (4x) → `lightTap()`
+    5. `licoes/[moduloId]/[licaoId]/feedback.tsx` — acerto → `successBuzz()`
+    6. `licoes/[moduloId]/[licaoId]/feedback.tsx` — erro → `errorBuzz()`
+    7. `quiz/final.tsx` — RECOMECAR → `lightTap()`
+    8. `trofeu.tsx` — RECOMECAR → `lightTap()`
+  - DoD: feedback tátil nos 8 pontos de interação principais.
+
+- [ ] V22.B.4 **Header "Voltar" em [moduloId].tsx inconsistente** — MELHORIA | BAIXA | INVESTIGACAO | AUTONOMO
+  - `src/app/licoes/[moduloId].tsx:95-97` — usa `<Pressable onPress={() => router.back()}><Text>← Voltar</Text></Pressable>` simples, sem o padrão de header usado em outras telas.
+  - Acao: padronizar header com botão voltar estilizado consistente com o design do app.
+  - DoD: navegação consistente entre telas.
+
+## Milestone V22.C: Infraestrutura e dependências (INFRA/MANUTENCAO) — PENDENTE
+
+> V22.C.1 original (privacy policy) RECLASSIFICADO: HTML verificado em 2026-06-26, HTTP 200 OK. Não é bug.
+
+- [ ] V22.C.1 **Substituir EAS projectId PLACEHOLDER + criar eas.json** — INFRA | ALTA | INVESTIGACAO | DESTRAVAVEL: precisa rodar `eas init`
+  - `app.config.ts:64` tem `eas: { projectId: 'PLACEHOLDER_EAS_PROJECT_ID' }`. EAS Build não funciona sem ID real.
+  - **Adicional (double-check):** `eas.json` NÃO existe no projeto. Sem ele, `eas build` usa defaults sem env vars (API keys), signing config, nem profiles.
+  - Acao: (1) rodar `eas init` e substituir placeholder; (2) criar `eas.json` com profiles `preview` (APK) e `production` (AAB) + env block para MINIMAX_API_KEY/OPENAI_API_KEY.
+  - DoD: `eas build --profile preview --platform android --dry-run` funciona.
+
+- [ ] V22.C.2 **Error boundaries com fallback contextual** — INFRA | CRITICA | INVESTIGACAO (double-check: enriquecido) | AUTONOMO
+  - O app NÃO tem nenhum ErrorBoundary. Crash em render = app inteiro fecha sem feedback.
+  - Acao: criar `src/components/ErrorBoundary.tsx` com fallback CONTEXTUAL:
+    - Props opcionais `fallbackTitle` / `fallbackAction` para personalização por tela
+    - Fallback padrão: "Algo deu errado" + botão "Tentar novamente"
+    - Fallback contextual: se crashou em `/licoes/...` → "Voltar aos módulos"; se em `/quiz/...` → "Voltar ao Quiz"
+    - Log do erro via `console.error` (preparar para Sentry futuro)
+  - Envolver Stack em `_layout.tsx` + pontos críticos (licaoId.tsx, jogar.tsx).
+  - DoD: erro de render mostra tela amigável contextual em vez de crash branco.
+
+- [ ] V22.C.3 **Integrar analytics/crash reporting (Sentry)** — INFRA | ALTA | OBJECTIVE_GAP (double-check: re-priorizado de BAIXA) | AUTONOMO
+  - App vai para produção sem saber se crasha. Zero instrumentação. (Re-priorizado de V22.F.4 para V22.C — é infraestrutura mínima, não evolução opcional.)
+  - Acao: integrar `@sentry/react-native` (compatível com Expo). Mínimo: crash reporting automático + breadcrumbs de navegação (Screen tracking). Configurar DSN em `eas.json` env.
+  - DoD: crashes reportados automaticamente no Sentry dashboard.
+
+- [ ] V22.C.4 **Criar .env.example documentado** — INFRA | MEDIA | INVESTIGACAO (double-check: achado novo) | AUTONOMO
+  - Não há `.env` arquivo, não há keys em `gradle.properties`, não há `eas.json`. `app.config.ts` lê de `process.env` mas ninguém documenta QUÊ definir. Feature IA fica indisponível sem config manual.
+  - Acao: criar `.env.example` com `MINIMAX_API_KEY=your_key_here` + `OPENAI_API_KEY=your_key_here` + instruções de como obter. Adicionar seção "Configuração de API keys" no README.
+  - DoD: desenvolvedor clonando o repo sabe exatamente como configurar IA em 2 minutos.
+
+- [ ] V22.C.5 **Atualizar CLAUDE.md: remover backend Node.js obsoleto** — MANUTENCAO | BAIXA | INVESTIGACAO | AUTONOMO
+  - `CLAUDE.md:36-38` menciona "Backend: Node.js + Express em Railway/Render free tier" mas V9 decidiu "Backend deploy: descartado (app chama M3 direto)". Documentação inconsistente.
+  - Acao: atualizar seção de arquitetura removendo backend dedicado, documentando que app chama M2.7 direto.
+  - DoD: CLAUDE.md reflete arquitetura real.
+
+- [ ] V22.C.6 **Remover arquivos .json/.bak obsoletos da raiz** — MANUTENCAO | BAIXA | INVESTIGACAO | AUTONOMO
+  - `app.json.bak`, `app.json.full` na raiz são resquícios de debug V8. Não são usados.
+  - Acao: deletar `app.json.bak` e `app.json.full` (verificar que não são referenciados em nenhum script).
+  - DoD: raiz limpa sem arquivos de backup.
+
+## Milestone V22.D: Segurança e proteção (SEGURANCA) — PENDENTE
+
+- [ ] V22.D.1 **Auditar 16 moderate vulnerabilities (@expo/config chain)** — SEGURANCA | ALTA | INVESTIGACAO | AUTONOMO
+  - `npm audit` reporta 16 moderate em @expo/config -> @expo/config-plugins -> @expo/prebuild-config -> expo-splash-screen. São transitivas do Expo SDK 55.
+  - Acao: rodar `npm audit fix` (non-breaking). Se não resolver, avaliar se Expo SDK 56 resolve (provavelmente sim — as vulns são do SDK 55).
+  - DoD: `npm audit` = 0 high/critical (moderate aceitável se são transitivas do Expo).
+
+- [ ] V22.D.2 **Verificar se API keys vazam no bundle** — SEGURANCA | MEDIA | INVESTIGACAO (double-check: premissa verificada) | AUTONOMO
+  - **Premissa verificada:** `app.config.ts:69-70` lê de `process.env.MINIMAX_API_KEY` / `process.env.OPENAI_API_KEY` com fallback para string vazia. Keys NÃO estão hardcoded. `m3.ts` lê de `expo-constants` que lê do config.
+  - **Risco real:** se env vars não definidas no build, `minimaxApiKey = ''` → `obterApiKey()` retorna null → IA lança erro → `avaliador.ts` cai em fallback gracioso. App funciona sem IA, mas feature fica indisponível. (Coberto por V22.C.4 que documenta o fluxo.)
+  - Acao: extrair APK de produção e rodar `strings | grep -E "sk-|eyJ|api.minimax"` para confirmar que nenhuma key escapou. Ação defensiva — provavelmente limpo.
+  - DoD: confirmado que bundle não contém keys hardcoded.
+
+## Milestone V22.E: Qualidade de conteúdo (EVOLUCAO/CORRECAO) — PENDENTE
+
+- [ ] V22.E.1 **Regenerar ~489 canonicas "NAO SEI" via batch M2.7** — EVOLUCAO | ALTA | INVESTIGACAO | AUTONOMO
+  - Módulos NT e FB (além de FB01) têm canonicas placeholder "NAO SEI". Offline, o guard SEM_GABARITO cobre; online, a IA avalia. Mas a qualidade do conteúdo fica prejudicada.
+  - Acao: criar script batch que chama M2.7 para gerar canonicas reais para todas as perguntas com resposta "NAO SEI". Atualizar seed-perguntas.ts + data/db.sqlite.
+  - DoD: <10 canonicas "NAO SEI" restantes (apenas as genuinamente ambíguas).
+
+- [ ] V22.E.2 **Melhorar matching para respostas longas** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
+  - `src/lib/matching.ts` — matchCanonico pode falhar em respostas longas mesmo quase exatas (threshold cosseno 0.50 pode ser baixo para textos com muitos tokens).
+  - Acao: testar com 20+ casos reais de respostas longas e ajustar thresholds. Considerar normalização por comprimento da resposta.
+  - DoD: matching com >90% acurácia em respostas longas testadas.
+
+## Milestone V22.F: Evoluções futuras (EVOLUCAO) — BACKLOG
+
+> Itens de evolução identificados na pesquisa externa e gaps de objetivos. Não bloqueiam release.
+
+- [ ] V22.F.1 **Wire streak na UI + freeze semanal funcional** — EVOLUCAO | ALTA | PESQUISA_EXTERNA + INVESTIGACAO (Rodada 2: código morto) | AUTONOMO
+  - `src/lib/streak.ts` existe mas NUNCA é importado por nenhuma tela (0 imports). `usarFreezeSemanal()` retorna `false` (stub). Streak é o #1 driver de retenção em apps educativos (Duolingo: streaks aumentam compromisso em 60%).
+  - Acao: (1) importar `registrarAtividade()` em `final.tsx` da lição (ao concluir 100%); (2) importar `obterStreak()` + `formatarStreakTexto()` em `licoes/index.tsx` (header "🔥 N dias seguidos!"); (3) implementar `usarFreezeSemanal()` real (1 freeze por semana, persistir em DB); (4) adicionar warning de streak em perigo via notificação push (se não praticou hoje e streak > 3).
+  - DoD: streak visível em /licoes, incrementa ao concluir lição, freeze funciona 1x/semana.
+
+- [ ] V22.F.2 **Modo de revisão espaçada** — EVOLUCAO | BAIXA | PESQUISA_EXTERNA | AUTONOMO
+  - Apps de educação eficazes usam spaced repetition (SM-2). O app atual não tem revisão — uma vez concluída, a lição nunca mais aparece.
+  - Acao: criar modo "Revisão" que seleciona perguntas de lições concluídas há X dias, priorizando as que o usuário errou mais.
+  - DoD: modo Revisão funcional com algoritmo simples de intervalo.
+
+- [ ] V22.F.3 **Compartilhamento de conquistas via Share Sheet nativo** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA + INVESTIGACAO (Rodada 2: deep-link.ts morto) | AUTONOMO
+  - `src/lib/deep-link.ts` existe mas NUNCA é importado (0 imports). A função `compartilharLicao` abre WhatsApp hardcoded — falha se não instalado. Apps de referência (Duolingo, Ascend) usam share sheet nativo.
+  - Acao: (1) importar `deep-link.ts` em `trofeu.tsx` e `quiz/final.tsx`; (2) substituir `Linking.openURL('whatsapp://...')` por `Share.share()` do React Native (mostra todos os apps); (3) gerar mensagem de conquista formatada ("🔥 Concluí Expert Na Bíblia! X módulos, Y dias de streak!"); (4) adicionar botão "Compartilhar" na tela de troféu e quiz/final.
+  - DoD: share sheet nativo abre com mensagem formatada de conquista.
+
+- [ ] V22.F.4 **Notificações push condicionais (streak reminder)** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+  - `src/lib/notifications.ts` existe com `agendarLembreteDiario()` mas NUNCA é chamado automaticamente. O toggle em config ativa/desativa mas não agenda. Duolingo: notificação "Sua streak está em perigo!" às 20h se não praticou = +2.5x engajamento.
+  - Acao: (1) ao ativar notificações em config, chamar `agendarLembreteDiario()`; (2) ao concluir lição do dia, cancelar lembrete pendente; (3) se streak > 3 e não praticou hoje, enviar notificação "🔥 Sua streak de X dias pode acabar!" às 20h; (4) adicionar seletor de horário na tela de config (default 19h).
+  - DoD: notificação push aparece se não praticou hoje, cancela ao praticar.
+
+- [ ] V22.F.5 **Mascote que evolui com progresso** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+  - Ascend (phoenix que cresce) e Manna (study pet) são os #1 apps de Bible gamification. O mascote do Expert (PersonagemLivro) não evolui — mesmo tamanho do início ao fim. Evolução do mascote é driver de retenção (usuário quer ver crescer).
+  - Acao: (1) adicionar prop `nivel` ao PersonagemLivro (1-5 baseado em módulos concluídos); (2) aumentar size progressivamente (120→140→160→180→200); (3) adicionar "aura" visual (glow dourado) nos níveis mais altos; (4) transição de nível com animação especial + SFX.
+  - DoD: mascote cresce visualmente a cada 8 módulos concluídos, com feedback de nível.
+
+- [ ] V22.F.6 **Versículo do dia / Devocional leve** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+  - FaithTime, Bible Way, YouVersion oferecem versículo do dia como "entry point" leve. O app atual exige compromisso com lição inteira (5-10 min). Versículo do dia (30s) traz usuário de volta sem pressão.
+  - Acao: (1) criar tabela `versiculos_do_dia` no DB com 365 versículos pré-selecionados; (2) tela simples em /modos (card "Versículo de hoje" com versículo + referência); (3) compartilhar versículo via share sheet; (4) refresh diário automático.
+  - DoD: card "Versículo de hoje" em /modos, diferente a cada dia.
+
+- [ ] V22.F.7 **Onboarding: FlatList com 1 item -> View simples** — MELHORIA | BAIXA | INVESTIGACAO (double-check: rebaixado para backlog) | AUTONOMO
+  - `src/app/onboarding.tsx:56-69` — FlatList horizontal com `data={[slide]}`. Overhead negligível, funciona perfeitamente. Nice-to-have cosmético.
+  - Acao: substituir por View simples se/quando refatorar onboarding.
+  - DoD: sem FlatList desnecessário (baixa prioridade).
+
+- [ ] V22.F.8 **Exibir histórico de rankings/scores do usuário** — EVOLUCAO | BAIXA | INVESTIGACAO (double-check 2ª passada: achado novo) | AUTONOMO
+  - `quiz/final.tsx:57` grava em `user_rankings` mas ninguém lê essa tabela. O usuário não tem visão do seu progresso acumulado (quantos quizzes fez, score médio, evolução temporal).
+  - Acao: (1) criar `listarRankings()` em db-queries.ts; (2) adicionar seção "Seu histórico" em /config ou como modal acessível de /modos; (3) mostrar últimos 10 scores com data + tipo (lição/quiz).
+  - DoD: usuário pode ver seu histórico de scores.
+
+- [ ] V22.F.9 **Preencher referencias_biblicas no seed** — EVOLUCAO | BAIXA | INVESTIGACAO (double-check 2ª passada: achado novo) | AUTONOMO
+  - Schema `perguntas` tem campo `referencias_biblicas TEXT` mas nenhum seed o preenche. Se preenchido, a tela de feedback poderia exibir "Referência: Gênesis 1:1" — enriquece valor educacional.
+  - Acao: (1) gerar referências via batch M2.7 para as 4345 perguntas; (2) exibir na tela de feedback quando disponível.
+  - DoD: referências bíblicas exibidas no feedback de acerto/erro.
+
+- [ ] V22.F.10 **Upgrade Expo SDK 55 -> 56** — MANUTENCAO | ALTA | INVESTIGACAO (double-check: recuperado como backlog) | AUTONOMO
+  - Expo SDK 55 está em deprecated path. SDK 56 traz New Architecture melhorias, Hermes 0.82, correções de segurança.
+  - **Breaking changes conhecidas:** expo-router 56.x, react-native 0.86, possíveis mudanças em expo-sqlite API.
+  - Acao: planejar upgrade dedicado com: (1) `npx expo install expo@latest`; (2) fixar breaking changes; (3) rodar testes + build completo; (4) validar no emulador.
+  - DoD: app funcional no SDK 56 com todos os testes passando.
+
+## Dependencias entre milestones V22
+- V22.A (bugs) pode rodar em paralelo com V22.B (UX) e V22.G (limpeza)
+- V22.C.2 (error boundaries) deve vir antes de V22.D (segurança) — protege contra crashes
+- V22.D.1 (vulns) provavelmente resolve com V22.C (Expo SDK 56)
+- V22.E (conteúdo) independente dos demais
+- V22.G (limpeza/código morto) deve rodar antes de V22.F (evoluções) — wirear streak/deep-link/notifications antes de adicionar features que dependem deles
+- V22.F (evoluções/engajamento) depende parcialmente de V22.G (streak.ts precisa ser wired antes de freeze/notificações)
+- Ordem recomendada: **V22.A → V22.B → V22.C → V22.D → V22.G → V22.E → V22.F**
+
+## Dependencias de voce (V22)
+- **EAS projectId + eas.json** (V22.C.1) — falta de voce: rodar `eas init` no projeto OU fornecer ID existente. Destrava: EAS Build funcional.
+- **AdMob real IDs** (backlog V8) — falta de voce: criar conta AdMob + obter App ID. Destrava: monetização.
+- **Poses douradas assustado/triste** (backlog V20) — falta de voce: designer subir assets. Destrava: mascote completo nas lições.
+
+## Milestone V22.G: Código morto, bugs ocultos e limpeza (CORRECAO/MANUTENCAO) — PENDENTE
+
+> Achados da Rodada 2 (análise linha-a-linha de todos os 55 arquivos fonte + pesquisa externa).
+
+- [ ] V22.G.1 **FIX: cache de haptics nunca invalidado** — CORRECAO | MEDIA | INVESTIGACAO (Rodada 2) | AUTONOMO
+  - `src/lib/haptics.ts:12-16` — `cache` é setado na primeira chamada de `shouldVibrate()` mas NUNCA é invalidado. `invalidateHapticsCache()` existe (linha 39) mas NUNCA é chamada. Se usuário desativar haptics em config, o cache continua `true` até reiniciar o app.
+  - Acao: chamar `invalidateHapticsCache()` em `config.tsx` após `toggle('hapticos', v)`.
+  - DoD: toggle de haptics em config tem efeito imediato.
+
+- [ ] V22.G.2 **Verificar qualidade dos distratores do Quiz no seed** — CORRECAO | MEDIA | INVESTIGACAO (double-check 2ª passada: premissa corrigida) | AUTONOMO
+  - **Premissa corrigida:** 4341/4345 perguntas JÁ têm quiz_alternativas no seed (3816 FB/AT + 525 NT). O fallback `gerarAlternativas()` com distratores triviais é praticamente CÓDIGO MORTO (nunca acionado em produção). O problema real é a QUALIDADE dos distratores no seed — verificar se os 3 distratores de cada pergunta são plausíveis ou óbvios.
+  - Acao: (1) amostrar 50 quiz_alternativas do seed e verificar manualmente se distratores são plausíveis; (2) se ruins, regenerar via batch M2.7; (3) melhorar `gerarAlternativas()` como defesa (usar canônicas de outras perguntas da mesma lição em vez de `${resposta} (verso X)`).
+  - DoD: distratores do Quiz são plausíveis (não óbvios).
+
+- [ ] V22.G.3 **Remover 4 arquivos mortos do projeto** — MANUTENCAO | BAIXA | INVESTIGACAO (double-check 2ª passada: +1 arquivo) | AUTONOMO
+  - Arquivos com 0 imports em todo o projeto:
+    1. `src/components/BackHandlerOffline.tsx` — removido do _layout.tsx em V12, nunca mais importado
+    2. `src/lib/quiz-alternatives.ts` — substituído por `quiz-alternatives-db.ts`, nunca mais importado
+    3. `src/lib/design-tokens.ts` — TEMA/ESPACO/BORDA/TIPOGRAFIA definidos mas NUNCA usados por nenhum componente
+    4. `src/lib/sqlcipher.ts` — NUNCA importado, depende de `expo-sqlite-cipher` NÃO instalado, PRAGMA key com interpolação insegura
+  - Acao: deletar os 4 arquivos (verificar que não são referenciados em testes ou scripts).
+  - DoD: 4 arquivos mortos removidos, zero impacto em testes/build.
+
+- [ ] V22.G.4 **Wire deep-link.ts nos fluxos de compartilhamento** — MELHORIA | MEDIA | INVESTIGACAO (Rodada 2: código morto) | AUTONOMO
+  - `src/lib/deep-link.ts` — NUNCA importado (0 imports). Função `compartilharLicao` abre WhatsApp hardcoded (falha se não instalado).
+  - Acao: (1) importar em `trofeu.tsx` e `quiz/final.tsx`; (2) trocar `Linking.openURL('whatsapp://...')` por `Share.share()` nativo; (3) atualizar mensagem de compartilhamento com conquista.
+  - DoD: compartilhamento via share sheet nativo funcional.
+
+- [ ] V22.G.5 **Wire quota-monitor.ts para monitoramento de uso M3** — MANUTENCAO | BAIXA | INVESTIGACAO (Rodada 2: código morto) | AUTONOMO
+  - `src/lib/quota-monitor.ts` — NUNCA importado. Monitor de quota M3 com alerta Telegram existe mas nunca é chamado.
+  - Acao: chamar `checarEAlertar()` em `_layout.tsx` (1x ao abrir app) ou em `avaliador.ts` (a cada chamada M3).
+  - DoD: quota M3 monitorada, alerta Telegram funciona se >80%.
+
+## Itens rejeitados V22
+- Nenhum item rejeitado. Todos os achados foram promovidos para milestones ou backlog com justificativa.
+- iOS: REJEITADO (decisão mantida)
+- Multi-idioma: REJEITADO (decisão mantida)
+- Backend dedicado: REJEITADO (decisão V9 mantida, apenas atualizar docs)
+
+## Proximo passo
+Aprovar este plano e despachar `@full-cycle` com os milestones como escopo.
+
+Ordem recomendada: **V22.A -> V22.B -> V22.C -> V22.D -> V22.E** (V22.F em paralelo como backlog).
+
+---
+
+# ===== PLANOS ANTERIORES (histórico) =====
+
+> Tudo abaixo é histórico de V18-V21. Os milestones [x] estão concluídos. Os [ ] pendentes foram consolidados no plano V22 acima quando aplicável.
 
 ## Inbox (apontamentos a triar)
 
 > Apontamentos informais registrados a qualquer momento. Items triados vao para milestones ou "Itens rejeitados".
 
-- [x] [2026-06-25] [fonte: USUARIO] Bugs visuais e de layout ainda presentes no app — **TRIADO V18**: VALIDO. Causa-raiz encontrada (SIST-1 sem degrade + SIST-2 assets JPG com fundo + regra "amarelo" ausente). Promovido para milestones MA/MB/MC/MD.
-- [x] [2026-06-25] [fonte: USUARIO] Looping infinito em um dos modulos — **TRIADO V18**: VALIDO mas causa diferente da catalogada. Causa real = Quiz travado em spinner eterno (IDs M001-M004 inexistentes no DB). Promovido para milestone M-LOOP. M17 (hipoteses antigas) SUPERSEDED.
-- [x] [2026-06-25] [fonte: USUARIO] Mascote dourado nas Licoes (BUG-6/V19 diferido) — **ENTREGUE V20** (milestone V20.A).
-- [x] [2026-06-25] [fonte: USUARIO] IA obrigatoria nas licoes (regra #4, diferido V19) — **ENTREGUE V20** (milestone V20.B).
-- [ ] [2026-06-25] [fonte: INVESTIGACAO] PRIVACIDADE GitHub: auto-push hook sobe orchestration/, CLAUDE.md, evolution_plan.md e a palavra "claude" (CHANGELOG/README/smoke.test.ts/docs) ao remoto privado donizetiferr/expert-na-biblia — viola a politica. Usuario decidiu "NAO MEXER AGORA" (2026-06-25); repo e privado. Reabrir para remediar: opcao A (gitignore + git rm --cached + scrub "claude" + git filter-repo + force-push) ou B (so daqui pra frente + corrigir auto-push hook).
-- [x] [2026-06-25] [fonte: USUARIO] Confiabilidade da IA (timeout M2.7 curto) — **ENTREGUE V21**: TIMEOUT_MS 10s->27s + fallback gracioso de timeout. Comprovado no emulador (resposta IA em ~13.7s).
-- [x] [2026-06-25] [fonte: USUARIO] Canonica FB01-L01-Q07 placeholder "..." — **ENTREGUE V21**: resposta real acentuada no seed + data/db.sqlite.
-- [x] [2026-06-25] [fonte: USUARIO] Acentuacao PT-BR nas telas (onboarding/quiz/etc.) — **ENTREGUE V21**.
-- [x] [2026-06-25] [fonte: INVESTIGACAO] Tela de feedback nao rolavel travava PROSSEGUIR com respostas longas da IA — **ENTREGUE V21** (ScrollView). Exposto pela correcao do timeout (IA passou a responder de verdade com textos longos).
-- [ ] [2026-06-25] [fonte: INVESTIGACAO] ~489 canonicas "NAO SEI" em modulos NT e demais FB (alem de FB01) — qualidade de conteudo. FORA do caminho inicial (modulos bloqueados; IA avalia online). Milestone futura: regenerar canonicas reais via batch M2.7 (mesmo pipeline do data/db.sqlite).
-- [ ] [2026-06-25] [fonte: INVESTIGACAO] matchCanonico nao da match local (>=0.85) em respostas longas mesmo quase exatas (Q07/Q08 caem na IA). Avaliar normalizacao/threshold para respostas longas — reduz latencia percebida e dependencia de rede no caminho inicial.
+- [x] [2026-06-25] [fonte: USUARIO] Bugs visuais e de layout ainda presentes no app — **TRIADO V18**: VALIDO. Promovido para milestones MA/MB/MC/MD.
+- [x] [2026-06-25] [fonte: USUARIO] Looping infinito em um dos modulos — **TRIADO V18**: VALIDO. Promovido para milestone M-LOOP.
+- [x] [2026-06-25] [fonte: USUARIO] Mascote dourado nas Licoes — **ENTREGUE V20**.
+- [x] [2026-06-25] [fonte: USUARIO] IA obrigatoria nas licoes — **ENTREGUE V20**.
+- [ ] [2026-06-25] [fonte: INVESTIGACAO] PRIVACIDADE GitHub: auto-push hook sobe orchestration/CLAUDE.md ao remoto. Usuario decidiu "NAO MEXER AGORA". Repo privado.
+- [x] [2026-06-25] [fonte: USUARIO] Confiabilidade da IA (timeout M2.7 curto) — **ENTREGUE V21**.
+- [x] [2026-06-25] [fonte: USUARIO] Canonica FB01-L01-Q07 placeholder — **ENTREGUE V21**.
+- [x] [2026-06-25] [fonte: USUARIO] Acentuacao PT-BR nas telas — **ENTREGUE V21**.
+- [x] [2026-06-25] [fonte: INVESTIGACAO] Tela de feedback nao rolavel — **ENTREGUE V21**.
+- [ ] [2026-06-25] [fonte: INVESTIGACAO] ~489 canonicas "NAO SEI" em modulos NT — **PROMOVIDO V22.E.1**.
+- [ ] [2026-06-25] [fonte: INVESTIGACAO] matching falha em respostas longas — **PROMOVIDO V22.E.2**.
+- [ ] [2026-06-26] [fonte: INVESTIGACAO] 16 moderate vulns em @expo/config chain — **PROMOVIDO V22.D.1**.
+- [ ] [2026-06-26] [fonte: INVESTIGACAO] Expo SDK 56 disponível (v55 deprecated) — **PROMOVIDO V22.C** (backlog upgrade).
+- [ ] [2026-06-26] [fonte: INVESTIGACAO] Error boundaries ausentes — **PROMOVIDO V22.C.3** (CRITICA).
+- [ ] [2026-06-26] [fonte: INVESTIGACAO] EAS projectId placeholder — **PROMOVIDO V22.C.2**.
+- [ ] [2026-06-26] [fonte: INVESTIGACAO] Privacy policy HTML precisa verificação — **PROMOVIDO V22.C.1**.
+- [ ] [2026-06-26] [fonte: INVESTIGACAO] Docs inconsistentes (backend Node.js mencionado mas descartado) — **PROMOVIDO V22.C.4**.
 
 ---
 

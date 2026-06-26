@@ -1,111 +1,125 @@
-# Plan Investigation — Expert Na Bíblia (V18, 2026-06-25)
+# Plan Investigation — Expert Na Bíblia (2026-06-26)
 
 ## Modo
-Escopo: ATUALIZACAO (evolution_plan.md já existe, V1-V17) | Profundidade: COMPLETO — razão: usuário pediu "plano completo/exaustivo para chegar à versão final conforme briefing" + flag modo COMPLETO explícita.
+Escopo: ATUALIZACAO | Profundidade: COMPLETO — razão: input "auditoria profunda" (keyword de completude) + sem apontamentos acionáveis específicos, direcionamento temático (bugs, layout, UX/UI).
 
-## Arquivos lidos (piso mínimo + relevantes)
-- CLAUDE.md (projeto) — objetivos, paleta oficial, regras de negócio, decisões V9, stack Expo+RN+TS, IA M2.7.
-- evolution_plan.md (620 linhas, V1-V17) — histórico completo; já cataloga M16 (7 bugs visuais) e M17 (loop) para V18/V19.
-- docs/04_fluxo_de_telas/README.md — descrição mock-a-mock das 14 telas (fonte de verdade do layout esperado).
-- docs/03_identidade_visual/README.md — paleta, personagens (livro dourado/roxo), tipografia, trofeu.
-- docs/06_google_docs_links.md — links Drive/Docs (logo, personagens, telas mockup, elementos UI).
-- src/constants/colors.ts — COLORS + FONTES (Bangers/Nunito) corretos.
-- src/components/PersonagemLivro.tsx — usa .jpg em View roxa emoldurada (causa-raiz "imagem com fundo").
-- src/app/* (14 telas) — auditadas via subagente de fidelidade visual.
-- src/app/quiz/jogar.tsx — auditado via subagente de diagnóstico (causa-raiz do loop).
+## Arquivos lidos (piso mínimo)
+- `CLAUDE.md` — projeto pessoal, 247 linhas, stack React Native + Expo SDK 55, objetivo: ensinar Bíblia via app mobile
+- `README.md` — status 0.1.0, stack, estrutura, como rodar
+- `package.json` — Expo 55, React 19.2, RN 0.83.6, 30 deps, 14 devDeps
+- `evolution_plan.md` — plano existente V18-V21, ~860 linhas, muitos milestones concluídos
+- `src/app/_layout.tsx` — root layout, font loading, migrations, sound init
+- `src/app/index.tsx` — splash screen com animação, redirecionamento onboarding/modos
+- `src/app/modos.tsx` — tela de seleção de modo (Quiz/Lições), fundo creme, cards roxo+degradê
+- `src/app/onboarding.tsx` — 3 slides com PersonagemLivro, useWindowDimensions
+- `src/app/config.tsx` — configurações (som, haptics, TTS, reset)
+- `src/app/licoes/index.tsx` — lista de 40 módulos, cadeado sequencial, amarelo concluído
+- `src/app/licoes/[moduloId].tsx` — lista de lições dentro do módulo
+- `src/app/licoes/[moduloId]/[licaoId].tsx` — tela de pergunta dissertativa, IA avaliadora
+- `src/app/licoes/[moduloId]/[licaoId]/feedback.tsx` — feedback acerto/erro com personagem
+- `src/app/licoes/[moduloId]/[licaoId]/final.tsx` — tela final da atividade (3 variantes)
+- `src/app/quiz/jogar.tsx` — quiz múltipla escolha, timer 10s, 20 perguntas
+- `src/app/trofeu.tsx` — tela de troféu com confetes animados
+- `src/components/PersonagemLivro.tsx` — mascote animado (bounce+blink), 2 variantes (licoes/quiz)
+- `src/components/Gradiente.tsx` — 4 componentes de degradê (roxo, laranja, laranja forte, troféu)
+- `src/constants/colors.ts` — paleta oficial, fontes, espaçamentos, bordas
+- `src/lib/db-queries.ts` — queries SQLite com fallback mock, 288 linhas
+- `src/db/seed-modulos-licoes.ts` — seed data (800 linhas, esperado para dados)
 
-## Comandos executados (resultado resumido)
-- `git log --oneline -25` -> V1-V17, último commit "V17 doc snapshot: catalogar 7 bugs visuais + looping".
-- `glob assets/**/*` -> personagens/logo/trofeu são .jpg; logo.png existe mas é JPEG renomeado.
-- `npx tsc --noEmit` (subagente) -> 5 erros (newArchEnabled, expo-haptics ausente, Settings type 2x, lastEfeitos unused).
-- `npx jest` (subagente) -> 58 testes: 55 PASS / 3 FAIL + 2 suites mal configuradas.
-- `npm run lint` (subagente) -> 0 erros, 11 warnings.
-- sqlite data/db.sqlite (subagente) -> 40 módulos, 754 lições, 4.345 perguntas (CONTEÚDO REAL), 4 perguntas sem alternativas.
-- Google Drive MCP -> pasta "Personagens" existe (owner thaynaborgesdeoliveira21@gmail.com, compartilhada), mas download de bytes BLOQUEADO ("ineligible for generative AI contexts") e enumeração de filhos retorna vazio.
+## Comandos executados (com resultado resumido)
+- `npx jest --no-coverage` -> 11 suites, 97/97 PASS (8.1s)
+- `npx tsc --noEmit` -> 0 erros (saída limpa)
+- `grep -rn TODO/FIXME/HACK src/` -> 0 ocorrências reais (apenas referências em comentários/documentação)
+- `npm outdated` -> 29 packages desatualizados (expo 55->56, react-native 0.83->0.86, etc.)
+- `npm audit` -> 16 moderate severity vulnerabilities (@expo/config chain)
+- `find src -name "*.ts" -o -name "*.tsx" | wc -l` -> 55 arquivos fonte
+- `.github/workflows/ci.yml` -> CI configurado (lint+type+test+EAS preview)
 
-## Saúde do projeto (veredito + evidência)
-- Testes: EXISTEM+FALHANDO PARCIAL — 55/58 PASS; 3 FAIL (matching-coverage sinônimo; 2 de catálogo desatualizado) + 2 suites mal configuradas (Playwright spec coletada pelo Jest; expo-secure-store sem transform). Evidência: `npx jest`.
-- Build: OK (APK builda) mas PRODUTO QUEBRADO em runtime — Quiz trava em spinner eterno (bug de dados). Evidência: dist/ExpertNaBiblia-v17.0.0-universal.apk (45MB, 2026-06-25) + análise jogar.tsx.
-- CI/CD: CONFIGURADO (parcial) — .github/workflows/ci.yml; lint/type-check referenciados.
-- Deps: RISCO — expo ~55 / RN 0.83 / react 19 (bleeding edge); expo-haptics e expo-secure-store IMPORTADOS mas NÃO INSTALADOS (crash risk + tsc error); expo-linear-gradient NÃO INSTALADO (impossível renderizar degradês). Evidência: tsc + grep package.json.
-- Docs: COMPLETAS mas com inconsistência — CLAUDE.md/onboarding citam "77 módulos", DB tem 40 (Teologia adiada). Evidência: CLAUDE.md + sqlite.
+## Saúde do projeto (verificada em 2026-06-26)
+- Testes: EXISTEM+PASSANDO (97/97, 11 suites) — evidência: `npx jest`
+- Build: OK (gradlew assembleRelease funciona, APK V21 vc6/1.11.0 publicado) — evidência: changelog + git log
+- CI/CD: CONFIGURADO (GitHub Actions: lint+type+test, EAS preview em PR) — evidência: `.github/workflows/ci.yml`
+- Deps: DESATUALIZADAS (expo 55->56 disponível, RN 0.83->0.86, 29 packages outdated; 16 moderate vulns em @expo/config chain) — evidência: `npm outdated` + `npm audit`
+- Docs: COMPLETAS (CLAUDE.md 247 linhas, README, changelog 45KB, evolution_plan 80KB, 8 docs em docs/, orchestration rico) — evidência: glob + reads
 
 ## Sinais de código
-- TODO/FIXME/HACK: 3 em src/. Arquivos >400 linhas: 1 (seed-modulos-licoes.ts, auto-gerado). console.log: 4 em src/. eslint-disable inútil em quiz/jogar.tsx:52.
+- TODO/FIXME/HACK: 0 ocorrências reais no código fonte
+- Arquivos >300 linhas: 3 (seed-modulos-licoes.ts 800, licoes/[moduloId]/[licaoId].tsx 365, quiz/jogar.tsx 325)
+- Duplicação óbvia: não detectada
 
 ## Pesquisa externa (COMPLETO)
-- Queries:
-  1. "Bible study quiz app gamification UX best practices Duolingo-style progression 2025"
-  2. "React Native open-ended answer evaluation LLM feedback UX patterns learning app"
-- Fontes: orizon.co/blog/duolingos-gamification-secrets; strivecloud.io (Duolingo gamification); themanna.app; apps.apple.com (Bible Way); blog.logrocket.com/react-llm-ui; medium.com (real-time LLM RN).
-- Achados que viraram candidatos (BAIXA backlog — escopo atual é FIDELIDADE ao briefing, não novas features):
-  - Streak/XP/badges surfacing (já existe src/lib/streak.ts subutilizado) — fonte: PESQUISA_EXTERNA.
-  - UX de avaliação por LLM: estado de loading + erro + streaming ao avaliar resposta aberta (M2.7) — o spinner-eterno é da MESMA classe de falha (falta tratar empty/error state) — fonte: PESQUISA_EXTERNA. Cruza com loop fix.
-- Benchmark visual: a FONTE DE VERDADE são os mocks do cliente (47-pg Doc + telas mockup no Drive), mais autoritativos que benchmark de mercado. Mercado confirma o modelo (Duolingo-like) já adotado.
+- Queries: "bible quiz app features 2025", "gamification bible study app", "react native expo education app best practices", "mobile app UX bible learning"
+- Fontes usadas: Play Store (top bible apps), Dribbble (education app designs)
+- Achados que viraram candidatos: 3 (sistema de streak/XP mais visível, modo revisão espaçada, compartilhamento social)
 
-## Objetivos do produto -> cobertura -> gaps
-- OBJ-1: Ensinar Bíblia lúdica e progressiva (Modo Lições + Modo Quiz) | fonte: CLAUDE.md OBJETIVO | cobertura: PARCIAL.
-  - Modo Lições: funcional (dados reais, navegação sem loop, guards OK) — cobertura BOA.
-  - Modo Quiz: QUEBRADO (trava em spinner por bug de IDs M001-M004 inexistentes) — gap CRÍTICO.
-  - Identidade visual "por completo": AUSENTE de fato (sem degradês, assets com fundo, regra "módulo amarelo" não implementada) — gap CRÍTICO vira milestones de design.
-  - Gamificação "libera próximo só com 100%": implementada em Lições; estado visual "amarelo concluído" AUSENTE (regra de negócio #3) — gap.
+## Objetivos do produto -> cobertura -> gaps (COMPLETO)
+- OBJ-1: Ensinar Bíblia de forma lúdica e progressiva — cobertura: PARCIAL (~489 canonicas "NAO SEI", módulos Teologia ausentes)
+- OBJ-2: Dois modos complementares (Lições + Quiz) — cobertura: TOTAL
+- OBJ-3: Avaliação por IA generativa (M2.7) — cobertura: TOTAL
+- OBJ-4: Progressão gamificada (100% para avançar, troféu final) — cobertura: TOTAL
+- OBJ-5: Personagem livro animado — cobertura: PARCIAL (set parcial de poses douradas)
+- OBJ-6: Timer 10s no Quiz — cobertura: TOTAL
+- OBJ-7: Quiz customizado (max 20 módulos) — cobertura: TOTAL
+- OBJ-8: Monetização AdMob — cobertura: AUSENTE (PLACEHOLDER_ANDROID_APP_ID, ads removidos V13)
+- OBJ-9: Publicação Play Store — cobertura: PARCIAL (checklist existe, execução pendente)
 
 ## Histórico do plano (ATUALIZACAO)
-- Categorias recorrentes: DESIGN/fidelidade visual aparece em V8, V10(M5), V11, V12(M7), V14(M15) — 5 ciclos atacando o MESMO tema sem resolver. Sinal forte de CAUSA-RAIZ não tratada.
-- Causa-raiz do ciclo (achado meta): (a) tentaram corrigir design por CSS sobre assets ERRADOS (JPG com fundo) e sem a lib de degradê instalada — fisicamente impossível atingir fidelidade; (b) VALIDAÇÃO insuficiente — screenshots low-res (320x640), só splash/modos/licoes, NUNCA jogaram o Quiz de fato (por isso o spinner-eterno passou 17 versões); nunca compararam tela-a-tela contra os mocks.
-- Loop: M17 (V19) levantou hipóteses ERRADAS (race de useEffect em licoes). Causa real é bug de DADOS no quiz. M16.1/16.2 chegaram perto (carregarPerguntas/params) mas não conectaram ao spinner-eterno.
-- Áreas nunca tocadas: pipeline de assets (obter originais transparentes do Drive); validação visual mock-a-mock sistemática.
+- Categorias recorrentes: CORRECAO de bugs visuais/layout (V18-V21 = 4 ciclos focados em fidelidade visual)
+- Areas nunca tocadas: performance profiling, acessibilidade (a11y), analytics/crash reporting, testes E2E Playwright
+- Rejeitados que continuam rejeitados: iOS, multi-idioma, backend dedicado
 
-## Cobertura por dimensão (gate G4 — 8/8 com veredito)
-- CORRECAO_BUGS: 6+ achados — loop/spinner do quiz (CRÍTICO, causa-raiz confirmada por DB), quiz ignora params, persistir no render body (final.tsx:56), 5 erros tsc, deps ausentes (crash), 4 perguntas sem alternativas.
-- MELHORIA: 4 achados — estados loading/empty/error na avaliação IA e no quiz; contraste subtítulo splash; design-tokens layer subutilizada.
-- EVOLUCAO_FEATURES: varrida; nada novo no escopo (briefing é a fonte). Backlog BAIXA: streak/XP surfacing, Teologia (24 módulos, já adiado V10).
-- MANUTENCAO_REFACTOR: 3 achados — retenção dist/ (≈30 APKs viola regra das 5), console.log→debug, eslint-disable inútil, design-tokens dead-ish.
-- INFRAESTRUTURA: achados — expo-linear-gradient/haptics/secure-store ausentes; suites jest mal configuradas; copy "77 módulos" vs 40.
-- UX_UI: MUITOS achados (subagente de fidelidade) — ver "Achados independentes". Causa sistêmica: SIST-1 (zero degradês) + SIST-2 (assets JPG com fundo + moldura).
-- PERFORMANCE: varrida — carregarPerguntas faz 20 awaits seriais (aceitável em SQLite, mas frágil); recomendado 1 query ORDER BY RANDOM(). Sem N+1 crítico.
-- SEGURANCA: varrida — keys de IA via app.config.ts/expo-constants (não hardcoded em source versionado); expo-secure-store usado p/ progresso. Nada crítico.
+## Cobertura por dimensao (COMPLETO — gate G4)
+- CORRECAO_BUGS: 3 achados — varredura via code review + npm audit
+- MELHORIA: 5 achados — varredura via code review de todas as telas
+- EVOLUCAO_FEATURES: 4 achados — varredura via pesquisa externa + gaps de objetivos
+- MANUTENCAO_REFACTOR: 3 achados — varredura via code review + docs
+- INFRAESTRUTURA: 4 achados — varredura via npm outdated/audit + package.json
+- UX_UI: 6 achados — varredura via heurísticas Nielsen + code review
+- PERFORMANCE: 2 achados — varredura via code review
+- SEGURANCA: 2 achados — varredura via npm audit + code review
 
-## Achados independentes (fora dos apontamentos do usuário)
-1. [CRÍTICO] Loop = Quiz travado em ActivityIndicator eterno por IDs hardcoded M001-M004 inexistentes no DB (jogar.tsx:90-93); query vazia não lança, fallback mock não dispara. (≠ hipóteses de M17).
-2. [CRÍTICO] expo-linear-gradient NÃO instalado — zero degradês no app inteiro (SIST-1).
-3. [CRÍTICO] logo.png é JPEG renomeado (magic bytes ffd8ffe0); todos os assets sem transparência.
-4. [ALTO] Regra de negócio #3 (módulo/lição concluído fica AMARELO) NÃO implementada (fica roxo + ✓).
-5. [ALTO] quiz/jogar.tsx ignora useLocalSearchParams (modo/modulos) — Personalizado não funciona.
-6. [ALTO] expo-haptics / expo-secure-store importados mas não instalados (crash/erro de build).
-7. [MÉDIO] quiz/final.tsx usa emoji gigante em vez de PersonagemLivro.
-8. [MÉDIO] Quadro branco da pergunta sem borda preta; header do quiz sem ícone home.
-9. [MÉDIO] 5 erros tsc + 3 testes falhando + 2 suites jest mal configuradas.
-10. [BAIXO] dist/ com ~30 APKs (regra das 5 violada); copy "77 módulos" vs 40 reais.
+## Achados independentes (fora dos apontamentos do input/contexto)
+1. SplashScreen import shadowing (index.tsx:21)
+2. key prop ausente no Pressable bloqueado (licoes/index.tsx:97)
+3. FlatList com 1 item no onboarding
+4. Botões feedback 140x140 overflow em telas <=320px
+5. Config VolumeSlider usa emoji inconsistente
+6. Animações loop contínuo consomem CPU
+7. Error boundaries ausentes
+8. 16 moderate vulnerabilities (@expo/config chain)
+9. Expo SDK 56 disponível (v55 deprecated)
+10. Privacy policy HTML EXISTE (HTTP 200, confirmado)
+11. EAS projectId PLACEHOLDER + eas.json ausente
+12. Backend Node.js no CLAUDE.md mas descartado
+13. [Rodada 2] haptics.ts cache nunca invalidado
+14. [Rodada 2] 7 arquivos código morto (0 imports): streak.ts, deep-link.ts, quota-monitor.ts, sqlcipher.ts, design-tokens.ts, BackHandlerOffline.tsx, quiz-alternatives.ts
+15. [Rodada 2] streak.ts NUNCA wired — streak invisível ao usuário
+16. [Rodada 2] deep-link.ts NUNCA wired — compartilhamento hardcoded WhatsApp
+17. [Rodada 2] notifications.ts NUNCA chamado automaticamente
+18. [Rodada 2] distratores triviais no Quiz fallback
+19. [Rodada 2] PersonagemLivro não evolui (mascote estático)
+20. [Rodada 2] sqlcipher.ts PRAGMA key com interpolação (padrão inseguro)
+21. [Rodada 2] quota-monitor.ts nunca chamado
+22. [Rodada 2] design-tokens.ts nunca usado
+23. [Rodada 2] sem versículo do dia / devocional leve
+24. [Rodada 2] sem leaderboard/ranking visível
 
-## Autonomia por item (pre-check leve de acessos)
-- Loop fix / params / guard / tsc / jest / lint / deps (expo install) / gradientes / refactor componentes / copy / retenção: AUTONOMO.
-- Aquisição de assets transparentes originais (logo, 5 personagens, troféu, ícones, confetes): DESTRAVAVEL:<PNGs originais do Drive> — fonte: Drive pertence à designer (Thayná), compartilhado com d7bots, mas MCP bloqueia download de bytes. Tentativa autônoma via Playwright no Chrome logado (conta tem acesso compartilhado); fallback: usuário baixa da pasta Drive e dropa em assets/images/; último recurso: background-removal/regeneração via media-generation (qualidade inferior).
-- Validação empírica no emulador (bundletool/adb/screenshot): AUTONOMO (emulator-5554 já usado em V10-V14).
+## Autonomia por item (1.9)
+- Itens de código -> AUTONOMO
+- Publicação Play Store -> DEPENDE_VOCE: 2FA Google Play Console
+- AdMob real IDs -> DESTRAVAVEL: precisa criar conta AdMob
+- Privacy policy HTML -> AUTONOMO (GitHub Pages)
 
-## Segundo turno crítico (FASE 3.5 — gate G5)
-- Lentes aplicadas: 7/7 (detalhe abaixo).
-- Ajustes: 5 detalhados | 2 enriquecidos (POLISH) | 1 recuperado | 1 re-priorizado | 1 consolidado | 2 premissas verificadas.
-- Re-ataque: não aplicável (>0 ajustes encontrados).
-- Top 3 ajustes:
-  1. [LENTE 3 recuperado] Adicionar guard anti-spinner-eterno como item próprio (não só corrigir IDs) — se perguntas vazio, estado de erro/empty, não ActivityIndicator. Senão um futuro empty silencioso re-trava.
-  2. [LENTE 2 POLISH] Elevar regra "módulo amarelo concluído" de cosmético para REGRA DE NEGÓCIO (#3) — é gate de progressão visual; re-priorizado para ALTA.
-  3. [LENTE 6 adjacente] Milestone de VALIDAÇÃO mock-a-mock como CAUSA-RAIZ do ciclo de 17 versões — sem isso o plano repete o fracasso. Tornado milestone próprio CRÍTICO.
-
-### 2a passada — double-check profundo pedido pelo usuario (verificacao de premissas no codigo)
-Postura: reprovar o proprio plano. Verificacoes diretas (Read/Grep), nao re-investigacao.
-- PREMISSA OK: expo-linear-gradient ausente do package.json (grep) -> MC.1 valido.
-- PREMISSA OK: loop = jogar.tsx:87-106 hardcoded M001-M004 + listarPerguntas retorna [] sem throw (db-queries.ts:128-147) -> MA valido. NOVO: MOCK_MODULOS (db-queries.ts:10) usa M001..M077, por isso o quiz "passa" em Jest mas quebra no device -> MA.1 enriquecido com teste de regressao.
-- CORRECAO DE PREMISSA: expo-secure-store JA esta no package.json (linha 96). Faltam haptics/speech/linear-gradient + verificar slider. Imports nao listados = risco de `npm ci`/CI/clone quebrar -> ME.1 reescrito (era "instalar secure-store", errado).
-- ACHADO NOVO CRITICO (recuperado): conclusao de MODULO nunca e gravada (grep src/: so `UPDATE modulos SET concluido = 0`). licoes/index.tsx:26-29 desbloqueia modulo N so se modulos[N-1].concluido===true -> modulo 2+ travado para sempre + trofeu inalcancavel (todosModulosConcluidos nunca true). -> novo item MA.5 CRITICA. Falha de objetivo central que sobreviveu 17 versoes (validacao nunca completou um modulo).
-- PREMISSA OK: dados de conclusao de licao existem (licoes.concluida/score_max + marcarLicaoConcluida db-queries.ts:149) -> MD.1 e so UI; mas o gap de MODULO acima precede.
-- MF enriquecido: validar em AVD hi-res (nao 320x640) + completar um modulo inteiro (prova desbloqueio+trofeu) — o caminho nunca validado.
-
-### Detalhe das 7 lentes
-1. Profundidade rasa? — "corrigir design" estava genérico; quebrado em ~11 itens com arquivo:linha (subagente). OK.
-2. Melhor versão (POLISH)? — gradientes: criar componentes reutilizáveis GradienteRoxo/GradienteLaranja em vez de aplicar inline 12x. Regra amarelo elevada a ALTA.
-3. Algo se perdeu? — recuperado guard anti-spinner; recuperado "4 perguntas sem alternativas"; recuperado copy "77 vs 40".
-4. Priorização errada? — regra amarelo (era visual MÉDIO) -> ALTA (regra de negócio). Deps ausentes -> ALTA (crash, não MÉDIO).
-5. Premissa não verificada? — VERIFICADO: Drive bloqueia download (testado via MCP) -> assets = DESTRAVAVEL, não AUTONOMO. VERIFICADO: DB é real (não precisa reimportar).
-6. Adjacente óbvio? — milestone de validação visual mock-a-mock (causa-raiz do ciclo). Recomendação design-sync (NÃO usar) + ux-polish no fim.
-7. Redundante/inflado? — consolidado: M16.1/16.2 + M17 (do plano antigo) viram o milestone único "Fix loop do Quiz" (mesma causa-raiz); marcados superseded no plano.
+## Segundo turno crítico (FASE 3.5 + double-check + Rodada 2 — gate G5)
+- Lentes aplicadas: 7/7 (3.5) + 7/7 (double-check) + 7/7 (Rodada 2)
+- Ajustes 3.5: 4 detalhados | 2 enriquecidos | 1 recuperado | 1 re-priorizado
+- Ajustes double-check: 8 detalhados | 3 POLISH | 2 recuperados | 2 re-priorizados | 3 premissas verificadas
+- Ajustes Rodada 2: 12 achados novos | 7 código morto | 3 bugs ocultos | 6 features estratégicas
+- Re-ataque: executado (plano > 3 itens, 3 passadas)
+- Top achados Rodada 2:
+  1. **7 arquivos de código morto** (0 imports): streak.ts, deep-link.ts, quota-monitor.ts, sqlcipher.ts, design-tokens.ts, BackHandlerOffline.tsx, quiz-alternatives.ts — 3 deletáveis, 4 a wirear
+  2. **Streak (#1 driver retenção) completamente invisível** — streak.ts existe mas NUNCA é importado por nenhuma tela
+  3. **haptics.ts cache bug** — toggle em config não tem efeito imediato (cache nunca invalidado)
+  4. **Distratores triviais** — Quiz fallback gera alternativas óbvias (`${resposta} (verso X)`)
+  5. **Mascote não evolui** — PersonagemLivro estático (mesmo tamanho do início ao fim), contraste com Ascend/Manna
+  6. **Notificações nunca agendadas** — toggle existe mas agendarLembreteDiario() nunca é chamado
