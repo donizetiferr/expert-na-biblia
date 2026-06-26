@@ -1,0 +1,1004 @@
+--------- beginning of main
+06-25 23:05:54.945 D/AF::Track(  418): interceptBuffer: took 3816us to intercept 0 tracks
+06-25 23:05:55.025 D/AudioFlinger(  418): mixer(0x7eac95bc9930) throttle end: throttle time(7)
+--------- beginning of kernel
+06-25 23:05:55.037 I/logd    (    0): logdr: UID=0 GID=0 PID=10321 b tail=0 logMask=99 pid=0 start=0ns deadline=0ns
+06-25 23:05:55.082 D/EGL_emulation(10059): app_time_stats: avg=22.83ms min=13.38ms max=38.14ms count=37
+06-25 23:05:55.166 D/AF::Track(  418): interceptBuffer: took 1624us to intercept 0 tracks
+06-25 23:05:55.694 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 2(9216 size) used buffers - 9400/9409 (recycle/alloc) - 50/9408 (fetch/transfer)
+06-25 23:05:56.092 D/EGL_emulation(10059): app_time_stats: avg=14.53ms min=9.85ms max=21.43ms count=55
+06-25 23:05:56.213 D/AF::Track(  418): interceptBuffer: took 1647us to intercept 0 tracks
+06-25 23:05:56.566 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:05:56.572 I/GoogleInputMethodService( 1389): GoogleInputMethodService.onFinishInput():3227 
+06-25 23:05:56.580 I/GoogleInputMethodService( 1389): GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 0, unlocked = true
+06-25 23:05:56.584 I/GoogleInputMethodService( 1389): GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x0 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.donizetiferr.expertnabiblia fieldId=0 fieldName=null extras=null}, false)
+06-25 23:05:56.588 I/GoogleInputMethodService( 1389): GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+06-25 23:05:56.593 I/GoogleInputMethodService( 1389): GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+06-25 23:05:56.638 D/AudioFlinger(  418): mixer(0x7eac95bc9930) throttle end: throttle time(4)
+06-25 23:05:56.715 D/audioserver(  418): FGS Logger Transaction failed
+06-25 23:05:56.716 D/audioserver(  418): -129
+06-25 23:05:56.814 W/ReactNativeJS(10059): '[Layout children]: No route named "licoes" exists in nested children:', [ 'config',
+06-25 23:05:56.814 W/ReactNativeJS(10059):   'index',
+06-25 23:05:56.814 W/ReactNativeJS(10059):   'modos',
+06-25 23:05:56.814 W/ReactNativeJS(10059):   'onboarding',
+06-25 23:05:56.814 W/ReactNativeJS(10059):   'trofeu',
+06-25 23:05:56.814 W/ReactNativeJS(10059):   'licoes/[moduloId]',
+06-25 23:05:56.814 W/ReactNativeJS(10059):   'licoes/index',
+06-25 23:05:56.814 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]',
+06-25 23:05:56.814 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]/feedback',
+06-25 23:05:56.814 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]/final',
+06-25 23:05:56.814 W/ReactNativeJS(10059):   'quiz/customizar',
+06-25 23:05:56.814 W/ReactNativeJS(10059):   'quiz/final',
+06-25 23:05:56.814 W/ReactNativeJS(10059):   'quiz/index',
+06-25 23:05:56.814 W/ReactNativeJS(10059):   'quiz/jogar' ]
+06-25 23:05:56.815 W/ReactNativeJS(10059): '[Layout children]: No route named "quiz" exists in nested children:', [ 'config',
+06-25 23:05:56.815 W/ReactNativeJS(10059):   'index',
+06-25 23:05:56.815 W/ReactNativeJS(10059):   'modos',
+06-25 23:05:56.815 W/ReactNativeJS(10059):   'onboarding',
+06-25 23:05:56.815 W/ReactNativeJS(10059):   'trofeu',
+06-25 23:05:56.815 W/ReactNativeJS(10059):   'licoes/[moduloId]',
+06-25 23:05:56.815 W/ReactNativeJS(10059):   'licoes/index',
+06-25 23:05:56.815 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]',
+06-25 23:05:56.815 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]/feedback',
+06-25 23:05:56.815 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]/final',
+06-25 23:05:56.815 W/ReactNativeJS(10059):   'quiz/customizar',
+06-25 23:05:56.815 W/ReactNativeJS(10059):   'quiz/final',
+06-25 23:05:56.815 W/ReactNativeJS(10059):   'quiz/index',
+06-25 23:05:56.815 W/ReactNativeJS(10059):   'quiz/jogar' ]
+06-25 23:05:56.868 W/unknown:ReactNative(10059): StatusBarModule: Ignored status bar change, current activity is edge-to-edge.
+06-25 23:05:56.957 D/audioserver(  418): FGS Logger Transaction failed
+06-25 23:05:56.957 D/audioserver(  418): -129
+06-25 23:05:56.973 D/AutofillManager(10059): view not autofillable - not passing ime action check
+06-25 23:05:56.974 D/AutofillManager(10059): view not autofillable - not passing ime action check
+06-25 23:05:56.985 W/[RNScreens](10059): backTitleFontFamily prop is not available on Android
+06-25 23:05:56.985 W/[RNScreens](10059): disableBackButtonMenu prop is not available on Android
+06-25 23:05:56.988 W/[RNScreens](10059): backTitleVisible prop is not available on Android
+06-25 23:05:56.990 W/[RNScreens](10059): topInsetEnabled prop is not available on Android
+06-25 23:05:56.993 W/[RNScreens](10059): largeTitleHideShadow prop is not available on Android
+06-25 23:05:56.994 W/[RNScreens](10059): largeTitleFontWeight prop is not available on Android
+06-25 23:05:56.994 W/[RNScreens](10059): userInterfaceStyle prop is not available on Android
+06-25 23:05:56.996 W/[RNScreens](10059): largeTitleFontFamily prop is not available on Android
+06-25 23:05:57.065 I/ImeTracker(10059): com.donizetiferr.expertnabiblia:d316c197: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT
+06-25 23:05:57.071 I/ImeTracker(  544): com.donizetiferr.expertnabiblia:d316c197: onCancelled at PHASE_SERVER_SHOULD_HIDE
+06-25 23:05:57.114 D/EGL_emulation(10059): app_time_stats: avg=32.84ms min=10.41ms max=269.83ms count=28
+06-25 23:05:57.252 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 1(8192 size) used buffers - 9496/9502 (recycle/alloc) - 24/18910 (fetch/transfer)
+06-25 23:05:57.618 W/RemoteInputConnectionImpl(10059): clearMetaKeyStates on inactive InputConnection
+06-25 23:05:58.973 W/BpBinder(10337): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:05:58.978 W/ProcessState(10337): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:05:58.998 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:05:58.999 I/Gralloc4(10337): mapper 4.x is not supported
+06-25 23:05:58.976 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:05:59.163 I/wpa_supplicant( 3589): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-25 23:05:59.556 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:05:59.832 D/AF::Track(  418): interceptBuffer: took 841us to intercept 0 tracks
+06-25 23:06:00.013 I/AiAiEcho( 1482): Predicting[0]: 
+06-25 23:06:00.015 I/AiAiEcho( 1482): EchoTargets: 
+06-25 23:06:00.015 I/AiAiEcho( 1482): Filtered by AiAi flag check: 
+06-25 23:06:00.019 I/AiAiEcho( 1482): Ranked targets strategy: SORT, count: 0, ranking metadata: 
+06-25 23:06:00.024 I/AiAiEcho( 1482): #postPredictionTargets: Sending updates to UISurface lockscreen with targets# 0 (types=[])
+06-25 23:06:00.035 W/PageIndicator(  749): Total number of pages invalid: 0. Assuming 1 page.
+06-25 23:06:00.040 D/EGL_emulation(  749): app_time_stats: avg=60015.08ms min=60015.08ms max=60015.08ms count=1
+06-25 23:06:00.081 D/AF::Track(  418): interceptBuffer: took 1208us to intercept 0 tracks
+06-25 23:06:01.113 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 9606/9615 (recycle/alloc) - 50/9614 (fetch/transfer)
+06-25 23:06:01.357 D/AF::Track(  418): interceptBuffer: took 1780us to intercept 0 tracks
+06-25 23:06:01.426 D/AF::Track(  418): interceptBuffer: took 569us to intercept 0 tracks
+06-25 23:06:02.514 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 1(8192 size) used buffers - 9697/9703 (recycle/alloc) - 24/19312 (fetch/transfer)
+06-25 23:06:02.566 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:06:03.577 D/StatusBarIconController(  749): ignoring old pipeline callbacks, because the new mobile icons are enabled
+06-25 23:06:03.601 D/EGL_emulation(  749): app_time_stats: avg=3557.37ms min=3557.37ms max=3557.37ms count=1
+06-25 23:06:04.366 D/AF::Track(  418): interceptBuffer: took 613us to intercept 0 tracks
+06-25 23:06:06.464 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 9811/9820 (recycle/alloc) - 50/9819 (fetch/transfer)
+06-25 23:06:07.099 I/wpa_supplicant( 3589): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-25 23:06:07.815 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 1(8192 size) used buffers - 9900/9906 (recycle/alloc) - 24/19718 (fetch/transfer)
+06-25 23:06:08.584 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+--------- beginning of system
+06-25 23:06:09.471 W/CpuMonitorService(  544): Current CPU frequency (2771271) is greater than maximum CPU frequency (2) for policy ID (1). Skipping CPU frequency policy
+06-25 23:06:10.855 D/MediaCodec(10059): keep callback message for reclaim
+06-25 23:06:10.856 I/CCodecConfig(10059): query failed after returning 7 values (BAD_INDEX)
+06-25 23:06:10.861 W/Codec2Client(10059): query -- param skipped: index = 1342179345.
+06-25 23:06:10.862 W/Codec2Client(10059): query -- param skipped: index = 2415921170.
+06-25 23:06:11.323 D/AF::Track(  418): interceptBuffer: took 519us to intercept 0 tracks
+06-25 23:06:11.593 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:06:11.734 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 10015/10024 (recycle/alloc) - 52/10023 (fetch/transfer)
+06-25 23:06:13.097 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 1(8192 size) used buffers - 10109/10115 (recycle/alloc) - 25/20126 (fetch/transfer)
+06-25 23:06:13.579 D/StatusBarIconController(  749): ignoring old pipeline callbacks, because the new mobile icons are enabled
+06-25 23:06:14.602 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:06:15.035 I/wpa_supplicant( 3589): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-25 23:06:17.061 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 10219/10228 (recycle/alloc) - 53/10227 (fetch/transfer)
+06-25 23:06:17.611 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:06:17.916 D/ActivityManager(  544): sync unfroze 2094 com.android.keychain for 10
+06-25 23:06:17.919 D/ActivityManager(  544): sync unfroze 8088 com.android.settings for 10
+06-25 23:06:18.444 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 1(8192 size) used buffers - 10313/10319 (recycle/alloc) - 25/20534 (fetch/transfer)
+06-25 23:06:22.310 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 10420/10429 (recycle/alloc) - 53/10428 (fetch/transfer)
+06-25 23:06:22.971 I/wpa_supplicant( 3589): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-25 23:06:23.339 D/AF::Track(  418): interceptBuffer: took 580us to intercept 0 tracks
+06-25 23:06:23.578 D/StatusBarIconController(  749): ignoring old pipeline callbacks, because the new mobile icons are enabled
+06-25 23:06:23.628 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:06:23.632 D/AF::Track(  418): interceptBuffer: took 542us to intercept 0 tracks
+06-25 23:06:23.659 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 1(8192 size) used buffers - 10513/10519 (recycle/alloc) - 25/20934 (fetch/transfer)
+06-25 23:06:26.053 E/WifiStaIfaceAidlImpl(  544): installApfPacketFilter failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+06-25 23:06:26.637 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:06:26.771 W/unknown:BridgelessReact(10059): ReactHost{0}.onHostPause(activity)
+06-25 23:06:26.771 W/unknown:BridgelessReact(10059): ReactHost{0}.ReactContext.onHostPause()
+06-25 23:06:26.771 D/KeyguardService(  749): setOccluded(false)
+06-25 23:06:26.772 I/ActivityTaskManager(  544): START u0 {act=android.intent.action.VIEW dat=expertnabiblia://licoes/... flg=0x10000000 pkg=com.donizetiferr.expertnabiblia cmp=com.donizetiferr.expertnabiblia/.MainActivity} with LAUNCH_SINGLE_TASK from uid 0 (BAL_ALLOW_ALLOWLISTED_UID) result code=3
+06-25 23:06:26.772 D/KeyguardViewMediator(  749): setOccluded(false)
+06-25 23:06:26.773 D/KeyguardViewMediator(  749): handleSetOccluded(false)
+06-25 23:06:26.783 D/WindowManagerShell(  749): onActivityRestartAttempt: ComponentInfo{com.donizetiferr.expertnabiblia/com.donizetiferr.expertnabiblia.MainActivity}
+06-25 23:06:26.785 I/MediaFocusControl(  544): abandonAudioFocus() from uid/pid 10221/10059 clientId=android.media.AudioManager@8bcffcdexpo.modules.av.AVManager@606491d
+06-25 23:06:26.801 W/unknown:BridgelessReact(10059): ReactHost{0}.onHostResume(activity)
+06-25 23:06:26.803 W/unknown:BridgelessReact(10059): ReactHost{0}.ReactContext.onHostResume()
+06-25 23:06:26.807 W/AudioManager(10059): Use of stream types is deprecated for operations other than volume control
+06-25 23:06:26.808 W/AudioManager(10059): See the documentation of requestAudioFocus() for what to use instead with android.media.AudioAttributes to qualify your playback use case
+06-25 23:06:26.811 I/MediaFocusControl(  544): requestAudioFocus() from uid/pid 10221/10059 AA=USAGE_MEDIA/CONTENT_TYPE_MUSIC clientId=android.media.AudioManager@8bcffcdexpo.modules.av.AVManager@606491d callingPack=com.donizetiferr.expertnabiblia req=3 flags=0x0 sdk=36
+06-25 23:06:26.817 I/AudioService.FadeOutManager(  544): unfadeOutUid() uid:10221
+06-25 23:06:26.823 W/ReactNativeJS(10059): '[Layout children]: No route named "licoes" exists in nested children:', [ 'config',
+06-25 23:06:26.823 W/ReactNativeJS(10059):   'index',
+06-25 23:06:26.823 W/ReactNativeJS(10059):   'modos',
+06-25 23:06:26.823 W/ReactNativeJS(10059):   'onboarding',
+06-25 23:06:26.823 W/ReactNativeJS(10059):   'trofeu',
+06-25 23:06:26.823 W/ReactNativeJS(10059):   'licoes/[moduloId]',
+06-25 23:06:26.823 W/ReactNativeJS(10059):   'licoes/index',
+06-25 23:06:26.823 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]',
+06-25 23:06:26.823 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]/feedback',
+06-25 23:06:26.823 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]/final',
+06-25 23:06:26.823 W/ReactNativeJS(10059):   'quiz/customizar',
+06-25 23:06:26.823 W/ReactNativeJS(10059):   'quiz/final',
+06-25 23:06:26.823 W/ReactNativeJS(10059):   'quiz/index',
+06-25 23:06:26.823 W/ReactNativeJS(10059):   'quiz/jogar' ]
+06-25 23:06:26.834 D/AF::Track(  418): interceptBuffer: took 839us to intercept 0 tracks
+06-25 23:06:26.839 W/ReactNativeJS(10059): '[Layout children]: No route named "quiz" exists in nested children:', [ 'config',
+06-25 23:06:26.839 W/ReactNativeJS(10059):   'index',
+06-25 23:06:26.839 W/ReactNativeJS(10059):   'modos',
+06-25 23:06:26.839 W/ReactNativeJS(10059):   'onboarding',
+06-25 23:06:26.839 W/ReactNativeJS(10059):   'trofeu',
+06-25 23:06:26.839 W/ReactNativeJS(10059):   'licoes/[moduloId]',
+06-25 23:06:26.839 W/ReactNativeJS(10059):   'licoes/index',
+06-25 23:06:26.839 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]',
+06-25 23:06:26.839 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]/feedback',
+06-25 23:06:26.839 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]/final',
+06-25 23:06:26.839 W/ReactNativeJS(10059):   'quiz/customizar',
+06-25 23:06:26.839 W/ReactNativeJS(10059):   'quiz/final',
+06-25 23:06:26.839 W/ReactNativeJS(10059):   'quiz/index',
+06-25 23:06:26.839 W/ReactNativeJS(10059):   'quiz/jogar' ]
+06-25 23:06:26.920 W/[RNScreens](10059): backTitleFontFamily prop is not available on Android
+06-25 23:06:26.924 W/[RNScreens](10059): disableBackButtonMenu prop is not available on Android
+06-25 23:06:26.927 W/[RNScreens](10059): backTitleVisible prop is not available on Android
+06-25 23:06:26.928 W/[RNScreens](10059): topInsetEnabled prop is not available on Android
+06-25 23:06:26.928 W/[RNScreens](10059): largeTitleHideShadow prop is not available on Android
+06-25 23:06:26.928 W/[RNScreens](10059): largeTitleFontWeight prop is not available on Android
+06-25 23:06:26.931 W/[RNScreens](10059): userInterfaceStyle prop is not available on Android
+06-25 23:06:26.931 W/[RNScreens](10059): largeTitleFontFamily prop is not available on Android
+06-25 23:06:26.933 W/ReactNativeJS(10059): '[Layout children]: No route named "licoes" exists in nested children:', [ 'config',
+06-25 23:06:26.933 W/ReactNativeJS(10059):   'index',
+06-25 23:06:26.933 W/ReactNativeJS(10059):   'modos',
+06-25 23:06:26.933 W/ReactNativeJS(10059):   'onboarding',
+06-25 23:06:26.933 W/ReactNativeJS(10059):   'trofeu',
+06-25 23:06:26.933 W/ReactNativeJS(10059):   'licoes/[moduloId]',
+06-25 23:06:26.933 W/ReactNativeJS(10059):   'licoes/index',
+06-25 23:06:26.933 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]',
+06-25 23:06:26.933 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]/feedback',
+06-25 23:06:26.933 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]/final',
+06-25 23:06:26.933 W/ReactNativeJS(10059):   'quiz/customizar',
+06-25 23:06:26.933 W/ReactNativeJS(10059):   'quiz/final',
+06-25 23:06:26.933 W/ReactNativeJS(10059):   'quiz/index',
+06-25 23:06:26.933 W/ReactNativeJS(10059):   'quiz/jogar' ]
+06-25 23:06:26.936 W/ReactNativeJS(10059): '[Layout children]: No route named "quiz" exists in nested children:', [ 'config',
+06-25 23:06:26.936 W/ReactNativeJS(10059):   'index',
+06-25 23:06:26.936 W/ReactNativeJS(10059):   'modos',
+06-25 23:06:26.936 W/ReactNativeJS(10059):   'onboarding',
+06-25 23:06:26.936 W/ReactNativeJS(10059):   'trofeu',
+06-25 23:06:26.936 W/ReactNativeJS(10059):   'licoes/[moduloId]',
+06-25 23:06:26.936 W/ReactNativeJS(10059):   'licoes/index',
+06-25 23:06:26.936 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]',
+06-25 23:06:26.936 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]/feedback',
+06-25 23:06:26.936 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]/final',
+06-25 23:06:26.936 W/ReactNativeJS(10059):   'quiz/customizar',
+06-25 23:06:26.936 W/ReactNativeJS(10059):   'quiz/final',
+06-25 23:06:26.936 W/ReactNativeJS(10059):   'quiz/index',
+06-25 23:06:26.936 W/ReactNativeJS(10059):   'quiz/jogar' ]
+06-25 23:06:26.972 W/unknown:ReactNative(10059): StatusBarModule: Ignored status bar change, current activity is edge-to-edge.
+06-25 23:06:27.023 D/EGL_emulation(10059): app_time_stats: avg=2986.67ms min=8.14ms max=29666.71ms count=10
+06-25 23:06:27.043 D/AutofillManager(10059): view not autofillable - not passing ime action check
+06-25 23:06:27.043 D/AutofillManager(10059): view not autofillable - not passing ime action check
+06-25 23:06:27.194 D/AF::Track(  418): interceptBuffer: took 2479us to intercept 0 tracks
+06-25 23:06:27.770 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 10628/10637 (recycle/alloc) - 54/10636 (fetch/transfer)
+06-25 23:06:28.037 D/EGL_emulation(10059): app_time_stats: avg=20.44ms min=11.81ms max=60.53ms count=43
+06-25 23:06:28.692 D/AF::Track(  418): interceptBuffer: took 1812us to intercept 0 tracks
+06-25 23:06:28.824 D/AF::Track(  418): interceptBuffer: took 553us to intercept 0 tracks
+06-25 23:06:28.942 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 4(32768 size) used buffers - 10717/10723 (recycle/alloc) - 25/21338 (fetch/transfer)
+06-25 23:06:29.040 D/EGL_emulation(10059): app_time_stats: avg=18.62ms min=12.55ms max=29.58ms count=45
+06-25 23:06:29.674 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:06:30.061 D/EGL_emulation(10059): app_time_stats: avg=17.93ms min=11.58ms max=28.75ms count=46
+06-25 23:06:30.071 D/AF::Track(  418): interceptBuffer: took 565us to intercept 0 tracks
+06-25 23:06:30.852 D/MediaCodec(10059): keep callback message for reclaim
+06-25 23:06:30.856 I/CCodecConfig(10059): query failed after returning 7 values (BAD_INDEX)
+06-25 23:06:30.862 W/Codec2Client(10059): query -- param skipped: index = 1342179345.
+06-25 23:06:30.862 W/Codec2Client(10059): query -- param skipped: index = 2415921170.
+06-25 23:06:30.912 I/wpa_supplicant( 3589): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-25 23:06:31.064 D/EGL_emulation(10059): app_time_stats: avg=15.79ms min=11.15ms max=25.92ms count=53
+06-25 23:06:31.773 E/BLASTSyncEngine(  544): WM sent Transaction to organized, but never received commit callback. Application ANR likely to follow.
+06-25 23:06:32.076 D/EGL_emulation(10059): app_time_stats: avg=16.51ms min=11.47ms max=24.95ms count=51
+06-25 23:06:32.110 D/AF::Track(  418): interceptBuffer: took 716us to intercept 0 tracks
+06-25 23:06:32.451 W/BpBinder(10354): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:06:32.457 W/ProcessState(10354): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:06:32.472 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:06:32.499 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:06:32.504 I/Gralloc4(10354): mapper 4.x is not supported
+06-25 23:06:32.689 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:06:32.723 D/AF::Track(  418): interceptBuffer: took 539us to intercept 0 tracks
+06-25 23:06:33.083 D/EGL_emulation(10059): app_time_stats: avg=19.62ms min=12.49ms max=31.95ms count=43
+06-25 23:06:33.176 D/AF::Track(  418): interceptBuffer: took 1000us to intercept 0 tracks
+06-25 23:06:33.187 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 10839/10848 (recycle/alloc) - 56/10847 (fetch/transfer)
+06-25 23:06:33.613 D/StatusBarIconController(  749): ignoring old pipeline callbacks, because the new mobile icons are enabled
+06-25 23:06:34.084 D/EGL_emulation(10059): app_time_stats: avg=17.74ms min=11.32ms max=34.50ms count=47
+06-25 23:06:34.162 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 3(24576 size) used buffers - 10921/10927 (recycle/alloc) - 26/21742 (fetch/transfer)
+06-25 23:06:35.090 D/EGL_emulation(10059): app_time_stats: avg=15.72ms min=10.90ms max=26.29ms count=50
+06-25 23:06:36.100 D/EGL_emulation(10059): app_time_stats: avg=14.69ms min=9.13ms max=23.46ms count=54
+06-25 23:06:37.123 D/EGL_emulation(10059): app_time_stats: avg=15.72ms min=12.19ms max=28.08ms count=53
+06-25 23:06:37.987 D/ActivityManager(  544): freezing 2094 com.android.keychain
+06-25 23:06:37.990 D/ActivityManager(  544): freezing 8088 com.android.settings
+06-25 23:06:38.123 D/EGL_emulation(10059): app_time_stats: avg=15.24ms min=10.97ms max=22.74ms count=53
+06-25 23:06:38.348 D/AF::Track(  418): interceptBuffer: took 960us to intercept 0 tracks
+06-25 23:06:38.432 D/AF::Track(  418): interceptBuffer: took 634us to intercept 0 tracks
+06-25 23:06:38.651 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 11049/11058 (recycle/alloc) - 58/11057 (fetch/transfer)
+06-25 23:06:38.714 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:06:38.843 D/AF::Track(  418): interceptBuffer: took 1138us to intercept 0 tracks
+06-25 23:06:39.098 I/wpa_supplicant( 3589): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-25 23:06:39.143 D/EGL_emulation(10059): app_time_stats: avg=16.44ms min=10.82ms max=26.77ms count=50
+06-25 23:06:39.417 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 1(8192 size) used buffers - 11120/11126 (recycle/alloc) - 26/22142 (fetch/transfer)
+06-25 23:06:39.545 D/AF::Track(  418): interceptBuffer: took 842us to intercept 0 tracks
+06-25 23:06:39.750 D/AF::Track(  418): interceptBuffer: took 1340us to intercept 0 tracks
+06-25 23:06:40.151 D/EGL_emulation(10059): app_time_stats: avg=14.25ms min=9.60ms max=18.47ms count=56
+06-25 23:06:41.019 D/AF::Track(  418): interceptBuffer: took 2228us to intercept 0 tracks
+06-25 23:06:41.160 D/EGL_emulation(10059): app_time_stats: avg=13.46ms min=9.92ms max=18.11ms count=57
+06-25 23:06:41.724 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:06:42.175 D/EGL_emulation(10059): app_time_stats: avg=13.14ms min=9.84ms max=16.63ms count=60
+06-25 23:06:43.181 D/EGL_emulation(10059): app_time_stats: avg=13.85ms min=9.15ms max=22.17ms count=56
+06-25 23:06:43.601 D/StatusBarIconController(  749): ignoring old pipeline callbacks, because the new mobile icons are enabled
+06-25 23:06:43.624 D/EGL_emulation(  749): app_time_stats: avg=40022.58ms min=40022.58ms max=40022.58ms count=1
+06-25 23:06:43.874 D/AF::Track(  418): interceptBuffer: took 585us to intercept 0 tracks
+06-25 23:06:43.971 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 11251/11260 (recycle/alloc) - 59/11259 (fetch/transfer)
+06-25 23:06:44.183 D/EGL_emulation(10059): app_time_stats: avg=12.77ms min=9.66ms max=21.35ms count=59
+06-25 23:06:44.731 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:06:44.767 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 1(8192 size) used buffers - 11325/11331 (recycle/alloc) - 26/22552 (fetch/transfer)
+06-25 23:06:45.189 D/EGL_emulation(10059): app_time_stats: avg=13.12ms min=9.33ms max=20.68ms count=57
+06-25 23:06:45.981 D/AF::Track(  418): interceptBuffer: took 532us to intercept 0 tracks
+06-25 23:06:46.193 D/EGL_emulation(10059): app_time_stats: avg=13.43ms min=9.74ms max=21.93ms count=56
+06-25 23:06:47.035 I/wpa_supplicant( 3589): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-25 23:06:47.209 D/EGL_emulation(10059): app_time_stats: avg=14.15ms min=9.93ms max=21.81ms count=57
+06-25 23:06:47.273 D/AF::Track(  418): interceptBuffer: took 654us to intercept 0 tracks
+06-25 23:06:47.738 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:06:48.000 D/AF::Track(  418): interceptBuffer: took 2200us to intercept 0 tracks
+06-25 23:06:48.216 D/EGL_emulation(10059): app_time_stats: avg=15.19ms min=10.56ms max=23.81ms count=54
+06-25 23:06:48.362 D/AF::Track(  418): interceptBuffer: took 1533us to intercept 0 tracks
+06-25 23:06:48.928 D/AF::Track(  418): interceptBuffer: took 597us to intercept 0 tracks
+06-25 23:06:49.235 D/EGL_emulation(10059): app_time_stats: avg=14.96ms min=9.77ms max=24.52ms count=56
+06-25 23:06:49.270 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 11455/11464 (recycle/alloc) - 61/11463 (fetch/transfer)
+06-25 23:06:49.701 D/AutofillManager(10059): view not autofillable - not passing ime action check
+06-25 23:06:49.716 D/CompatibilityChangeReporter(10059): Compat change id reported: 163400105; UID 10221; state: ENABLED
+06-25 23:06:49.717 I/GoogleInputMethodService( 1389): GoogleInputMethodService.onFinishInput():3227 
+06-25 23:06:49.721 I/ImeTracker(10059): com.donizetiferr.expertnabiblia:6d91c428: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT
+06-25 23:06:49.722 D/InputMethodManager(10059): showSoftInput() view=com.facebook.react.views.textinput.ReactEditText{de37366 VFED..CL. .F.P..ID 111,1267-905,1410 #6c6 aid=1073741826} flags=0 reason=SHOW_SOFT_INPUT
+06-25 23:06:49.724 I/GoogleInputMethodService( 1389): GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 0, unlocked = true
+06-25 23:06:49.725 I/GoogleInputMethodService( 1389): GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x84001(Normal) imeOptions=0x4 privateImeOptions=null actionName=SEND actionLabel=null actionId=0 initialSelStart=0 initialSelEnd=0 initialCapsMode=0x2000 hintText=non-empty label=null packageName=com.donizetiferr.expertnabiblia fieldId=1734 fieldName=null extras=Bundle[mParcelledData.dataSize=240]}, false)
+06-25 23:06:49.728 I/GoogleInputMethodService( 1389): GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+06-25 23:06:49.731 I/GoogleInputMethodService( 1389): GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+06-25 23:06:49.735 W/ProcessStats(  544): Tracking association SourceState{c60347e system/1000 BFgs #6675} whose proc state 4 is better than process ProcessState{5e13851 com.google.android.inputmethod.latin/10140 pkg=com.google.android.inputmethod.latin} proc state 6 (19 skipped)
+06-25 23:06:49.741 I/GoogleInputMethodService( 1389): GoogleInputMethodService.onCreateInputView():1768 onCreateInputView()
+06-25 23:06:49.755 I/ImeTracker(10059): com.donizetiferr.expertnabiblia:a56c4538: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT
+06-25 23:06:49.755 D/InputMethodManager(10059): showSoftInput() view=com.facebook.react.views.textinput.ReactEditText{de37366 VFED..CL. .F.P.... 111,1267-905,1410 #6c6 aid=1073741826} flags=0 reason=SHOW_SOFT_INPUT
+06-25 23:06:49.759 D/audioserver(  418): FGS Logger Transaction failed
+06-25 23:06:49.759 D/audioserver(  418): -129
+06-25 23:06:49.764 I/GoogleInputMethodService( 1389): GoogleInputMethodService.onStartInputView():1995 onStartInputView(EditorInfo{inputType=0x84001(Normal) imeOptions=0x4 privateImeOptions=null actionName=SEND actionLabel=null actionId=0 initialSelStart=0 initialSelEnd=0 initialCapsMode=0x2000 hintText=non-empty label=null packageName=com.donizetiferr.expertnabiblia fieldId=1734 fieldName=null extras=Bundle[{android.support.text.emoji.emojiCompat_metadataVersion=9, android.support.text.emoji.emojiCompat_replaceAll=false}]}, false)
+06-25 23:06:49.768 I/GoogleInputMethodService( 1389): GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+06-25 23:06:49.771 I/DeviceModeUtil( 1389): DeviceModeUtil.getDeviceMode():122 Get device mode tablet_large by ui mode:1 and smallestScreenWidthDp:411
+06-25 23:06:49.773 W/ModuleManager( 1389): ModuleManager.loadModule():450 Module erj is not available
+06-25 23:06:49.780 I/KeyboardViewUtil( 1389): KeyboardViewUtil.getKeyboardHeightRatio():189 systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+06-25 23:06:49.804 I/LatinIme( 1389): LatinIme.<init>():328 Language = en-US
+06-25 23:06:49.826 I/Delight5Facilitator( 1389): Delight5Facilitator.initializeForIme():777 initializeForIme() : Locale = [en_US], layout = qwerty
+06-25 23:06:49.831 I/AndroidIME( 1389): AbstractIme.onActivate():86 LatinIme.onActivate() : EditorInfo = inputType=0x84001(Normal) imeOptions=0x4 privateImeOptions=null actionName=SEND actionLabel=null actionId=0 initialSelStart=0 initialSelEnd=0 initialCapsMode=0x2000 hintText=non-empty label=null packageName=com.donizetiferr.expertnabiblia fieldId=1734 fieldName=null extras=Bundle[{android.support.text.emoji.emojiCompat_metadataVersion=9, android.support.text.emoji.emojiCompat_replaceAll=false}], IncognitoMode = false, DeviceLocked = false
+06-25 23:06:49.839 I/VoiceInputManagerWrapper( 1389): VoiceInputManagerWrapper.cancelShutdown():55 cancelShutdown()
+06-25 23:06:49.839 I/VoiceInputManagerWrapper( 1389): VoiceInputManagerWrapper.syncLanguagePacks():67 syncLanguagePacks()
+06-25 23:06:49.842 I/LatinIme( 1389): LatinIme.updateEnableInlineSuggestionsOnDecoderSideFlags():1003 inline flag updated to:false
+06-25 23:06:49.846 I/SpeechFactory( 1389): SpeechRecognitionFactory.maybeScheduleAutoPackDownloadForFallback():205 maybeScheduleAutoPackDownloadForFallback()
+06-25 23:06:49.847 I/FallbackOnDeviceRecognitionProvider( 1389): FallbackOnDeviceRecognitionProvider.maybeScheduleAutoPackDownload():195 maybeScheduleAutoPackDownload() for language tag en-US
+06-25 23:06:49.855 I/KeyboardWrapper( 1389): KeyboardWrapper.consumeEvent():275 Skip consuming an event as current keyboard is deactivated (state=0, keyboard existence=false)
+06-25 23:06:49.860 I/KeyboardManager( 1389): KeyboardManager.requestKeyboard():146 Creating keyboard prime, imeId=ime_english_united_states, cacheKey=theme_border_stylesheet_noshadow_gsans_pillkey_silkpopup_materiallight_tablet_large
+06-25 23:06:49.864 I/DeviceModeUtil( 1389): DeviceModeUtil.getDeviceMode():122 Get device mode tablet_large by ui mode:1 and smallestScreenWidthDp:411
+06-25 23:06:49.865 I/DeviceModeUtil( 1389): DeviceModeUtil.getDeviceMode():122 Get device mode tablet_large by ui mode:1 and smallestScreenWidthDp:411
+06-25 23:06:49.866 I/KeyboardModeManager( 1389): KeyboardModeManager.setInputView():364 setInputView() : supportsOneHandedMode=true
+06-25 23:06:49.868 I/AndroidIME( 1389): KeyboardViewManager.updateKeyboardBackgroundFrameVisibility():357 Set background frame visibility. old:8, new:8
+06-25 23:06:49.869 I/NormalModeController( 1389): NormalModeController.getKeyboardBodyViewHolderPaddingBottom():116 currentPrimeKeyboardType:SOFT systemPaddingBottom:-1
+06-25 23:06:49.870 I/NormalModeController( 1389): NormalModeController.getKeyboardBodyViewHolderPaddingBottom():116 currentPrimeKeyboardType:SOFT systemPaddingBottom:-1
+06-25 23:06:49.872 I/KeyboardModeManager( 1389): KeyboardModeManager.setInputView():356 setInputView() : entry=hwn{languageTag=en-US, variant=qwerty, hasLocalizedResources=true, conditionCacheKey=_device=tablet_device_size=large_enable_adaptive_text_editing=true_enable_inline_suggestions_on_client_side=false_enable_large_tablet_batch_1=false_enable_large_tablet_batch_2=false_enable_more_candidates_view_for_multilingual=false_enable_nav_redesign=false_enable_number_row=false_enable_preemptive_decode=true_enable_secondary_symbols=false_expressions=normal_four_or_more_letter_rows=false_keyboard_mode=normal_language=en-US_orientation=portrait_physical_keyboard=qwerty_show_secondary_digits=true_show_suggestions=true_split_with_duplicate_keys=true_variant=qwerty, imeDef.stringId=ime_english_united_states, imeDef.className=com.google.android.apps.inputmethod.libs.latin5.LatinIme, imeDef.languageTag=en-US}
+06-25 23:06:49.878 I/VoiceImeExtension( 1389): VoiceImeExtension.shouldStartVoiceInputAutomatically():383 No private IME option set to start voice input.
+06-25 23:06:49.922 D/CoreBackPreview(  544): Window{5b34cf8 u0 com.donizetiferr.expertnabiblia/com.donizetiferr.expertnabiblia.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@d6f105f, mPriority=0, mIsAnimationCallback=false}
+06-25 23:06:49.923 D/ActivityManager(  544): sync unfroze 1658 com.google.android.gms for 6
+06-25 23:06:49.936 I/DeviceModeUtil( 1389): DeviceModeUtil.getDeviceMode():122 Get device mode tablet_large by ui mode:1 and smallestScreenWidthDp:411
+06-25 23:06:49.951 I/ImeTracker(  544): com.donizetiferr.expertnabiblia:6d91c428: onFailed at PHASE_WM_SHOW_IME_RUNNER
+06-25 23:06:49.975 D/BoundBrokerSvc( 1658): onBind: Intent { act=com.google.firebase.dynamiclinks.service.START pkg=com.google.android.gms }
+06-25 23:06:49.985 D/BoundBrokerSvc( 1658): Loading bound service for intent: Intent { act=com.google.firebase.dynamiclinks.service.START pkg=com.google.android.gms }
+06-25 23:06:49.987 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 4(32768 size) used buffers - 11527/11533 (recycle/alloc) - 26/22952 (fetch/transfer)
+06-25 23:06:49.996 D/audioserver(  418): FGS Logger Transaction failed
+06-25 23:06:49.996 D/audioserver(  418): -129
+06-25 23:06:50.199 D/AF::Track(  418): interceptBuffer: took 723us to intercept 0 tracks
+06-25 23:06:50.223 I/KeyboardViewHelper( 1389): KeyboardViewHelper.getView():170 Get view with height ratio:1.000000
+06-25 23:06:50.243 D/EGL_emulation(10059): app_time_stats: avg=18.32ms min=10.53ms max=76.06ms count=47
+06-25 23:06:50.330 I/KeyboardViewUtil( 1389): KeyboardViewUtil.calculateMaxKeyboardBodyHeight():40 leave 354 height for app when screen height:1920, header height:131 and isFullscreenMode:false, so the max keyboard body height is:1435
+06-25 23:06:50.331 I/SoftKeyboardView( 1389): SoftKeyboardView.setMaxHeight():731 Set max keyboard height:1435.
+06-25 23:06:50.340 I/DeviceModeUtil( 1389): DeviceModeUtil.getDeviceMode():122 Get device mode tablet_large by ui mode:1 and smallestScreenWidthDp:411
+06-25 23:06:50.341 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_OPTIONAL
+06-25 23:06:50.341 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:50.341 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = BODY, shownType = SHOW_MANDATORY
+06-25 23:06:50.341 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:50.346 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = FLOATING_CANDIDATES, shownType = HIDE
+06-25 23:06:50.346 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = false
+06-25 23:06:50.360 I/DeviceModeUtil( 1389): DeviceModeUtil.getDeviceMode():122 Get device mode tablet_large by ui mode:1 and smallestScreenWidthDp:411
+06-25 23:06:50.361 I/DeviceModeUtil( 1389): DeviceModeUtil.getDeviceMode():122 Get device mode tablet_large by ui mode:1 and smallestScreenWidthDp:411
+06-25 23:06:50.370 I/DeviceModeUtil( 1389): DeviceModeUtil.getDeviceMode():122 Get device mode tablet_large by ui mode:1 and smallestScreenWidthDp:411
+06-25 23:06:50.371 I/KeyboardViewUtil( 1389): KeyboardViewUtil.calculateMaxKeyboardBodyHeight():40 leave 354 height for app when screen height:1920, header height:131 and isFullscreenMode:false, so the max keyboard body height is:1435
+06-25 23:06:50.372 I/DeviceModeUtil( 1389): DeviceModeUtil.getDeviceMode():122 Get device mode tablet_large by ui mode:1 and smallestScreenWidthDp:411
+06-25 23:06:50.399 I/AndroidIME( 1389): KeyboardViewManager.updateKeyboardBackgroundFrameVisibility():357 Set background frame visibility. old:8, new:8
+06-25 23:06:50.498 W/TooltipLifecycleManager( 1389): TooltipLifecycleManager.dismissTooltips():159 Tooltip with id spell_check_add_to_dictionary not found in tooltipManager.
+06-25 23:06:50.499 I/DeviceModeUtil( 1389): DeviceModeUtil.getDeviceMode():122 Get device mode tablet_large by ui mode:1 and smallestScreenWidthDp:411
+06-25 23:06:50.508 I/DeviceModeUtil( 1389): DeviceModeUtil.getDeviceMode():122 Get device mode tablet_large by ui mode:1 and smallestScreenWidthDp:411
+06-25 23:06:50.518 D/InsetsController(10059): show(ime(), fromIme=true)
+06-25 23:06:50.518 I/NormalModeController( 1389): NormalModeController.getKeyboardBodyViewHolderPaddingBottom():116 currentPrimeKeyboardType:SOFT systemPaddingBottom:-1
+06-25 23:06:50.522 I/Delight5Decoder( 1389): Delight5DecoderWrapper.setKeyboardLayout():457 setKeyboardLayout()
+06-25 23:06:50.524 I/AndroidIME( 1389): KeyboardViewManager.updateKeyboardBodyViewHolderPaddingBottom():604 Set finalPaddingBottom = 0 while keyboardBottomGapFromScreen = 0; navigationHeight = 0
+06-25 23:06:50.525 I/AndroidIME( 1389): KeyboardViewManager.saveKeyboardBottomGap():282 realScreenHeight: 0 screenHeightInInches: 12.000000
+06-25 23:06:50.525 I/AndroidIME( 1389): keyboardHolderHeight: 971 navigationHeight: 0
+06-25 23:06:50.525 I/AndroidIME( 1389): getKeyboardBodyViewHolderPaddingBottom(): 0 getKeyboardBottomGapFromScreen(): 0
+06-25 23:06:50.525 I/AndroidIME( 1389): keyboardBottomGap: 0 bodyViewHolderBottomPadding: 0
+06-25 23:06:50.525 I/AndroidIME( 1389): decorViewStableInsetBottom: 0 updated: false
+06-25 23:06:50.540 I/Delight5Decoder( 1389): Delight5DecoderWrapper.setKeyboardLayout():457 setKeyboardLayout()
+06-25 23:06:50.579 D/BoundBrokerSvc( 1658): onBind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+06-25 23:06:50.583 D/BoundBrokerSvc( 1658): Loading bound service for intent: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+06-25 23:06:50.610 D/BoundBrokerSvc( 1658): onUnbind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+06-25 23:06:50.644 D/BoundBrokerSvc( 1658): onBind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+06-25 23:06:50.646 D/BoundBrokerSvc( 1658): Loading bound service for intent: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+06-25 23:06:50.691 D/BoundBrokerSvc( 1658): onUnbind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+06-25 23:06:50.743 D/AudioFlinger(  418): mixer(0x7eac95bc9930) throttle end: throttle time(1)
+06-25 23:06:50.793 I/ImeTracker(10059): com.donizetiferr.expertnabiblia:a56c4538: onShown
+06-25 23:06:50.841 D/MediaCodec(10059): keep callback message for reclaim
+06-25 23:06:50.845 I/CCodecConfig(10059): query failed after returning 7 values (BAD_INDEX)
+06-25 23:06:50.851 W/Codec2Client(10059): query -- param skipped: index = 1342179345.
+06-25 23:06:50.851 W/Codec2Client(10059): query -- param skipped: index = 2415921170.
+06-25 23:06:51.062 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:51.064 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:51.216 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:51.216 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:51.244 D/EGL_emulation(10059): app_time_stats: avg=20.19ms min=12.47ms max=78.23ms count=44
+06-25 23:06:51.253 I/native  ( 1389): I0000 00:00:1782428811.252922    2142 input-context-store.cc:178] Ignoring stale client request for FetchSuggestions
+06-25 23:06:51.267 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4165<4168, inputStateId=0, lastInputStateId=3831
+06-25 23:06:51.269 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:51.269 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:51.363 I/KeyboardViewController( 1389): KeyboardViewController.lambda$showSelfAndAncestors$6():609 current view doesn't has the priority com.google.android.libraries.inputmethod.accesspoint.widget.AccessPointsBar{fd928e3 I.E...... ......ID 0,0-644,131 #7f0b0018 app:id/0_resource_name_obfuscated} to show itself, DEFAULT
+06-25 23:06:51.368 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:51.368 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:51.424 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:51.425 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:51.524 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:51.525 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:51.831 I/native  ( 1389): I0000 00:00:1782428811.831609    2142 input-context-store.cc:255] Ignoring stale client request for FetchSuggestions
+06-25 23:06:51.860 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4176<4188, inputStateId=3846, lastInputStateId=3846
+06-25 23:06:51.864 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:51.864 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:51.981 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:51.982 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:52.010 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:52.013 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:52.098 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:52.099 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:52.116 D/EGL_emulation( 1389): app_time_stats: avg=136.16ms min=33.87ms max=566.83ms count=12
+06-25 23:06:52.176 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:52.176 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:52.252 D/EGL_emulation(10059): app_time_stats: avg=20.04ms min=12.92ms max=40.70ms count=44
+06-25 23:06:52.321 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4198<4200, inputStateId=3857, lastInputStateId=3858
+06-25 23:06:52.326 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:52.326 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:52.499 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4205<4209, inputStateId=3864, lastInputStateId=3867
+06-25 23:06:52.504 I/native  ( 1389): I0000 00:00:1782428812.504328    2142 input-context-store.cc:255] Ignoring stale client request for FetchSuggestions
+06-25 23:06:52.557 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4208<4211, inputStateId=3867, lastInputStateId=3869
+06-25 23:06:52.561 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4210<4211, inputStateId=3868, lastInputStateId=3869
+06-25 23:06:52.625 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4212<4214, inputStateId=3870, lastInputStateId=3871
+06-25 23:06:52.629 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:52.630 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:52.696 W/Delight5Decoder( 1389): Delight5DecoderWrapper.shouldAbandonMessage():1983 Detected old [FetchSuggestions] request in background: 4216<4217
+06-25 23:06:52.731 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:52.735 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:52.787 I/native  ( 1389): I0000 00:00:1782428812.693335    2142 input-context-store.cc:255] Ignoring stale client request for FetchSuggestions
+06-25 23:06:52.800 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4222<4224, inputStateId=3880, lastInputStateId=3880
+06-25 23:06:52.804 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:52.809 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:52.878 I/KeyboardViewController( 1389): KeyboardViewController.lambda$showSelfAndAncestors$6():609 current view doesn't has the priority com.google.android.libraries.inputmethod.accesspoint.widget.AccessPointsBar{fd928e3 I.E...... ......ID 0,0-644,131 #7f0b0018 app:id/0_resource_name_obfuscated} to show itself, DEFAULT
+06-25 23:06:52.934 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:52.934 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:52.988 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:52.989 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:53.139 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:53.139 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:53.172 D/EGL_emulation( 1389): app_time_stats: avg=105.21ms min=32.28ms max=188.37ms count=10
+06-25 23:06:53.207 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:53.209 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:53.267 D/EGL_emulation(10059): app_time_stats: avg=19.45ms min=12.32ms max=29.63ms count=46
+06-25 23:06:53.274 I/native  ( 1389): I0000 00:00:1782428813.185829    2142 input-context-store.cc:255] Ignoring stale client request for FetchSuggestions
+06-25 23:06:53.298 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4234<4237, inputStateId=3893, lastInputStateId=3893
+06-25 23:06:53.299 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:53.299 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:53.388 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:53.388 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:53.471 I/native  ( 1389): I0000 00:00:1782428813.354993    2142 input-context-store.cc:255] Ignoring stale client request for FetchSuggestions
+06-25 23:06:53.477 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4244<4247, inputStateId=3902, lastInputStateId=3902
+06-25 23:06:53.598 I/native  ( 1389): I0000 00:00:1782428813.456029    2142 input-context-store.cc:255] Ignoring stale client request for FetchSuggestions
+06-25 23:06:53.603 D/StatusBarIconController(  749): ignoring old pipeline callbacks, because the new mobile icons are enabled
+06-25 23:06:53.604 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4247<4251, inputStateId=3903, lastInputStateId=3906
+06-25 23:06:53.609 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4250<4252, inputStateId=3906, lastInputStateId=3906
+06-25 23:06:53.623 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:53.624 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:53.719 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:53.720 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:53.764 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:53.768 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:53.774 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:06:53.860 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:53.861 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:54.036 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:54.036 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:54.147 I/native  ( 1389): I0000 00:00:1782428813.871497    2142 input-context-store.cc:255] Ignoring stale client request for FetchSuggestions
+06-25 23:06:54.157 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4262<4264, inputStateId=3917, lastInputStateId=3917
+06-25 23:06:54.161 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:54.161 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:54.228 D/EGL_emulation( 1389): app_time_stats: avg=95.57ms min=22.85ms max=200.09ms count=11
+06-25 23:06:54.271 D/EGL_emulation(10059): app_time_stats: avg=19.44ms min=13.65ms max=28.17ms count=46
+06-25 23:06:54.276 I/native  ( 1389): I0000 00:00:1782428813.983372    2142 input-context-store.cc:255] Ignoring stale client request for FetchSuggestions
+06-25 23:06:54.280 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4266<4269, inputStateId=3922, lastInputStateId=3922
+06-25 23:06:54.308 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4269<4270, inputStateId=3923, lastInputStateId=3924
+06-25 23:06:54.360 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4272<4274, inputStateId=3926, lastInputStateId=3927
+06-25 23:06:54.368 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:54.371 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:54.427 I/native  ( 1389): I0000 00:00:1782428814.184635    2142 input-context-store.cc:195] Using roll back input context for operation: [FetchSuggestions] rolled back operation: [OverrideDecodedCandidates] reason: client [3929] vs decoder [3931]
+06-25 23:06:54.474 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4276<4279, inputStateId=3931, lastInputStateId=3934
+06-25 23:06:54.477 W/InputContextProxyV4( 1389): InputContextProxyV4.applyClientDiffInternal():897 Ignore [FetchSuggestions] diff due to stale request: 4277<4279, inputStateId=3933, lastInputStateId=3934
+06-25 23:06:54.494 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:54.500 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:54.547 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:54.548 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:54.597 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:54.605 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:54.622 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 3(13824 size) used buffers - 11664/11673 (recycle/alloc) - 63/11672 (fetch/transfer)
+06-25 23:06:54.671 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:54.674 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:54.709 I/.expertnabiblia(10059): Background young concurrent copying GC freed 181469(5993KB) AllocSpace objects, 2(56KB) LOS objects, 27% free, 15MB/21MB, paused 2.278ms,96us total 129.943ms
+06-25 23:06:54.868 W/TooltipLifecycleManager( 1389): TooltipLifecycleManager.dismissTooltips():159 Tooltip with id spell_check_add_to_dictionary not found in tooltipManager.
+06-25 23:06:54.879 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3483 setKeyboardViewShown() : type = HEADER, shownType = SHOW_MANDATORY_WITH_ANIMATION
+06-25 23:06:54.880 I/GoogleInputMethodService( 1389): GoogleInputMethodService.setKeyboardViewShown():3530 setKeyboardViewShown() : shouldShow = true
+06-25 23:06:54.889 D/AF::Track(  418): interceptBuffer: took 528us to intercept 0 tracks
+06-25 23:06:54.971 I/wpa_supplicant( 3589): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-25 23:06:55.141 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 1(8192 size) used buffers - 11727/11733 (recycle/alloc) - 27/23350 (fetch/transfer)
+06-25 23:06:55.286 D/EGL_emulation(10059): app_time_stats: avg=16.47ms min=9.79ms max=33.26ms count=50
+06-25 23:06:55.842 D/AF::Track(  418): interceptBuffer: took 514us to intercept 0 tracks
+06-25 23:06:56.000 W/BpBinder(10378): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:06:56.004 W/ProcessState(10378): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:06:56.028 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:06:56.051 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:06:56.052 I/Gralloc4(10378): mapper 4.x is not supported
+06-25 23:06:56.070 D/AF::Track(  418): interceptBuffer: took 1613us to intercept 0 tracks
+06-25 23:06:56.303 D/EGL_emulation(10059): app_time_stats: avg=15.79ms min=9.71ms max=23.23ms count=55
+06-25 23:06:56.790 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:06:56.909 D/AF::Track(  418): interceptBuffer: took 614us to intercept 0 tracks
+06-25 23:06:57.312 D/EGL_emulation(10059): app_time_stats: avg=17.41ms min=12.28ms max=22.35ms count=50
+06-25 23:06:58.327 D/EGL_emulation(10059): app_time_stats: avg=14.41ms min=9.40ms max=24.40ms count=56
+06-25 23:06:59.290 D/AF::Track(  418): interceptBuffer: took 1216us to intercept 0 tracks
+06-25 23:06:59.341 D/EGL_emulation(10059): app_time_stats: avg=14.62ms min=9.45ms max=31.85ms count=57
+06-25 23:06:59.719 D/AF::Track(  418): interceptBuffer: took 676us to intercept 0 tracks
+06-25 23:06:59.796 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:07:00.015 I/AiAiEcho( 1482): Predicting[0]: 
+06-25 23:07:00.016 I/AiAiEcho( 1482): EchoTargets: 
+06-25 23:07:00.016 I/AiAiEcho( 1482): Filtered by AiAi flag check: 
+06-25 23:07:00.019 I/AiAiEcho( 1482): Ranked targets strategy: SORT, count: 0, ranking metadata: 
+06-25 23:07:00.028 I/AiAiEcho( 1482): #postPredictionTargets: Sending updates to UISurface lockscreen with targets# 0 (types=[])
+06-25 23:07:00.048 W/PageIndicator(  749): Total number of pages invalid: 0. Assuming 1 page.
+06-25 23:07:00.054 D/EGL_emulation(  749): app_time_stats: avg=16428.83ms min=16428.83ms max=16428.83ms count=1
+06-25 23:07:00.060 D/AF::Track(  418): interceptBuffer: took 665us to intercept 0 tracks
+06-25 23:07:00.102 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 11871/11880 (recycle/alloc) - 64/11879 (fetch/transfer)
+06-25 23:07:00.219 D/AF::Track(  418): interceptBuffer: took 4727us to intercept 0 tracks
+06-25 23:07:00.345 D/EGL_emulation(10059): app_time_stats: avg=15.28ms min=9.21ms max=21.87ms count=55
+06-25 23:07:00.476 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 4(32768 size) used buffers - 11934/11940 (recycle/alloc) - 27/23759 (fetch/transfer)
+06-25 23:07:01.107 E/FrameTracker(10059): force finish cuj, time out: J<IME_INSETS_ANIMATION::0@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:01.108 W/FrameTracker(10059): Missed SF frame:UNKNOWN: 80, 2976155, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:01.108 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2976178, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:01.108 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2976193, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:01.109 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2976201, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:01.119 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2976224, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:01.120 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2976238, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:01.120 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2976247, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:01.120 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2976262, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:01.124 D/AF::Track(  418): interceptBuffer: took 584us to intercept 0 tracks
+06-25 23:07:01.125 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2976292, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:01.125 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2976307, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:01.127 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2976315, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:01.132 V/PerfettoTrigger(10059): Triggering /system/bin/trigger_perfetto com.android.telemetry.interaction-jank-monitor-69
+06-25 23:07:01.349 D/EGL_emulation(10059): app_time_stats: avg=15.11ms min=9.78ms max=31.56ms count=53
+06-25 23:07:01.440 D/AF::Track(  418): interceptBuffer: took 597us to intercept 0 tracks
+06-25 23:07:02.351 D/EGL_emulation(10059): app_time_stats: avg=14.17ms min=10.85ms max=24.41ms count=58
+06-25 23:07:02.808 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:07:03.168 D/AF::Track(  418): interceptBuffer: took 667us to intercept 0 tracks
+06-25 23:07:03.172 I/wpa_supplicant( 3589): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-25 23:07:03.352 D/EGL_emulation(10059): app_time_stats: avg=14.56ms min=10.19ms max=22.47ms count=56
+06-25 23:07:03.590 D/StatusBarIconController(  749): ignoring old pipeline callbacks, because the new mobile icons are enabled
+06-25 23:07:04.024 D/AF::Track(  418): interceptBuffer: took 800us to intercept 0 tracks
+06-25 23:07:04.364 D/EGL_emulation(10059): app_time_stats: avg=14.88ms min=9.41ms max=22.22ms count=54
+06-25 23:07:05.082 W/ProcessStats(  544): Tracking association SourceState{c60347e system/1000 BFgs #6693} whose proc state 4 is better than process ProcessState{5e13851 com.google.android.inputmethod.latin/10140 pkg=com.google.android.inputmethod.latin} proc state 6 (9 skipped)
+06-25 23:07:05.369 D/EGL_emulation(10059): app_time_stats: avg=13.48ms min=9.49ms max=19.16ms count=56
+06-25 23:07:05.559 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 12080/12089 (recycle/alloc) - 64/12088 (fetch/transfer)
+06-25 23:07:05.641 D/BoundBrokerSvc( 1658): onUnbind: Intent { act=com.google.firebase.dynamiclinks.service.START pkg=com.google.android.gms }
+06-25 23:07:05.826 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 2(16384 size) used buffers - 12138/12144 (recycle/alloc) - 27/24171 (fetch/transfer)
+06-25 23:07:05.858 D/AudioFlinger(  418): mixer(0x7eac95bc9930) throttle end: throttle time(4)
+06-25 23:07:06.376 D/EGL_emulation(10059): app_time_stats: avg=14.95ms min=9.65ms max=27.42ms count=54
+06-25 23:07:07.390 D/EGL_emulation(10059): app_time_stats: avg=16.12ms min=11.33ms max=22.66ms count=53
+06-25 23:07:08.037 D/AF::Track(  418): interceptBuffer: took 628us to intercept 0 tracks
+06-25 23:07:08.287 D/AF::Track(  418): interceptBuffer: took 975us to intercept 0 tracks
+06-25 23:07:08.401 D/EGL_emulation(10059): app_time_stats: avg=14.93ms min=10.51ms max=20.53ms count=57
+06-25 23:07:08.860 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:07:09.288 D/AF::Track(  418): interceptBuffer: took 611us to intercept 0 tracks
+06-25 23:07:09.402 D/EGL_emulation(10059): app_time_stats: avg=14.86ms min=10.92ms max=20.13ms count=57
+06-25 23:07:09.572 W/CpuMonitorService(  544): Current CPU frequency (3552850) is greater than maximum CPU frequency (2) for policy ID (1). Skipping CPU frequency policy
+06-25 23:07:09.573 W/CpuMonitorService(  544): Current CPU frequency (3162252) is greater than maximum CPU frequency (2) for policy ID (2). Skipping CPU frequency policy
+06-25 23:07:09.576 W/CpuMonitorService(  544): Current CPU frequency (3540511) is greater than maximum CPU frequency (2) for policy ID (3). Skipping CPU frequency policy
+06-25 23:07:10.420 D/EGL_emulation(10059): app_time_stats: avg=13.88ms min=9.75ms max=20.43ms count=60
+06-25 23:07:10.856 D/MediaCodec(10059): keep callback message for reclaim
+06-25 23:07:10.856 I/CCodecConfig(10059): query failed after returning 7 values (BAD_INDEX)
+06-25 23:07:10.859 W/Codec2Client(10059): query -- param skipped: index = 1342179345.
+06-25 23:07:10.861 W/Codec2Client(10059): query -- param skipped: index = 2415921170.
+06-25 23:07:11.102 I/wpa_supplicant( 3589): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-25 23:07:11.119 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 1(8192 size) used buffers - 12345/12351 (recycle/alloc) - 28/24576 (fetch/transfer)
+06-25 23:07:11.131 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 12296/12305 (recycle/alloc) - 66/12304 (fetch/transfer)
+06-25 23:07:11.437 D/EGL_emulation(10059): app_time_stats: avg=12.12ms min=9.28ms max=19.24ms count=60
+06-25 23:07:11.877 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:07:12.440 D/EGL_emulation(10059): app_time_stats: avg=13.75ms min=8.35ms max=19.82ms count=59
+06-25 23:07:13.453 D/EGL_emulation(10059): app_time_stats: avg=14.21ms min=9.85ms max=23.71ms count=57
+06-25 23:07:13.632 D/StatusBarIconController(  749): ignoring old pipeline callbacks, because the new mobile icons are enabled
+06-25 23:07:14.467 D/EGL_emulation(10059): app_time_stats: avg=13.70ms min=9.61ms max=21.88ms count=59
+06-25 23:07:14.883 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:07:15.472 D/EGL_emulation(10059): app_time_stats: avg=14.07ms min=9.60ms max=21.26ms count=57
+06-25 23:07:15.695 D/ActivityManager(  544): freezing 1658 com.google.android.gms
+06-25 23:07:16.400 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 1(8192 size) used buffers - 12547/12553 (recycle/alloc) - 28/24980 (fetch/transfer)
+06-25 23:07:16.410 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 12498/12507 (recycle/alloc) - 67/12506 (fetch/transfer)
+06-25 23:07:16.484 D/EGL_emulation(10059): app_time_stats: avg=14.07ms min=9.27ms max=23.74ms count=56
+06-25 23:07:17.494 D/EGL_emulation(10059): app_time_stats: avg=16.50ms min=11.21ms max=30.28ms count=50
+06-25 23:07:17.894 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:07:18.508 D/EGL_emulation(10059): app_time_stats: avg=14.15ms min=10.24ms max=21.28ms count=58
+06-25 23:07:19.036 I/wpa_supplicant( 3589): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-25 23:07:19.526 D/EGL_emulation(10059): app_time_stats: avg=13.48ms min=8.96ms max=27.32ms count=59
+06-25 23:07:19.715 D/AF::Track(  418): interceptBuffer: took 5664us to intercept 0 tracks
+06-25 23:07:19.986 D/AF::Track(  418): interceptBuffer: took 753us to intercept 0 tracks
+06-25 23:07:20.039 D/AF::Track(  418): interceptBuffer: took 8959us to intercept 0 tracks
+06-25 23:07:20.550 D/EGL_emulation(10059): app_time_stats: avg=15.11ms min=9.03ms max=23.65ms count=54
+06-25 23:07:20.566 D/AutofillManager(10059): view not autofillable - not passing ime action check
+06-25 23:07:20.577 I/ImeTracker(10059): com.donizetiferr.expertnabiblia:34d34d29: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT
+06-25 23:07:20.587 I/GoogleInputMethodService( 1389): GoogleInputMethodService.onFinishInputView():2241 
+06-25 23:07:20.589 W/TooltipLifecycleManager( 1389): TooltipLifecycleManager.dismissTooltips():159 Tooltip with id spell_check_add_to_dictionary not found in tooltipManager.
+06-25 23:07:20.598 I/InputBundle( 1389): InputBundle.consumeEvent():923 Skip consuming an event as keyboard status is 0
+06-25 23:07:20.608 I/KeyboardWrapper( 1389): KeyboardWrapper.consumeEvent():275 Skip consuming an event as current keyboard is deactivated (state=0, keyboard existence=true)
+06-25 23:07:20.608 I/VoiceInputManagerWrapper( 1389): VoiceInputManagerWrapper.shutdown():77 shutdown()
+06-25 23:07:20.618 I/AndroidIME( 1389): AbstractIme.onDeactivate():207 LatinIme.onDeactivate()
+06-25 23:07:20.640 I/GoogleInputMethodService( 1389): GoogleInputMethodService.onFinishInput():3227 
+06-25 23:07:20.648 I/GoogleInputMethodService( 1389): GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 0, unlocked = true
+06-25 23:07:20.649 I/GoogleInputMethodService( 1389): GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x0 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.donizetiferr.expertnabiblia fieldId=0 fieldName=null extras=null}, false)
+06-25 23:07:20.653 I/GoogleInputMethodService( 1389): GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+06-25 23:07:20.655 W/ModuleManager( 1389): ModuleManager.loadModule():450 Module jjj is not available
+06-25 23:07:20.676 I/GoogleInputMethodService( 1389): GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+06-25 23:07:20.679 W/WindowOnBackDispatcher(10059): sendCancelIfRunning: isInProgress=falsecallback=ImeCallback=ImeOnBackInvokedCallback@131111192 Callback=android.window.IOnBackInvokedCallback$Stub$Proxy@91e9cb6
+06-25 23:07:20.688 D/CoreBackPreview(  544): Window{5b34cf8 u0 com.donizetiferr.expertnabiblia/com.donizetiferr.expertnabiblia.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@4639cd1, mPriority=0, mIsAnimationCallback=false}
+06-25 23:07:20.710 I/GoogleInputMethodService( 1389): GoogleInputMethodService.onStartInputView():1995 onStartInputView(EditorInfo{inputType=0x0(NULL) imeOptions=0x0 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.donizetiferr.expertnabiblia fieldId=0 fieldName=null extras=null}, false)
+06-25 23:07:20.722 I/GoogleInputMethodService( 1389): GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+06-25 23:07:20.723 W/ModuleManager( 1389): ModuleManager.loadModule():450 Module erj is not available
+06-25 23:07:20.726 I/DeviceModeUtil( 1389): DeviceModeUtil.getDeviceMode():122 Get device mode tablet_large by ui mode:1 and smallestScreenWidthDp:411
+06-25 23:07:20.777 I/KeyboardViewUtil( 1389): KeyboardViewUtil.getKeyboardHeightRatio():189 systemKeyboardHeightRatio:1.000000; userKeyboardHeightRatio:1.000000.
+06-25 23:07:20.778 I/AndroidIME( 1389): AbstractIme.onActivate():86 PasswordIme.onActivate() : EditorInfo = inputType=0x0(NULL) imeOptions=0x0 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.donizetiferr.expertnabiblia fieldId=0 fieldName=null extras=null, IncognitoMode = false, DeviceLocked = false
+06-25 23:07:20.781 I/KeyboardManager( 1389): KeyboardManager.requestKeyboard():146 Creating keyboard prime, imeId=password, cacheKey=theme_border_stylesheet_noshadow_gsans_pillkey_silkpopup_materiallight_tablet_large
+06-25 23:07:20.784 I/DeviceModeUtil( 1389): DeviceModeUtil.getDeviceMode():122 Get device mode tablet_large by ui mode:1 and smallestScreenWidthDp:411
+06-25 23:07:20.791 I/DeviceModeUtil( 1389): DeviceModeUtil.getDeviceMode():122 Get device mode tablet_large by ui mode:1 and smallestScreenWidthDp:411
+06-25 23:07:20.793 I/KeyboardModeManager( 1389): KeyboardModeManager.setInputView():364 setInputView() : supportsOneHandedMode=true
+06-25 23:07:20.793 I/NormalModeController( 1389): NormalModeController.getKeyboardBodyViewHolderPaddingBottom():116 currentPrimeKeyboardType:SOFT systemPaddingBottom:-1
+06-25 23:07:20.798 I/AndroidIME( 1389): KeyboardViewManager.updateKeyboardBodyViewHolderPaddingBottom():604 Set finalPaddingBottom = 0 while keyboardBottomGapFromScreen = 0; navigationHeight = 0
+06-25 23:07:20.804 I/NormalModeController( 1389): NormalModeController.getKeyboardBodyViewHolderPaddingBottom():116 currentPrimeKeyboardType:SOFT systemPaddingBottom:-1
+06-25 23:07:20.814 I/AndroidIME( 1389): KeyboardViewManager.updateKeyboardBodyViewHolderPaddingBottom():604 Set finalPaddingBottom = 0 while keyboardBottomGapFromScreen = 0; navigationHeight = 0
+06-25 23:07:20.815 I/KeyboardModeManager( 1389): KeyboardModeManager.setInputView():356 setInputView() : entry=hwn{languageTag=en-US, variant=qwerty, hasLocalizedResources=true, conditionCacheKey=_device=tablet_device_size=large_enable_adaptive_text_editing=true_enable_inline_suggestions_on_client_side=false_enable_large_tablet_batch_1=false_enable_large_tablet_batch_2=false_enable_more_candidates_view_for_multilingual=false_enable_nav_redesign=false_enable_number_row=false_enable_preemptive_decode=true_enable_secondary_symbols=false_expressions=normal_four_or_more_letter_rows=false_keyboard_mode=normal_language=en-US_orientation=portrait_physical_keyboard=qwerty_show_secondary_digits=true_show_suggestions=true_split_with_duplicate_keys=true_variant=qwerty, imeDef.stringId=ime_english_united_states, imeDef.className=com.google.android.apps.inputmethod.libs.latin5.LatinIme, imeDef.languageTag=en-US}
+06-25 23:07:20.827 I/VoiceImeExtension( 1389): VoiceImeExtension.shouldStartVoiceInputAutomatically():383 No private IME option set to start voice input.
+06-25 23:07:20.830 I/KeyboardWrapper( 1389): KeyboardWrapper.consumeEvent():275 Skip consuming an event as current keyboard is deactivated (state=1, keyboard existence=false)
+06-25 23:07:20.831 I/GoogleInputMethodService( 1389): GoogleInputMethodService.onFinishInputView():2241 
+06-25 23:07:20.832 W/TooltipLifecycleManager( 1389): TooltipLifecycleManager.dismissTooltips():159 Tooltip with id spell_check_add_to_dictionary not found in tooltipManager.
+06-25 23:07:20.835 I/AndroidIME( 1389): AbstractIme.onDeactivate():207 PasswordIme.onDeactivate()
+06-25 23:07:20.854 I/resolv  (  358): GetAddrInfoHandler::run: {101 101 101 983141 10221 0}
+06-25 23:07:20.861 D/EGL_emulation( 1389): app_time_stats: avg=2957.04ms min=6.59ms max=25924.98ms count=9
+06-25 23:07:20.867 D/ActivityManager(  544): sync unfroze 1658 com.google.android.gms for 6
+06-25 23:07:20.875 I/resolv  (  358): res_nmkquery: (QUERY, IN, AAAA)
+06-25 23:07:20.875 I/resolv  (  358): res_stats_usable_server: too many resolution errors, ignoring server
+06-25 23:07:20.880 I/resolv  (  358): res_nmkquery: (QUERY, IN, A)
+06-25 23:07:20.884 I/resolv  (  358): res_stats_usable_server: too many resolution errors, ignoring server
+06-25 23:07:20.888 D/BoundBrokerSvc( 1658): onBind: Intent { act=com.google.firebase.dynamiclinks.service.START pkg=com.google.android.gms }
+06-25 23:07:20.888 D/BoundBrokerSvc( 1658): Loading bound service for intent: Intent { act=com.google.firebase.dynamiclinks.service.START pkg=com.google.android.gms }
+06-25 23:07:20.978 D/BoundBrokerSvc( 1658): onBind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+06-25 23:07:20.978 D/BoundBrokerSvc( 1658): Loading bound service for intent: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+06-25 23:07:21.001 D/BoundBrokerSvc( 1658): onUnbind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+06-25 23:07:21.040 D/BoundBrokerSvc( 1658): onBind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+06-25 23:07:21.040 D/BoundBrokerSvc( 1658): Loading bound service for intent: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+06-25 23:07:21.091 D/BoundBrokerSvc( 1658): onUnbind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+06-25 23:07:21.209 D/AF::Track(  418): interceptBuffer: took 1499us to intercept 0 tracks
+06-25 23:07:21.259 I/ImeTracker(10059): com.donizetiferr.expertnabiblia:1f5baf5f: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+06-25 23:07:21.263 I/ImeTracker(  544): com.donizetiferr.expertnabiblia:1f5baf5f: onCancelled at PHASE_SERVER_SHOULD_HIDE
+06-25 23:07:21.265 I/ImeTracker(10059): com.donizetiferr.expertnabiblia:34d34d29: onHidden
+06-25 23:07:21.271 I/resolv  (  358): res_nsend: used send_dg 85 terrno: 0
+06-25 23:07:21.272 I/resolv  (  358): doQuery: rcode=0, ancount=3, return value=85
+06-25 23:07:21.273 I/resolv  (  358): res_nsend: used send_dg 124 terrno: 0
+06-25 23:07:21.273 I/resolv  (  358): doQuery: rcode=0, ancount=1, return value=124
+06-25 23:07:21.283 D/TrafficStats(10059): tagSocket(118) with statsTag=0xffffffff, statsUid=-1
+06-25 23:07:21.336 W/BpBinder(10394): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:21.341 W/ProcessState(10394): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:21.341 D/AudioFlinger(  418): mixer(0x7eac95bc9930) throttle end: throttle time(1)
+06-25 23:07:21.356 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:21.390 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:21.391 I/Gralloc4(10394): mapper 4.x is not supported
+06-25 23:07:21.403 W/FrameTracker(10059): Missed SF frame:UNKNOWN: 80, 2989791, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:21.403 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2989828, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:21.403 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2989843, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:21.404 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2989872, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:21.404 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2989916, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:21.406 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2989938, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:21.406 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2989996, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:21.406 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2990004, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:21.406 W/FrameTracker(10059): Missed SF frame:JANK_SURFACEFLINGER_DEADLINE_MISSED, 2990019, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:21.406 W/FrameTracker(10059): Missed SF frame:PREDICTION_ERROR, 2990034, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@com.donizetiferr.expertnabiblia>
+06-25 23:07:21.412 V/PerfettoTrigger(10059): Not triggering com.android.telemetry.interaction-jank-monitor-69 - not enough time since last trigger
+06-25 23:07:21.567 D/EGL_emulation(10059): app_time_stats: avg=33.65ms min=15.87ms max=172.31ms count=28
+06-25 23:07:21.602 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 1(8192 size) used buffers - 12746/12752 (recycle/alloc) - 28/25378 (fetch/transfer)
+06-25 23:07:21.613 D/AF::Track(  418): interceptBuffer: took 799us to intercept 0 tracks
+06-25 23:07:21.746 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 12702/12711 (recycle/alloc) - 67/12710 (fetch/transfer)
+06-25 23:07:22.215 W/BpBinder(10399): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:22.217 W/ProcessState(10399): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:22.241 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:22.241 I/Gralloc4(10399): mapper 4.x is not supported
+06-25 23:07:22.220 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:22.569 D/EGL_emulation(10059): app_time_stats: avg=19.48ms min=8.23ms max=32.36ms count=45
+06-25 23:07:22.839 D/AF::Track(  418): interceptBuffer: took 858us to intercept 0 tracks
+06-25 23:07:23.282 W/BpBinder(10405): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:23.284 W/ProcessState(10405): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:23.305 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:23.285 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:23.307 I/Gralloc4(10405): mapper 4.x is not supported
+06-25 23:07:23.541 D/AF::Track(  418): interceptBuffer: took 777us to intercept 0 tracks
+06-25 23:07:23.580 D/EGL_emulation(10059): app_time_stats: avg=17.80ms min=12.64ms max=34.28ms count=50
+06-25 23:07:23.618 D/StatusBarIconController(  749): ignoring old pipeline callbacks, because the new mobile icons are enabled
+06-25 23:07:23.682 D/EGL_emulation(  749): app_time_stats: avg=23627.75ms min=23627.75ms max=23627.75ms count=1
+06-25 23:07:23.854 I/.expertnabiblia(10059): Background concurrent copying GC freed 188621(7071KB) AllocSpace objects, 24(1248KB) LOS objects, 49% free, 12MB/25MB, paused 804us,114us total 165.208ms
+06-25 23:07:24.179 W/BpBinder(10416): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:24.189 W/ProcessState(10416): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:24.196 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:24.219 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:24.222 I/Gralloc4(10416): mapper 4.x is not supported
+06-25 23:07:24.311 D/AF::Track(  418): interceptBuffer: took 509us to intercept 0 tracks
+06-25 23:07:24.593 D/EGL_emulation(10059): app_time_stats: avg=17.06ms min=10.89ms max=25.50ms count=50
+06-25 23:07:25.048 W/BpBinder(10420): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:25.050 W/ProcessState(10420): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:25.052 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:25.074 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:25.074 I/Gralloc4(10420): mapper 4.x is not supported
+06-25 23:07:25.607 D/EGL_emulation(10059): app_time_stats: avg=16.99ms min=11.77ms max=27.63ms count=52
+06-25 23:07:25.960 W/BpBinder(10425): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:25.960 W/ProcessState(10425): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:26.000 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:25.978 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:26.003 I/Gralloc4(10425): mapper 4.x is not supported
+06-25 23:07:26.611 D/EGL_emulation(10059): app_time_stats: avg=17.37ms min=12.27ms max=28.25ms count=51
+06-25 23:07:26.855 D/ActivityManager(  544): sync unfroze 2094 com.android.keychain for 10
+06-25 23:07:26.859 D/ActivityManager(  544): sync unfroze 8088 com.android.settings for 10
+06-25 23:07:26.891 W/BpBinder(10429): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:26.894 W/ProcessState(10429): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:26.896 D/AF::Track(  418): interceptBuffer: took 552us to intercept 0 tracks
+06-25 23:07:26.903 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 4(32768 size) used buffers - 12951/12957 (recycle/alloc) - 28/25783 (fetch/transfer)
+06-25 23:07:26.911 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 12900/12909 (recycle/alloc) - 68/12908 (fetch/transfer)
+06-25 23:07:26.917 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:26.939 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:26.947 I/Gralloc4(10429): mapper 4.x is not supported
+06-25 23:07:26.975 I/wpa_supplicant( 3589): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-25 23:07:27.058 D/AF::Track(  418): interceptBuffer: took 762us to intercept 0 tracks
+06-25 23:07:27.239 D/AF::Track(  418): interceptBuffer: took 630us to intercept 0 tracks
+06-25 23:07:27.372 D/AF::Track(  418): interceptBuffer: took 1226us to intercept 0 tracks
+06-25 23:07:27.619 D/EGL_emulation(10059): app_time_stats: avg=18.29ms min=10.62ms max=29.14ms count=47
+06-25 23:07:27.925 W/BpBinder(10433): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:27.928 W/ProcessState(10433): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:27.955 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:27.933 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:27.956 I/Gralloc4(10433): mapper 4.x is not supported
+06-25 23:07:28.142 D/AF::Track(  418): interceptBuffer: took 1064us to intercept 0 tracks
+06-25 23:07:28.634 D/EGL_emulation(10059): app_time_stats: avg=17.08ms min=7.46ms max=26.30ms count=52
+06-25 23:07:28.853 W/BpBinder(10437): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:28.854 W/ProcessState(10437): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:28.858 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:28.878 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:28.879 I/Gralloc4(10437): mapper 4.x is not supported
+06-25 23:07:29.635 D/EGL_emulation(10059): app_time_stats: avg=15.61ms min=3.75ms max=24.99ms count=54
+06-25 23:07:29.920 W/BpBinder(10441): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:29.924 W/ProcessState(10441): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:29.951 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:29.952 I/Gralloc4(10441): mapper 4.x is not supported
+06-25 23:07:29.930 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:29.957 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:07:30.636 D/EGL_emulation(10059): app_time_stats: avg=19.11ms min=6.18ms max=30.19ms count=46
+06-25 23:07:30.795 W/BpBinder(10445): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:30.797 W/ProcessState(10445): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:30.801 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:30.826 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:30.826 I/Gralloc4(10445): mapper 4.x is not supported
+06-25 23:07:30.851 D/MediaCodec(10059): keep callback message for reclaim
+06-25 23:07:30.856 I/CCodecConfig(10059): query failed after returning 7 values (BAD_INDEX)
+06-25 23:07:30.872 W/Codec2Client(10059): query -- param skipped: index = 1342179345.
+06-25 23:07:30.873 W/Codec2Client(10059): query -- param skipped: index = 2415921170.
+06-25 23:07:30.943 I/ProtoXDBBufferWrapper( 1389): ProtoXDBBufferWrapper.flushToStorage():153 Flushed 6 data item(s) to storage.
+06-25 23:07:31.542 D/AF::Track(  418): interceptBuffer: took 648us to intercept 0 tracks
+06-25 23:07:31.637 D/EGL_emulation(10059): app_time_stats: avg=18.97ms min=12.01ms max=27.69ms count=48
+06-25 23:07:31.745 W/BpBinder(10449): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:31.746 W/ProcessState(10449): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:31.772 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:31.750 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:31.778 I/Gralloc4(10449): mapper 4.x is not supported
+06-25 23:07:32.195 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 4(32768 size) used buffers - 13161/13167 (recycle/alloc) - 29/26193 (fetch/transfer)
+06-25 23:07:32.319 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 13109/13118 (recycle/alloc) - 69/13117 (fetch/transfer)
+06-25 23:07:32.427 D/ReactNativeJS(10059): [resposta] pergunta=FB01-L01-Q01 resposta="O livro sagrado que reune a palavra de Deus" correto=true score=0.70
+06-25 23:07:32.603 W/ReactNativeJS(10059): '[Layout children]: No route named "licoes" exists in nested children:', [ 'config',
+06-25 23:07:32.603 W/ReactNativeJS(10059):   'index',
+06-25 23:07:32.603 W/ReactNativeJS(10059):   'modos',
+06-25 23:07:32.603 W/ReactNativeJS(10059):   'onboarding',
+06-25 23:07:32.603 W/ReactNativeJS(10059):   'trofeu',
+06-25 23:07:32.603 W/ReactNativeJS(10059):   'licoes/[moduloId]',
+06-25 23:07:32.603 W/ReactNativeJS(10059):   'licoes/index',
+06-25 23:07:32.603 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]',
+06-25 23:07:32.603 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]/feedback',
+06-25 23:07:32.603 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]/final',
+06-25 23:07:32.603 W/ReactNativeJS(10059):   'quiz/customizar',
+06-25 23:07:32.603 W/ReactNativeJS(10059):   'quiz/final',
+06-25 23:07:32.603 W/ReactNativeJS(10059):   'quiz/index',
+06-25 23:07:32.603 W/ReactNativeJS(10059):   'quiz/jogar' ]
+06-25 23:07:32.604 W/ReactNativeJS(10059): '[Layout children]: No route named "quiz" exists in nested children:', [ 'config',
+06-25 23:07:32.604 W/ReactNativeJS(10059):   'index',
+06-25 23:07:32.604 W/ReactNativeJS(10059):   'modos',
+06-25 23:07:32.604 W/ReactNativeJS(10059):   'onboarding',
+06-25 23:07:32.604 W/ReactNativeJS(10059):   'trofeu',
+06-25 23:07:32.604 W/ReactNativeJS(10059):   'licoes/[moduloId]',
+06-25 23:07:32.604 W/ReactNativeJS(10059):   'licoes/index',
+06-25 23:07:32.604 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]',
+06-25 23:07:32.604 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]/feedback',
+06-25 23:07:32.604 W/ReactNativeJS(10059):   'licoes/[moduloId]/[licaoId]/final',
+06-25 23:07:32.604 W/ReactNativeJS(10059):   'quiz/customizar',
+06-25 23:07:32.604 W/ReactNativeJS(10059):   'quiz/final',
+06-25 23:07:32.604 W/ReactNativeJS(10059):   'quiz/index',
+06-25 23:07:32.604 W/ReactNativeJS(10059):   'quiz/jogar' ]
+06-25 23:07:32.655 D/EGL_emulation(10059): app_time_stats: avg=19.00ms min=4.54ms max=35.61ms count=47
+06-25 23:07:32.708 W/unknown:ReactNative(10059): StatusBarModule: Ignored status bar change, current activity is edge-to-edge.
+06-25 23:07:32.735 W/[RNScreens](10059): backTitleFontFamily prop is not available on Android
+06-25 23:07:32.740 W/[RNScreens](10059): disableBackButtonMenu prop is not available on Android
+06-25 23:07:32.746 W/BpBinder(10453): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:32.749 W/ProcessState(10453): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:32.756 W/[RNScreens](10059): backTitleVisible prop is not available on Android
+06-25 23:07:32.757 W/[RNScreens](10059): topInsetEnabled prop is not available on Android
+06-25 23:07:32.766 W/[RNScreens](10059): largeTitleHideShadow prop is not available on Android
+06-25 23:07:32.768 W/[RNScreens](10059): largeTitleFontWeight prop is not available on Android
+06-25 23:07:32.771 W/[RNScreens](10059): userInterfaceStyle prop is not available on Android
+06-25 23:07:32.775 W/[RNScreens](10059): largeTitleFontFamily prop is not available on Android
+06-25 23:07:32.757 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:32.782 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:32.786 I/Gralloc4(10453): mapper 4.x is not supported
+06-25 23:07:32.854 I/ImeTracker(10059): com.donizetiferr.expertnabiblia:6771428c: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT
+06-25 23:07:32.854 I/ImeTracker(  544): com.donizetiferr.expertnabiblia:6771428c: onCancelled at PHASE_SERVER_SHOULD_HIDE
+06-25 23:07:32.905 I/ExoPlayerImpl(10059): Init 359fb17 [ExoPlayerLib/2.18.1] [emu64xa, sdk_gphone64_x86_64, Google, 34]
+06-25 23:07:32.942 I/DMCodecAdapterFactory(10059): Creating an asynchronous MediaCodec adapter for track type audio
+06-25 23:07:32.952 D/CCodec  (10059): allocate(c2.android.mp3.decoder)
+06-25 23:07:32.955 I/CCodec  (10059): setting up 'default' as default (vendor) store
+06-25 23:07:32.965 I/CCodec  (10059): Created component [c2.android.mp3.decoder]
+06-25 23:07:32.970 D/CCodecConfig(10059): read media type: audio/mpeg
+06-25 23:07:32.973 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:07:32.987 D/ReflectedParamUpdater(10059): extent() != 1 for single value type: algo.buffers.max-count.values
+06-25 23:07:32.990 D/ReflectedParamUpdater(10059): extent() != 1 for single value type: output.subscribed-indices.values
+06-25 23:07:32.993 D/ReflectedParamUpdater(10059): extent() != 1 for single value type: input.buffers.allocator-ids.values
+06-25 23:07:32.995 D/ReflectedParamUpdater(10059): extent() != 1 for single value type: output.buffers.allocator-ids.values
+06-25 23:07:33.004 D/ReflectedParamUpdater(10059): extent() != 1 for single value type: algo.buffers.allocator-ids.values
+06-25 23:07:33.004 D/ReflectedParamUpdater(10059): extent() != 1 for single value type: output.buffers.pool-ids.values
+06-25 23:07:33.005 D/ReflectedParamUpdater(10059): extent() != 1 for single value type: algo.buffers.pool-ids.values
+06-25 23:07:33.006 I/CCodecConfig(10059): query failed after returning 7 values (BAD_INDEX)
+06-25 23:07:33.007 D/CCodecConfig(10059): c2 config diff is Dict {
+06-25 23:07:33.007 D/CCodecConfig(10059):   c2::u32 coded.bitrate.value = 64000
+06-25 23:07:33.007 D/CCodecConfig(10059):   c2::u32 input.buffers.max-size.value = 8192
+06-25 23:07:33.007 D/CCodecConfig(10059):   c2::u32 input.delay.value = 0
+06-25 23:07:33.007 D/CCodecConfig(10059):   string input.media-type.value = "audio/mpeg"
+06-25 23:07:33.007 D/CCodecConfig(10059):   string output.media-type.value = "audio/raw"
+06-25 23:07:33.007 D/CCodecConfig(10059):   c2::u32 raw.channel-count.value = 2
+06-25 23:07:33.007 D/CCodecConfig(10059):   c2::u32 raw.sample-rate.value = 44100
+06-25 23:07:33.007 D/CCodecConfig(10059): }
+06-25 23:07:33.025 I/MediaCodec(10059): MediaCodec will operate in async mode
+06-25 23:07:33.032 D/AutofillManager(10059): view not autofillable - not passing ime action check
+06-25 23:07:33.038 D/AutofillManager(10059): view not autofillable - not passing ime action check
+06-25 23:07:33.043 D/MediaCodec(10059): flushMediametrics
+06-25 23:07:33.057 D/CCodec  (10059): [c2.android.mp3.decoder] buffers are bound to CCodec for this session
+06-25 23:07:33.059 D/CCodecConfig(10059): no c2 equivalents for log-session-id
+06-25 23:07:33.059 D/CCodecConfig(10059): no c2 equivalents for flags
+06-25 23:07:33.066 D/CCodecConfig(10059): config failed => CORRUPTED
+06-25 23:07:33.068 W/Codec2Client(10059): query -- param skipped: index = 1107298332.
+06-25 23:07:33.069 D/CCodec  (10059): client requested max input size 4096, which is smaller than what component recommended (8192); overriding with component recommendation.
+06-25 23:07:33.069 W/CCodec  (10059): This behavior is subject to change. It is recommended that app developers double check whether the requested max input size is in reasonable range.
+06-25 23:07:33.069 D/CCodec  (10059): encoding statistics level = 0
+06-25 23:07:33.069 D/CCodec  (10059): setup formats input: AMessage(what = 0x00000000) = {
+06-25 23:07:33.069 D/CCodec  (10059):   int32_t bitrate = 64000
+06-25 23:07:33.069 D/CCodec  (10059):   int32_t channel-count = 2
+06-25 23:07:33.069 D/CCodec  (10059):   int32_t max-input-size = 8192
+06-25 23:07:33.069 D/CCodec  (10059):   string mime = "audio/mpeg"
+06-25 23:07:33.069 D/CCodec  (10059):   int32_t sample-rate = 44100
+06-25 23:07:33.069 D/CCodec  (10059): }
+06-25 23:07:33.070 D/CCodec  (10059): setup formats output: AMessage(what = 0x00000000) = {
+06-25 23:07:33.070 D/CCodec  (10059):   int32_t channel-count = 2
+06-25 23:07:33.070 D/CCodec  (10059):   string mime = "audio/raw"
+06-25 23:07:33.070 D/CCodec  (10059):   int32_t sample-rate = 44100
+06-25 23:07:33.070 D/CCodec  (10059):   int32_t android._config-pcm-encoding = 2
+06-25 23:07:33.070 D/CCodec  (10059): }
+06-25 23:07:33.073 I/CCodecConfig(10059): query failed after returning 7 values (BAD_INDEX)
+06-25 23:07:33.079 D/MediaCodec(10059): keep callback message for reclaim
+06-25 23:07:33.084 W/Codec2Client(10059): query -- param skipped: index = 1342179345.
+06-25 23:07:33.084 W/Codec2Client(10059): query -- param skipped: index = 2415921170.
+06-25 23:07:33.087 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab46173d8 : 0(0 size) total buffers - 0(0 size) used buffers - 113/117 (recycle/alloc) - 4/117 (fetch/transfer)
+06-25 23:07:33.089 D/BufferPoolAccessor2.0(  484): Destruction - bufferpool2 0x78aab46173d8 cached: 0/0M, 0/0% in use; allocs: 117, 97% recycled; transfers: 117, 97% unfetched
+06-25 23:07:33.094 D/CCodecBufferChannel(10059): [c2.android.mp3.decoder#331] Created input block pool with allocatorID 16 => poolID 20 - OK (0)
+06-25 23:07:33.097 I/CCodecBufferChannel(10059): [c2.android.mp3.decoder#331] Created output block pool with allocatorID 16 => poolID 80 - OK
+06-25 23:07:33.098 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b00906a468 : 0(0 size) total buffers - 0(0 size) used buffers - 121/126 (recycle/alloc) - 5/232 (fetch/transfer)
+06-25 23:07:33.098 D/BufferPoolAccessor2.0(10059): Destruction - bufferpool2 0x72b00906a468 cached: 0/0M, 0/0% in use; allocs: 126, 96% recycled; transfers: 232, 98% unfetched
+06-25 23:07:33.099 D/CCodecBufferChannel(10059): [c2.android.mp3.decoder#331] Configured output block pool ids 80 => OK
+06-25 23:07:33.110 D/SimpleC2Component(  484): Using output block pool with poolID 80 => got 80 - 0
+06-25 23:07:33.127 I/C2SoftMp3Dec(  484): Reconfiguring decoder: 0->44100 Hz, 0->2 channels
+06-25 23:07:33.155 W/AudioFlinger(  418): createTrack_l(): mismatch between requested flags (00000008) and output flags (00000002)
+06-25 23:07:33.158 D/AudioFlinger(  418): Client defaulted notificationFrames to 8024 for frameCount 16048
+06-25 23:07:33.163 D/AF::TrackHandle(  418): OpPlayAudio: track:111 usage:1 not muted
+06-25 23:07:33.175 D/audioserver(  418): FGS Logger Transaction failed
+06-25 23:07:33.178 D/audioserver(  418): -129
+06-25 23:07:33.289 D/AudioTrack(10059): getTimestamp_l(71): device stall time corrected using current time 7735184312900
+06-25 23:07:33.409 W/BpBinder(10465): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:33.413 W/ProcessState(10465): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:33.411 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:33.435 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:33.436 I/Gralloc4(10465): mapper 4.x is not supported
+06-25 23:07:33.606 D/StatusBarIconController(  749): ignoring old pipeline callbacks, because the new mobile icons are enabled
+06-25 23:07:33.675 D/EGL_emulation(10059): app_time_stats: avg=55.00ms min=19.51ms max=471.90ms count=18
+06-25 23:07:33.789 D/AF::Track(  418): interceptBuffer: took 1005us to intercept 0 tracks
+06-25 23:07:33.943 D/AudioTrack(10059): stop(71): called with 45504 frames delivered
+06-25 23:07:34.318 W/BpBinder(10469): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:34.319 W/ProcessState(10469): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:34.340 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:34.362 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:34.363 I/Gralloc4(10469): mapper 4.x is not supported
+06-25 23:07:34.442 D/audioserver(  418): FGS Logger Transaction failed
+06-25 23:07:34.442 D/audioserver(  418): -129
+06-25 23:07:34.461 I/ExoPlayerImpl(10059): Release 359fb17 [ExoPlayerLib/2.18.1] [emu64xa, sdk_gphone64_x86_64, Google, 34] [goog.exo.core, goog.exo.exoplayer, goog.exo.decoder, goog.exo.okhttp, goog.exo.datasource, goog.exo.extractor]
+06-25 23:07:34.487 D/MediaCodec(10059): keep callback message for reclaim
+06-25 23:07:34.495 I/CCodecConfig(10059): query failed after returning 7 values (BAD_INDEX)
+06-25 23:07:34.504 W/Codec2Client(10059): query -- param skipped: index = 1342179345.
+06-25 23:07:34.505 W/Codec2Client(10059): query -- param skipped: index = 2415921170.
+06-25 23:07:34.509 D/audioserver(  418): FGS Logger Transaction failed
+06-25 23:07:34.513 D/audioserver(  418): -129
+06-25 23:07:34.518 D/CCodecBufferChannel(10059): [c2.android.mp3.decoder#331] MediaCodec discarded an unknown buffer
+06-25 23:07:34.518 D/CCodecBufferChannel(10059): [c2.android.mp3.decoder#331] MediaCodec discarded an unknown buffer
+06-25 23:07:34.518 D/CCodecBufferChannel(10059): [c2.android.mp3.decoder#331] MediaCodec discarded an unknown buffer
+06-25 23:07:34.520 D/CCodecBufferChannel(10059): [c2.android.mp3.decoder#331] MediaCodec discarded an unknown buffer
+06-25 23:07:34.523 I/hw-BpHwBinder(10059): onLastStrongRef automatically unlinking death recipients
+06-25 23:07:34.523 I/hw-BpHwBinder(  484): onLastStrongRef automatically unlinking death recipients
+06-25 23:07:34.525 D/MediaCodec(10059): flushMediametrics
+06-25 23:07:34.532 D/MediaCodec(10059): flushMediametrics
+06-25 23:07:34.532 W/MediaCodec(10059): no metrics handle found
+06-25 23:07:34.676 D/EGL_emulation(10059): app_time_stats: avg=20.80ms min=12.59ms max=52.35ms count=42
+06-25 23:07:34.910 I/wpa_supplicant( 3589): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-25 23:07:35.167 W/BpBinder(10475): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:35.171 W/ProcessState(10475): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:35.200 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:35.201 I/Gralloc4(10475): mapper 4.x is not supported
+06-25 23:07:35.175 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:35.203 D/AF::Track(  418): interceptBuffer: took 1218us to intercept 0 tracks
+06-25 23:07:35.689 D/EGL_emulation(10059): app_time_stats: avg=18.32ms min=12.75ms max=31.43ms count=48
+06-25 23:07:35.691 D/AF::Track(  418): interceptBuffer: took 713us to intercept 0 tracks
+06-25 23:07:35.992 D/BoundBrokerSvc( 1658): onUnbind: Intent { act=com.google.firebase.dynamiclinks.service.START pkg=com.google.android.gms }
+06-25 23:07:36.056 W/BpBinder(10479): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:36.059 W/ProcessState(10479): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:36.078 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:36.105 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:36.109 I/Gralloc4(10479): mapper 4.x is not supported
+06-25 23:07:36.693 D/EGL_emulation(10059): app_time_stats: avg=19.74ms min=12.13ms max=29.93ms count=44
+06-25 23:07:37.056 W/BpBinder(10483): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:37.062 W/ProcessState(10483): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:37.095 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:37.096 I/Gralloc4(10483): mapper 4.x is not supported
+06-25 23:07:37.073 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:37.345 D/AF::Track(  418): interceptBuffer: took 609us to intercept 0 tracks
+06-25 23:07:37.381 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 1(8192 size) used buffers - 13351/13362 (recycle/alloc) - 34/26588 (fetch/transfer)
+06-25 23:07:37.393 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 3(13824 size) total buffers - 1(4608 size) used buffers - 13301/13312 (recycle/alloc) - 71/13311 (fetch/transfer)
+06-25 23:07:37.707 D/EGL_emulation(10059): app_time_stats: avg=20.01ms min=13.55ms max=31.45ms count=44
+06-25 23:07:38.030 W/BpBinder(10487): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:38.038 W/ProcessState(10487): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:38.057 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:38.057 I/Gralloc4(10487): mapper 4.x is not supported
+06-25 23:07:38.035 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:38.522 D/BufferPoolAccessor2.0(10059): evictor expired: 1, evicted: 0
+06-25 23:07:38.615 D/BufferPoolAccessor2.0(  484): evictor expired: 1, evicted: 0
+06-25 23:07:38.720 D/EGL_emulation(10059): app_time_stats: avg=19.66ms min=13.19ms max=31.99ms count=45
+06-25 23:07:38.899 W/BpBinder(10491): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:38.900 W/ProcessState(10491): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:38.926 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:38.903 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:38.928 I/Gralloc4(10491): mapper 4.x is not supported
+06-25 23:07:39.000 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:07:39.524 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009067d18 : 0(0 size) total buffers - 0(0 size) used buffers - 44/49 (recycle/alloc) - 5/80 (fetch/transfer)
+06-25 23:07:39.525 D/BufferPoolAccessor2.0(10059): evictor expired: 1, evicted: 1
+06-25 23:07:39.619 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab46173d8 : 0(0 size) total buffers - 0(0 size) used buffers - 37/41 (recycle/alloc) - 4/41 (fetch/transfer)
+06-25 23:07:39.619 D/BufferPoolAccessor2.0(  484): evictor expired: 1, evicted: 1
+06-25 23:07:39.729 D/EGL_emulation(10059): app_time_stats: avg=19.25ms min=12.76ms max=32.94ms count=45
+06-25 23:07:39.847 W/BpBinder(10495): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+06-25 23:07:39.850 W/ProcessState(10495): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+06-25 23:07:39.858 I/servicemanager(    0): Could not find android.hardware.graphics.allocator.IAllocator/default in the VINTF manifest.
+06-25 23:07:39.889 I/hwservicemanager(  158): getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+06-25 23:07:39.891 I/Gralloc4(10495): mapper 4.x is not supported
+06-25 23:07:40.611 I/VoiceInputManagerWrapper( 1389): VoiceInputManagerWrapper.shutdownVoiceInternal():95 shutdownVoiceInternal()
+06-25 23:07:40.738 D/EGL_emulation(10059): app_time_stats: avg=17.10ms min=12.17ms max=24.87ms count=49
+06-25 23:07:41.606 D/AF::Track(  418): interceptBuffer: took 1559us to intercept 0 tracks
+06-25 23:07:41.741 D/EGL_emulation(10059): app_time_stats: avg=15.09ms min=10.93ms max=20.82ms count=55
+06-25 23:07:41.835 D/AF::Track(  418): interceptBuffer: took 993us to intercept 0 tracks
+06-25 23:07:42.012 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:07:42.636 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 1(8192 size) used buffers - 13553/13564 (recycle/alloc) - 34/26992 (fetch/transfer)
+06-25 23:07:42.649 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 4(18432 size) total buffers - 1(4608 size) used buffers - 13502/13514 (recycle/alloc) - 72/13513 (fetch/transfer)
+06-25 23:07:42.757 D/EGL_emulation(10059): app_time_stats: avg=17.22ms min=12.54ms max=26.34ms count=50
+06-25 23:07:43.097 I/wpa_supplicant( 3589): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-25 23:07:43.598 D/StatusBarIconController(  749): ignoring old pipeline callbacks, because the new mobile icons are enabled
+06-25 23:07:43.625 D/AF::Track(  418): interceptBuffer: took 538us to intercept 0 tracks
+06-25 23:07:43.759 D/EGL_emulation(10059): app_time_stats: avg=15.87ms min=10.88ms max=25.11ms count=52
+06-25 23:07:44.769 D/EGL_emulation(10059): app_time_stats: avg=14.91ms min=11.78ms max=18.69ms count=56
+06-25 23:07:45.024 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:07:45.118 D/AF::Track(  418): interceptBuffer: took 509us to intercept 0 tracks
+06-25 23:07:45.415 D/AF::Track(  418): interceptBuffer: took 1144us to intercept 0 tracks
+06-25 23:07:45.770 D/EGL_emulation(10059): app_time_stats: avg=15.05ms min=11.36ms max=20.47ms count=54
+06-25 23:07:46.046 D/ActivityManager(  544): freezing 1658 com.google.android.gms
+06-25 23:07:46.770 D/EGL_emulation(10059): app_time_stats: avg=14.63ms min=11.28ms max=20.66ms count=55
+06-25 23:07:46.895 D/ActivityManager(  544): freezing 2094 com.android.keychain
+06-25 23:07:46.900 D/ActivityManager(  544): freezing 8088 com.android.settings
+06-25 23:07:47.775 D/EGL_emulation(10059): app_time_stats: avg=17.62ms min=12.55ms max=26.20ms count=48
+06-25 23:07:48.000 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 1(8192 size) used buffers - 13758/13769 (recycle/alloc) - 34/27402 (fetch/transfer)
+06-25 23:07:48.037 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:07:48.172 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 4(18432 size) total buffers - 1(4608 size) used buffers - 13713/13725 (recycle/alloc) - 73/13724 (fetch/transfer)
+06-25 23:07:48.788 D/EGL_emulation(10059): app_time_stats: avg=19.54ms min=11.75ms max=30.78ms count=45
+06-25 23:07:49.796 D/EGL_emulation(10059): app_time_stats: avg=16.39ms min=11.39ms max=24.51ms count=51
+06-25 23:07:49.878 D/AF::Track(  418): interceptBuffer: took 843us to intercept 0 tracks
+06-25 23:07:50.651 D/AF::Track(  418): interceptBuffer: took 592us to intercept 0 tracks
+06-25 23:07:50.809 D/WifiNl80211Manager(  544): Scan result ready event
+06-25 23:07:50.809 D/WifiNative(  544): Scan result ready event
+06-25 23:07:50.821 D/EGL_emulation(10059): app_time_stats: avg=16.46ms min=12.04ms max=24.16ms count=52
+06-25 23:07:50.840 D/MediaCodec(10059): keep callback message for reclaim
+06-25 23:07:50.842 I/CCodecConfig(10059): query failed after returning 7 values (BAD_INDEX)
+06-25 23:07:50.848 W/Codec2Client(10059): query -- param skipped: index = 1342179345.
+06-25 23:07:50.850 W/Codec2Client(10059): query -- param skipped: index = 2415921170.
+06-25 23:07:50.968 D/AF::Track(  418): interceptBuffer: took 606us to intercept 0 tracks
+06-25 23:07:51.845 D/EGL_emulation(10059): app_time_stats: avg=16.89ms min=12.23ms max=24.89ms count=50
+06-25 23:07:52.861 D/EGL_emulation(10059): app_time_stats: avg=18.91ms min=13.04ms max=31.12ms count=46
+06-25 23:07:53.283 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 1(8192 size) used buffers - 13967/13978 (recycle/alloc) - 35/27810 (fetch/transfer)
+06-25 23:07:53.462 D/AF::Track(  418): interceptBuffer: took 1060us to intercept 0 tracks
+06-25 23:07:53.599 D/StatusBarIconController(  749): ignoring old pipeline callbacks, because the new mobile icons are enabled
+06-25 23:07:53.624 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 13923/13936 (recycle/alloc) - 74/13935 (fetch/transfer)
+06-25 23:07:53.875 D/EGL_emulation(10059): app_time_stats: avg=16.73ms min=11.39ms max=23.64ms count=52
+06-25 23:07:54.061 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:07:54.414 D/AF::Track(  418): interceptBuffer: took 1321us to intercept 0 tracks
+06-25 23:07:54.878 D/EGL_emulation(10059): app_time_stats: avg=15.73ms min=12.09ms max=21.97ms count=52
+06-25 23:07:55.884 D/EGL_emulation(10059): app_time_stats: avg=15.71ms min=11.30ms max=25.46ms count=53
+06-25 23:07:56.898 D/EGL_emulation(10059): app_time_stats: avg=14.61ms min=11.07ms max=21.08ms count=56
+06-25 23:07:57.075 D/StatusBarIconController(  749): ignoring old pipeline callback because the new wifi icon is enabled
+06-25 23:07:57.472 D/AF::Track(  418): interceptBuffer: took 1009us to intercept 0 tracks
+06-25 23:07:57.858 D/AF::Track(  418): interceptBuffer: took 612us to intercept 0 tracks
+06-25 23:07:57.905 D/EGL_emulation(10059): app_time_stats: avg=18.54ms min=11.78ms max=32.98ms count=46
+06-25 23:07:58.566 D/BufferPoolAccessor2.0(10059): bufferpool2 0x72b009068af8 : 5(40960 size) total buffers - 1(8192 size) used buffers - 14169/14180 (recycle/alloc) - 35/28214 (fetch/transfer)
+06-25 23:07:58.791 D/AF::Track(  418): interceptBuffer: took 616us to intercept 0 tracks
+06-25 23:07:58.927 D/EGL_emulation(10059): app_time_stats: avg=18.79ms min=11.30ms max=32.55ms count=47
+06-25 23:07:58.970 I/wpa_supplicant( 3589): wlan0: CTRL-EVENT-BEACON-LOSS 
+06-25 23:07:59.073 D/BufferPoolAccessor2.0(  484): bufferpool2 0x78aab4613ea8 : 5(20548 size) total buffers - 1(4608 size) used buffers - 14132/14145 (recycle/alloc) - 74/14145 (fetch/transfer)
