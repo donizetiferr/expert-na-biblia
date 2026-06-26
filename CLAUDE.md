@@ -173,8 +173,9 @@ veredito REAL. (2) **Canonica FB01-L01-Q07** "..." -> resposta real acentuada em
 + `data/db.sqlite`; FB01 sem placeholders. (3) **Acentuacao PT-BR** em onboarding/quiz/feedback +
 labels a11y. (4) **Feedback rolavel** (ScrollView) — o fix do timeout tornou respostas longas da IA
 frequentes e o PROSSEGUIR ficava fora da tela. Gates: tsc 0 | jest 97/97 (+3 regressao) | eslint 0 |
-APK vc6/1.11.0. Evidencias `orchestration/v21_validation/`. Follow-up: ~489 canonicas "NAO SEI" em
-modulos NT/bloqueados (qualidade de conteudo, fora do caminho inicial).
+APK `dist/ExpertNaBiblia-v21.0.0.apk` vc6/1.11.0 (https://files.catbox.moe/id22o1.apk, HTTP 206 + PK).
+Evidencias `orchestration/v21_validation/`. Follow-up: ~489 canonicas "NAO SEI" em modulos
+NT/bloqueados (qualidade de conteudo, fora do caminho inicial).
 
 **V20 entregue (2026-06-25, v1.10.0/vc5)** — 2 lacunas de conformidade do briefing fechadas e
 COMPROVADAS no emulador hi-res (rede restaurada): (A) **mascote DOURADO no modo Licoes** (Personagem 1,

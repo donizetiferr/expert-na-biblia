@@ -7,6 +7,7 @@ Todas as mudancas relevantes neste projeto.
 > Fechamento dos 3 itens nao-bloqueantes do VERDICT V20 (sem release-blocker) + 1 fix de UX
 > exposto pela correcao da IA. Comprovado em emulador hi-res ONLINE (orchestration/v21_validation/).
 > NAO regrediu scoring/progressao, mascotes (Licoes=dourado/Quiz=roxo) nem quiz.
+> APK: dist/ExpertNaBiblia-v21.0.0.apk (vc6/1.11.0) — https://files.catbox.moe/id22o1.apk (HTTP 206 + PK).
 
 ### Corrigido
 - **[ALTO] Confiabilidade da avaliacao por IA (timeout do M2.7)**: `src/lib/m3.ts` `TIMEOUT_MS`
