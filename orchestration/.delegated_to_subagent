@@ -1,3 +1,0 @@
-subagent_id=a3d0d3d6927fd43b1
-delegated_at=2026-06-25T18:40
-context=V21 reanimado para fechar DoD incompleto: build APK V21 (bump + ambos dists + regra das 5 + catbox verificado + changelog), e validacao empirica no emulador hi-res ONLINE (gate progressao + PROVA do fix IA: resposta aberta ~12-20s com veredito real dentro de 27s + Q07/acentos). Evidencia em orchestration/v21_validation/. Os 3 fixes de codigo ja verificados OK pela sessao principal.
