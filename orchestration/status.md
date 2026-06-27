@@ -255,3 +255,20 @@ Estado: V23.8_ENTREGUE_COMPROVADO
   H.2 colecoes FB/AT/NT + total COMPROVADO; H.3 equipar Realeza(tema)+Mistica(aura) com preview ao vivo
   + locks por nivel COMPROVADO. Evidencias: orchestration/v23_8_validation/ (VALIDACAO.md + 00..06).
 - Git: commit LOCAL. Proxima: V23.9 = milestone I (multi-perfil + modo Kids + seletor).
+
+## V23.9 — ENTREGUE COMPROVADO (2026-06-27, v1.20.0/vc15) — FECHA milestone I
+Estado: V23.9_ENTREGUE_COMPROVADO
+- Escopo (milestone I completo): I.1 perfis locais multiplos (snapshot-swap por perfil; migration 005
+  perfis/perfil_ativo/perfil_estado) + I.2 modo Kids (badge + texto maior + quiz prioriza FACIL) +
+  I.3 seletor /perfis + pill no /modos.
+- Arquitetura I.1: modelo "save-slot" — tabelas globais guardam o progresso do perfil ATIVO; ao trocar,
+  o ativo e snapshotado em perfil_estado (JSON por tabela) e o destino e restaurado nas globais (transacao).
+  Perfil "default" no bootstrap herda o progresso global SEM snapshot (preserva dados existentes).
+  Snapshot cobre so ESTADO de jogo (modulos.concluido/licoes.concluida + user_xp/streak/badges/meta/
+  rankings/revisao/cosmeticos/freeze) — catalogo de conteudo fica compartilhado.
+- Gates: tsc 0 | jest 188/188 (23 suites, +13) | eslint 0. Build BUILD SUCCESSFUL. APK 105MB; dist podado 5.
+- VALIDACAO EMPIRICA emulador (UPGRADE sobre V23.8, 0 FATAL): migration 005 sem crash; perfil default
+  herdou progresso. **Teste critico**: criou perfil Kids "Bia" -> isolado (0 XP/Nivel 1/streak 0) vs
+  "Eu" (100 XP/Nivel 2/streak 1); ao voltar p/ "Eu", progresso RESTAURADO idêntico (sem perda). Pill
+  "MODO KIDS" comprovado. Evidencias: orchestration/v23_9_validation/ (VALIDACAO.md + 00..08).
+- Git: commit LOCAL. Proxima: V23.10 = milestone J (enciclopedia/glossario + planos de leitura).

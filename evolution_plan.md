@@ -289,17 +289,15 @@ O app esta **funcional e estavel** (97/97 testes, build OK, APK V21 publicado) e
 - [x] V23.H.3 **Personalizacao cosmetica desbloqueavel por XP (temas/skins do mascote)** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-27, V23.8 — COMPROVADO: /cosmeticos equipa tema (Realeza) + aura (Mistica); preview muda ao vivo; locks por nivel Ouro/Oliveira/Celeste)_
   - Entregue: `src/lib/cosmeticos.ts` (catalogo + regra desbloqueio por NIVEL, +16 testes) + migration 004 `user_cosmeticos` + rota `/cosmeticos`. Temas de acento (barra de XP do header) + auras do mascote (glow do PersonagemLivro). **Decisao de produto: desbloqueio por NIVEL, NAO gasta XP** (gastar regrediria o nivel/mascote-evolui — XP fica como progresso puro). Entry point "VISUAL" em /modos.
 
-## Milestone V23.I: Multi-perfil e modo familia / multi-idade (EVOLUCAO) — PENDENTE
+## Milestone V23.I: Multi-perfil e modo familia / multi-idade (EVOLUCAO) — COMPLETO (V23.9)
 > Serve DIRETAMENTE o requisito "varias faixas de idade" — um device de familia com pais + criancas usando o mesmo app.
 
-- [ ] V23.I.1 **Perfis locais multiplos (cada um com progresso/streak proprio)** — EVOLUCAO | ALTA | OBJECTIVE_GAP | AUTONOMO
-  - Hoje o progresso e global no device. Perfis locais (sem login/backend) permitem familia compartilhar o app sem misturar streak/XP/conclusoes.
-  - DoD: criar/trocar entre perfis; cada perfil isola progresso no SQLite.
-- [ ] V23.I.2 **Modo Kids / trilha simplificada (linguagem + perguntas adaptadas)** — EVOLUCAO | MEDIA | OBJECTIVE_GAP | AUTONOMO
-  - Conteudo hoje e one-size. Modo Kids: subset de perguntas mais simples + linguagem leve + UI com alvos maiores. Gerar variante via batch M2.7.
-  - DoD: perfil pode ativar Modo Kids com conteudo/UX adequados a crianca.
-- [ ] V23.I.3 **Seletor de perfil no launch + troca rapida** — MELHORIA | BAIXA | INVESTIGACAO | AUTONOMO
-  - DoD: escolher perfil ao abrir; trocar em 1-2 toques.
+- [x] V23.I.1 **Perfis locais multiplos (cada um com progresso/streak proprio)** — EVOLUCAO | ALTA | OBJECTIVE_GAP | AUTONOMO _(entregue 2026-06-27, V23.9 — COMPROVADO: perfil Kids "Bia" isolado (0 XP/Nivel 1/streak 0) vs "Eu" (100 XP/Nivel 2/streak 1); ao voltar, progresso do "Eu" RESTAURADO sem perda)_
+  - Entregue: `src/lib/perfis.ts` (modelo save-slot snapshot-swap, transacional) + migration 005 (`perfis`, `perfil_ativo`, `perfil_estado`). Perfil "default" no bootstrap herda o progresso global existente SEM snapshot (preserva dados de quem ja usa). +13 testes.
+- [x] V23.I.2 **Modo Kids / trilha simplificada (linguagem + perguntas adaptadas)** — EVOLUCAO | MEDIA | OBJECTIVE_GAP | AUTONOMO _(entregue 2026-06-27, V23.9 — COMPROVADO: badge "MODO KIDS" no hub; texto maior via useFontScale; quiz aleatorio prioriza FACIL — unit-tested)_
+  - Entregue: tipo `kids` no perfil; `useFontScale` aumenta texto no Modo Kids; `useModoKids`; quiz aleatorio prioriza perguntas FACIL (`listarPerguntasAleatorias(n, preferirFacil)`). Follow-up: banco de perguntas Kids dedicado via batch M2.7 (o modo ja entrega UX + conteudo adaptados agora).
+- [x] V23.I.3 **Seletor de perfil no launch + troca rapida** — MELHORIA | BAIXA | INVESTIGACAO | AUTONOMO _(entregue 2026-06-27, V23.9 — COMPROVADO: pill do perfil ativo no topo de /modos + criar/trocar em /perfis)_
+  - Entregue: rota `/perfis` (listar/criar com nome+tipo/trocar, limite 6) + pill "👤 nome ⇄" no topo de /modos (1-2 toques para trocar).
 
 ## Milestone V23.J: Conteudo de referencia e profundidade de aprendizado (EVOLUCAO) — PENDENTE
 > Aprofunda o "aprendizado intuitivo": permitir EXPLORAR conteudo, nao so ser testado.
