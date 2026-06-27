@@ -271,9 +271,8 @@ O app esta **funcional e estavel** (97/97 testes, build OK, APK V21 publicado) e
   - Entregue: `eas.json` com profiles development/preview(APK)/production(AAB) + env via `$MINIMAX_API_KEY`/`$OPENAI_API_KEY` (EAS secrets, sem valores no arquivo). PENDENTE: `eas init` (projectId real, hoje PLACEHOLDER em app.config) + `eas secret:create` — exige login Expo interativo.
 - [x] V23.G.5 **Resolver vulns + auditar keys no bundle + upgrade Expo (avaliar)** — INFRAESTRUTURA | MEDIA | INVESTIGACAO | AUTONOMO _(entregue 2026-06-27, V23.7 — auditoria)_
   - Auditado: `npm audit` = 16 moderate, 0 high/critical (transitivas do Expo SDK — aceitavel pelo DoD). Keys NAO hardcoded no source (env-injected, confirmado no G.1) e nao encontradas em plaintext no bundle Hermes (grep). Extracao via decompile eh o tradeoff da arquitetura backendless (proxy backend = hardening futuro, descartado em V9). **`npm audit fix` + upgrade Expo 56 DEFERIDOS** para versao de manutencao dedicada (mexer em node_modules/SDK agora arriscaria a estabilidade do build).
-- [ ] V23.G.6 **Higiene de repo (git bloat) — por ultimo** — MANUTENCAO | BAIXA | INVESTIGACAO | AUTONOMO
-  - V22.H/I/J (PNGs 131MB, seed JSON, aliases/scripts mortos, .gitignore). Legitimo, mas nao move o objetivo — fazer ao final (V23.8+).
-  - DoD: repo < 10MB, artifacts fora do tracking.
+- [x] V23.G.6 **Higiene de repo (git bloat) — por ultimo** — MANUTENCAO | BAIXA | INVESTIGACAO | AUTONOMO _(parte autonoma entregue 2026-06-27, V23.13)_
+  - Entregue: `data/`, `whatsapp_media/`, `docs/questions_clean.json` (~5.9MB de artefatos de dev) saem do tracking (git rm --cached, permanecem em disco) + adicionados ao `.gitignore`. Runtime nao afetado (seeds bundled em `src/db/seed-*.ts`; refs em src sao so comentarios). PENDENTE_HUMANO: a compactacao do HISTORICO `.git` (158MB) exige `git filter-repo` (reescrita destrutiva) — ja listada como acao humana G.1 em pending_user_input.md. Por isso o DoD "repo < 10MB" so se completa apos o filter-repo humano; a parte autonoma evita o bloat FUTURO.
 
 ## Rodada de exaustao V23.2 (2026-06-26) — oportunidades ainda nao cobertas
 

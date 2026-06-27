@@ -309,3 +309,15 @@ Estado: V23.12_ENTREGUE_COMPROVADO
   header novo (‹ + titulo) + lista carregada (licao 01 ✓100/100, 02 liberada, 03+ bloqueadas) — sem
   regressao. Evidencias: orchestration/v23_12_validation/ (VALIDACAO.md + 02_modulo).
 - Git: commit LOCAL. Proxima: V23.13 = G.6 git cleanup (POR ULTIMO) + save-state (FASE 3).
+
+## V23.13 — G.6 git cleanup ENTREGUE (2026-06-27) + FASE 1 ESGOTADA
+Estado: FASE1_ESGOTADA
+- G.6 (parte autonoma): data/ + whatsapp_media/ + docs/questions_clean.json (~5.9MB) destrackeados
+  (mantidos em disco) + gitignore. Runtime intacto (seeds bundled). Sem novo APK (mudanca so de tracking).
+  PENDENTE_HUMANO: filter-repo do historico .git (158MB) — ja em pending_user_input.md (G.1).
+- ===== FASE 1 DO PLANO V23 ESGOTADA (2026-06-27) =====
+  Entregues nesta sessao (subagente 3): V23.8 (H), V23.9 (I), V23.10 (J), V23.11 (K), V23.12 (V22 backlog),
+  V23.13 (G.6). Todas COMPROVADAS no emulador hi-res, 0 FATAL, gates verdes (jest 216/216).
+  APK final FASE 1: dist/ExpertNaBiblia-v23.12.0.apk (vc18/1.23.0). Milestones A-E + G + H + I + J + K
+  completos. FORA do escopo (FASE 2/3): F (AdMob), L.2/L.4, K.4 (desafiar amigo — backlog).
+  Acoes humanas pendentes: orchestration/pending_user_input.md (G.1: token Minimax, keystore novo, filter-repo).
