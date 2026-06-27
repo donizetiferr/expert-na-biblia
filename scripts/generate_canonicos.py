@@ -5,7 +5,28 @@ import re
 import time
 import os
 
-API_KEY = "sk-cp-OZy9Fk5MoE2ifbXacDw-vh-1uAwIGCo82Z3vel9uImP93pRUaW7Acp9RcXb8u7H4qvdbDFLZZverq7ZTz5E361ajXqAkDijdunaDHzTUCtaGOi01MoYw_w4"
+# V23.G.1 (seguranca): token NUNCA hardcoded. Le de MINIMAX_API_KEY ou do cofre
+# (Tokens API e acessos/minimax/credentials.env). Antes havia o token em texto plano aqui.
+def _load_token():
+    env = os.environ.get("MINIMAX_API_KEY")
+    if env:
+        return env
+    cofre = os.path.join(
+        os.environ.get("USERPROFILE", os.path.expanduser("~")),
+        "Downloads", "Projetos_VSCode", "Tokens API e acessos", "minimax", "credentials.env",
+    )
+    try:
+        with open(cofre, "r", encoding="utf-8") as f:
+            for line in f:
+                m = re.search(r'MINIMAX_AUTH_TOKEN="([^"]+)"', line)
+                if m:
+                    return m.group(1)
+    except OSError:
+        pass
+    raise RuntimeError("MINIMAX_API_KEY nao encontrado (env ou cofre credentials.env)")
+
+
+API_KEY = _load_token()
 API_URL = "https://api.minimax.io/v1"
 DB_PATH = "data/db.sqlite"
 N = 50  # perguntas a processar

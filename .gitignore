@@ -63,3 +63,6 @@ coverage/
 
 # Orchestration transient (artifacts runtime nao versionados)
 orchestration/dev_server.md
+
+# V23.G.1: arquivo com senha do keystore — NUNCA versionar (permanece local)
+orchestration/release_keystore_credentials.md

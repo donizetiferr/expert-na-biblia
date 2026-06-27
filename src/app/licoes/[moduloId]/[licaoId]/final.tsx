@@ -17,6 +17,7 @@ import { registrarAtividade } from '../../../../lib/streak';
 import { verificarMetaEConcederBonus } from '../../../../lib/meta';
 import { verificarBadgesLicao, type BadgeDef } from '../../../../lib/badges';
 import { abrirBau } from '../../../../lib/bau';
+import { registrarEvento } from '../../../../lib/analytics';
 import { ModalBadges } from '../../../../components/ModalBadges';
 
 /**
@@ -76,6 +77,8 @@ export default function FinalAtividadeScreen() {
     if (recompensaAplicadaRef.current) return;
     recompensaAplicadaRef.current = true;
     let ativo = true;
+    // V23.G.3: evento de funil (retencao) — conclusao de tentativa de licao.
+    registrarEvento('licao_concluida', { score, acertos });
     (async () => {
       try {
         const licaoId = params.licaoId ? String(params.licaoId) : '';

@@ -15,6 +15,8 @@ import { BannerOffline } from '../components/BannerOffline';
 import { useBackHandlerRoot } from '../hooks/useBackHandlerRoot';
 import { runMigrations } from '../db/database';
 import { garantirFreezeSemanal } from '../lib/streak';
+import { ErrorBoundary } from '../components/ErrorBoundary';
+import { instalarHandlerGlobalDeErros, registrarEvento } from '../lib/analytics';
 
 export default function RootLayout() {
   // V12 7.2: hook de back handler que mostra modal "Deseja sair?" SOMENTE em /modos.
@@ -30,6 +32,9 @@ export default function RootLayout() {
 
   useEffect(() => {
     SplashScreen.preventAutoHideAsync();
+    // V23.G.3: captura de erros JS nao tratados (alem do ErrorBoundary de render) + 1o evento de funil.
+    instalarHandlerGlobalDeErros();
+    registrarEvento('app_open');
   }, []);
 
   // V9.2.1: roda migrations + seed na PRIMEIRA execucao do app
@@ -90,22 +95,25 @@ export default function RootLayout() {
             altura) e o Stack ocupa tudo como antes. */}
         <View style={{ flex: 1, backgroundColor: '#3c026d' }}>
           <BannerOffline />
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: '#3c026d' },
-              animation: 'fade',
-            }}
-          >
-            <Stack.Screen name="index" />
-            <Stack.Screen name="onboarding" />
-            <Stack.Screen name="modos" />
-            <Stack.Screen name="licoes" />
-            <Stack.Screen name="quiz" />
-            <Stack.Screen name="config" />
-            <Stack.Screen name="perfil" />
-            <Stack.Screen name="trofeu" />
-          </Stack>
+          {/* V23.G.2: ErrorBoundary global — um erro de render mostra tela amigavel em vez de crash. */}
+          <ErrorBoundary>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: { backgroundColor: '#3c026d' },
+                animation: 'fade',
+              }}
+            >
+              <Stack.Screen name="index" />
+              <Stack.Screen name="onboarding" />
+              <Stack.Screen name="modos" />
+              <Stack.Screen name="licoes" />
+              <Stack.Screen name="quiz" />
+              <Stack.Screen name="config" />
+              <Stack.Screen name="perfil" />
+              <Stack.Screen name="trofeu" />
+            </Stack>
+          </ErrorBoundary>
         </View>
         {/* V12 7.2: BackHandlerOffline removido. Modal "Sair" agora vive em useBackHandlerRoot (só em /modos). */}
       </SafeAreaProvider>
