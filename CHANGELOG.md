@@ -2,6 +2,76 @@
 
 Todas as mudancas relevantes neste projeto.
 
+## [1.17.0] (V23.6) - 2026-06-27 (FASE 1 — UX/multi-idade: fecha o milestone E)
+
+> Fecha o milestone V23.E (acessibilidade + multi-idade). Gates: tsc 0 | jest 156/156 | eslint 0.
+> Tudo COMPROVADO no emulador hi-res (upgrade sobre V23.5, 0 FATAL) — evidencias em orchestration/v23_6_validation/.
+
+### Adicionado
+- **[E.4] Leitura em voz alta (TTS)**: `src/lib/tts.ts` (`falar`/`pararFala` via expo-speech, pt-BR).
+  Botao "🔊 Ouvir" na pergunta da licao, no card "Aprenda" e na tela de Revisao. COMPROVADO: o tap
+  vincula o Google TTS e inicia a sintese.
+- **[E.1] Texto grande**: toggle "Texto grande" em config + hook `useFontScale` (`src/lib/a11y.ts`)
+  aplicado aos textos de leitura (pergunta + Aprenda), 1.18x. O app ja respeitava o `fontScale` do
+  sistema (nenhum `allowFontScaling=false`).
+- **[E.7] Reduzir animacoes**: hook `useReduceMotion` (setting OU `AccessibilityInfo`); PersonagemLivro
+  e Trofeu pulam os `Animated.loop` (bounce/blink/confete/glow) quando ativo. Loops agora tem cleanup
+  no unmount (param fora da tela — V22.B.2). Toggle "Reduzir animacoes" em config.
+
+### Acessibilidade e microinteracao
+- **[E.6] Haptics**: `lightTap` (ENVIAR, PROSSEGUIR, VOLTAR, COMECAR, MOSTRAR RESPOSTA, RECOMECAR) +
+  `successBuzz`/`errorBuzz` no feedback (licao, quiz, completar, revisao). Cache de haptics invalidado
+  no toggle (V22.G.1 corrigido) — efeito imediato.
+- **[E.5] a11y labels**: `accessibilityRole`/`accessibilityLabel` nos interativos (ENVIAR, alternativas
+  do quiz, botoes Ouvir, MOSTRAR RESPOSTA, Lembrei/Nao lembrei, RECOMECAR, toggles de config).
+- **[E.2/E.3] Contraste e touch**: auditados — corpo de texto passa AA (preto/branco; branco sobre roxo);
+  titulos display (Bangers) mantidos por identidade do briefing (limiar AA-large). Botoes "Ouvir" e acoes
+  primarias com alvo >= 44px.
+
+### Build
+- 1a tentativa de build falhou em `:app:packageRelease` (IncrementalSplitterRunnable — lock/estado de
+  packaging transitorio no Windows; o bundle JS e o merge de assets passaram). Resolvido limpando o
+  estado de packaging + retry (BUILD SUCCESSFUL). Sem mudanca de codigo.
+
+
+## [1.16.0] (V23.5) - 2026-06-27 (FASE 1 — Aprendizado: fecha o milestone D)
+
+> Fecha o milestone V23.D (aprendizado intuitivo). Gates: tsc 0 | jest 156/156 (+12) | eslint 0.
+> Conteudo gerado via batch M2.7 (MiniMax-M2.7): mini-ensino por licao + itens de completar versiculo.
+> Tudo COMPROVADO no emulador hi-res (upgrade sobre V23.4, 0 FATAL) — evidencias em orchestration/v23_5_validation/.
+
+### Adicionado
+- **[D.1] Conteudo didatico antes de perguntar (card "Aprenda")**: nova tabela `licao_conteudo`
+  (migration 003) com mini-ensino (2-4 frases) + versiculo-chave por licao, gerados via batch M2.7
+  para 657 das 754 licoes. Card "APRENDA" exibido na entrada normal de cada licao (mascote dourado +
+  ensino + versiculo + botao "Comecar"). `src/lib/conteudo.ts`, `scripts/gen_d1_conteudo.mjs`.
+- **[D.2] Modo Revisao (repeticao espacada / Leitner)**: nova tabela `pergunta_revisao` (caixa 1-5 +
+  proxima data). Toda resposta de licao agenda a pergunta (acerto espaca; erro revisa em breve). Nova
+  rota `/revisao` em formato flashcard (pergunta -> "mostrar resposta" -> auto-avaliacao "Lembrei/Nao
+  lembrei") que reapresenta as vencidas, priorizando caixa baixa + mais erros; recompensa XP. Card
+  "🔁 REVISAO" em /modos com badge de pendentes. `src/lib/revisao.ts`.
+- **[D.3] Novo formato "Completar Versiculo"**: nova tabela `completar_versiculo` (52 versiculos
+  conhecidos curados via batch M2.7) com lacuna + 4 opcoes. Nova rota `/completar` (multipla escolha,
+  XP por acerto, mantem o streak). Card "✍️ COMPLETAR" em /modos. `src/lib/completar.ts`,
+  `scripts/gen_d3_completar.mjs`.
+- **[D.4] Referencias biblicas no feedback**: o versiculo-chave da licao (D.1) e exibido como
+  "📖 Referencia: ..." na tela de feedback de cada pergunta.
+
+### Banco de dados
+- Migration 003 (`003_aprendizado`): `licao_conteudo`, `pergunta_revisao`, `completar_versiculo`
+  (CREATE IF NOT EXISTS — seguro no upgrade). Conteudo seeded por gate proprio (`conteudo_version`),
+  INSERT OR IGNORE — nao reseta progresso no upgrade. Seeds bundled via `scripts/gen_seed_d.mjs`.
+
+### Testes
+- +12 testes (144 -> 156): `revisao` (Leitner: intervalos, caixa, proxima data) + `completar`
+  (embaralhar, montarItem).
+
+### Follow-up (nao bloqueia)
+- ~97 licoes sem conteudo (erro de batch M2.7) nao mostram o card "Aprenda"; parte do conteudo gerado
+  veio sem acentuacao do M2.7 (polish de conteudo futuro). Refs por-pergunta especificas ficam para
+  um batch dedicado (hoje a referencia e em nivel de licao).
+
+
 ## [1.15.0] (V23.4) - 2026-06-27 (FASE 1 — Aprendizado: versiculo do dia)
 
 > Inicia o milestone V23.D (aprendizado intuitivo). Gates: tsc 0 | jest 144/144 (+5) | eslint 0.
