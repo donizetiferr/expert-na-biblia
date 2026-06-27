@@ -1,5 +1,5 @@
 import * as SQLite from 'expo-sqlite';
-import { seedDatabaseIfEmpty } from './seed';
+import { seedDatabaseIfEmpty, seedConteudoIfNeeded } from './seed';
 
 /**
  * Wrapper expo-sqlite para Expert Na Biblia.
@@ -173,9 +173,43 @@ export async function runMigrations(): Promise<{ applied: number; skipped: numbe
     );
   `;
 
+  // Migration 003 (V23.5): fundacao de APRENDIZADO (milestone D).
+  // - licao_conteudo: mini-ensino didatico + versiculo-chave por licao (D.1 + D.4). Seeded.
+  // - pergunta_revisao: estado Leitner (caixa 1-5 + proxima data) por pergunta (D.2). Gerado pelo uso.
+  // - completar_versiculo: itens do novo formato "completar versiculo" (D.3). Seeded.
+  // Tudo CREATE TABLE IF NOT EXISTS — seguro em app ja instalado.
+  const migration003 = `
+    CREATE TABLE IF NOT EXISTS licao_conteudo (
+      licao_id TEXT PRIMARY KEY,
+      explicacao TEXT NOT NULL,
+      versiculo_chave TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS pergunta_revisao (
+      pergunta_id TEXT PRIMARY KEY,
+      licao_id TEXT NOT NULL,
+      caixa INTEGER NOT NULL DEFAULT 1,
+      acertos INTEGER NOT NULL DEFAULT 0,
+      erros INTEGER NOT NULL DEFAULT 0,
+      ultima_em TEXT,
+      proximo_em TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_revisao_proximo ON pergunta_revisao(proximo_em);
+    CREATE INDEX IF NOT EXISTS idx_revisao_licao ON pergunta_revisao(licao_id);
+
+    CREATE TABLE IF NOT EXISTS completar_versiculo (
+      id TEXT PRIMARY KEY,
+      referencia TEXT NOT NULL,
+      texto_com_lacuna TEXT NOT NULL,
+      resposta TEXT NOT NULL,
+      distratores TEXT NOT NULL
+    );
+  `;
+
   const MIGRATIONS: Migration[] = [
     { name: '001_initial', sql: migration001 },
     { name: '002_engajamento', sql: migration002 },
+    { name: '003_aprendizado', sql: migration003 },
   ];
 
   let applied = 0;
@@ -201,6 +235,13 @@ export async function runMigrations(): Promise<{ applied: number; skipped: numbe
     seedDatabaseIfEmpty(db);
   } catch (e) {
     console.warn('[db] seed nao aplicado:', e);
+  }
+  // V23.5: conteudo de aprendizado (gate proprio, idempotente). Apos seed principal e
+  // a migration 003 (tabelas licao_conteudo/completar_versiculo ja existem).
+  try {
+    seedConteudoIfNeeded(db);
+  } catch (e) {
+    console.warn('[db] seed de conteudo nao aplicado:', e);
   }
   return { applied, skipped };
 }

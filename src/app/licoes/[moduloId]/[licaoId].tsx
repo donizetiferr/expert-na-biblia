@@ -8,6 +8,8 @@ import { IconeSom } from '../../../components/IconeSom';
 import { IconeHome } from '../../../components/IconeHome';
 import { listarPerguntas, registrarRespostaUsuario } from '../../../lib/db-queries';
 import { avaliarResposta } from '../../../lib/avaliador';
+import { obterConteudoLicao, type ConteudoLicao } from '../../../lib/conteudo';
+import { registrarRevisao } from '../../../lib/revisao';
 import type { Pergunta } from '../../../types';
 
 type Pose = 'PENSATIVO' | 'FELIZ' | 'ASSUSTADO' | 'TRISTE' | 'EXCLAMANDO';
@@ -49,6 +51,11 @@ export default function LicaoScreen() {
   // V20: "IA obrigatoria" (regra #4). Estado de LOADING enquanto o avaliador hibrido
   // (match local -> M2.7 -> OpenAI) processa a resposta aberta. Bloqueia duplo-envio.
   const [avaliando, setAvaliando] = useState(false);
+  // V23.5 (D.1): conteudo didatico da licao (mini-ensino + versiculo-chave) e o card
+  // "Aprenda" exibido ANTES das perguntas (so na entrada normal — indice 0, sem subset).
+  const [conteudo, setConteudo] = useState<ConteudoLicao | null>(null);
+  const inicioNormal = (params.indice ?? '0') === '0' && !params.somente;
+  const [mostrarAprenda, setMostrarAprenda] = useState(inicioNormal);
 
   // V14 M15.5: animacao fade-in/zoom de entrada do personagem
   const personagemFade = useRef(new Animated.Value(0)).current;
@@ -69,6 +76,16 @@ export default function LicaoScreen() {
   useEffect(() => {
     setErradas(params.erradas ? params.erradas.split(',').filter(Boolean) : []);
   }, [params.erradas]);
+
+  // V23.5 (D.1): carrega o conteudo didatico da licao. Se nao houver (licao sem
+  // conteudo gerado), o card "Aprenda" simplesmente nao aparece.
+  useEffect(() => {
+    if (!licaoId) return;
+    obterConteudoLicao(licaoId).then((c) => {
+      setConteudo(c);
+      if (!c) setMostrarAprenda(false);
+    });
+  }, [licaoId]);
 
   // V14 M15.5: dispara animacao de entrada do personagem ao montar ou trocar licao
   useEffect(() => {
@@ -149,6 +166,12 @@ export default function LicaoScreen() {
     // Log local da resposta do usuario (para revisao posterior / debug)
     registrarRespostaUsuario(perguntaAtual.id, resposta, resultado.correto, resultado.score || 0);
 
+    // V23.5 (D.2): agenda a pergunta no sistema de revisao espacada (Leitner). Acerto
+    // sobe a caixa (revisao mais espacada); erro volta para a caixa 1 (revisa em breve).
+    registrarRevisao(perguntaAtual.id, String(licaoId), resultado.correto).catch((e: unknown) =>
+      console.warn('[revisao] registrar falhou:', e),
+    );
+
     // V19 BUG-1: placar acumulado = `acertos` (vindo dos params via state) + acerto atual.
     const acertosAtual = acertos + (resultado.correto ? 1 : 0);
     if (resultado.correto) setAcertos(acertosAtual);
@@ -180,9 +203,43 @@ export default function LicaoScreen() {
         total_perguntas: String(perguntas.length),
         acertos_atual: String(acertosAtual),
         erradas: erradasAtual.join(','),
+        // V23.5 (D.4): referencia biblica da licao (versiculo-chave) para o feedback.
+        referencia: conteudo?.versiculoChave ?? '',
       },
     });
   };
+
+  // V23.5 (D.1): card "Aprenda" — mini-ensino didatico ANTES das perguntas (Brilliant:
+  // apresenta o conceito, depois testa). Opcional: "Comecar" segue para as perguntas.
+  if (mostrarAprenda && conteudo) {
+    return (
+      <GradienteRoxo style={styles.fundo}>
+        <View style={styles.aprendaContainer}>
+          <View style={styles.headerAprenda}>
+            <IconeHome />
+          </View>
+          <ScrollView contentContainerStyle={styles.aprendaScroll} showsVerticalScrollIndicator={false}>
+            <PersonagemLivro pose="PENSATIVO" size={180} variante="licoes" />
+            <Text style={styles.aprendaTitulo}>APRENDA</Text>
+            <View style={styles.aprendaQuadro}>
+              <Text style={styles.aprendaTexto}>{conteudo.explicacao}</Text>
+              {conteudo.versiculoChave ? (
+                <Text style={styles.aprendaVersiculo}>📖 {conteudo.versiculoChave}</Text>
+              ) : null}
+            </View>
+            <Pressable
+              style={styles.aprendaBotao}
+              onPress={() => setMostrarAprenda(false)}
+              accessibilityRole="button"
+              accessibilityLabel="Começar as perguntas"
+            >
+              <Text style={styles.aprendaBotaoTexto}>COMEÇAR ›</Text>
+            </Pressable>
+          </ScrollView>
+        </View>
+      </GradienteRoxo>
+    );
+  }
 
   return (
     <GradienteRoxo style={styles.fundo}>
@@ -278,6 +335,68 @@ export default function LicaoScreen() {
 
 const styles = StyleSheet.create({
   fundo: { flex: 1 },
+  // V23.5 (D.1): card "Aprenda".
+  aprendaContainer: {
+    flex: 1,
+    padding: ESPACAMENTOS.lg,
+  },
+  headerAprenda: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: ESPACAMENTOS.md,
+  },
+  aprendaScroll: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: ESPACAMENTOS.lg,
+    paddingBottom: ESPACAMENTOS.xl,
+  },
+  aprendaTitulo: {
+    fontFamily: FONTES.display,
+    fontSize: 40,
+    color: COLORS.laranjaClaro,
+    letterSpacing: 2,
+    textShadowColor: COLORS.preto,
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 3,
+  },
+  aprendaQuadro: {
+    width: '100%',
+    backgroundColor: COLORS.branco,
+    borderRadius: BORDAS.raioMedio,
+    borderWidth: BORDAS.larguraGrossa,
+    borderColor: COLORS.laranjaEscuro,
+    padding: ESPACAMENTOS.lg,
+    gap: ESPACAMENTOS.md,
+  },
+  aprendaTexto: {
+    fontFamily: FONTES.bodyRegular,
+    fontSize: 17,
+    color: COLORS.preto,
+    lineHeight: 25,
+    textAlign: 'left',
+  },
+  aprendaVersiculo: {
+    fontFamily: FONTES.bodyExtraBold,
+    fontSize: 16,
+    color: COLORS.roxoEscuro,
+    textAlign: 'right',
+  },
+  aprendaBotao: {
+    backgroundColor: COLORS.laranjaEscuro,
+    paddingHorizontal: ESPACAMENTOS.xl,
+    paddingVertical: ESPACAMENTOS.md,
+    borderRadius: BORDAS.raioMedio,
+    borderWidth: 3,
+    borderColor: COLORS.preto,
+  },
+  aprendaBotaoTexto: {
+    fontFamily: FONTES.display,
+    fontSize: 24,
+    color: COLORS.branco,
+    letterSpacing: 1,
+  },
   container: {
     flex: 1,
     // V18.3: fundo agora e' degrade roxo (GradienteRoxo) — container transparente.

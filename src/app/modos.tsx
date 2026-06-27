@@ -6,6 +6,8 @@ import { GradienteRoxo } from '../components/Gradiente';
 import { proximaLicaoPendente } from '../lib/db-queries';
 import { versiculoDeHoje, textoCompartilhavel } from '../lib/versiculo-do-dia';
 import { registrarAtividade } from '../lib/streak';
+import { contarRevisaoPendente } from '../lib/revisao';
+import { contarCompletar } from '../lib/completar';
 
 /**
  * Tela 2: Selecao de modo (Quiz Biblico / Licoes).
@@ -22,6 +24,9 @@ export default function ModosScreen() {
   // V23.D.5: versiculo do dia (deterministico por dia do ano).
   const versiculo = versiculoDeHoje();
   const [liHoje, setLiHoje] = useState(false);
+  // V23.5 (D.2/D.3): revisao pendente (badge) + disponibilidade do "completar versiculo".
+  const [revisaoPendente, setRevisaoPendente] = useState(0);
+  const [temCompletar, setTemCompletar] = useState(false);
 
   const compartilharVersiculo = () => {
     Share.share({ message: textoCompartilhavel(versiculo) }).catch((e: unknown) =>
@@ -41,6 +46,13 @@ export default function ModosScreen() {
       let ativo = true;
       proximaLicaoPendente().then((p) => {
         if (ativo) setPendente(p);
+      });
+      // V23.5: atualiza badge de revisao + disponibilidade do completar ao focar.
+      contarRevisaoPendente().then((n) => {
+        if (ativo) setRevisaoPendente(n);
+      });
+      contarCompletar().then((n) => {
+        if (ativo) setTemCompletar(n > 0);
       });
       return () => {
         ativo = false;
@@ -107,6 +119,39 @@ export default function ModosScreen() {
               <Text style={styles.cardSubtitulo}>40 módulos progressivos</Text>
             </GradienteRoxo>
           </Pressable>
+        </View>
+
+        {/* V23.5 (D.2/D.3): modos de aprendizado — Revisão (Leitner) e Completar Versículo. */}
+        <View style={styles.cardsSecundarios}>
+          <Pressable
+            style={styles.cardMenor}
+            onPress={() => router.push('/revisao')}
+            accessibilityRole="button"
+            accessibilityLabel={
+              revisaoPendente > 0 ? `Revisão, ${revisaoPendente} pendentes` : 'Revisão'
+            }
+          >
+            <Text style={styles.cardMenorEmoji}>🔁</Text>
+            <Text style={styles.cardMenorTitulo}>REVISÃO</Text>
+            {revisaoPendente > 0 ? (
+              <View style={styles.badge}>
+                <Text style={styles.badgeTexto}>{revisaoPendente}</Text>
+              </View>
+            ) : null}
+          </Pressable>
+
+          {temCompletar ? (
+            <Pressable
+              style={styles.cardMenor}
+              onPress={() => router.push('/completar')}
+              accessibilityRole="button"
+              accessibilityLabel="Completar versículo"
+            >
+              <Text style={styles.cardMenorEmoji}>✍️</Text>
+              <Text style={styles.cardMenorTitulo}>COMPLETAR</Text>
+              <Text style={styles.cardMenorSub}>versículo</Text>
+            </Pressable>
+          ) : null}
         </View>
 
         {/* V23.D.5: versiculo do dia (devocional leve + compartilhavel). */}
@@ -197,6 +242,55 @@ const styles = StyleSheet.create({
   },
   cards: {
     gap: ESPACAMENTOS.lg,
+  },
+  // V23.5: linha de modos de aprendizado (cards menores).
+  cardsSecundarios: {
+    flexDirection: 'row',
+    gap: ESPACAMENTOS.md,
+    marginTop: ESPACAMENTOS.md,
+  },
+  cardMenor: {
+    flex: 1,
+    backgroundColor: COLORS.branco,
+    borderRadius: BORDAS.raioMedio,
+    borderWidth: BORDAS.larguraGrossa,
+    borderColor: COLORS.laranjaForte,
+    paddingVertical: ESPACAMENTOS.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 92,
+  },
+  cardMenorEmoji: {
+    fontSize: 30,
+  },
+  cardMenorTitulo: {
+    fontFamily: FONTES.display,
+    fontSize: 20,
+    color: COLORS.roxoEscuro,
+    letterSpacing: 1,
+    marginTop: ESPACAMENTOS.xs,
+  },
+  cardMenorSub: {
+    fontFamily: FONTES.bodyBold,
+    fontSize: 12,
+    color: COLORS.laranjaForte,
+  },
+  badge: {
+    position: 'absolute',
+    top: 6,
+    right: 6,
+    minWidth: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: COLORS.laranjaForte,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 6,
+  },
+  badgeTexto: {
+    fontFamily: FONTES.bodyExtraBold,
+    fontSize: 13,
+    color: COLORS.branco,
   },
   // V23.D.5: card do versiculo do dia.
   versiculoCard: {

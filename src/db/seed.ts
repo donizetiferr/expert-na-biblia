@@ -12,6 +12,8 @@ import type { SQLiteDatabase } from 'expo-sqlite';
 import { applySeedModulosLicoes } from './seed-modulos-licoes';
 import { applySeedPerguntas } from './seed-perguntas';
 import { applySeedQuiz } from './seed-quiz';
+import { applySeedConteudo } from './seed-conteudo';
+import { applySeedCompletar } from './seed-completar';
 
 // Efeito colateral: garantir que Metro bundle inclui os 3 arquivos
 // (tree-shaking removeria se nao houvesse referencia estaticamente observavel).
@@ -54,5 +56,37 @@ export function seedDatabaseIfEmpty(db: SQLiteDatabase): void {
     );
   } catch (e) {
     console.warn('[seed] flag nao persistiu:', e);
+  }
+}
+
+// V23.5 (milestone D): conteudo de APRENDIZADO (licao_conteudo + completar_versiculo).
+// Gate PROPRIO (independente do seed principal) para que, no UPGRADE de quem ja tem o
+// app, o conteudo novo entre SEM re-rodar os seeds antigos (que resetariam progresso).
+// applySeed* usa INSERT OR IGNORE — idempotente e seguro.
+const CONTEUDO_FLAG_VALUE = 'v23_5_aprendizado';
+
+export function seedConteudoIfNeeded(db: SQLiteDatabase): void {
+  try {
+    const existing = db.getFirstSync<{ value: string }>(
+      `SELECT value FROM ${SEED_FLAG_TABLE} WHERE key = 'conteudo_version'`,
+    );
+    if (existing && existing.value === CONTEUDO_FLAG_VALUE) return;
+  } catch {
+    // Tabela de flags ainda nao existe — segue e aplica.
+  }
+
+  applySeedConteudo(db);
+  applySeedCompletar(db);
+
+  try {
+    db.runSync(
+      `CREATE TABLE IF NOT EXISTS ${SEED_FLAG_TABLE} (key TEXT PRIMARY KEY, value TEXT, aplicado_em TEXT NOT NULL DEFAULT (datetime('now')))`,
+    );
+    db.runSync(
+      `INSERT OR REPLACE INTO ${SEED_FLAG_TABLE} (key, value) VALUES ('conteudo_version', ?)`,
+      CONTEUDO_FLAG_VALUE,
+    );
+  } catch (e) {
+    console.warn('[seed] conteudo flag nao persistiu:', e);
   }
 }

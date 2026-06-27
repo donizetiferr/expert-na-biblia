@@ -30,6 +30,7 @@ export default function FeedbackScreen() {
     feedback_ia: string;
     origem: string;
     erradas: string;
+    referencia: string;
   }>();
 
   const isAcerto = params.resultado === 'acerto';
@@ -42,6 +43,9 @@ export default function FeedbackScreen() {
     'Resposta do cache.',
   ].includes(feedbackIa);
   const mostrarFeedbackIa = feedbackIa.length > 0 && !feedbackGenerico;
+
+  // V23.5 (D.4): referencia biblica da licao (versiculo-chave), exibida no feedback.
+  const referencia = (params.referencia ?? '').trim();
 
   const indice = parseInt(params.indice ?? '0', 10);
   const total = parseInt(params.total ?? '1', 10);
@@ -161,6 +165,8 @@ export default function FeedbackScreen() {
         <Text style={styles.quadroTexto}>{params.resposta_correta || '(não disponível)'}</Text>
         {/* V20: explicacao da IA (quando avaliada por M2.7/OpenAI) */}
         {mostrarFeedbackIa ? <Text style={styles.feedbackIa}>{feedbackIa}</Text> : null}
+        {/* V23.5 (D.4): referencia biblica da licao (versiculo-chave). */}
+        {referencia ? <Text style={styles.referencia}>📖 Referência: {referencia}</Text> : null}
       </View>
 
       <View style={styles.indicador}>
@@ -257,6 +263,14 @@ const styles = StyleSheet.create({
     fontFamily: FONTES.bodyRegular,
     fontSize: 15,
     color: COLORS.preto,
+    textAlign: 'center',
+    marginTop: ESPACAMENTOS.xs,
+  },
+  // V23.5 (D.4): referencia biblica (versiculo-chave da licao).
+  referencia: {
+    fontFamily: FONTES.bodyExtraBold,
+    fontSize: 14,
+    color: COLORS.roxoEscuro,
     textAlign: 'center',
     marginTop: ESPACAMENTOS.xs,
   },
