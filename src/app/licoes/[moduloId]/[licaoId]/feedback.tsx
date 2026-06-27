@@ -5,6 +5,7 @@ import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../../../constants/colo
 import { PersonagemLivro } from '../../../../components/PersonagemLivro';
 import { GradienteLaranjaForte } from '../../../../components/Gradiente';
 import { playAcerto, playErro } from '../../../../lib/sound';
+import { lightTap, successBuzz, errorBuzz } from '../../../../lib/haptics';
 
 /**
  * V9 M2.4: Tela Feedback Licao dedicada.
@@ -76,9 +77,12 @@ export default function FeedbackScreen() {
   useEffect(() => {
     const fn = isAcerto ? playAcerto : playErro;
     fn().catch((e: unknown) => console.warn('[audio] feedback falhou:', e));
+    // V23.E.6: feedback tatil coerente com o resultado (acerto/erro).
+    (isAcerto ? successBuzz() : errorBuzz()).catch(() => {});
   }, [isAcerto]);
 
   const handleProsseguir = () => {
+    lightTap().catch(() => {}); // V23.E.6
     const isLast = indice >= total - 1;
     if (isLast) {
       // Calcular score final: acertos / total_perguntas * 100
@@ -117,6 +121,7 @@ export default function FeedbackScreen() {
   };
 
   const handleVoltar = () => {
+    lightTap().catch(() => {}); // V23.E.6
     // Mesma pergunta (re-tentar). V19 BUG-1: preserva o placar acumulado.
     // Ao re-tentar, descontamos o acerto desta pergunta (se houve), pois o usuario
     // vai responde-la de novo e o placar sera recontado no envio.
@@ -177,7 +182,12 @@ export default function FeedbackScreen() {
 
       {isAcerto ? (
         <View style={styles.botoesContainer}>
-          <Pressable style={[styles.botaoRedondo, styles.botaoSolido]} onPress={handleProsseguir}>
+          <Pressable
+            style={[styles.botaoRedondo, styles.botaoSolido]}
+            onPress={handleProsseguir}
+            accessibilityRole="button"
+            accessibilityLabel="Prosseguir para a próxima"
+          >
             <Text style={styles.botaoTexto}>PROSSEGUIR ›</Text>
           </Pressable>
         </View>

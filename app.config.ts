@@ -19,7 +19,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
   ...config,
   name: 'Expert Na Bíblia',
   slug: 'expert-na-biblia',
-  version: '1.16.0',
+  version: '1.17.0',
   orientation: 'portrait',
   icon: './assets/icon.png',
   scheme: 'expertnabiblia',
@@ -34,7 +34,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'com.donizetiferr.expertnabiblia',
-    buildNumber: '11',
+    buildNumber: '12',
   },
   android: {
     adaptiveIcon: {
@@ -42,7 +42,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       backgroundColor: '#3c026d',
     },
     package: 'com.donizetiferr.expertnabiblia',
-    versionCode: 11,
+    versionCode: 12,
     permissions: ['NOTIFICATIONS', 'INTERNET'],
     // V23.A.7: Android Auto Backup — preserva o progresso (SQLite expert_na_biblia.db,
     // streak/XP/conclusoes) entre reinstalacoes no mesmo device/conta Google.

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, type ImageSourcePropType } from 'react-native';
+import { useReduceMotion } from '../lib/a11y';
 
 /**
  * Personagem livro animado com 5 poses (pensativo, feliz, assustado, TRISTE, EXCLAMANDO).
@@ -56,6 +57,8 @@ export function PersonagemLivro({ pose = 'PENSATIVO', size = 120, variante = 'qu
   const imagensPose = variante === 'licoes' ? IMAGENS_LICOES : IMAGENS_QUIZ;
   const bounceAnim = useRef(new Animated.Value(0)).current;
   const blinkAnim = useRef(new Animated.Value(1)).current;
+  // V23.E.7: respeita "Reduzir animacoes" — sem os loops de bounce/blink (estatico).
+  const reduceMotion = useReduceMotion();
 
   // V23.B.6: aura/glow estatica (sem loop) que cresce com o nivel. A partir do nivel 2,
   // o mascote ganha um brilho dourado cada vez mais forte (cap no nivel 6).
@@ -72,21 +75,33 @@ export function PersonagemLivro({ pose = 'PENSATIVO', size = 120, variante = 'qu
       : null;
 
   useEffect(() => {
-    Animated.loop(
+    // V23.E.7: com reduceMotion, mantem o personagem estatico (sem loops perpetuos).
+    if (reduceMotion) {
+      bounceAnim.setValue(0);
+      blinkAnim.setValue(1);
+      return;
+    }
+    const bounce = Animated.loop(
       Animated.sequence([
         Animated.timing(bounceAnim, { toValue: -8, duration: 1500, useNativeDriver: true }),
         Animated.timing(bounceAnim, { toValue: 0, duration: 1500, useNativeDriver: true }),
       ])
-    ).start();
-
-    Animated.loop(
+    );
+    const blink = Animated.loop(
       Animated.sequence([
         Animated.timing(blinkAnim, { toValue: 0.2, duration: 150, useNativeDriver: true }),
         Animated.timing(blinkAnim, { toValue: 1, duration: 150, useNativeDriver: true }),
         Animated.delay(3500),
       ])
-    ).start();
-  }, [bounceAnim, blinkAnim]);
+    );
+    bounce.start();
+    blink.start();
+    // Cleanup: para os loops ao desmontar (evita animacao perpetua fora da tela — V22.B.2).
+    return () => {
+      bounce.stop();
+      blink.stop();
+    };
+  }, [bounceAnim, blinkAnim, reduceMotion]);
 
   return (
     <Animated.View style={[styles.container, glowStyle, { transform: [{ translateY: bounceAnim }] }]}>

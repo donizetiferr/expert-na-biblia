@@ -4,6 +4,8 @@ import { useRouter } from 'expo-router';
 import { COLORS, FONTES, ESPACAMENTOS } from '../constants/colors';
 import { resetarProgresso } from '../lib/db-queries';
 import { playVitoria } from '../lib/sound';
+import { lightTap } from '../lib/haptics';
+import { useReduceMotion } from '../lib/a11y';
 
 /**
  * Tela Final de Vitoria: Trofeu Expert.
@@ -88,8 +90,18 @@ export default function TrofeuScreen() {
   const bounceAnim = useRef(new Animated.Value(0)).current;
   const glowAnim = useRef(new Animated.Value(0.6)).current;
   const trofeuScale = useRef(new Animated.Value(0.6)).current;
+  // V23.E.7: com "Reduzir animacoes", o trofeu fica estatico (sem confete/loops).
+  const reduceMotion = useReduceMotion();
 
   useEffect(() => {
+    if (reduceMotion) {
+      // Estado final estatico, sem loops perpetuos (confete/bounce/glow).
+      trofeuScale.setValue(1);
+      bounceAnim.setValue(0);
+      glowAnim.setValue(0.45);
+      playVitoria().catch(() => {});
+      return;
+    }
     // Trofeu entra com bounce
     Animated.spring(trofeuScale, {
       toValue: 1,
@@ -99,38 +111,43 @@ export default function TrofeuScreen() {
     }).start();
 
     // "Expert!" bounce loop
-    Animated.loop(
+    const bounce = Animated.loop(
       Animated.sequence([
         Animated.timing(bounceAnim, { toValue: -10, duration: 600, useNativeDriver: true }),
         Animated.spring(bounceAnim, { toValue: 0, friction: 3, useNativeDriver: true }),
         Animated.delay(1500),
       ]),
-    ).start();
-
+    );
     // Glow pulsing
-    Animated.loop(
+    const glow = Animated.loop(
       Animated.sequence([
         Animated.timing(glowAnim, { toValue: 1, duration: 800, useNativeDriver: true }),
         Animated.timing(glowAnim, { toValue: 0.6, duration: 800, useNativeDriver: true }),
       ]),
-    ).start();
+    );
+    bounce.start();
+    glow.start();
 
     playVitoria().catch((e: unknown) =>
       console.warn('[audio] trofeu playVitoria falhou:', e),
     );
-  }, [bounceAnim, glowAnim, trofeuScale]);
+    return () => {
+      bounce.stop();
+      glow.stop();
+    };
+  }, [bounceAnim, glowAnim, trofeuScale, reduceMotion]);
 
   const handleRestart = async () => {
+    lightTap().catch(() => {}); // V23.E.6
     await resetarProgresso();
     router.replace('/modos');
   };
 
   return (
     <View style={styles.container}>
-      {/* Confete caindo */}
-      {Array.from({ length: CONFETE_COUNT }).map((_, i) => (
-        <ConfetePiece key={i} index={i} />
-      ))}
+      {/* Confete caindo (suprimido com "Reduzir animacoes") */}
+      {!reduceMotion &&
+        Array.from({ length: CONFETE_COUNT }).map((_, i) => <ConfetePiece key={i} index={i} />)}
 
       {/* Glow pulsando atras do trofeu */}
       <Animated.View
@@ -163,7 +180,12 @@ export default function TrofeuScreen() {
         Concluiu todos os módulos da Bíblia
       </Text>
 
-      <Pressable style={styles.botao} onPress={handleRestart}>
+      <Pressable
+        style={styles.botao}
+        onPress={handleRestart}
+        accessibilityRole="button"
+        accessibilityLabel="Recomeçar do início"
+      >
         <Text style={styles.botaoTexto}>RECOMEÇAR</Text>
       </Pressable>
     </View>

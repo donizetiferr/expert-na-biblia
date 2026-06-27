@@ -7,6 +7,7 @@ import { embaralharAlternativas } from '../../lib/quiz-questions';
 import { obterAlternativas } from '../../lib/quiz-alternatives-db';
 import { IconeHome } from '../../components/IconeHome';
 import { playCombo } from '../../lib/sound';
+import { lightTap, successBuzz, errorBuzz } from '../../lib/haptics';
 import type { Pergunta } from '../../types';
 
 const TOTAL_PERGUNTAS = 20;
@@ -136,8 +137,10 @@ export default function JogarQuiz() {
     if (transicionandoRef.current) return;
 
     setSelecionada(i);
+    lightTap().catch(() => {}); // V23.E.6: toque ao selecionar a alternativa
     if (perguntas[indice]?.alternativas[i]?.correta) {
       acertosRef.current += 1;
+      successBuzz().catch(() => {}); // V23.E.6
       // V23.B.5: acerto -> combo cresce; marcos 3/5/10 tocam SFX de combo.
       comboRef.current += 1;
       if (comboRef.current > comboMaxRef.current) comboMaxRef.current = comboRef.current;
@@ -146,6 +149,7 @@ export default function JogarQuiz() {
         playCombo().catch((e: unknown) => console.warn('[audio] quiz combo falhou:', e));
       }
     } else {
+      errorBuzz().catch(() => {}); // V23.E.6
       // Errou -> zera o combo.
       comboRef.current = 0;
       setCombo(0);
@@ -247,6 +251,8 @@ export default function JogarQuiz() {
               style={[styles.alternativa, isSel ? styles.alternativaSelecionada : styles.alternativaNormal]}
               onPress={() => selecionar(i)}
               disabled={selecionada !== null}
+              accessibilityRole="button"
+              accessibilityLabel={`Alternativa ${String.fromCharCode(65 + i)}: ${alt.texto}`}
             >
               <Text style={[styles.altLetra, isSel && styles.altTextoSelecionado]}>
                 {String.fromCharCode(65 + i)}

@@ -8,6 +8,7 @@ import { listarCompletar, type ItemCompletar } from '../lib/completar';
 import { concederXp, XP_POR_ACERTO } from '../lib/xp';
 import { registrarAtividade } from '../lib/streak';
 import { playAcerto, playErro } from '../lib/sound';
+import { successBuzz, errorBuzz } from '../lib/haptics';
 
 const TOTAL = 8;
 
@@ -40,8 +41,10 @@ export default function CompletarScreen() {
     if (certo) {
       setAcertos((a) => a + 1);
       playAcerto().catch(() => {});
+      successBuzz().catch(() => {}); // V23.E.6
     } else {
       playErro().catch(() => {});
+      errorBuzz().catch(() => {}); // V23.E.6
     }
   };
 

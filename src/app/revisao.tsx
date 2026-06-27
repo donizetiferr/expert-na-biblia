@@ -8,6 +8,8 @@ import { IconeHome } from '../components/IconeHome';
 import { listarParaRevisar, registrarRevisao } from '../lib/revisao';
 import { concederXp, XP_POR_ACERTO } from '../lib/xp';
 import { registrarAtividade } from '../lib/streak';
+import { lightTap, successBuzz, errorBuzz } from '../lib/haptics';
+import { falar, pararFala } from '../lib/tts';
 import type { Pergunta } from '../types';
 
 const LIMITE = 10;
@@ -33,10 +35,14 @@ export default function RevisaoScreen() {
       .finally(() => setLoading(false));
   }, []);
 
+  // V23.E.4: interrompe leitura em voz alta ao sair da tela.
+  useEffect(() => () => pararFala(), []);
+
   const atual = fila[indice];
 
   const avaliar = async (acertou: boolean) => {
     if (!atual) return;
+    (acertou ? successBuzz() : errorBuzz()).catch(() => {}); // V23.E.6
     await registrarRevisao(atual.id, atual.licao_id, acertou).catch(() => {});
     const novoAcertos = acertos + (acertou ? 1 : 0);
     if (acertou) setAcertos(novoAcertos);
@@ -108,6 +114,15 @@ export default function RevisaoScreen() {
 
         <View style={styles.quadro}>
           <Text style={styles.pergunta}>{atual.texto}</Text>
+          {/* V23.E.4: ouvir a pergunta em voz alta. */}
+          <Pressable
+            style={styles.ouvirBtn}
+            onPress={() => falar(atual.texto)}
+            accessibilityRole="button"
+            accessibilityLabel="Ouvir a pergunta em voz alta"
+          >
+            <Text style={styles.ouvirTexto}>🔊 Ouvir</Text>
+          </Pressable>
         </View>
 
         {revelado ? (
@@ -118,7 +133,15 @@ export default function RevisaoScreen() {
         ) : null}
 
         {!revelado ? (
-          <Pressable style={styles.botao} onPress={() => setRevelado(true)}>
+          <Pressable
+            style={styles.botao}
+            onPress={() => {
+              lightTap().catch(() => {});
+              setRevelado(true);
+            }}
+            accessibilityRole="button"
+            accessibilityLabel="Mostrar a resposta"
+          >
             <Text style={styles.botaoTexto}>MOSTRAR RESPOSTA</Text>
           </Pressable>
         ) : (
@@ -143,6 +166,17 @@ const styles = StyleSheet.create({
   indicador: { fontFamily: FONTES.bodyBold, fontSize: 18, color: COLORS.laranjaClaro, width: 48 },
   titulo: { fontFamily: FONTES.display, fontSize: 24, color: COLORS.branco, letterSpacing: 1, flex: 1, textAlign: 'center' },
   scroll: { flexGrow: 1, justifyContent: 'center', alignItems: 'center', gap: ESPACAMENTOS.lg, paddingVertical: ESPACAMENTOS.lg },
+  ouvirBtn: {
+    alignSelf: 'center',
+    marginTop: ESPACAMENTOS.sm,
+    paddingVertical: 6,
+    paddingHorizontal: ESPACAMENTOS.md,
+    borderRadius: BORDAS.raioPequeno,
+    backgroundColor: COLORS.roxoCard,
+    minHeight: 44,
+    justifyContent: 'center',
+  },
+  ouvirTexto: { fontFamily: FONTES.bodyBold, fontSize: 14, color: COLORS.branco },
   quadro: {
     width: '100%',
     backgroundColor: COLORS.branco,

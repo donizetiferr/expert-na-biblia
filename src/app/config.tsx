@@ -6,6 +6,7 @@ import { loadSettings, saveSetting, SETTINGS_DEFAULTS } from '../lib/settings';
 import { resetarProgresso } from '../lib/db-queries';
 import { notifySettingsChanged } from '../lib/sound-runtime';
 import { agendarLembreteDiario, cancelarTodos } from '../lib/notifications';
+import { invalidateHapticsCache, lightTap } from '../lib/haptics';
 import { OPCOES_META } from '../lib/meta';
 import { exportarProgresso, importarProgresso } from '../lib/backup';
 import type { Settings } from '../types';
@@ -30,6 +31,12 @@ export default function ConfigScreen() {
     await saveSetting(key, value);
     setSettings((s) => ({ ...s, [key]: value }));
     notifySettingsChanged().catch(() => {});
+    // V23.E.6: o cache de haptics precisa ser invalidado para o toggle ter efeito imediato
+    // (antes o cache de `hapticos` ficava preso ate reiniciar o app — V22.G.1).
+    if (key === 'hapticos') {
+      invalidateHapticsCache();
+      if (value) lightTap().catch(() => {});
+    }
     // V23.A.4: ligar/desligar notificacoes agenda/cancela o lembrete diario de fato.
     if (key === 'notificacoes') {
       if (value) {
@@ -221,6 +228,19 @@ export default function ConfigScreen() {
             onValueChange={(v) => toggle('reduceMotion', v)}
             trackColor={{ false: COLORS.cinzaEscuro, true: COLORS.laranjaEscuro }}
             thumbColor={settings.reduceMotion ? COLORS.laranjaClaro : COLORS.cinzaMedio}
+            accessibilityLabel="Reduzir animações"
+          />
+        </View>
+
+        {/* V23.E.1: texto grande (idosos/baixa visao) — reforca o fontScale do sistema. */}
+        <View style={styles.linha}>
+          <Text style={styles.label}>Texto grande</Text>
+          <Switch
+            value={settings.textoGrande}
+            onValueChange={(v) => toggle('textoGrande', v)}
+            trackColor={{ false: COLORS.cinzaEscuro, true: COLORS.laranjaEscuro }}
+            thumbColor={settings.textoGrande ? COLORS.laranjaClaro : COLORS.cinzaMedio}
+            accessibilityLabel="Texto grande"
           />
         </View>
 

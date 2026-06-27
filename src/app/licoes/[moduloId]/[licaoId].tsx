@@ -10,6 +10,9 @@ import { listarPerguntas, registrarRespostaUsuario } from '../../../lib/db-queri
 import { avaliarResposta } from '../../../lib/avaliador';
 import { obterConteudoLicao, type ConteudoLicao } from '../../../lib/conteudo';
 import { registrarRevisao } from '../../../lib/revisao';
+import { falar, pararFala } from '../../../lib/tts';
+import { lightTap } from '../../../lib/haptics';
+import { useFontScale } from '../../../lib/a11y';
 import type { Pergunta } from '../../../types';
 
 type Pose = 'PENSATIVO' | 'FELIZ' | 'ASSUSTADO' | 'TRISTE' | 'EXCLAMANDO';
@@ -56,6 +59,11 @@ export default function LicaoScreen() {
   const [conteudo, setConteudo] = useState<ConteudoLicao | null>(null);
   const inicioNormal = (params.indice ?? '0') === '0' && !params.somente;
   const [mostrarAprenda, setMostrarAprenda] = useState(inicioNormal);
+  // V23.E.1: multiplicador de fonte do toggle "Texto grande" (a11y idosos/baixa visao).
+  const fontScale = useFontScale();
+
+  // V23.E.4: interrompe qualquer leitura em voz alta ao sair da tela.
+  useEffect(() => () => pararFala(), []);
 
   // V14 M15.5: animacao fade-in/zoom de entrada do personagem
   const personagemFade = useRef(new Animated.Value(0)).current;
@@ -137,6 +145,7 @@ export default function LicaoScreen() {
       return;
     }
     if (avaliando) return; // guard anti duplo-envio enquanto a IA processa
+    lightTap().catch(() => {}); // V23.E.6: feedback tatil no envio
     setErroValidacao('');
 
     // V20 (regra #4 "IA obrigatoria"): a avaliacao das licoes agora passa pelo
@@ -222,14 +231,28 @@ export default function LicaoScreen() {
             <PersonagemLivro pose="PENSATIVO" size={180} variante="licoes" />
             <Text style={styles.aprendaTitulo}>APRENDA</Text>
             <View style={styles.aprendaQuadro}>
-              <Text style={styles.aprendaTexto}>{conteudo.explicacao}</Text>
+              <Text style={[styles.aprendaTexto, { fontSize: 17 * fontScale, lineHeight: 25 * fontScale }]}>
+                {conteudo.explicacao}
+              </Text>
               {conteudo.versiculoChave ? (
                 <Text style={styles.aprendaVersiculo}>📖 {conteudo.versiculoChave}</Text>
               ) : null}
+              {/* V23.E.4: ouvir o mini-ensino em voz alta. */}
+              <Pressable
+                style={styles.ouvirBtn}
+                onPress={() => falar(conteudo.explicacao)}
+                accessibilityRole="button"
+                accessibilityLabel="Ouvir o conteúdo em voz alta"
+              >
+                <Text style={styles.ouvirTexto}>🔊 Ouvir</Text>
+              </Pressable>
             </View>
             <Pressable
               style={styles.aprendaBotao}
-              onPress={() => setMostrarAprenda(false)}
+              onPress={() => {
+                lightTap().catch(() => {});
+                setMostrarAprenda(false);
+              }}
               accessibilityRole="button"
               accessibilityLabel="Começar as perguntas"
             >
@@ -282,7 +305,16 @@ export default function LicaoScreen() {
         </Animated.View>
 
         <View style={styles.quadro}>
-          <Text style={styles.pergunta}>{perguntaAtual.texto}</Text>
+          <Text style={[styles.pergunta, { fontSize: 18 * fontScale }]}>{perguntaAtual.texto}</Text>
+          {/* V23.E.4: ouvir a pergunta em voz alta (TTS pt-BR). */}
+          <Pressable
+            style={styles.ouvirBtn}
+            onPress={() => falar(perguntaAtual.texto)}
+            accessibilityRole="button"
+            accessibilityLabel="Ouvir a pergunta em voz alta"
+          >
+            <Text style={styles.ouvirTexto}>🔊 Ouvir</Text>
+          </Pressable>
         </View>
 
         <View style={styles.inputContainer}>
@@ -312,6 +344,8 @@ export default function LicaoScreen() {
           style={[styles.botaoEnviar, avaliando && styles.botaoEnviarDesabilitado]}
           onPress={enviar}
           disabled={avaliando}
+          accessibilityRole="button"
+          accessibilityLabel={avaliando ? 'Avaliando resposta' : 'Enviar resposta'}
         >
           {avaliando ? (
             <View style={styles.botaoLoadingRow}>
@@ -466,6 +500,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: COLORS.preto,
     textAlign: 'center',
+  },
+  // V23.E.4: botao "ouvir" (TTS) discreto dentro dos quadros de texto.
+  ouvirBtn: {
+    alignSelf: 'center',
+    marginTop: ESPACAMENTOS.sm,
+    paddingVertical: 6,
+    paddingHorizontal: ESPACAMENTOS.md,
+    borderRadius: BORDAS.raioPequeno,
+    backgroundColor: COLORS.roxoCard,
+    minHeight: 44,
+    justifyContent: 'center',
+  },
+  ouvirTexto: {
+    fontFamily: FONTES.bodyBold,
+    fontSize: 14,
+    color: COLORS.branco,
   },
   inputContainer: {
     flexDirection: 'row',
