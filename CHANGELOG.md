@@ -2,6 +2,28 @@
 
 Todas as mudancas relevantes neste projeto.
 
+## [1.20.0] (V23.9) - 2026-06-27 (FASE 1 — Multi-perfil, modo Kids e seletor: milestone I)
+
+> Milestone V23.I (familia / multi-idade). Gates: tsc 0 | jest 188/188 (+13) | eslint 0.
+> COMPROVADO no emulador hi-res (upgrade sobre V23.8, 0 FATAL) — evidências em orchestration/v23_9_validation/.
+
+### Adicionado
+- **[I.1] Perfis locais múltiplos**: nova tela `/perfis` + `src/lib/perfis.ts` (migration 005:
+  `perfis`, `perfil_ativo`, `perfil_estado`). Cada perfil isola progresso/streak/XP/badges/cosméticos
+  via modelo "save-slot" (snapshot-swap): ao trocar de perfil, o ativo é serializado em `perfil_estado`
+  e o destino é restaurado nas tabelas globais (transação). **O progresso global existente é preservado**:
+  no bootstrap, um perfil "default" (Eu) herda os dados atuais SEM snapshot.
+- **[I.2] Modo Kids**: perfil pode ser do tipo Kids → texto maior (useFontScale) + quiz aleatório
+  prioriza perguntas FÁCIL + badge "MODO KIDS" no hub. (Banco de perguntas Kids dedicado via batch M2.7
+  fica como follow-up; o modo entrega UX + conteúdo adaptados já agora.)
+- **[I.3] Seletor de perfil**: pill do perfil ativo no topo de `/modos` (1-2 toques para trocar) +
+  criação de perfil (nome + tipo Adulto/Kids), limite de 6 perfis.
+
+### Notas
+- Migration 005 entra por `_migrations` (CREATE TABLE IF NOT EXISTS) — seguro no upgrade, sem resetar.
+- Snapshot-swap copia apenas o ESTADO de jogo (não o catálogo de conteúdo: perguntas/módulos/lições
+  permanecem compartilhados; só os flags de progresso são por perfil).
+
 ## [1.19.0] (V23.8) - 2026-06-27 (FASE 1 — Jornada visual, coleções e cosméticos: milestone H)
 
 > Milestone V23.H (engajamento visual + personalização). Gates: tsc 0 | jest 175/175 (+16) | eslint 0.

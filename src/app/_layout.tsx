@@ -15,6 +15,7 @@ import { BannerOffline } from '../components/BannerOffline';
 import { useBackHandlerRoot } from '../hooks/useBackHandlerRoot';
 import { runMigrations } from '../db/database';
 import { garantirFreezeSemanal } from '../lib/streak';
+import { garantirPerfilPadrao } from '../lib/perfis';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { instalarHandlerGlobalDeErros, registrarEvento } from '../lib/analytics';
 
@@ -43,6 +44,11 @@ export default function RootLayout() {
     if (fontsLoaded || fontError) {
       runMigrations().then(() => {
         console.debug('[layout] migrations+seed OK');
+        // V23.9 (I.1): garante o perfil "default" (idempotente) — herda o progresso global
+        // existente sem snapshot, preservando os dados de quem ja usa o app.
+        garantirPerfilPadrao().catch((e: unknown) =>
+          console.warn('[layout] garantirPerfilPadrao falhou:', e),
+        );
         // V23.A.2: garante o token de freeze semanal (idempotente, 1x/semana) apos as
         // migrations (a tabela streak_freeze ja existe). Protege o streak contra 1 falta.
         garantirFreezeSemanal().catch((e: unknown) =>
@@ -111,6 +117,7 @@ export default function RootLayout() {
               <Stack.Screen name="quiz" />
               <Stack.Screen name="config" />
               <Stack.Screen name="perfil" />
+              <Stack.Screen name="perfis" />
               <Stack.Screen name="colecoes" />
               <Stack.Screen name="cosmeticos" />
               <Stack.Screen name="trofeu" />

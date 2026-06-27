@@ -166,10 +166,15 @@ export async function listarPerguntas(licaoId: string): Promise<Pergunta[]> {
  * que retornava [] no DB real (IDs FB/AT/NT) -> spinner eterno. Sem dependencia de
  * nenhum ID de modulo.
  */
-export async function listarPerguntasAleatorias(total: number): Promise<Pergunta[]> {
+export async function listarPerguntasAleatorias(total: number, preferirFacil = false): Promise<Pergunta[]> {
   const n = Math.max(0, Math.floor(total));
   try {
     const db = getDatabase();
+    // V23.9 (I.2 Modo Kids): preferir perguntas FACIL no topo (ordena FACIL antes, depois
+    // aleatorio) — conteudo mais adequado a criancas sem deixar de variar.
+    const ordem = preferirFacil
+      ? "ORDER BY (CASE WHEN dificuldade = 'FACIL' THEN 0 ELSE 1 END), RANDOM()"
+      : 'ORDER BY RANDOM()';
     const rows = db.getAllSync<{
       id: string;
       licao_id: string;
@@ -179,7 +184,7 @@ export async function listarPerguntasAleatorias(total: number): Promise<Pergunta
       tipo: 'ABERTA' | 'MULTIPLA_ESCOLHA';
       dificuldade: 'FACIL' | 'MEDIO' | 'DIFICIL';
     }>(
-      'SELECT id, licao_id, ordem, texto, resposta_canonica, tipo, dificuldade FROM perguntas ORDER BY RANDOM() LIMIT ?',
+      `SELECT id, licao_id, ordem, texto, resposta_canonica, tipo, dificuldade FROM perguntas ${ordem} LIMIT ?`,
       [n],
     );
     return rows;

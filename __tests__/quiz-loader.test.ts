@@ -13,12 +13,19 @@
 const mockListarLicoes = jest.fn();
 const mockListarPerguntas = jest.fn();
 const mockListarPerguntasAleatorias = jest.fn();
+const mockObterTipoAtivo = jest.fn();
 
 jest.mock('../src/lib/db-queries', () => ({
   __esModule: true,
   listarLicoes: (...a: unknown[]) => mockListarLicoes(...a),
   listarPerguntas: (...a: unknown[]) => mockListarPerguntas(...a),
   listarPerguntasAleatorias: (...a: unknown[]) => mockListarPerguntasAleatorias(...a),
+}));
+
+// V23.9 (I.2): quiz-loader le o tipo do perfil ativo (Modo Kids) — mock para nao puxar o DB.
+jest.mock('../src/lib/perfis', () => ({
+  __esModule: true,
+  obterTipoAtivo: (...a: unknown[]) => mockObterTipoAtivo(...a),
 }));
 
 import {
@@ -42,6 +49,8 @@ beforeEach(() => {
   mockListarLicoes.mockReset();
   mockListarPerguntas.mockReset();
   mockListarPerguntasAleatorias.mockReset();
+  mockObterTipoAtivo.mockReset();
+  mockObterTipoAtivo.mockResolvedValue('normal'); // default: perfil adulto
   // aleatorio: devolve N perguntas globais
   mockListarPerguntasAleatorias.mockImplementation(async (n: number) =>
     Array.from({ length: n }, (_, i) => fakePergunta(`RAND-Q${i}`, 'GLOBAL')),
@@ -83,6 +92,19 @@ describe('carregarPerguntasQuiz - aleatorio (REGRESSAO do spinner eterno)', () =
     const out = await carregarPerguntasQuiz(5);
     expect(out).toHaveLength(5);
     expect(mockListarPerguntasAleatorias).toHaveBeenCalledWith(5);
+  });
+});
+
+describe('carregarPerguntasQuiz - Modo Kids (I.2)', () => {
+  it('perfil kids prioriza FACIL (preferirFacil=true)', async () => {
+    mockObterTipoAtivo.mockResolvedValue('kids');
+    await carregarPerguntasQuiz(10, 'aleatorio');
+    expect(mockListarPerguntasAleatorias).toHaveBeenCalledWith(10, true);
+  });
+  it('perfil adulto NAO passa o 2o arg (compat de contrato)', async () => {
+    mockObterTipoAtivo.mockResolvedValue('normal');
+    await carregarPerguntasQuiz(10, 'aleatorio');
+    expect(mockListarPerguntasAleatorias).toHaveBeenCalledWith(10);
   });
 });
 

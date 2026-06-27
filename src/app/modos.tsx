@@ -8,6 +8,7 @@ import { versiculoDeHoje, textoCompartilhavel } from '../lib/versiculo-do-dia';
 import { registrarAtividade } from '../lib/streak';
 import { contarRevisaoPendente } from '../lib/revisao';
 import { contarCompletar } from '../lib/completar';
+import { obterPerfilAtivo, type Perfil } from '../lib/perfis';
 
 /**
  * Tela 2: Selecao de modo (Quiz Biblico / Licoes).
@@ -27,6 +28,8 @@ export default function ModosScreen() {
   // V23.5 (D.2/D.3): revisao pendente (badge) + disponibilidade do "completar versiculo".
   const [revisaoPendente, setRevisaoPendente] = useState(0);
   const [temCompletar, setTemCompletar] = useState(false);
+  // V23.9 (I): perfil ativo (nome + tipo) para o seletor de perfis.
+  const [perfil, setPerfil] = useState<Perfil | null>(null);
 
   const compartilharVersiculo = () => {
     Share.share({ message: textoCompartilhavel(versiculo) }).catch((e: unknown) =>
@@ -53,6 +56,9 @@ export default function ModosScreen() {
       });
       contarCompletar().then((n) => {
         if (ativo) setTemCompletar(n > 0);
+      });
+      obterPerfilAtivo().then((p) => {
+        if (ativo) setPerfil(p);
       });
       return () => {
         ativo = false;
@@ -82,6 +88,22 @@ export default function ModosScreen() {
       </Pressable>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        {/* V23.9 (I.3): perfil ativo + acesso ao seletor (trocar em 1-2 toques). */}
+        {perfil ? (
+          <Pressable
+            style={styles.perfilPill}
+            onPress={() => router.push('/perfis')}
+            accessibilityRole="button"
+            accessibilityLabel={`Perfil ativo: ${perfil.nome}. Tocar para trocar de perfil`}
+          >
+            <Text style={styles.perfilPillTexto}>
+              {perfil.tipo === 'kids' ? '🧒' : '👤'} {perfil.nome}
+            </Text>
+            {perfil.tipo === 'kids' ? <Text style={styles.kidsBadge}>MODO KIDS</Text> : null}
+            <Text style={styles.perfilPillTrocar}>⇄</Text>
+          </Pressable>
+        ) : null}
+
         <Image
           source={require('../../assets/images/logo.png')}
           style={styles.logo}
@@ -258,6 +280,31 @@ const styles = StyleSheet.create({
     paddingTop: ESPACAMENTOS.xl,
     paddingBottom: ESPACAMENTOS.xl,
   },
+  // V23.9 (I.3): pill do perfil ativo (centralizada acima do logo).
+  perfilPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center',
+    gap: ESPACAMENTOS.sm,
+    backgroundColor: COLORS.roxoEscuro,
+    borderRadius: BORDAS.raioGrande,
+    borderWidth: BORDAS.larguraMedia,
+    borderColor: COLORS.laranjaBorda,
+    paddingHorizontal: ESPACAMENTOS.md,
+    paddingVertical: ESPACAMENTOS.xs,
+    marginBottom: ESPACAMENTOS.sm,
+  },
+  perfilPillTexto: { fontFamily: FONTES.bodyExtraBold, fontSize: 15, color: COLORS.branco },
+  kidsBadge: {
+    fontFamily: FONTES.display,
+    fontSize: 13,
+    color: COLORS.roxoEscuro,
+    backgroundColor: COLORS.laranjaClaro,
+    borderRadius: BORDAS.raioPequeno,
+    paddingHorizontal: ESPACAMENTOS.sm,
+    letterSpacing: 1,
+  },
+  perfilPillTrocar: { fontSize: 18, color: COLORS.laranjaClaro },
   logo: {
     // V23.D.5: logo menor (280 -> 200) para o conteudo (cards + versiculo) caber melhor.
     width: 200,

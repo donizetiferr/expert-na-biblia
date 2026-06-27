@@ -17,6 +17,7 @@ import {
   listarPerguntas,
   listarPerguntasAleatorias,
 } from './db-queries';
+import { obterTipoAtivo } from './perfis';
 import type { Pergunta } from '../types';
 
 /** Fisher-Yates — embaralha sem mutar o array original. */
@@ -51,11 +52,20 @@ export async function carregarPerguntasQuiz(
 ): Promise<Pergunta[]> {
   const modoStr = Array.isArray(modo) ? modo[0] : modo;
 
+  // V23.9 (I.2): no Modo Kids, o quiz aleatorio prioriza perguntas FACIL.
+  const kids = await obterTipoAtivo()
+    .then((t) => t === 'kids')
+    .catch(() => false);
+
+  // Passa o 2o arg (preferirFacil) APENAS no Modo Kids — mantem a chamada de 1 arg no
+  // caminho normal (compat com contratos/testes existentes).
+  const aleatorias = (n: number) => (kids ? listarPerguntasAleatorias(n, true) : listarPerguntasAleatorias(n));
+
   if (modoStr === 'custom') {
     const ids = parseModulosCsv(modulosCsv);
     if (ids.length === 0) {
       // Custom sem modulos -> degrada para aleatorio (nunca trava).
-      return listarPerguntasAleatorias(total);
+      return aleatorias(total);
     }
     const todas: Pergunta[] = [];
     for (const moduloId of ids) {
@@ -68,5 +78,5 @@ export async function carregarPerguntasQuiz(
   }
 
   // aleatorio (default)
-  return listarPerguntasAleatorias(total);
+  return aleatorias(total);
 }

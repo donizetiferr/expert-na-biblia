@@ -11,6 +11,7 @@
 import { useEffect, useState } from 'react';
 import { AccessibilityInfo } from 'react-native';
 import { loadSettings } from './settings';
+import { obterTipoAtivo } from './perfis';
 
 /** true quando animacoes intensas devem ser evitadas (setting OU sistema). */
 export function useReduceMotion(): boolean {
@@ -41,14 +42,24 @@ export function useReduceMotion(): boolean {
   return reduce;
 }
 
-/** Multiplicador de fonte: 1.18 com "Texto grande" ativo, 1 caso contrario. */
+/**
+ * Multiplicador de fonte: 1.18 com "Texto grande" ativo OU com perfil Kids ativo (V23.9
+ * I.2 — criancas leem melhor com texto maior), 1 caso contrario.
+ */
 export function useFontScale(): number {
   const [scale, setScale] = useState(1);
   useEffect(() => {
     let ativo = true;
-    loadSettings()
-      .then((s) => {
-        if (ativo) setScale(s.textoGrande ? 1.18 : 1);
+    Promise.all([
+      loadSettings()
+        .then((s) => s.textoGrande)
+        .catch(() => false),
+      obterTipoAtivo()
+        .then((t) => t === 'kids')
+        .catch(() => false),
+    ])
+      .then(([textoGrande, kids]) => {
+        if (ativo) setScale(textoGrande || kids ? 1.18 : 1);
       })
       .catch(() => {});
     return () => {
@@ -56,4 +67,21 @@ export function useFontScale(): number {
     };
   }, []);
   return scale;
+}
+
+/** Hook simples: true se o perfil ativo e' Kids (para badges/copy/conteudo adaptado). */
+export function useModoKids(): boolean {
+  const [kids, setKids] = useState(false);
+  useEffect(() => {
+    let ativo = true;
+    obterTipoAtivo()
+      .then((t) => {
+        if (ativo) setKids(t === 'kids');
+      })
+      .catch(() => {});
+    return () => {
+      ativo = false;
+    };
+  }, []);
+  return kids;
 }

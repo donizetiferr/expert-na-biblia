@@ -219,11 +219,42 @@ export async function runMigrations(): Promise<{ applied: number; skipped: numbe
     );
   `;
 
+  // Migration 005 (V23.9 — milestone I): multi-perfil local (familia/multi-idade).
+  // - perfis: cada perfil local (sem login/backend) com nome + tipo (normal|kids).
+  // - perfil_ativo: singleton (id=1) apontando para o perfil cujo progresso esta "ao vivo"
+  //   nas tabelas globais (modulos.concluido, licoes.concluida, user_xp, ...).
+  // - perfil_estado: snapshot (JSON por tabela) do progresso dos perfis INATIVOS. Ao trocar
+  //   de perfil, o ativo e' snapshotado aqui e o destino e' restaurado para as tabelas globais.
+  // O perfil "default" (criado no bootstrap garantirPerfilPadrao) herda o progresso global
+  // atual SEM snapshot — preserva os dados existentes de quem ja usa o app.
+  const migration005 = `
+    CREATE TABLE IF NOT EXISTS perfis (
+      id TEXT PRIMARY KEY,
+      nome TEXT NOT NULL,
+      tipo TEXT NOT NULL DEFAULT 'normal' CHECK (tipo IN ('normal', 'kids')),
+      avatar TEXT,
+      criado_em TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS perfil_ativo (
+      id INTEGER PRIMARY KEY CHECK (id = 1),
+      perfil_id TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS perfil_estado (
+      perfil_id TEXT NOT NULL,
+      chave TEXT NOT NULL,
+      dados TEXT NOT NULL,
+      PRIMARY KEY (perfil_id, chave)
+    );
+  `;
+
   const MIGRATIONS: Migration[] = [
     { name: '001_initial', sql: migration001 },
     { name: '002_engajamento', sql: migration002 },
     { name: '003_aprendizado', sql: migration003 },
     { name: '004_cosmeticos', sql: migration004 },
+    { name: '005_perfis', sql: migration005 },
   ];
 
   let applied = 0;
