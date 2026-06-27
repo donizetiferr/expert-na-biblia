@@ -32,10 +32,9 @@ todos os módulos são concluídos.
   - Peculiaridade: M2.7 retorna tags `think...` que devem ser filtradas antes de exibir
 - **Banco de perguntas**: **SQLite embarcado no device** (expo-sqlite)
   - 4.345 perguntas + respostas canonicas pre-geradas via M3 (batch offline antes do APK)
-- **Backend**: Node.js + Express em Railway/Render free tier ($0-5/mes)
-  - Endpoint: POST /avaliar { pergunta, respostaUsuario }
-  - Chama M3 quando resposta nao da match canonico local
-  - Caching: respostas M3 com score>=0.85 sao salvas como canonicas para proxima vez
+- **Backend dedicado**: DESCARTADO (decisao V9). O app chama a IA (Minimax M2.7, fallback OpenAI)
+  DIRETO via HTTPS — sem servidor proprio. Avaliacao hibrida: match canonico local (>=85%) -> M2.7 -> OpenAI;
+  respostas da IA com score alto sao cacheadas localmente como canonicas (respostas_canonicas_cache).
 - **Assets visuais**: ja fornecidos via Google Drive (logo, paleta, personagens, telas mockadas)
 - **aesthetic_direction**: `editorial/magazine` (comic book moderno, exuberante, "Parabéns, você é um Expert!" estilo gibi)
 - **reference_visual**:

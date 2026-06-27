@@ -298,3 +298,14 @@ Estado: V23.11_ENTREGUE_COMPROVADO
   provando a concessao real de XP. K.1 sazonal unit-tested (sem evento em junho, correto). K.3 win-back
   wired. Evidencias: orchestration/v23_11_validation/ (VALIDACAO.md + 00..02).
 - Git: commit LOCAL. Proxima: V23.12 = V22 backlog tecnico aplicavel.
+
+## V23.12 — ENTREGUE COMPROVADO (2026-06-27, v1.23.0/vc18) — backlog tecnico V22 aplicavel
+Estado: V23.12_ENTREGUE_COMPROVADO
+- Escopo: A.3 (botoes feedback responsivos), A.4 (loading/erro/vazio em [moduloId]), A.5 (listarModuloPorId),
+  B.4 (header voltar padronizado), C.4 (.env.example), C.5 (CLAUDE.md backend obsoleto removido), C.6
+  (app.json.bak/.full removidos). A.1 ja estava ok (import aliased); B.2/B.3 entregues na V23.6.
+- Gates: tsc 0 | jest 216/216 | eslint 0. Build BUILD SUCCESSFUL. APK 105MB; dist podado 5.
+- VALIDACAO EMPIRICA emulador (UPGRADE sobre V23.11, 0 FATAL): tela do modulo "Alfabetizacao Biblica" com
+  header novo (‹ + titulo) + lista carregada (licao 01 ✓100/100, 02 liberada, 03+ bloqueadas) — sem
+  regressao. Evidencias: orchestration/v23_12_validation/ (VALIDACAO.md + 02_modulo).
+- Git: commit LOCAL. Proxima: V23.13 = G.6 git cleanup (POR ULTIMO) + save-state (FASE 3).

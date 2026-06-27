@@ -1,8 +1,8 @@
-import { View, Text, FlatList, Pressable, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Pressable, StyleSheet, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../constants/colors';
-import { listarLicoes, listarModulos } from '../../lib/db-queries';
+import { listarLicoes, listarModuloPorId } from '../../lib/db-queries';
 import { GradienteRoxo } from '../../components/Gradiente';
 import type { Licao, Modulo } from '../../types';
 
@@ -10,25 +10,37 @@ import type { Licao, Modulo } from '../../types';
  * Tela Licoes 2: Lista de licoes dentro do modulo (cadeado sequencial).
  * V10 M5.3: header mostra o NOME do modulo (ex: "Alfabetização Bíblica") em vez do codigo (FB01).
  * V10 M5.5: container com fundo creme (briefing), nao roxo.
+ * V23.12 (V22.A.4/A.5/B.4): estado loading/erro/vazio + listarModuloPorId (query leve) +
+ * header de voltar padronizado.
  */
 export default function ModuloScreen() {
   const router = useRouter();
   const { moduloId } = useLocalSearchParams<{ moduloId: string }>();
   const [licoes, setLicoes] = useState<Licao[]>([]);
   const [modulo, setModulo] = useState<Modulo | null>(null);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState(false);
 
   useEffect(() => {
-    if (moduloId) listarLicoes(moduloId).then(setLicoes);
-  }, [moduloId]);
-
-  // M5.3: carregar o modulo pelo ID para mostrar o NOME no header
-  useEffect(() => {
-    if (moduloId) {
-      listarModulos().then((mods) => {
-        const m = mods.find((x) => x.id === moduloId);
-        if (m) setModulo(m);
+    if (!moduloId) return;
+    let ativo = true;
+    setCarregando(true);
+    setErro(false);
+    Promise.all([listarLicoes(moduloId), listarModuloPorId(moduloId)])
+      .then(([ls, m]) => {
+        if (!ativo) return;
+        setLicoes(ls);
+        setModulo(m);
+      })
+      .catch(() => {
+        if (ativo) setErro(true);
+      })
+      .finally(() => {
+        if (ativo) setCarregando(false);
       });
-    }
+    return () => {
+      ativo = false;
+    };
   }, [moduloId]);
 
   const liberado = (index: number): boolean => {
@@ -92,17 +104,43 @@ export default function ModuloScreen() {
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => router.back()} style={styles.voltar}>
-        <Text style={styles.voltarTexto}>← Voltar</Text>
-      </Pressable>
-      {/* M5.3: header mostra NOME do modulo em vez de codigo */}
-      <Text style={styles.titulo}>{modulo?.nome ?? moduloId}</Text>
-      <FlatList
-        data={licoes}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={styles.lista}
-      />
+      {/* V23.12 (V22.B.4): header de voltar padronizado (‹ + titulo centralizado). */}
+      <View style={styles.topo}>
+        <Pressable onPress={() => router.back()} style={styles.voltar} accessibilityRole="button" accessibilityLabel="Voltar">
+          <Text style={styles.voltarTexto}>‹</Text>
+        </Pressable>
+        {/* M5.3: header mostra NOME do modulo em vez de codigo */}
+        <Text style={styles.titulo} numberOfLines={1}>{modulo?.nome ?? moduloId}</Text>
+        <View style={styles.voltar} />
+      </View>
+
+      {/* V23.12 (V22.A.4): estados de loading / erro / vazio — a tela nunca fica em branco. */}
+      {carregando ? (
+        <View style={styles.centro}>
+          <ActivityIndicator size="large" color={COLORS.roxoPrimario} />
+        </View>
+      ) : erro ? (
+        <View style={styles.centro}>
+          <Text style={styles.mensagem}>Não foi possível carregar as lições.</Text>
+          <Pressable style={styles.botaoVoltar} onPress={() => router.back()} accessibilityRole="button" accessibilityLabel="Voltar aos módulos">
+            <Text style={styles.botaoVoltarTexto}>Voltar aos módulos</Text>
+          </Pressable>
+        </View>
+      ) : licoes.length === 0 ? (
+        <View style={styles.centro}>
+          <Text style={styles.mensagem}>Nenhuma lição encontrada neste módulo.</Text>
+          <Pressable style={styles.botaoVoltar} onPress={() => router.back()} accessibilityRole="button" accessibilityLabel="Voltar aos módulos">
+            <Text style={styles.botaoVoltarTexto}>Voltar aos módulos</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <FlatList
+          data={licoes}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          contentContainerStyle={styles.lista}
+        />
+      )}
     </View>
   );
 }
@@ -113,19 +151,35 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.creme,  // M5.5: briefing diz creme, nao roxo
     padding: ESPACAMENTOS.md,
   },
-  voltar: { padding: ESPACAMENTOS.sm, marginBottom: ESPACAMENTOS.sm },
-  voltarTexto: {
-    fontFamily: FONTES.bodyBold,
-    fontSize: 16,
-    color: COLORS.laranjaEscuro,
-  },
-  titulo: {
-    fontFamily: FONTES.display,
-    fontSize: 32,
-    color: COLORS.roxoEscuro,
-    textAlign: 'center',
+  // V23.12 (V22.B.4): header padronizado (‹ a esquerda + titulo centralizado).
+  topo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: ESPACAMENTOS.md,
   },
+  voltar: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
+  voltarTexto: {
+    fontFamily: FONTES.display,
+    fontSize: 40,
+    color: COLORS.roxoEscuro,
+  },
+  titulo: {
+    flex: 1,
+    fontFamily: FONTES.display,
+    fontSize: 28,
+    color: COLORS.roxoEscuro,
+    textAlign: 'center',
+  },
+  centro: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: ESPACAMENTOS.md, padding: ESPACAMENTOS.lg },
+  mensagem: { fontFamily: FONTES.bodyBold, fontSize: 16, color: COLORS.cinzaEscuro, textAlign: 'center' },
+  botaoVoltar: {
+    backgroundColor: COLORS.roxoEscuro,
+    borderRadius: BORDAS.raioMedio,
+    paddingHorizontal: ESPACAMENTOS.lg,
+    paddingVertical: ESPACAMENTOS.sm,
+  },
+  botaoVoltarTexto: { fontFamily: FONTES.bodyExtraBold, fontSize: 15, color: COLORS.laranjaClaro },
   lista: {
     gap: ESPACAMENTOS.sm,
   },

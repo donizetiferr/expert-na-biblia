@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet, Animated, Easing, ScrollView } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Animated, Easing, ScrollView, useWindowDimensions } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../../../constants/colors';
@@ -34,6 +34,11 @@ export default function FeedbackScreen() {
     erradas: string;
     referencia: string;
   }>();
+
+  // V23.12 (V22.A.3): botoes circulares responsivos — em telas estreitas (<360px) usar
+  // 110px evita o overflow de dois botoes 140px lado a lado.
+  const { width } = useWindowDimensions();
+  const botaoSize = width < 360 ? 110 : 140;
 
   const isAcerto = params.resultado === 'acerto';
   // V20: feedback textual da IA (M2.7/OpenAI) quando a avaliacao passou pelo LLM.
@@ -213,7 +218,7 @@ export default function FeedbackScreen() {
       {isAcerto ? (
         <View style={styles.botoesContainer}>
           <Pressable
-            style={[styles.botaoRedondo, styles.botaoSolido]}
+            style={[styles.botaoRedondo, styles.botaoSolido, { width: botaoSize, height: botaoSize, borderRadius: botaoSize / 2 }]}
             onPress={handleProsseguir}
             accessibilityRole="button"
             accessibilityLabel="Prosseguir para a próxima"
@@ -224,13 +229,13 @@ export default function FeedbackScreen() {
       ) : (
         <View style={styles.botoesContainer}>
           <Pressable
-            style={[styles.botaoRedondo, styles.botaoSecundario]}
+            style={[styles.botaoRedondo, styles.botaoSecundario, { width: botaoSize, height: botaoSize, borderRadius: botaoSize / 2 }]}
             onPress={handleVoltar}
           >
             <Text style={[styles.botaoTexto, styles.botaoTextoPreto]}>‹ VOLTAR</Text>
           </Pressable>
           <Pressable
-            style={[styles.botaoRedondo, styles.botaoSolido]}
+            style={[styles.botaoRedondo, styles.botaoSolido, { width: botaoSize, height: botaoSize, borderRadius: botaoSize / 2 }]}
             onPress={handleProsseguir}
           >
             <Text style={styles.botaoTexto}>PROSSEGUIR ›</Text>

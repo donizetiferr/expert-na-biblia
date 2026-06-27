@@ -118,6 +118,26 @@ export async function listarModulos(): Promise<Modulo[]> {
   }
 }
 
+/**
+ * V23.12 (V22.A.5): busca 1 modulo pelo id (query leve WHERE id=?) em vez de carregar os
+ * 40 modulos e filtrar em memoria a cada navegacao para a tela do modulo.
+ */
+export async function listarModuloPorId(id: string): Promise<Modulo | null> {
+  try {
+    const db = getDatabase();
+    const row = db.getFirstSync<{
+      id: string;
+      ordem: number;
+      area: 'FB' | 'AT' | 'NT' | 'TE';
+      nome: string;
+      concluido: number;
+    }>('SELECT id, ordem, area, nome, concluido FROM modulos WHERE id = ?', [id]);
+    return row ? { ...row, concluido: row.concluido === 1 } : null;
+  } catch {
+    return MOCK_MODULOS.find((m) => m.id === id) ?? null;
+  }
+}
+
 export async function listarLicoes(moduloId: string): Promise<Licao[]> {
   try {
     const db = getDatabase();

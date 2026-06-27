@@ -415,7 +415,14 @@ O projeto está **funcional e estável** (97 testes passando, build OK, APK V21 
 
 ---
 
-## Milestone V22.A: Bugs e correções de código (CORRECAO) — PENDENTE
+> **STATUS V23.12 (2026-06-27) — backlog técnico V22 aplicável entregue (COMPROVADO no emulador):**
+> A.3 (botões feedback responsivos <360px), A.4 (loading/erro/vazio em [moduloId]), A.5 (listarModuloPorId
+> query leve), B.4 (header voltar padronizado em [moduloId]), C.4 (.env.example documentado), C.5 (CLAUDE.md:
+> removida menção a backend Node.js obsoleto), C.6 (removidos app.json.bak/.full). A.1 já estava resolvido
+> (import aliased SplashScreenLib); B.2/B.3 entregues na V23.6 (animações/haptics). Restantes (A.2 obsoleto
+> pós-trilha H.1, B.1 ícones de volume) são polish de baixa prioridade — backlog.
+
+## Milestone V22.A: Bugs e correções de código (CORRECAO) — PARCIAL (V23.12: A.3/A.4/A.5; A.1 já ok)
 
 - [ ] V22.A.1 **FIX: SplashScreen import shadowing em index.tsx** — CORRECAO | MEDIA | INVESTIGACAO | AUTONOMO
   - `src/app/index.tsx:21` nomeia o componente `SplashScreen` que shadoweia o import `SplashScreenLib` da linha 3. Funciona em runtime mas confunde desenvolvedores e lint.

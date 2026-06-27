@@ -2,6 +2,28 @@
 
 Todas as mudancas relevantes neste projeto.
 
+## [1.23.0] (V23.12) - 2026-06-27 (FASE 1 — Backlog técnico V22 aplicável)
+
+> Correções e polish do plano V22. Gates: tsc 0 | jest 216/216 | eslint 0.
+> COMPROVADO no emulador hi-res (upgrade sobre V23.11, 0 FATAL) — evidências em orchestration/v23_12_validation/.
+
+### Corrigido / melhorado
+- **[V22.A.4] Estados de carregamento/erro/vazio** em `licoes/[moduloId].tsx`: spinner ao carregar, mensagem
+  de erro e "Nenhuma lição encontrada" com botão de voltar — a tela nunca mais fica em branco.
+- **[V22.A.5] Query leve `listarModuloPorId`**: a tela do módulo busca 1 módulo por id (WHERE id=?) em vez
+  de carregar os 40 módulos e filtrar em memória a cada navegação.
+- **[V22.B.4] Header de voltar padronizado** em `licoes/[moduloId].tsx` (‹ + título centralizado),
+  consistente com as demais telas.
+- **[V22.A.3] Botões de feedback responsivos**: em telas estreitas (<360px) os botões circulares passam de
+  140 para 110px, evitando overflow.
+- **[V22.C.4]** `.env.example` documentado (MINIMAX_API_KEY/OPENAI_API_KEY + como obter/configurar).
+- **[V22.C.5]** CLAUDE.md: removida a menção obsoleta a backend Node.js dedicado (app chama a IA direto).
+- **[V22.C.6]** Removidos `app.json.bak` / `app.json.full` (resquícios de debug).
+
+### Nota
+- V22.A.1 (SplashScreen shadowing) já estava resolvido (import aliased `SplashScreenLib`); V22.B.2/B.3
+  (animações/haptics) entregues na V23.6.
+
 ## [1.22.0] (V23.11) - 2026-06-27 (FASE 1 — Sazonais, desafios e win-back: milestone K)
 
 > Milestone V23.K (motivos recorrentes de voltar). Gates: tsc 0 | jest 216/216 (+13) | eslint 0.
