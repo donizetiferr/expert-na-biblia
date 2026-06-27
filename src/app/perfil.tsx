@@ -3,8 +3,10 @@ import { useCallback, useState } from 'react';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../constants/colors';
 import { HeaderProgresso } from '../components/HeaderProgresso';
+import { PersonagemLivro } from '../components/PersonagemLivro';
 import { BADGES, listarBadgesDesbloqueadas } from '../lib/badges';
-import { listarRankings, contarModulosPorArea } from '../lib/db-queries';
+import { listarRankings, contarModulosPorArea, obterRecordes } from '../lib/db-queries';
+import { obterResumoXp } from '../lib/xp';
 
 /**
  * V23.B.2: Tela de Perfil / "Meu Progresso". Centraliza o "porque continuar":
@@ -23,21 +25,28 @@ export default function PerfilScreen() {
   const [desbloqueadas, setDesbloqueadas] = useState<Set<string>>(new Set());
   const [areas, setAreas] = useState<Array<{ area: string; total: number; concluidos: number }>>([]);
   const [historico, setHistorico] = useState<Array<{ data: string; score: number; tipo: string }>>([]);
+  // V23.B.6: nivel do mascote | V23.B.4: recordes pessoais.
+  const [nivel, setNivel] = useState(1);
+  const [recordes, setRecordes] = useState<{ quiz: number; licoes: number }>({ quiz: 0, licoes: 0 });
 
   useFocusEffect(
     useCallback(() => {
       let ativo = true;
       (async () => {
         try {
-          const [badges, areasData, rankings] = await Promise.all([
+          const [badges, areasData, rankings, resumo, recs] = await Promise.all([
             listarBadgesDesbloqueadas(),
             contarModulosPorArea(),
             listarRankings(10),
+            obterResumoXp(),
+            obterRecordes(),
           ]);
           if (!ativo) return;
           setDesbloqueadas(new Set(badges.map((b) => b.tipo)));
           setAreas(areasData);
           setHistorico(rankings);
+          setNivel(resumo.nivel);
+          setRecordes(recs);
         } catch {
           // silencioso
         }
@@ -62,7 +71,24 @@ export default function PerfilScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        {/* V23.B.6: mascote evolui com o nivel (aura dourada cresce). */}
+        <View style={styles.mascoteWrapper}>
+          <PersonagemLivro pose="EXCLAMANDO" size={120} variante="licoes" nivel={nivel} />
+          <Text style={styles.mascoteNivel}>Nível {nivel}</Text>
+        </View>
+
         <HeaderProgresso />
+
+        {/* V23.B.4: recordes pessoais (meta a superar) */}
+        {recordes.quiz > 0 || recordes.licoes > 0 ? (
+          <View style={styles.secao}>
+            <Text style={styles.secaoTitulo}>Recordes</Text>
+            <View style={styles.areaLinha}>
+              <Text style={styles.areaNome}>🎲 Melhor Quiz</Text>
+              <Text style={styles.areaValor}>{Math.round(recordes.quiz * 100)}%</Text>
+            </View>
+          </View>
+        ) : null}
 
         {/* Detalhamento por area */}
         {areas.length > 0 ? (
@@ -137,6 +163,13 @@ const styles = StyleSheet.create({
   voltarTexto: { fontFamily: FONTES.display, fontSize: 40, color: COLORS.roxoEscuro },
   tituloTela: { fontFamily: FONTES.display, fontSize: 30, color: COLORS.roxoEscuro, letterSpacing: 1 },
   scroll: { paddingBottom: ESPACAMENTOS.xxl, gap: ESPACAMENTOS.md },
+  mascoteWrapper: { alignItems: 'center', paddingTop: ESPACAMENTOS.sm, gap: ESPACAMENTOS.xs },
+  mascoteNivel: {
+    fontFamily: FONTES.display,
+    fontSize: 22,
+    color: COLORS.laranjaForte,
+    letterSpacing: 1,
+  },
   secao: {
     marginHorizontal: ESPACAMENTOS.lg,
     backgroundColor: COLORS.branco,

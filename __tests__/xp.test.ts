@@ -17,6 +17,7 @@ import {
   resumoXp,
   calcularXpLicao,
   calcularXpQuiz,
+  calcularBonusCombo,
   XP_POR_ACERTO,
   XP_BONUS_LICAO_100,
 } from '../src/lib/xp';
@@ -85,5 +86,16 @@ describe('xp - calcularXpQuiz', () => {
   it('5 XP por acerto', () => {
     expect(calcularXpQuiz(13)).toBe(13 * XP_POR_ACERTO);
     expect(calcularXpQuiz(0)).toBe(0);
+  });
+});
+
+describe('xp - calcularBonusCombo (V23.B.5)', () => {
+  it('sem bonus para combo < 3', () => {
+    expect(calcularBonusCombo(0)).toBe(0);
+    expect(calcularBonusCombo(2)).toBe(0);
+  });
+  it('+2 XP por acerto do combo a partir de 3', () => {
+    expect(calcularBonusCombo(3)).toBe(6);
+    expect(calcularBonusCombo(10)).toBe(20);
   });
 });

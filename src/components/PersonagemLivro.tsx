@@ -28,6 +28,9 @@ interface Props {
   pose?: Pose;
   size?: number;
   variante?: Variante;
+  // V23.B.6: o mascote evolui com o NIVEL de XP — ganha uma aura/glow dourada que
+  // intensifica nos niveis altos (driver de retencao: "meu personagem cresceu").
+  nivel?: number;
 }
 
 // Set ROXO (Personagem 2 — modo Quiz). 5 poses completas.
@@ -49,10 +52,24 @@ const IMAGENS_LICOES: Record<Pose, ImageSourcePropType> = {
   EXCLAMANDO: require('../../assets/images/personagem_licoes_exclamando.png') as ImageSourcePropType,
 };
 
-export function PersonagemLivro({ pose = 'PENSATIVO', size = 120, variante = 'quiz' }: Props) {
+export function PersonagemLivro({ pose = 'PENSATIVO', size = 120, variante = 'quiz', nivel = 1 }: Props) {
   const imagensPose = variante === 'licoes' ? IMAGENS_LICOES : IMAGENS_QUIZ;
   const bounceAnim = useRef(new Animated.Value(0)).current;
   const blinkAnim = useRef(new Animated.Value(1)).current;
+
+  // V23.B.6: aura/glow estatica (sem loop) que cresce com o nivel. A partir do nivel 2,
+  // o mascote ganha um brilho dourado cada vez mais forte (cap no nivel 6).
+  const auraIntensidade = Math.min(Math.max(nivel - 1, 0), 5); // 0..5
+  const glowStyle =
+    auraIntensidade > 0
+      ? {
+          shadowColor: '#fded48',
+          shadowOffset: { width: 0, height: 0 },
+          shadowOpacity: 0.35 + auraIntensidade * 0.1,
+          shadowRadius: 6 + auraIntensidade * 4,
+          elevation: auraIntensidade * 2,
+        }
+      : null;
 
   useEffect(() => {
     Animated.loop(
@@ -72,7 +89,7 @@ export function PersonagemLivro({ pose = 'PENSATIVO', size = 120, variante = 'qu
   }, [bounceAnim, blinkAnim]);
 
   return (
-    <Animated.View style={[styles.container, { transform: [{ translateY: bounceAnim }] }]}>
+    <Animated.View style={[styles.container, glowStyle, { transform: [{ translateY: bounceAnim }] }]}>
       <Animated.Image
         source={imagensPose[pose]}
         // PNG transparente direto sobre o fundo da tela (sem moldura/caixa).

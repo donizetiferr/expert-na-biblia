@@ -2,7 +2,30 @@
 
 Todas as mudancas relevantes neste projeto.
 
-## [1.13.0] (V23.2) - 2026-06-26 (FASE 1 — Nucleo de retencao completo: notificacoes + recompensa variavel + refazer-so-erradas + persistencia)
+## [1.14.0] (V23.3) - 2026-06-27 (FASE 1 — Recompensa/conquista avancada: leaderboard + combo + mascote evolui + continuar)
+
+> Completa o milestone V23.B + V23.C.2. Gates: tsc 0 | jest 139/139 (+2) | eslint 0.
+
+### Adicionado
+- **[B.4] Recordes pessoais / leaderboard local**: `obterRecordes()` (melhor score por tipo) lido na
+  tela de Perfil (secao "Recordes") — `user_rankings` agora tem leitura completa (historico V23.1 +
+  recordes). Self-vs-self, meta a superar.
+- **[B.5] Combo de acertos no Quiz**: contador de acertos consecutivos em `quiz/jogar.tsx`; indicador
+  "🔥 Nx COMBO!" a partir de 2; SFX (`playCombo`) nos marcos 3/5/10; zera ao errar/timeout. O maior
+  combo vira bonus de XP no final (`calcularBonusCombo`: +2 XP/acerto a partir de 3 seguidos),
+  exibido como "🔥 Combo Nx! +X XP".
+- **[B.6] Mascote evolui com o NIVEL de XP**: `PersonagemLivro` ganhou prop `nivel` — aura/glow
+  dourada que intensifica nos niveis altos (estatica, sem loop). Exibido na tela de Perfil com
+  "Nível N".
+- **[C.2] Continuar de onde parou**: `proximaLicaoPendente()` (1a licao nao concluida do 1o modulo
+  liberado, respeitando o cadeado sequencial); CTA "▶ CONTINUAR" no topo de /modos (1 toque ->
+  proxima atividade pendente).
+- **Fix (achado na validacao V23.2)**: tela de Config virou `ScrollView` — havia estourado a dobra
+  com as novas opcoes (meta + reduzir animacoes + backup) num `View` fixo nao-rolavel.
+
+### Testes
+- +2 testes (137 -> 139): `calcularBonusCombo` (sem bonus < 3, +2/acerto a partir de 3).
+
 
 > Completa o milestone V23.A (engajamento). Respeita as decisoes de produto V23.1 (sem punicao,
 > tom de progresso). Gates: tsc 0 | jest 137/137 (+9) | eslint 0.

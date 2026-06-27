@@ -6,6 +6,7 @@ import type { Modulo, Licao, Pergunta } from '../types';
  */
 
 import { getDatabase } from '../db/database';
+import { moduloLiberado } from './progressao';
 
 /**
  * V18.1 (MA.1): mock ALINHADO ao esquema REAL do DB (FB##/AT##/NT##, 40 modulos:
@@ -291,6 +292,48 @@ export async function contarModulosPorArea(): Promise<Array<{ area: string; tota
     );
   } catch {
     return [];
+  }
+}
+
+/**
+ * V23.B.4: recordes pessoais (melhor score por tipo) — meta a superar (self-vs-self).
+ */
+export async function obterRecordes(): Promise<{ quiz: number; licoes: number }> {
+  try {
+    const db = getDatabase();
+    const rows = db.getAllSync<{ tipo: string; melhor: number }>(
+      'SELECT tipo, MAX(score) AS melhor FROM user_rankings GROUP BY tipo',
+    );
+    let quiz = 0;
+    let licoes = 0;
+    for (const r of rows) {
+      if (r.tipo === 'QUIZ') quiz = r.melhor ?? 0;
+      else if (r.tipo === 'LICOES') licoes = r.melhor ?? 0;
+    }
+    return { quiz, licoes };
+  } catch {
+    return { quiz: 0, licoes: 0 };
+  }
+}
+
+/**
+ * V23.C.2: proxima licao pendente (continuar de onde parou). Percorre os modulos
+ * liberados em ordem e retorna a 1a licao nao concluida do 1o modulo liberado com
+ * pendencia. Respeita o cadeado sequencial (para no 1o modulo bloqueado).
+ */
+export async function proximaLicaoPendente(): Promise<{ moduloId: string; licaoId: string } | null> {
+  try {
+    const modulos = await listarModulos();
+    for (let i = 0; i < modulos.length; i++) {
+      if (!moduloLiberado(i, modulos)) break;
+      const m = modulos[i]!;
+      const licoes = await listarLicoes(m.id);
+      const pendente = licoes.find((l) => !l.concluida);
+      if (pendente) return { moduloId: m.id, licaoId: pendente.id };
+    }
+    return null;
+  } catch {
+    return null;
   }
 }
 

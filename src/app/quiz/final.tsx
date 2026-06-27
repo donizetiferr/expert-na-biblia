@@ -5,7 +5,7 @@ import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../constants/colors';
 import { getDatabase } from '../../db/database';
 import { PersonagemLivro, type Pose } from '../../components/PersonagemLivro';
 import { GradienteLaranjaForte } from '../../components/Gradiente';
-import { calcularXpQuiz, concederXp } from '../../lib/xp';
+import { calcularXpQuiz, calcularBonusCombo, concederXp } from '../../lib/xp';
 import { registrarAtividade } from '../../lib/streak';
 import { verificarMetaEConcederBonus } from '../../lib/meta';
 import { verificarBadgesQuiz, type BadgeDef } from '../../lib/badges';
@@ -18,12 +18,14 @@ import { ModalBadges } from '../../components/ModalBadges';
 export default function QuizFinal() {
   const router = useRouter();
   // V19 BUG-5: le acertos + total para exibir "Voce acertou X de N" (briefing).
-  const { score, acertos, total } = useLocalSearchParams<{
+  const { score, acertos, total, combo } = useLocalSearchParams<{
     score?: string;
     acertos?: string;
     total?: string;
+    combo?: string;
   }>();
   const s = parseInt(score ?? '0', 10);
+  const comboMax = parseInt(combo ?? '0', 10);
   const nAcertos = parseInt(acertos ?? '0', 10);
   const nTotal = parseInt(total ?? '20', 10);
 
@@ -51,9 +53,10 @@ export default function QuizFinal() {
 
   const cfg = configs[variante];
 
-  // V23.A.1/A.3/B.1: XP do quiz + bonus de meta + badges (quiz perfeito/streak).
+  // V23.A.1/A.3/B.1/B.5: XP do quiz + bonus de meta + bonus de combo + badges.
   const [xpGanho, setXpGanho] = useState(0);
   const [metaBonus, setMetaBonus] = useState(0);
+  const [comboBonus, setComboBonus] = useState(0);
   const [badgesNovos, setBadgesNovos] = useState<BadgeDef[]>([]);
   const recompensaAplicadaRef = useRef(false);
 
@@ -90,8 +93,14 @@ export default function QuizFinal() {
           await concederXp(xp, 'QUIZ');
           if (ativo) setXpGanho(xp);
         }
+        // V23.B.5: bonus pelo maior combo de acertos seguidos.
+        const cBonus = calcularBonusCombo(comboMax);
+        if (cBonus > 0) {
+          await concederXp(cBonus, 'QUIZ');
+          if (ativo) setComboBonus(cBonus);
+        }
         await registrarAtividade();
-        // V23.A.3: bonus de meta diaria, se batida agora.
+        // V23.A.3: bonus de meta diaria, se batida agora (apos somar XP do quiz+combo).
         const bonus = await verificarMetaEConcederBonus();
         if (ativo && bonus > 0) setMetaBonus(bonus);
         // V23.B.1: badges (quiz perfeito + streak).
@@ -104,7 +113,7 @@ export default function QuizFinal() {
     return () => {
       ativo = false;
     };
-  }, [nAcertos, s]);
+  }, [nAcertos, s, comboMax]);
 
   return (
     <GradienteLaranjaForte style={styles.container}>
@@ -122,6 +131,13 @@ export default function QuizFinal() {
       {xpGanho > 0 ? (
         <Text style={styles.xpBadge} accessibilityLabel={`Você ganhou ${xpGanho} pontos de experiência`}>
           +{xpGanho} XP
+        </Text>
+      ) : null}
+
+      {/* V23.B.5: bonus de combo (maior sequencia de acertos). */}
+      {comboBonus > 0 ? (
+        <Text style={styles.metaBonus} accessibilityLabel={`Combo de ${comboMax} acertos seguidos! Bônus de ${comboBonus} pontos de experiência`}>
+          🔥 Combo {comboMax}x! +{comboBonus} XP
         </Text>
       ) : null}
 

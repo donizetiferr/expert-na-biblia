@@ -1,7 +1,9 @@
 import { View, Text, Pressable, StyleSheet, Image } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../constants/colors';
 import { GradienteRoxo } from '../components/Gradiente';
+import { proximaLicaoPendente } from '../lib/db-queries';
 
 /**
  * Tela 2: Selecao de modo (Quiz Biblico / Licoes).
@@ -13,6 +15,20 @@ import { GradienteRoxo } from '../components/Gradiente';
  */
 export default function ModosScreen() {
   const router = useRouter();
+  // V23.C.2: proxima licao pendente para o CTA "Continuar" (recarrega ao focar).
+  const [pendente, setPendente] = useState<{ moduloId: string; licaoId: string } | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      let ativo = true;
+      proximaLicaoPendente().then((p) => {
+        if (ativo) setPendente(p);
+      });
+      return () => {
+        ativo = false;
+      };
+    }, []),
+  );
 
   return (
     <View style={styles.container}>
@@ -40,6 +56,18 @@ export default function ModosScreen() {
         style={styles.logo}
         resizeMode="contain"
       />
+
+      {/* V23.C.2: continuar de onde parou (1 toque -> proxima licao pendente). */}
+      {pendente ? (
+        <Pressable
+          style={styles.continuarBtn}
+          onPress={() => router.push(`/licoes/${pendente.moduloId}/${pendente.licaoId}`)}
+          accessibilityRole="button"
+          accessibilityLabel="Continuar de onde parou"
+        >
+          <Text style={styles.continuarTexto}>▶  CONTINUAR</Text>
+        </Pressable>
+      ) : null}
 
       <View style={styles.cards}>
         <Pressable style={styles.cardShadow} onPress={() => router.push('/quiz')}>
@@ -93,6 +121,22 @@ const styles = StyleSheet.create({
   },
   textoPerfil: {
     fontSize: 30,
+  },
+  // V23.C.2: CTA continuar (destaque amarelo on-brand).
+  continuarBtn: {
+    backgroundColor: COLORS.laranjaForte,
+    borderRadius: BORDAS.raioMedio,
+    borderWidth: BORDAS.larguraGrossa,
+    borderColor: COLORS.preto,
+    paddingVertical: ESPACAMENTOS.md,
+    alignItems: 'center',
+    marginBottom: ESPACAMENTOS.md,
+  },
+  continuarTexto: {
+    fontFamily: FONTES.display,
+    fontSize: 24,
+    color: COLORS.branco,
+    letterSpacing: 1,
   },
   logo: {
     width: 280,

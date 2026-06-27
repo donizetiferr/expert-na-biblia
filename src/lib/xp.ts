@@ -69,6 +69,17 @@ export function calcularXpQuiz(acertos: number): number {
   return a * XP_POR_ACERTO;
 }
 
+/**
+ * V23.B.5: bonus de XP pelo MAIOR combo de acertos consecutivos no quiz. So conta a
+ * partir de 3 seguidos (recompensa sequencias, nao acertos isolados): +2 XP por acerto
+ * do combo.
+ */
+export function calcularBonusCombo(comboMax: number): number {
+  const c = Number.isFinite(comboMax) && comboMax > 0 ? Math.floor(comboMax) : 0;
+  if (c < 3) return 0;
+  return c * 2;
+}
+
 function hojeIso(): string {
   return new Date().toISOString().split('T')[0]!;
 }

@@ -6,6 +6,7 @@ import { carregarPerguntasQuiz } from '../../lib/quiz-loader';
 import { embaralharAlternativas } from '../../lib/quiz-questions';
 import { obterAlternativas } from '../../lib/quiz-alternatives-db';
 import { IconeHome } from '../../components/IconeHome';
+import { playCombo } from '../../lib/sound';
 import type { Pergunta } from '../../types';
 
 const TOTAL_PERGUNTAS = 20;
@@ -33,6 +34,12 @@ export default function JogarQuiz() {
   // pode rodar via setTimeout cujo closure capturaria `acertos` ANTES de um setState
   // aplicar, subcontando o ultimo acerto. O ref evita essa defasagem e da o total exato.
   const acertosRef = useRef(0);
+  // V23.B.5: combo de acertos consecutivos no quiz. comboRef = sequencia atual;
+  // comboMaxRef = maior sequencia (vira bonus de XP no final). `combo` (state) so para o
+  // indicador visual "Nx COMBO!".
+  const comboRef = useRef(0);
+  const comboMaxRef = useRef(0);
+  const [combo, setCombo] = useState(0);
   const [tempo, setTempo] = useState(TEMPO_POR_PERGUNTA);
   const [selecionada, setSelecionada] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
@@ -75,6 +82,9 @@ export default function JogarQuiz() {
             clearInterval(timerRef.current);
             timerRef.current = null;
           }
+          // V23.B.5: timeout = errou -> zera o combo.
+          comboRef.current = 0;
+          setCombo(0);
           // V14 M15.4: chama proxima direto (timerRef.current ja foi limpo)
           proxima();
           return 0;
@@ -128,6 +138,17 @@ export default function JogarQuiz() {
     setSelecionada(i);
     if (perguntas[indice]?.alternativas[i]?.correta) {
       acertosRef.current += 1;
+      // V23.B.5: acerto -> combo cresce; marcos 3/5/10 tocam SFX de combo.
+      comboRef.current += 1;
+      if (comboRef.current > comboMaxRef.current) comboMaxRef.current = comboRef.current;
+      setCombo(comboRef.current);
+      if (comboRef.current === 3 || comboRef.current === 5 || comboRef.current === 10) {
+        playCombo().catch((e: unknown) => console.warn('[audio] quiz combo falhou:', e));
+      }
+    } else {
+      // Errou -> zera o combo.
+      comboRef.current = 0;
+      setCombo(0);
     }
 
     // V14 M15.4: usa ref para o timeout de transicao (cleanup garantido)
@@ -156,7 +177,8 @@ export default function JogarQuiz() {
       // "Voce acertou X de N" conforme o briefing.
       const acertosFinais = acertosRef.current;
       const score = Math.round((acertosFinais / TOTAL_PERGUNTAS) * 100);
-      router.replace(`/quiz/final?score=${score}&acertos=${acertosFinais}&total=${TOTAL_PERGUNTAS}`);
+      // V23.B.5: passa o maior combo para a tela final conceder bonus.
+      router.replace(`/quiz/final?score=${score}&acertos=${acertosFinais}&total=${TOTAL_PERGUNTAS}&combo=${comboMaxRef.current}`);
       // nao reseta transicionandoRef aqui (sai da tela mesmo)
     } else {
       setIndice(prox);
@@ -203,6 +225,13 @@ export default function JogarQuiz() {
         {/* V18.3 MD.8: icone home no header do quiz */}
         <IconeHome />
       </View>
+
+      {/* V23.B.5: indicador de combo (a partir de 2 acertos seguidos). */}
+      {combo >= 2 ? (
+        <View style={styles.comboBadge} accessibilityLabel={`${combo} acertos seguidos`}>
+          <Text style={styles.comboTexto}>🔥 {combo}x COMBO!</Text>
+        </View>
+      ) : null}
 
       <View style={styles.quadro}>
         <Text style={styles.pergunta}>{p.pergunta.texto}</Text>
@@ -270,6 +299,22 @@ const styles = StyleSheet.create({
   },
   indicador: { fontFamily: FONTES.bodyBold, fontSize: 18, color: COLORS.laranjaClaro },
   timer: { fontFamily: FONTES.display, fontSize: 32 },
+  // V23.B.5: badge de combo.
+  comboBadge: {
+    alignSelf: 'center',
+    backgroundColor: COLORS.laranjaForte,
+    borderRadius: BORDAS.raioGrande,
+    borderWidth: BORDAS.larguraMedia,
+    borderColor: COLORS.laranjaClaro,
+    paddingHorizontal: ESPACAMENTOS.lg,
+    paddingVertical: ESPACAMENTOS.xs,
+  },
+  comboTexto: {
+    fontFamily: FONTES.display,
+    fontSize: 22,
+    color: COLORS.branco,
+    letterSpacing: 1,
+  },
   quadro: {
     backgroundColor: COLORS.branco,
     padding: ESPACAMENTOS.lg,
