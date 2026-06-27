@@ -120,3 +120,21 @@ Estado: V23.1_ENTREGUE_COMPROVADO
 - Badges: galeria + modal + logica unit-tested; trigger empirico de unlock (modulo completo/streak 7/
   quiz 20/20) deferido (desproporcional p/ validacao). Git: commit LOCAL (sem push).
 - Proxima: V23.2 (resto do nucleo de retencao A.4-A.7) e demais ciclos da FASE 1.
+
+## V23.2 — ENTREGUE COMPROVADO (2026-06-26/27, v1.13.0/vc8)
+Estado: V23.2_ENTREGUE_COMPROVADO
+- Escopo (milestone A completo): A.4 notificacoes wired (config agenda/cancela) + A.5 bau surpresa
+  (~30% ao concluir licao 100%, +5/10/15/25 XP) + A.6 refazer-so-erradas (tom de progresso) +
+  A.7 persistencia (Auto Backup + export/import) + config (meta selector, reduceMotion, backup).
+- Gates: tsc 0 | jest 137/137 (17 suites, +9) | eslint 0.
+- VALIDACAO EMPIRICA emulador hi-res (UPGRADE sobre V23.1, 0 FATAL):
+  - A.6 COMPROVADO end-to-end: licao FB01-L02 (10 perguntas), 2 acertos via match local offline,
+    final "VOCÊ CONSEGUE! 2 de 10" + "+10 XP" + "REFAZER AS QUE FALTARAM (8)" -> recarrega "1-8"
+    (subset exato). Acertos threading intacto (BUG-1 nao regrediu).
+  - A.4/A.3: config com Notificacoes push ON + Meta diária 50/100/150 (50 ativo).
+  - A.7: progresso preservado em todos os upgrades V21->V23.1->V23.2.
+  - Evidencias: orchestration/v23_2_validation/ (VALIDACAO.md + screenshots 01..05).
+- APK: dist/ExpertNaBiblia-v23.2.0.apk (vc8/1.13.0); dist podado p/ 5 (v19,20,21,23.1,23.2).
+- BUG encontrado+corrigido: config estourava a dobra (View fixo) -> View->ScrollView (commit
+  pos-validacao; confirmacao empirica do scroll no build da V23.3 que inclui o fix).
+- Proxima: V23.3 (resto de B: B.4 leaderboard, B.5 combo quiz, B.6 mascote nivel + C.2 continuar).

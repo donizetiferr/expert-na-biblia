@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet, Switch, Alert, Share, TextInput } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Switch, Alert, Share, TextInput, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../constants/colors';
@@ -127,7 +127,9 @@ export default function ConfigScreen() {
         <View style={{ width: 40 }} />
       </View>
 
-      <View style={styles.lista}>
+      {/* V23.A.7: ScrollView — o config cresceu (meta + reduzir animacoes + backup) e
+          os itens passavam da dobra sem rolagem. */}
+      <ScrollView style={styles.scroll} contentContainerStyle={styles.lista} showsVerticalScrollIndicator={false}>
         <View style={styles.linha}>
           <Text style={styles.label}>Música de fundo</Text>
           <Switch
@@ -261,7 +263,7 @@ export default function ConfigScreen() {
         <Pressable style={styles.botaoReset} onPress={handleReset}>
           <Text style={styles.botaoResetTexto}>Resetar progresso</Text>
         </Pressable>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -295,9 +297,13 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: COLORS.laranjaClaro,
   },
+  scroll: {
+    flex: 1,
+  },
   lista: {
     padding: ESPACAMENTOS.lg,
     gap: ESPACAMENTOS.md,
+    paddingBottom: ESPACAMENTOS.xxl,
   },
   linha: {
     flexDirection: 'row',

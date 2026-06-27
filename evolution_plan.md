@@ -119,22 +119,22 @@ O app esta **funcional e estavel** (97/97 testes, build OK, APK V21 publicado) e
   - Acao: (1) `settings.metaDiaria` (ex.: 1 lição | 3 lições | 1 quiz/dia, ou em XP: 50/100/150); (2) anel/barra de progresso da meta no header de `licoes/index.tsx` (estilo Duolingo); (3) ao bater a meta: celebracao + bonus XP + (se ativado) notificacao "Meta batida!"; (4) reset diario a meia-noite local.
   - DoD: usuario escolhe meta, ve progresso do dia, recebe celebracao + bonus ao bater.
 
-- [ ] V23.A.4 **Wire das NOTIFICACOES comportamentais (streak em perigo)** — EVOLUCAO | ALTA | INVESTIGACAO (codigo morto) + PESQUISA_EXTERNA | AUTONOMO
+- [x] V23.A.4 **Wire das NOTIFICACOES comportamentais (streak em perigo)** — EVOLUCAO | ALTA | INVESTIGACAO (codigo morto) + PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-26, V23.2)_
   - `src/lib/notifications.ts` (`agendarLembreteDiario` completo) tem **0 imports**; o toggle em config nao agenda nada.
   - Acao: (1) ao ativar notificacoes em config, chamar `agendarLembreteDiario()`; (2) seletor de horario (default 19h); (3) cancelar lembrete pendente ao praticar no dia; (4) se streak > 3 e nao praticou ate 20h: "🔥 Sua streak de N dias pode acabar!"; (5) pedir permissao de notificacao no onboarding (V23.C).
   - DoD: lembrete dispara se nao praticou, cancela ao praticar; mensagem de streak-em-perigo funcional.
 
-- [ ] V23.A.5 **Recompensa variavel (bau/surpresa) — sustenta o loop a longo prazo** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+- [x] V23.A.5 **Recompensa variavel (bau/surpresa) — sustenta o loop a longo prazo** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-26, V23.2 — bau ~30% ao concluir licao 100%, +5/10/15/25 XP)_
   - Recompensa IMPREVISIVEL e o que mantem a dopamina alta ao longo do tempo (vs sempre a mesma celebracao).
   - Acao: (1) ao concluir uma lição/bater meta, chance aleatoria de "bau" com bonus XP variavel ou desbloqueio cosmetico; (2) animacao especial de abertura (reusar confete/glow do trofeu); (3) frequencia calibrada (nao toda vez — surpresa).
   - DoD: bau surpresa aparece ocasionalmente com bonus, com animacao distinta.
 
-- [ ] V23.A.6 **Falhar sem punir: refazer SO as questoes erradas + tom de progresso** — MELHORIA | ALTA | DOUBLE_CHECK | AUTONOMO
+- [x] V23.A.6 **Falhar sem punir: refazer SO as questoes erradas + tom de progresso** — MELHORIA | ALTA | DOUBLE_CHECK | AUTONOMO _(entregue 2026-06-26, V23.2 — COMPROVADO: "VOCÊ CONSEGUE! acertou 2 de 10" + "Refazer as que faltaram (8)" recarrega subset 1-8; acertos threading sem regredir BUG-1)_
   - Mantem a regra de 100% (briefing #1) mas remove a frustracao. Hoje `final.tsx` manda "RECOMECAR"/"TENTAR DE NOVO" e refaz a lição inteira (`router.replace` para o inicio).
   - Acao: (1) guardar os IDs das questoes erradas da tentativa; (2) ao reprovar, oferecer "Refazer as que faltaram" (so as erradas) alem de "Refazer tudo"; (3) copy encorajadora ("Faltou pouco!", mostrar "acertou X de N"); (4) so 100% libera, mas o caminho ate la e curto e positivo.
   - DoD: usuario que errou 2 de 10 refaz so 2; tela de falha tem tom de progresso, nao de punicao.
 
-- [ ] V23.A.7 **Persistencia do progresso entre reinstalacoes (Android Auto Backup + export/import)** — INFRAESTRUTURA | ALTA | DOUBLE_CHECK | AUTONOMO
+- [x] V23.A.7 **Persistencia do progresso entre reinstalacoes (Android Auto Backup + export/import)** — INFRAESTRUTURA | ALTA | DOUBLE_CHECK | AUTONOMO _(entregue 2026-06-26, V23.2 — allowBackup + export/import; progresso preservado nos upgrades V21->V23.1->V23.2)_
   - Todo progresso (streak/XP/conclusoes) e SQLite local — reinstalar/trocar device zera tudo. Perder streak longo mata a retencao.
   - Acao: (1) ativar Android Auto Backup no `app.config.ts` (allowBackup + regras incluindo o arquivo .sqlite); (2) export/import manual do progresso (JSON) em config como rede de seguranca; (3) cloud sync real fica para fase futura (precisa backend/conta).
   - DoD: reinstalar o app no mesmo device/conta Google preserva streak/XP/conclusoes; export/import funcional.
