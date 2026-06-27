@@ -189,3 +189,23 @@ Estado: V23.5_ENTREGUE_COMPROVADO
 - Git: commit LOCAL (sem push).
 - Follow-up (nao bloqueiam): ~97 licoes sem conteudo (erro batch M2.7); parte do conteudo sem acentuacao (M2.7);
   refs por-pergunta especificas (hoje refs em nivel de licao). Proxima: V23.6 = milestone E (UX/multi-idade).
+
+## V23.6 — ENTREGUE COMPROVADO (2026-06-27, v1.17.0/vc12) — FECHA milestone E
+Estado: V23.6_ENTREGUE_COMPROVADO
+- Escopo (milestone E completo): E.1 texto grande + E.2 contraste (auditoria) + E.3 touch targets +
+  E.4 TTS (expo-speech) + E.5 a11y labels + E.6 haptics + E.7 reduceMotion + cleanup de loops (V22.B.2).
+- Novas libs: `src/lib/tts.ts` (falar/pararFala pt-BR) + `src/lib/a11y.ts` (useReduceMotion, useFontScale).
+- Gates: tsc 0 | jest 156/156 | eslint 0.
+- Build: 1a tentativa falhou em :app:packageRelease (IncrementalSplitterRunnable — lock/estado de
+  packaging transitorio no Windows; bundle Metro + merge assets OK). Fix: limpar estado de packaging
+  (app/build/outputs|intermediates/*PackageRelease*) + retry -> BUILD SUCCESSFUL.
+- VALIDACAO EMPIRICA emulador hi-res (UPGRADE sobre V23.5, 0 FATAL):
+  - Config: toggles novos "Reduzir animacoes" (E.7) + "Texto grande" (E.1) renderizam; haptics/voz/notif.
+  - E.1: com "Texto grande" ON, texto da licao/Aprenda 1.18x maior (comparado a V23.5, mesma FB01-L02).
+  - E.4: tap "🔊 Ouvir" no card Aprenda -> "TextToSpeech: Successfully bound to com.google.android.tts"
+    + GoogleTtsService sintetizando (pt-BR). Botao tambem na pergunta da licao + Revisao.
+  - E.5/E.6/E.7: a11y labels nos interativos (codigo); haptics wired (lightTap/success/errorBuzz, 0 crash);
+    reduceMotion gate em PersonagemLivro/Trofeu + cache de haptics invalidado no toggle (V22.G.1).
+  - Evidencias: orchestration/v23_6_validation/ (01..04).
+- APK: dist/ExpertNaBiblia-v23.6.0.apk (vc12/1.17.0, 105MB); dist podado p/ 5 (v23.2..23.6).
+- Git: commit LOCAL. Proxima: V23.7 = milestone G (infra/seguranca; G.1 keystore parte autonoma + pendencia humana).

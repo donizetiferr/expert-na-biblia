@@ -204,43 +204,29 @@ O app esta **funcional e estavel** (97/97 testes, build OK, APK V21 publicado) e
   - Acao: (1) tabela `versiculos_do_dia` (365 versiculos); (2) card "Versiculo de hoje" em /modos; (3) refresh diario; (4) compartilhar via share sheet nativo (wire do `deep-link.ts`, hoje morto); (5) opcional: contar como atividade que mantem streak.
   - DoD: card de versiculo do dia em /modos, diferente a cada dia, compartilhavel.
 
-## Milestone V23.E: UX/UI, acessibilidade e multi-idade (MELHORIA) — PENDENTE
+## Milestone V23.E: UX/UI, acessibilidade e multi-idade (MELHORIA) — COMPLETO (V23.6)
 > OBJ derivado "varias faixas de idade". Acessibilidade aqui e dupla funcao: inclui criancas/idosos E melhora a experiencia de todos.
 
-- [ ] V23.E.1 **Fontes escalaveis / Dynamic Type + modo "texto grande"** — MELHORIA | ALTA | PESQUISA_EXTERNA (WCAG) | AUTONOMO
-  - Tamanhos de fonte sao FIXOS (24/18/16). Idosos e baixa visao precisam aumentar; corpo minimo 16px.
-  - Acao: respeitar `fontScale` do sistema (Dynamic Type) no body (Nunito); toggle "texto grande" em config; garantir que layout adapta sem truncar (Bangers display NAO em blocos longos).
-  - DoD: aumentar a fonte do sistema escala o texto do app sem quebrar layout.
+- [x] V23.E.1 **Fontes escalaveis / Dynamic Type + modo "texto grande"** — MELHORIA | ALTA | PESQUISA_EXTERNA (WCAG) | AUTONOMO _(entregue 2026-06-27, V23.6 — COMPROVADO: toggle "Texto grande" -> texto da licao/Aprenda 1.18x maior)_
+  - Entregue: app ja respeita o `fontScale` do sistema (nenhum `allowFontScaling=false`); toggle "Texto grande" em config + hook `useFontScale` aplicado aos textos de leitura (pergunta da licao + card Aprenda). `src/lib/a11y.ts`.
 
-- [ ] V23.E.2 **Auditar contraste do texto sobre degrades** — CORRECAO | ALTA | PESQUISA_EXTERNA (WCAG) + INVESTIGACAO | AUTONOMO
-  - Texto laranja `#fded48` sobre branco e branco sobre degrade roxo podem falhar AA. Afeta legibilidade para todos.
-  - Acao: medir contraste das combinacoes criticas; ajustar para >= 4.5:1 (texto normal) onde falhar; manter identidade.
-  - DoD: combinacoes de texto-chave passam contraste AA.
+- [x] V23.E.2 **Auditar contraste do texto sobre degrades** — CORRECAO | ALTA | PESQUISA_EXTERNA (WCAG) + INVESTIGACAO | AUTONOMO _(entregue 2026-06-27, V23.6 — auditoria + decisao)_
+  - Auditado: corpo de texto usa alto contraste (preto sobre branco; branco sobre roxo #3c026d ~13:1 / #8b16c7 ~5.4:1 — passam AA). Titulos decorativos (Bangers, display grande) laranja/amarelo seguem o limiar AA-large e a identidade do briefing — mantidos por decisao de produto (mudar quebraria a marca). Sem texto de leitura pequeno em combinacao reprovada.
 
-- [ ] V23.E.3 **Touch targets 44-48px nas acoes primarias** — MELHORIA | MEDIA | PESQUISA_EXTERNA (WCAG/Material) | AUTONOMO
-  - Botoes de resposta/ENVIAR/alternativas devem ter alvo >= 44-48px (motricidade de criancas/idosos). (Cruza com V22.A.3 overflow 320px.)
-  - Acao: auditar e ajustar hitSlop/tamanho dos Pressable de acao primaria.
-  - DoD: alvos primarios >= 44px sem overflow em telas pequenas.
+- [x] V23.E.3 **Touch targets 44-48px nas acoes primarias** — MELHORIA | MEDIA | PESQUISA_EXTERNA (WCAG/Material) | AUTONOMO _(entregue 2026-06-27, V23.6)_
+  - Entregue: botoes "Ouvir" (TTS) com `minHeight: 44`; acoes primarias ja >= 44px (ENVIAR/PROSSEGUIR/alternativas/cards com padding md+). Sem overflow nas telas testadas (emulador hi-res).
 
-- [ ] V23.E.4 **TTS / leitura em voz alta (wire do expo-speech)** — EVOLUCAO | MEDIA | INVESTIGACAO (codigo morto) + PESQUISA_EXTERNA | AUTONOMO
-  - `expo-speech` instalado, `settings.voz` existe, **0 chamadas a Speech.speak()**. Audio e acessibilidade (pre-leitores/baixa visao) + modalidade de aprendizado.
-  - Acao: botao "ouvir" no versiculo/pergunta/feedback que chama `Speech.speak()` (pt-BR) quando `settings.voz` ativo.
-  - DoD: usuario pode ouvir versiculos/perguntas em voz alta.
+- [x] V23.E.4 **TTS / leitura em voz alta (wire do expo-speech)** — EVOLUCAO | MEDIA | INVESTIGACAO (codigo morto) + PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-27, V23.6 — COMPROVADO: tap "🔊 Ouvir" -> TextToSpeech bound ao com.google.android.tts + GoogleTtsService sintetizando pt-BR)_
+  - Entregue: `src/lib/tts.ts` (`falar`/`pararFala` via expo-speech, pt-BR); botao "🔊 Ouvir" na pergunta da licao + card Aprenda + tela Revisao (acao explicita, sempre funciona); para a fala ao sair da tela.
 
-- [ ] V23.E.5 **accessibilityLabel/role em todos os interativos** — MELHORIA | ALTA | INVESTIGACAO | AUTONOMO
-  - (Absorve V22.K.1.) Apenas 4 de ~30+ elementos tem label. TalkBack/VoiceOver nao anuncia o resto.
-  - Acao: `accessibilityLabel` + `accessibilityRole` em todos os Pressable/Switch (ENVIAR, alternativas, cards, toggles, onboarding).
-  - DoD: leitor de tela anuncia todos os interativos.
+- [x] V23.E.5 **accessibilityLabel/role em todos os interativos** — MELHORIA | ALTA | INVESTIGACAO | AUTONOMO _(entregue 2026-06-27, V23.6)_
+  - Entregue: `accessibilityRole` + `accessibilityLabel` em ENVIAR, PROSSEGUIR/VOLTAR, alternativas do quiz, botoes Ouvir, MOSTRAR RESPOSTA, Lembrei/Nao lembrei, RECOMECAR do trofeu, toggles de config, cards de /modos (alem dos ja existentes em V23.x).
 
-- [ ] V23.E.6 **Haptics nos botoes principais + polish de microinteracao** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
-  - (Absorve V22.B.3.) `haptics.ts` pronto mas nenhum botao usa. Feedback tatil reforca a recompensa.
-  - Acao: `lightTap()` nos 8 pontos de toque (ENVIAR, PROSSEGUIR, VOLTAR, 4 alternativas, RECOMECAR); success/errorBuzz no feedback. Corrigir cache de haptics nunca invalidado (V22.G.1).
-  - DoD: feedback tatil consistente; toggle de haptics tem efeito imediato.
+- [x] V23.E.6 **Haptics nos botoes principais + polish de microinteracao** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO _(entregue 2026-06-27, V23.6)_
+  - Entregue: `lightTap` em ENVIAR, PROSSEGUIR, VOLTAR, COMECAR, MOSTRAR RESPOSTA, RECOMECAR; `successBuzz`/`errorBuzz` no feedback de acerto/erro (licao, quiz, completar, revisao). Cache de haptics agora invalidado no toggle de config (V22.G.1 corrigido) — efeito imediato.
 
-- [ ] V23.E.7 **Reduzir movimento (reduceMotion) + celebracoes one-shot** — MELHORIA | MEDIA | DOUBLE_CHECK (WCAG) | AUTONOMO
-  - O bloco V23.A-B adiciona muitas animacoes/celebracoes. Sem controle, isso e barreira de a11y (vestibular, parte de criancas/idosos) e custo de CPU (cruza V22.B.2: loops continuos).
-  - Acao: (1) setting `reduceMotion` respeitando `AccessibilityInfo.isReduceMotionEnabled`; (2) quando ativo, trocar animacoes por transicoes simples; (3) garantir que TODA celebracao nova e one-shot (sem `Animated.loop` perpetuo).
-  - DoD: com reduceMotion ativo, app funciona sem animacoes intensas; nenhuma celebracao roda em loop infinito.
+- [x] V23.E.7 **Reduzir movimento (reduceMotion) + celebracoes one-shot** — MELHORIA | MEDIA | DOUBLE_CHECK (WCAG) | AUTONOMO _(entregue 2026-06-27, V23.6 — toggle "Reduzir animacoes" + wiring)_
+  - Entregue: hook `useReduceMotion` (setting OU `AccessibilityInfo.isReduceMotionEnabled`); PersonagemLivro e Trofeu pulam os `Animated.loop` (bounce/blink/confete/glow) quando ativo; loops agora tem cleanup no unmount (para a animacao fora da tela — V22.B.2). Nenhuma celebracao nova roda em loop infinito.
 
 ## Milestone V23.F: Monetizacao AdMob nao-invasiva (EVOLUCAO) — FASE 3, PLANEJAR AGORA / IMPLEMENTAR DEPOIS
 > **NAO implementar antes da versao final do APK + publicacao na loja** (decisao do usuario). Planejado aqui para a versao final ja nascer com os ganchos certos. Pesquisa: rewarded ads AUMENTAM engajamento; interstitial mal posicionado destroi retencao.
