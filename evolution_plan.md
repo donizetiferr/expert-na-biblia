@@ -157,17 +157,17 @@ O app esta **funcional e estavel** (97/97 testes, build OK, APK V21 publicado) e
   - Acao: barra horizontal no topo de `licoes/index.tsx` com "N/40 modulos concluidos" + % + (opcional) por area (FB/AT/NT). Mesma barra resumida no perfil.
   - DoD: progresso global visivel e atualizado em `/licoes`.
 
-- [ ] V23.B.4 **Leaderboard / historico de scores (ler user_rankings)** — EVOLUCAO | MEDIA | INVESTIGACAO (tabela sombra) | AUTONOMO
+- [x] V23.B.4 **Leaderboard / historico de scores (ler user_rankings)** — EVOLUCAO | MEDIA | INVESTIGACAO (tabela sombra) | AUTONOMO _(entregue 2026-06-27, V23.3 — historico V23.1 + recordes; COMPROVADO "Melhor Quiz 60%" no perfil)_
   - `user_rankings` e gravado em `quiz/final.tsx:57` mas **nunca lido** = dados mortos acumulando.
   - Acao: (1) `listarRankings()` em db-queries.ts; (2) secao "Seu historico" no perfil (ultimos 10: data, score, tipo); (3) opcional: melhor pontuacao/recordes pessoais como meta a superar (leaderboard local self-vs-self; social fica fora do MVP offline).
   - DoD: usuario ve seu historico e recordes; tabela deixa de ser sombra.
 
-- [ ] V23.B.5 **Combos de acertos consecutivos no Quiz** — MELHORIA | MEDIA | INVESTIGACAO (premissa corrigida) | AUTONOMO
+- [x] V23.B.5 **Combos de acertos consecutivos no Quiz** — MELHORIA | MEDIA | INVESTIGACAO (premissa corrigida) | AUTONOMO _(entregue 2026-06-27, V23.3 — contador + indicador Nx + SFX marcos + bonus de XP unit-tested; trigger empirico de 3 seguidos limitado pelo timer 10s vs latencia do loop, ver VALIDACAO)_
   - **Correcao double-check:** `playCombo()` NAO esta morto — ja toca na lição 100% (`final.tsx:32`). O que falta e um **contador de combo no QUIZ** (acertos seguidos), que hoje nao existe.
   - Acao: contador de acertos consecutivos em `quiz/jogar.tsx`; ao atingir 3/5/10 em sequencia: "3x Combo!" visual (one-shot, respeita reduceMotion) + `playCombo()` + multiplicador de XP temporario; zerar ao errar.
   - DoD: combos disparam visual + som + bonus de XP em sequencias de acerto no quiz.
 
-- [ ] V23.B.6 **Mascote que evolui com o NIVEL (atrelado ao XP)** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+- [x] V23.B.6 **Mascote que evolui com o NIVEL (atrelado ao XP)** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-27, V23.3 — prop nivel + aura/glow; COMPROVADO mascote "NÍVEL 2" no perfil)_
   - (Absorve V22.F.5, mas POLISH: atrelar ao NIVEL de XP, nao so a modulos — fica coerente com o loop A.1.) Ascend/Manna usam mascote que cresce como driver de retencao.
   - Acao: prop `nivel` no PersonagemLivro (derivado do nivel de XP); crescer size + adicionar "aura"/glow nos niveis altos; transicao de nivel com animacao + SFX especial.
   - DoD: mascote evolui visualmente conforme o nivel de XP, com celebracao de level-up.
@@ -179,7 +179,7 @@ O app esta **funcional e estavel** (97/97 testes, build OK, APK V21 publicado) e
   - Acao: refazer `onboarding.tsx` como fluxo: (1) personagem-livro sauda; (2) pergunta motivacao ("conhecer a Biblia" / "estudar AT" / "desafio do quiz") -> sugere trilha; (3) define meta diaria (V23.A.3); (4) entrega a 1a pergunta facil de FB01 com vitoria garantida + celebracao do personagem ("Uau!"); (5) introduz o streak (dia 1); (6) pede permissao de notificacao; (7) so entao entra no app.
   - DoD: novo usuario tem 1a vitoria + meta + streak iniciado antes de chegar em /modos.
 
-- [ ] V23.C.2 **"Continuar de onde parou" / retomada rapida** — MELHORIA | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+- [x] V23.C.2 **"Continuar de onde parou" / retomada rapida** — MELHORIA | MEDIA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-27, V23.3 — proximaLicaoPendente + CTA "Continuar"; COMPROVADO no topo de /modos)_
   - Reduz friccao de reentrada: botao destacado em /modos levando direto a proxima lição pendente.
   - Acao: calcular proximo modulo/lição liberado nao concluido; CTA "Continuar" no topo de /modos.
   - DoD: 1 toque retoma a proxima atividade pendente.

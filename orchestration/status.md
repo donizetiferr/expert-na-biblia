@@ -138,3 +138,22 @@ Estado: V23.2_ENTREGUE_COMPROVADO
 - BUG encontrado+corrigido: config estourava a dobra (View fixo) -> View->ScrollView (commit
   pos-validacao; confirmacao empirica do scroll no build da V23.3 que inclui o fix).
 - Proxima: V23.3 (resto de B: B.4 leaderboard, B.5 combo quiz, B.6 mascote nivel + C.2 continuar).
+
+## V23.3 — ENTREGUE COMPROVADO (2026-06-27, v1.14.0/vc9)
+Estado: V23.3_ENTREGUE_COMPROVADO
+- Escopo (milestone B + C.2 completos): B.4 recordes/leaderboard (obterRecordes + secao no perfil) +
+  B.5 combo no quiz (contador + indicador + SFX + bonus de XP) + B.6 mascote evolui por nivel
+  (prop nivel + aura/glow) + C.2 continuar (proximaLicaoPendente + CTA em /modos) + fix config scroll.
+- Gates: tsc 0 | jest 139/139 (17 suites, +2) | eslint 0.
+- VALIDACAO EMPIRICA emulador hi-res (UPGRADE sobre V23.2, 0 FATAL):
+  - C.2: CTA "▶ CONTINUAR" no topo de /modos (licao pendente). COMPROVADO.
+  - B.4: perfil "RECORDES 🎲 Melhor Quiz 60%" (le user_rankings). COMPROVADO.
+  - B.6: mascote DOURADO "NÍVEL 2" + glow no perfil (XP=100). COMPROVADO.
+  - Fix config: ScrollView revela reduceMotion + backup. COMPROVADO.
+  - B.5 combo: unit-tested (calcularBonusCombo); trigger empirico de 3 seguidos limitado pelo timer
+    10s vs latencia do loop de automacao (timeout entre respostas) — limitacao de teste, nao defeito.
+  - Evidencias: orchestration/v23_3_validation/ (VALIDACAO.md + screenshots 01..03).
+- APK: dist/ExpertNaBiblia-v23.3.0.apk (vc9/1.14.0); dist podado p/ 5 (v20,21,23.1,23.2,23.3).
+- Milestones A + B + C completos (nucleo de engajamento/retencao/conquista da FASE 1).
+- Proxima: V23.4 = milestone D (aprendizado: conteudo didatico, revisao espacada/Leitner, novos
+  formatos, refs biblicas, versiculo do dia). Depois E, G, H, I, J, K.
