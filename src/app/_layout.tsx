@@ -111,6 +111,8 @@ export default function RootLayout() {
               <Stack.Screen name="quiz" />
               <Stack.Screen name="config" />
               <Stack.Screen name="perfil" />
+              <Stack.Screen name="colecoes" />
+              <Stack.Screen name="cosmeticos" />
               <Stack.Screen name="trofeu" />
             </Stack>
           </ErrorBoundary>

@@ -32,6 +32,8 @@ interface Props {
   // V23.B.6: o mascote evolui com o NIVEL de XP — ganha uma aura/glow dourada que
   // intensifica nos niveis altos (driver de retencao: "meu personagem cresceu").
   nivel?: number;
+  // V23.8 (H.3): cor da AURA equipada (cosmetico desbloqueavel por XP). Default dourado.
+  auraCor?: string;
 }
 
 // Set ROXO (Personagem 2 — modo Quiz). 5 poses completas.
@@ -53,7 +55,7 @@ const IMAGENS_LICOES: Record<Pose, ImageSourcePropType> = {
   EXCLAMANDO: require('../../assets/images/personagem_licoes_exclamando.png') as ImageSourcePropType,
 };
 
-export function PersonagemLivro({ pose = 'PENSATIVO', size = 120, variante = 'quiz', nivel = 1 }: Props) {
+export function PersonagemLivro({ pose = 'PENSATIVO', size = 120, variante = 'quiz', nivel = 1, auraCor = '#fded48' }: Props) {
   const imagensPose = variante === 'licoes' ? IMAGENS_LICOES : IMAGENS_QUIZ;
   const bounceAnim = useRef(new Animated.Value(0)).current;
   const blinkAnim = useRef(new Animated.Value(1)).current;
@@ -66,7 +68,7 @@ export function PersonagemLivro({ pose = 'PENSATIVO', size = 120, variante = 'qu
   const glowStyle =
     auraIntensidade > 0
       ? {
-          shadowColor: '#fded48',
+          shadowColor: auraCor,
           shadowOffset: { width: 0, height: 0 },
           shadowOpacity: 0.35 + auraIntensidade * 0.1,
           shadowRadius: 6 + auraIntensidade * 4,

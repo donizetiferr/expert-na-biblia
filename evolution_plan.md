@@ -279,18 +279,15 @@ O app esta **funcional e estavel** (97/97 testes, build OK, APK V21 publicado) e
 
 > Resposta a "ja esgotou?": NAO. Ataque por angulos que A-G nao cobriam (UX de jornada, multi-idade REAL, profundidade de conteudo, sazonalidade, crescimento na loja, monetizacao alternativa). 17 oportunidades novas, todas viaveis offline-first/Android/PT-BR. Apos esta rodada, o que sobra esta REJEITADO por escopo (ver fim da secao) — ai sim esgotado.
 
-## Milestone V23.H: Jornada visual, colecoes e personalizacao (EVOLUCAO/UX) — PENDENTE
+## Milestone V23.H: Jornada visual, colecoes e personalizacao (EVOLUCAO/UX) — COMPLETO (V23.8)
 > O grid de cards e funcional mas "plano". A trilha visual e a mecanica de colecao sao dos maiores drivers de engajamento dos apps de referencia.
 
-- [ ] V23.H.1 **Mapa de jornada (trilha sinuosa estilo Duolingo)** — EVOLUCAO | ALTA | PESQUISA_EXTERNA | AUTONOMO
-  - Substituir/complementar o grid de modulos por uma TRILHA visual com nos (modulos/licoes) que o usuario percorre. A "estrada" e iconica e cria sensacao de avanco fisico. Reusa estados existentes (bloqueado/liberado/amarelo).
-  - DoD: /licoes mostra trilha navegavel com o no atual destacado; progresso visivel como caminho.
-- [ ] V23.H.2 **Mapa de colecoes (livros/areas) — "complete o NT"** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
-  - Mecanica de colecao: visualizar as 4 areas (FB/AT/NT/TE) e/ou os 66 livros como itens a "colecionar" conforme conclui. Senso de completude.
-  - DoD: tela de colecao mostra o que foi concluido vs falta, por area.
-- [ ] V23.H.3 **Personalizacao cosmetica desbloqueavel por XP (temas/skins do mascote)** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
-  - XP precisa de "onde gastar". Cosmeticos (tema de cor on-palette, acessorios do livro-mascote) sao XP-sink + identidade, sem afetar dificuldade.
-  - DoD: usuario desbloqueia e aplica ao menos 1 cosmetico com XP.
+- [x] V23.H.1 **Mapa de jornada (trilha sinuosa estilo Duolingo)** — EVOLUCAO | ALTA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-27, V23.8 — COMPROVADO: /licoes virou TRILHA serpenteante (`TrilhaModulos`) com nos circulares + caminho de pontos; no atual "VOCE ESTA AQUI" + glow; FB02 bloqueado dimmed + cadeado)_
+  - Entregue: `src/components/TrilhaModulos.tsx` (onda horizontal por offset, sem SVG); reusa moduloLiberado + os estados concluido/liberado/bloqueado + o som de cadeado. /licoes/index.tsx simplificado.
+- [x] V23.H.2 **Mapa de colecoes (livros/areas) — "complete o NT"** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-27, V23.8 — COMPROVADO: /colecoes com FB 0/18, AT 0/18, NT 0/4 + barra/% + "Total 0/40 colecionados")_
+  - Entregue: rota `/colecoes` (le contarModulosPorArea), card por area com emoji/progresso/% + trofeu ao 100%; entry point em /modos.
+- [x] V23.H.3 **Personalizacao cosmetica desbloqueavel por XP (temas/skins do mascote)** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-27, V23.8 — COMPROVADO: /cosmeticos equipa tema (Realeza) + aura (Mistica); preview muda ao vivo; locks por nivel Ouro/Oliveira/Celeste)_
+  - Entregue: `src/lib/cosmeticos.ts` (catalogo + regra desbloqueio por NIVEL, +16 testes) + migration 004 `user_cosmeticos` + rota `/cosmeticos`. Temas de acento (barra de XP do header) + auras do mascote (glow do PersonagemLivro). **Decisao de produto: desbloqueio por NIVEL, NAO gasta XP** (gastar regrediria o nivel/mascote-evolui — XP fica como progresso puro). Entry point "VISUAL" em /modos.
 
 ## Milestone V23.I: Multi-perfil e modo familia / multi-idade (EVOLUCAO) — PENDENTE
 > Serve DIRETAMENTE o requisito "varias faixas de idade" — um device de familia com pais + criancas usando o mesmo app.

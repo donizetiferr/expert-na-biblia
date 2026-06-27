@@ -6,6 +6,7 @@ import { obterResumoXp } from '../lib/xp';
 import { obterStreak } from '../lib/streak';
 import { obterMetaStatus, type MetaStatus } from '../lib/meta';
 import { contarModulos } from '../lib/db-queries';
+import { obterCorTema } from '../lib/cosmeticos';
 import type { XpResumo } from '../types';
 
 /**
@@ -21,23 +22,27 @@ export function HeaderProgresso() {
   const [dias, setDias] = useState(0);
   const [meta, setMeta] = useState<MetaStatus | null>(null);
   const [modulos, setModulos] = useState<{ total: number; concluidos: number }>({ total: 40, concluidos: 0 });
+  // V23.8 (H.3): cor de acento do tema cosmetico equipado (default laranjaForte).
+  const [accent, setAccent] = useState<string>(COLORS.laranjaForte);
 
   useFocusEffect(
     useCallback(() => {
       let ativo = true;
       (async () => {
         try {
-          const [resumo, streak, metaStatus, mods] = await Promise.all([
+          const [resumo, streak, metaStatus, mods, cor] = await Promise.all([
             obterResumoXp(),
             obterStreak(),
             obterMetaStatus(),
             contarModulos(),
+            obterCorTema(),
           ]);
           if (!ativo) return;
           setXp(resumo);
           setDias(streak.dias_consecutivos);
           setMeta(metaStatus);
           setModulos(mods);
+          setAccent(cor);
         } catch {
           // silencioso — header e' informativo, nao critico
         }
@@ -67,7 +72,7 @@ export function HeaderProgresso() {
       </View>
 
       <View style={styles.barraFundo}>
-        <View style={[styles.barraPreenchida, { width: `${Math.round(progresso * 100)}%` }]} />
+        <View style={[styles.barraPreenchida, { width: `${Math.round(progresso * 100)}%`, backgroundColor: accent }]} />
       </View>
       <Text style={styles.xpTexto} accessibilityLabel={`${total} pontos de experiência, nível ${nivel}`}>
         {total} XP · Nível {nivel}

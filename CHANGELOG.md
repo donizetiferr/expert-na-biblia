@@ -2,6 +2,27 @@
 
 Todas as mudancas relevantes neste projeto.
 
+## [1.19.0] (V23.8) - 2026-06-27 (FASE 1 — Jornada visual, coleções e cosméticos: milestone H)
+
+> Milestone V23.H (engajamento visual + personalização). Gates: tsc 0 | jest 175/175 (+16) | eslint 0.
+> COMPROVADO no emulador hi-res (upgrade sobre V23.7, 0 FATAL) — evidências em orchestration/v23_8_validation/.
+
+### Adicionado
+- **[H.1] Trilha de jornada (estilo Duolingo)**: a tela de Lições (`/licoes`) trocou o grid plano de
+  cards por uma TRILHA sinuosa de nós circulares (`src/components/TrilhaModulos.tsx`) ligados por um
+  caminho de pontos. O nó atual ganha "VOCÊ ESTÁ AQUI" + glow. Mantém os mesmos estados (concluído=amarelo,
+  liberado=roxo, bloqueado=roxo escurecido + cadeado) e a regra de cadeado sequencial.
+- **[H.2] Mapa de coleções**: nova tela `/colecoes` (acessível de `/modos`) com as 4 áreas (FB/AT/NT/TE)
+  como coleções a completar — progresso por área (concluídos/total + barra + %), troféu ao chegar a 100%.
+- **[H.3] Cosméticos desbloqueáveis por XP**: nova tela `/cosmeticos` + `src/lib/cosmeticos.ts` (migration
+  004 `user_cosmeticos`). Temas de acento (aplicados à barra de XP do header) + auras do mascote
+  (aplicadas ao glow do PersonagemLivro), desbloqueados ao subir de NÍVEL (decisão de produto: não gasta
+  XP — mantém o XP como progresso puro). Preview ao vivo na tela.
+
+### Notas
+- Migration 004 (`user_cosmeticos`) entra por `_migrations` (CREATE TABLE IF NOT EXISTS) — seguro no
+  upgrade de quem já tem o app, sem resetar progresso.
+
 ## [1.18.0] (V23.7) - 2026-06-27 (FASE 1 — Infra/seguranca: milestone G)
 
 > Milestone V23.G (infra + seguranca minima). Gates: tsc 0 | jest 159/159 (+3) | eslint 0.

@@ -206,10 +206,24 @@ export async function runMigrations(): Promise<{ applied: number; skipped: numbe
     );
   `;
 
+  // Migration 004 (V23.8 — milestone H): personalizacao cosmetica.
+  // - user_cosmeticos: o cosmetico EQUIPADO por categoria (tema de acento, aura do
+  //   mascote). O DESBLOQUEIO e derivado do nivel de XP (lib/cosmeticos) — nao persiste
+  //   "unlocked", apenas o que esta equipado. CREATE TABLE IF NOT EXISTS — seguro no
+  //   upgrade de quem ja tem o app instalado.
+  const migration004 = `
+    CREATE TABLE IF NOT EXISTS user_cosmeticos (
+      categoria TEXT PRIMARY KEY,
+      cosmetico_id TEXT NOT NULL,
+      equipado_em TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+  `;
+
   const MIGRATIONS: Migration[] = [
     { name: '001_initial', sql: migration001 },
     { name: '002_engajamento', sql: migration002 },
     { name: '003_aprendizado', sql: migration003 },
+    { name: '004_cosmeticos', sql: migration004 },
   ];
 
   let applied = 0;

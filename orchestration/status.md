@@ -237,3 +237,21 @@ PENDENTE da FASE 1 (proxima retomada @full-cycle): V23.8+ = H (trilha visual/col
 I (multi-perfil + modo Kids) -> J (enciclopedia/glossario + planos leitura) -> K (sazonais/desafios/win-back)
 -> V22 backlog tecnico aplicavel -> G.6 git cleanup (por ultimo). NAO implementar F (AdMob) nem L.2/L.4 (FASE 3).
 Acoes humanas pendentes em orchestration/pending_user_input.md (G.1: rotacao token + keystore novo + filter-repo).
+
+## V23.8 — ENTREGUE COMPROVADO (2026-06-27, v1.19.0/vc14) — FECHA milestone H
+Estado: V23.8_ENTREGUE_COMPROVADO
+- Escopo (milestone H completo): H.1 trilha visual estilo Duolingo em /licoes (`TrilhaModulos`) +
+  H.2 mapa de colecoes por area (/colecoes) + H.3 cosmeticos desbloqueaveis por XP (tema de acento +
+  aura do mascote; migration 004 `user_cosmeticos`; /cosmeticos; lib `cosmeticos.ts`).
+- Decisao de produto H.3: cosmetico desbloqueia por NIVEL (nao gasta XP) — mantem o XP como progresso
+  puro (gastar regrediria nivel + mascote-evolui-por-nivel). Acento aplicado a barra de XP do header;
+  aura aplicada ao glow do PersonagemLivro.
+- Gates: tsc 0 | jest 175/175 (22 suites, +16 cosmeticos) | eslint 0.
+- Build: BUILD SUCCESSFUL de 1a (clean preventivo de packaging). APK dist/ExpertNaBiblia-v23.8.0.apk
+  (105MB); dist podado p/ 5 (v23.4..23.8). Bump app.config + ENB build.gradle (estava stale vc10/1.15.0;
+  sessoes V23.5-7 nao bumparam o nativo — corrigido para vc14/1.19.0).
+- VALIDACAO EMPIRICA emulador hi-res (UPGRADE sobre V23.7, 0 FATAL): migration 004 aplicada sem crash,
+  progresso preservado. H.1 trilha "VOCE ESTA AQUI" + nos serpenteando + bloqueado/cadeado COMPROVADO;
+  H.2 colecoes FB/AT/NT + total COMPROVADO; H.3 equipar Realeza(tema)+Mistica(aura) com preview ao vivo
+  + locks por nivel COMPROVADO. Evidencias: orchestration/v23_8_validation/ (VALIDACAO.md + 00..06).
+- Git: commit LOCAL. Proxima: V23.9 = milestone I (multi-perfil + modo Kids + seletor).

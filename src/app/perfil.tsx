@@ -7,6 +7,7 @@ import { PersonagemLivro } from '../components/PersonagemLivro';
 import { BADGES, listarBadgesDesbloqueadas } from '../lib/badges';
 import { listarRankings, contarModulosPorArea, obterRecordes } from '../lib/db-queries';
 import { obterResumoXp } from '../lib/xp';
+import { obterCorAura } from '../lib/cosmeticos';
 
 /**
  * V23.B.2: Tela de Perfil / "Meu Progresso". Centraliza o "porque continuar":
@@ -28,18 +29,21 @@ export default function PerfilScreen() {
   // V23.B.6: nivel do mascote | V23.B.4: recordes pessoais.
   const [nivel, setNivel] = useState(1);
   const [recordes, setRecordes] = useState<{ quiz: number; licoes: number }>({ quiz: 0, licoes: 0 });
+  // V23.8 (H.3): aura cosmetica equipada do mascote.
+  const [auraCor, setAuraCor] = useState('#fded48');
 
   useFocusEffect(
     useCallback(() => {
       let ativo = true;
       (async () => {
         try {
-          const [badges, areasData, rankings, resumo, recs] = await Promise.all([
+          const [badges, areasData, rankings, resumo, recs, aura] = await Promise.all([
             listarBadgesDesbloqueadas(),
             contarModulosPorArea(),
             listarRankings(10),
             obterResumoXp(),
             obterRecordes(),
+            obterCorAura(),
           ]);
           if (!ativo) return;
           setDesbloqueadas(new Set(badges.map((b) => b.tipo)));
@@ -47,6 +51,7 @@ export default function PerfilScreen() {
           setHistorico(rankings);
           setNivel(resumo.nivel);
           setRecordes(recs);
+          setAuraCor(aura);
         } catch {
           // silencioso
         }
@@ -73,7 +78,7 @@ export default function PerfilScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* V23.B.6: mascote evolui com o nivel (aura dourada cresce). */}
         <View style={styles.mascoteWrapper}>
-          <PersonagemLivro pose="EXCLAMANDO" size={120} variante="licoes" nivel={nivel} />
+          <PersonagemLivro pose="EXCLAMANDO" size={120} variante="licoes" nivel={nivel} auraCor={auraCor} />
           <Text style={styles.mascoteNivel}>Nível {nivel}</Text>
         </View>
 

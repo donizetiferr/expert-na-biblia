@@ -154,6 +154,31 @@ export default function ModosScreen() {
           ) : null}
         </View>
 
+        {/* V23.8 (H.2/H.3): Coleções (mapa de áreas) + Cosméticos (personalização por XP). */}
+        <View style={styles.cardsSecundarios}>
+          <Pressable
+            style={styles.cardMenor}
+            onPress={() => router.push('/colecoes')}
+            accessibilityRole="button"
+            accessibilityLabel="Coleções por área"
+          >
+            <Text style={styles.cardMenorEmoji}>🗂️</Text>
+            <Text style={styles.cardMenorTitulo}>COLEÇÕES</Text>
+            <Text style={styles.cardMenorSub}>por área</Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.cardMenor}
+            onPress={() => router.push('/cosmeticos')}
+            accessibilityRole="button"
+            accessibilityLabel="Cosméticos"
+          >
+            <Text style={styles.cardMenorEmoji}>🎨</Text>
+            <Text style={styles.cardMenorTitulo}>VISUAL</Text>
+            <Text style={styles.cardMenorSub}>cosméticos</Text>
+          </Pressable>
+        </View>
+
         {/* V23.D.5: versiculo do dia (devocional leve + compartilhavel). */}
         <View style={styles.versiculoCard}>
           <Text style={styles.versiculoTitulo}>📖 Versículo de hoje</Text>
