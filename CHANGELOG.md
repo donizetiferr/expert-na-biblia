@@ -2,6 +2,40 @@
 
 Todas as mudancas relevantes neste projeto.
 
+## [1.18.0] (V23.7) - 2026-06-27 (FASE 1 — Infra/seguranca: milestone G)
+
+> Milestone V23.G (infra + seguranca minima). Gates: tsc 0 | jest 159/159 (+3) | eslint 0.
+> COMPROVADO no emulador (upgrade sobre V23.6, 0 FATAL) — evidencias em orchestration/v23_7_validation/.
+
+### Seguranca (G.1 — parte autonoma; acao humana em orchestration/pending_user_input.md)
+- Token Minimax REMOVIDO de `scripts/generate_canonicos.py` (agora le do cofre/env, nunca hardcoded).
+- `orchestration/release_keystore_credentials.md` (continha a senha do keystore) REMOVIDO do tracking do
+  git + adicionado ao `.gitignore` (permanece no disco local). Pendente humano: rotacionar token Minimax,
+  gerar+instalar keystore novo, decidir `git filter-repo` do historico.
+
+### Adicionado
+- **[G.2] Error boundary**: `src/components/ErrorBoundary.tsx` envolve o app (Stack em `_layout`). Um erro
+  de render mostra uma tela amigavel ("Algo deu errado" + "Tentar novamente") em vez de fechar o app.
+- **[G.3] Telemetria/analytics local**: `src/lib/analytics.ts` — funil de eventos (`app_open`,
+  `licao_concluida`, ...) + ring buffer + `registrarErro` + handler global de erros JS (`ErrorUtils`).
+  COMPROVADO: `[analytics] app_open` no logcat ao iniciar. (Crash reporting externo Sentry deferido —
+  exige modulo nativo + prebuild + DSN; `configurarForward` deixa o gancho pronto.)
+- **[G.4] eas.json**: profiles `development`/`preview` (APK) / `production` (AAB) + env via EAS secret
+  (`$MINIMAX_API_KEY`/`$OPENAI_API_KEY`, sem valores no arquivo). Pendente: `eas init` (projectId real).
+
+### Seguranca/auditoria (G.5)
+- `npm audit`: 16 moderate, 0 high/critical (transitivas do Expo SDK — aceitavel). Keys nao hardcoded no
+  source (env-injected) nem em plaintext no bundle Hermes. `npm audit fix` + upgrade Expo 56 deferidos para
+  uma versao de manutencao dedicada (estabilidade do build).
+
+### Testes
+- +3 testes (156 -> 159): `analytics` (ring buffer, registrarEvento/registrarErro, limite do buffer).
+
+### Build
+- BUILD SUCCESSFUL de primeira (clean preventivo do estado de packaging evitou o `IncrementalSplitterRunnable`
+  transitorio visto na V23.6).
+
+
 ## [1.17.0] (V23.6) - 2026-06-27 (FASE 1 — UX/multi-idade: fecha o milestone E)
 
 > Fecha o milestone V23.E (acessibilidade + multi-idade). Gates: tsc 0 | jest 156/156 | eslint 0.

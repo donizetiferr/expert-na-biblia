@@ -209,3 +209,31 @@ Estado: V23.6_ENTREGUE_COMPROVADO
   - Evidencias: orchestration/v23_6_validation/ (01..04).
 - APK: dist/ExpertNaBiblia-v23.6.0.apk (vc12/1.17.0, 105MB); dist podado p/ 5 (v23.2..23.6).
 - Git: commit LOCAL. Proxima: V23.7 = milestone G (infra/seguranca; G.1 keystore parte autonoma + pendencia humana).
+
+## V23.7 — ENTREGUE COMPROVADO (2026-06-27, v1.18.0/vc13) — milestone G (G.6 -> V23.8+)
+Estado: V23.7_ENTREGUE_COMPROVADO
+- Escopo: G.1 (seguranca, parte autonoma) + G.2 error boundaries + G.3 analytics local + G.4 eas.json +
+  G.5 auditoria (vulns/keys). G.6 git cleanup fica para V23.8+ (por ultimo).
+- G.1 autonomo: token Minimax removido de scripts/generate_canonicos.py (le do cofre/env);
+  release_keystore_credentials.md destrackeado + gitignore (permanece no disco). PENDENTE_VOCE em
+  orchestration/pending_user_input.md: rotacionar token Minimax, gerar+instalar keystore novo, filter-repo.
+- G.2: src/components/ErrorBoundary.tsx envolve o Stack em _layout (fallback on-brand + log).
+- G.3: src/lib/analytics.ts (telemetria JS pura: funil + ring buffer + registrarErro + handler global
+  ErrorUtils); app_open no launch + licao_concluida na tela final. Sentry NATIVO deferido (precisa
+  prebuild + DSN; gancho configurarForward pronto).
+- G.4: eas.json (profiles dev/preview-APK/production-AAB; env via EAS secret). PENDENTE: eas init (projectId).
+- G.5: npm audit 16 moderate / 0 high-critical (transitivas Expo — aceitavel); keys nao hardcoded
+  (env-injected) nem em plaintext no bundle Hermes. npm audit fix + Expo 56 DEFERIDOS (estabilidade build).
+- Gates: tsc 0 | jest 159/159 (+3 analytics) | eslint 0.
+- Build: BUILD SUCCESSFUL de 1a (clean preventivo de packaging evitou o IncrementalSplitterRunnable da V23.6).
+- VALIDACAO EMPIRICA emulador (UPGRADE sobre V23.6, 0 FATAL): `[analytics] app_open` no logcat ao iniciar;
+  `[layout] migrations+seed OK`; home renderiza limpo (ErrorBoundary transparente). Evidencias: v23_7_validation/.
+- APK: dist/ExpertNaBiblia-v23.7.0.apk (vc13/1.18.0, 105MB); dist podado p/ 5 (v23.3..23.7).
+- Git: commit LOCAL.
+
+## ===== HANDOFF FASE 1 (2026-06-27) =====
+Entregues nesta sessao (subagente): V23.5 (D), V23.6 (E), V23.7 (G) — todos COMPROVADOS no emulador.
+PENDENTE da FASE 1 (proxima retomada @full-cycle): V23.8+ = H (trilha visual/colecoes/cosmeticos) ->
+I (multi-perfil + modo Kids) -> J (enciclopedia/glossario + planos leitura) -> K (sazonais/desafios/win-back)
+-> V22 backlog tecnico aplicavel -> G.6 git cleanup (por ultimo). NAO implementar F (AdMob) nem L.2/L.4 (FASE 3).
+Acoes humanas pendentes em orchestration/pending_user_input.md (G.1: rotacao token + keystore novo + filter-repo).

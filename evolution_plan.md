@@ -258,26 +258,21 @@ O app esta **funcional e estavel** (97/97 testes, build OK, APK V21 publicado) e
   - Acao: no Play Console, Target Audience = adulto/geral-adulto; alinhar com a estrategia de ads. (Decisao: o app pode ser USADO por varias idades sem ser DIRECIONADO a criancas.)
   - DoD: target audience declarado adulto; ads personalizados permitidos.
 
-## Milestone V23.G: Infra e seguranca minima para a versao final (consolida V22 critico) — PENDENTE
+## Milestone V23.G: Infra e seguranca minima para a versao final (consolida V22 critico) — COMPLETO (V23.7; G.6 -> V23.8+)
 > O que de fato bloqueia uma "versao final" confiavel. Detalhe completo dos itens nos milestones V22 abaixo — aqui fica a ordem/prioridade contra o objetivo.
 
-- [ ] V23.G.1 **[CRITICO] Revogar credenciais expostas no git** — SEGURANCA | CRITICA | INVESTIGACAO | DEPENDE_VOCE
-  - Keystore `expert2026` (V22.I.1) + API key Minimax hardcoded (V22.J.1) no historico do git. **Fazer PRIMEIRO.**
-  - DoD: keystore novo, key revogada, arquivos fora do tracking.
-- [ ] V23.G.2 **Error boundaries com fallback contextual** — INFRAESTRUTURA | CRITICA | INVESTIGACAO | AUTONOMO
-  - V22.C.2. Sem isso, crash de render fecha o app inteiro.
-  - DoD: erro de render mostra tela amigavel, nao crash branco.
-- [ ] V23.G.3 **Analytics + crash reporting (Sentry)** — INFRAESTRUTURA | ALTA | OBJECTIVE_GAP | AUTONOMO
-  - V22.C.3. **Sem medir, nao da pra saber se o engajamento melhorou.** Instrumentar funil (lição concluida, streak, retencao D1/D7) + crashes.
-  - DoD: eventos-chave e crashes reportados no dashboard.
-- [ ] V23.G.4 **EAS init + eas.json (preview APK + production AAB)** — INFRAESTRUTURA | ALTA | INVESTIGACAO | DESTRAVAVEL: rodar `eas init`
-  - V22.C.1. Necessario para build de release confiavel.
-  - DoD: `eas build --profile preview --platform android --dry-run` funciona.
-- [ ] V23.G.5 **Resolver vulns + auditar keys no bundle + upgrade Expo (avaliar)** — INFRAESTRUTURA | MEDIA | INVESTIGACAO | AUTONOMO
-  - V22.D.1/D.2 + V22.F.10/H. `npm audit fix`; confirmar que nenhuma key vaza no APK; avaliar Expo 56.
-  - DoD: 0 high/critical; bundle sem keys; decisao sobre SDK 56 registrada.
+- [x] V23.G.1 **[CRITICO] Revogar credenciais expostas no git (parte autonoma)** — SEGURANCA | CRITICA | INVESTIGACAO | DEPENDE_VOCE _(parte autonoma entregue 2026-06-27, V23.7; acao humana pendente)_
+  - Autonomo feito: token Minimax removido de `scripts/generate_canonicos.py` (le do cofre/env agora); `orchestration/release_keystore_credentials.md` removido do tracking + `.gitignore` (permanece no disco). PENDENTE_VOCE (ver `orchestration/pending_user_input.md`): rotacionar token Minimax na conta, gerar+instalar keystore novo, decidir filter-repo.
+- [x] V23.G.2 **Error boundaries com fallback contextual** — INFRAESTRUTURA | CRITICA | INVESTIGACAO | AUTONOMO _(entregue 2026-06-27, V23.7 — COMPROVADO: app sobe limpo c/ ErrorBoundary envolvendo o Stack)_
+  - Entregue: `src/components/ErrorBoundary.tsx` (class component, fallback on-brand "Algo deu errado" + Tentar novamente, `fallbackTitle`/`fallbackAcao` contextuais, log via analytics); envolve o Stack em `_layout.tsx`.
+- [x] V23.G.3 **Analytics + crash reporting (instrumentacao local)** — INFRAESTRUTURA | ALTA | OBJECTIVE_GAP | AUTONOMO _(entregue 2026-06-27, V23.7 — COMPROVADO: `[analytics] app_open` no logcat ao iniciar)_
+  - Entregue: `src/lib/analytics.ts` (telemetria JS pura — funil `licao_concluida`/`quiz_concluido`/etc + ring buffer + `registrarErro` + handler global `ErrorUtils`); `app_open` no launch; `licao_concluida` na tela final; +3 testes. **Sentry NATIVO deferido**: exige `@sentry/react-native` (modulo nativo) + `expo prebuild` + DSN — incompativel com o pipeline de build atual (android/ pre-gerado). `configurarForward` ja deixa o gancho para plugar Sentry depois sem mudar call sites.
+- [x] V23.G.4 **EAS init + eas.json (preview APK + production AAB)** — INFRAESTRUTURA | ALTA | INVESTIGACAO | DESTRAVAVEL: rodar `eas init` _(parte autonoma entregue 2026-06-27, V23.7)_
+  - Entregue: `eas.json` com profiles development/preview(APK)/production(AAB) + env via `$MINIMAX_API_KEY`/`$OPENAI_API_KEY` (EAS secrets, sem valores no arquivo). PENDENTE: `eas init` (projectId real, hoje PLACEHOLDER em app.config) + `eas secret:create` — exige login Expo interativo.
+- [x] V23.G.5 **Resolver vulns + auditar keys no bundle + upgrade Expo (avaliar)** — INFRAESTRUTURA | MEDIA | INVESTIGACAO | AUTONOMO _(entregue 2026-06-27, V23.7 — auditoria)_
+  - Auditado: `npm audit` = 16 moderate, 0 high/critical (transitivas do Expo SDK — aceitavel pelo DoD). Keys NAO hardcoded no source (env-injected, confirmado no G.1) e nao encontradas em plaintext no bundle Hermes (grep). Extracao via decompile eh o tradeoff da arquitetura backendless (proxy backend = hardening futuro, descartado em V9). **`npm audit fix` + upgrade Expo 56 DEFERIDOS** para versao de manutencao dedicada (mexer em node_modules/SDK agora arriscaria a estabilidade do build).
 - [ ] V23.G.6 **Higiene de repo (git bloat) — por ultimo** — MANUTENCAO | BAIXA | INVESTIGACAO | AUTONOMO
-  - V22.H/I/J (PNGs 131MB, seed JSON, aliases/scripts mortos, .gitignore). Legitimo, mas nao move o objetivo — fazer ao final.
+  - V22.H/I/J (PNGs 131MB, seed JSON, aliases/scripts mortos, .gitignore). Legitimo, mas nao move o objetivo — fazer ao final (V23.8+).
   - DoD: repo < 10MB, artifacts fora do tracking.
 
 ## Rodada de exaustao V23.2 (2026-06-26) — oportunidades ainda nao cobertas
