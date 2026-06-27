@@ -66,3 +66,9 @@ orchestration/dev_server.md
 
 # V23.G.1: arquivo com senha do keystore — NUNCA versionar (permanece local)
 orchestration/release_keystore_credentials.md
+
+# V23.13 (G.6): artefatos de DEV nao-runtime fora do tracking (permanecem em disco).
+# O runtime seeda de src/db/seed-*.ts (bundled), NAO de data/. whatsapp_media e mirror de origem.
+data/
+whatsapp_media/
+docs/questions_clean.json
