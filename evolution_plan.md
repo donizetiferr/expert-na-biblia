@@ -1,11 +1,421 @@
-# Plano de Evolucao — Expert Na Biblia (V22, 2026-06-26)
+# Plano de Evolucao — Expert Na Biblia (V23, 2026-06-26)
 
-> Atualizado em 2026-06-26 por solo-plan (V22, COMPLETO, sessao principal) | Escopo: **ATUALIZACAO** | Profundidade: **COMPLETO**
-> Ultima atualizacao: 2026-06-26
-> Status: **AGUARDANDO_APROVACAO**
->
-> Investigacao + segundo turno critico V22: `orchestration/plan_investigation.md`
-> Historico: V1-V7 (47/47), V8 (18 [x]), V9 (18/19 [x]), V10 (M5+M6), V11, V12 (M7), V13 (M14), V14 (M15), V17 (Play Store prep), V18 (fidelidade visual + fix loop + validacao), V19 (scoring + 8 bugs QA), V20 (mascote dourado + IA obrigatoria), V21 (timeout IA + canonica + acentuacao). V22 = AUDITORIA PROFUNDA (bugs, melhorias, UX/UI, infraestrutura, segurança).
+> Atualizado em 2026-06-26 por solo-plan (V23, COMPLETO, sessao principal) + **double-check profundo V23.1** (premissas verificadas no codigo + decisoes de produto) | Escopo: **ATUALIZACAO** | Profundidade: **COMPLETO**
+> Status: **APROVADO** (2026-06-26) — em implementacao via @full-cycle (FASE 1, comecando pelo Minimum Lovable Engagement)
+> Foco V23: **ENGAJAMENTO / DOPAMINA / RETENCAO / UX-UI / MULTI-IDADE / APRENDIZADO INTUITIVO / MONETIZACAO (planejada)**
+> Investigacao + 2o turno critico V23: `orchestration/plan_investigation.md`
+> Historico: V1-V7..V22 (auditoria tecnica). Os milestones **V22.A-L permanecem ABAIXO como backlog de release** — re-priorizados no quadro de triagem desta secao.
+
+---
+
+# ===== PLANO V23 (2026-06-26) — ENGAJAMENTO, DOPAMINA, UX E APRENDIZADO INTUITIVO =====
+
+## Visao faseada (decisao de sequenciamento — alinhada ao pedido "o principal e o APK")
+
+| Fase | Escopo | Quando |
+|------|--------|--------|
+| **FASE 1 — APK ate a versao final (FOCO ATUAL)** | Engajamento (V23.A-C) + Aprendizado intuitivo (V23.D) + UX/multi-idade (V23.E) + Infra/seguranca critica (V23.G consolida V22 critico) | AGORA — tudo validado no emulador hi-res |
+| **FASE 2 — Publicacao Play Store** | Play Store prep (V17/V22 checklist), privacy policy, conta Developer | So depois da versao final do APK aprovada por voce |
+| **FASE 3 — Monetizacao AdMob** | V23.F (rewarded/interstitial/banner + UMP/consent) | So depois de publicada/estavel na loja. **PLANEJADA agora, NAO implementar antes da versao final** |
+
+## Resumo Executivo V23
+
+O app esta **funcional e estavel** (97/97 testes, build OK, APK V21 publicado) e tem uma **boa base de dopamina ja construida** (SFX, haptics, animacoes de personagem/confete, timer colorido, tela de trofeu, progressao por cadeado 100%). **Porem o objetivo central — "engajar, liberar dopamina e fazer o usuario querer evoluir ate virar expert" — esta apenas PARCIALMENTE coberto**, porque a camada de RETENCAO PERSISTENTE nao existe ou esta morta no codigo:
+
+- **Codigo de engajamento existe mas nao esta ligado:** `streak.ts` (0 imports), `notifications.ts` (0 imports), `user_rankings` gravado mas **nunca lido**, `playCombo()` com 0 chamadas, TTS (`expo-speech`/`settings.voz`) sem nenhuma chamada, `referencias_biblicas`/`dificuldade` campos no schema nunca usados.
+- **Nao existe:** sistema de XP, badges/conquistas, niveis, leaderboard, barra de progresso global, tela de perfil/"meu progresso", meta diaria, modalidades de aprendizado alem de pergunta-aberta + quiz, onboarding de ativacao.
+- **Aprendizado:** hoje o app so AVALIA (pergunta), nao ENSINA antes (sem conteudo didatico/flashcard/completar-versiculo/ordenar/associar/audio).
+- **Multi-idade:** fontes fixas, sem Dynamic Type, contraste sobre degrades nao auditado, TTS desligado — barreira para criancas e idosos.
+- **Monetizacao:** `expo-ads-admob` e plugin **DEPRECATED** com 0 implementacao — a lib atual e `react-native-google-mobile-ads`.
+
+**Estrategia V23:** tratar engajamento como milestone de primeira classe (nao "backlog V22.F"), montando um **LOOP de retencao unico e coeso** (XP + streak + meta diaria + recompensa variavel) em vez de features soltas. A pesquisa externa (Duolingo/Brilliant/YouVersion/Manna) confirma que streak + XP + meta diaria sao os de **maior ROI de retencao**, e que **rewarded ads** (vidas/dicas/freeze-de-streak) sao a forma de monetizar que AUMENTA o engajamento. Plano V22 (auditoria tecnica) segue valido e re-priorizado abaixo.
+
+## Estatisticas V23 (itens novos desta camada — pos double-check V23.1 + rodada de exaustao V23.2)
+- Milestones novos: 12 (V23.A-L)
+- Itens novos: 59 ( CRITICA: 5 | ALTA: 22 | MEDIA: 23 | BAIXA: 9 )
+- Por categoria: 34 EVOLUCAO, 15 MELHORIA, 6 INFRAESTRUTURA, 2 CORRECAO, 2 MANUTENCAO
+- Por fonte: OBJECTIVE_GAP 11 | PESQUISA_EXTERNA 26 | INVESTIGACAO 13 (codigo morto) | DOUBLE_CHECK 9
+- Autonomia: ~54 AUTONOMO | 1 DESTRAVAVEL | 3 DEPENDE_VOCE
+- Dimensoes varridas: 8/8 (vereditos em `orchestration/plan_investigation.md`)
+- Passadas criticas: 2o turno (14 ajustes) + **double-check profundo V23.1** (5 premissas corrigidas no codigo, 10 decisoes de produto) + **rodada de exaustao V23.2** (17 oportunidades novas em 5 milestones H-L; fronteira de escopo documentada = esgotado)
+
+## Saude do projeto (verificada em 2026-06-26)
+- Testes: **EXISTEM+PASSANDO** (97/97, 11 suites) | Build: **OK** | CI/CD: **CONFIGURADO** (robusto) | Deps: **DESATUALIZADAS** (Expo 55; expo-ads-admob DEPRECATED; 16 moderate vulns) | Docs: **COMPLETAS** (1 inconsistencia)
+- Evidencias: `orchestration/plan_investigation.md`
+
+---
+
+## Triagem do plano V22 (validacao contra o objetivo de engajamento)
+
+> Resposta direta ao pedido "valide o plano, remova o que nao faz sentido, re-priorize". **Nenhum item V22 e deletado** (historico preservado abaixo) — mas o veredito de relevancia muda:
+
+| Bloco V22 | Veredito V23 | Acao |
+|-----------|--------------|------|
+| V22.I.1 keystore exposto + V22.J.1 API key hardcoded | **MANTER — CRITICA** | Seguranca real; movido para V23.G (fazer primeiro) |
+| V22.C.2 error boundaries + V22.C.1 EAS init/eas.json | **MANTER — ALTA** | Pre-requisito de release confiavel; V23.G |
+| V22.C.3 Sentry/analytics | **ELEVAR — ALTA** | Sem analytics nao da pra MEDIR retencao (o objetivo). Essencial. V23.G |
+| V22.F.1 streak / F.4 push / F.6 versiculo do dia / F.5 mascote evolui / H.5 dificuldade | **ELEVAR de BACKLOG -> ALTA/CRITICA** | Sao o nucleo do OBJ-1; absorvidos/reorganizados em V23.A-D |
+| V22.A bugs + V22.B UX polish (haptics, config, header) | **MANTER — MEDIA** | Validos; complementam V23.E |
+| V22.D.1 vulns + V22.D.2 keys no bundle | **MANTER — ALTA/MEDIA** | Seguranca; V23.G |
+| V22.E conteudo (canonicas "NAO SEI", matching) | **MANTER — ALTA** | Qualidade de conteudo afeta engajamento |
+| V22.F.9 + V22.H.4 (refs biblicas no feedback) | **CONSOLIDAR** | Eram duplicata; vira V23.D item unico |
+| V22.H/I/J git cleanup (PNGs, seed JSON, aliases, scripts mortos) — NAO seguranca | **REBAIXAR -> BAIXA** | Higiene de repo legitima, mas nao move o objetivo; fazer por ultimo |
+| V22.K.1 a11y labels + K.2/K.6 testIDs/E2E | **MANTER — ALTA** | a11y entra no eixo multi-idade V23.E |
+| V22.A.5 == V22.L.3 (listarModuloPorId) | Ja marcado duplicata | Sem acao |
+
+---
+
+## Double-check profundo V23.1 (2026-06-26) — decisoes de produto + correcoes de premissa
+
+> Segunda passada critica com VERIFICACAO NO CODIGO REAL. Tomei as decisoes abaixo visando o sucesso do app (engajamento + multi-idade + marca de fe). Elas tem precedencia sobre o texto dos itens originais onde houver conflito.
+
+### Correcoes de premissa (verificadas no codigo)
+- **`playCombo()` NAO esta morto** — esta wired em `licoes/[moduloId]/[licaoId]/final.tsx:32` (lição 100%). O que falta de verdade e um **contador de combo de acertos consecutivos no QUIZ** (V23.B.5 reescrito).
+- **`user_streak` JA e tabela no schema** (`database.ts:105`) + `marcarModuloConcluido` ja wired (`final.tsx:86`, progressao funciona). Wire do streak e ainda mais barato; o **freeze e um stub confirmado** (`streak.ts:85-93` retorna `false`) e exige tabela/flag propria.
+- **`streak.ts` tem 0 chamadas** confirmado — ponto de wire = `final.tsx` `handleAvancar` (ramo vitoria) + `quiz/final.tsx` + versiculo do dia.
+- **Existe mecanismo `_migrations`** (`database.ts:40`) — toda tabela nova de engajamento DEVE entrar por ele (CREATE TABLE IF NOT EXISTS + versionamento), senao o app **crasha no upgrade** de quem ja tem o app instalado.
+- **Settings (7 campos, SecureStore)** nao tem `metaDiaria`/`horarioLembrete`/`reduceMotion`/`textoGrande`. **Regra de arquitetura:** PREFERENCIA do usuario -> estender tipo `Settings` (SecureStore); ESTADO de jogo (XP/badges/streak/metas-do-dia) -> SQLite via `_migrations`.
+
+### Decisoes de produto tomadas (baked-in)
+1. **Manter a regra de 100%, mas tirar a punicao.** A regra #1 do briefing (100% para liberar) fica. Mas falhar nao pode ser frustrante (mata dopamina, pior ainda para criancas): (a) ao errar, permitir **refazer SO as questoes erradas**, nao a lição inteira; (b) tela "QUASE LA"/"NAO DEU" com tom de progresso ("Faltou pouco!"), nunca de punicao; (c) mostrar quais acertou (progresso parcial visivel). -> vira V23.A.6.
+2. **Streak NAO exige 100%.** Qualquer pratica real do dia mantem o streak (tentar uma lição, concluir um quiz, ler o versiculo do dia) — nao so a conclusao 100%. Evita perda de streak injusta. (`registrarAtividade()` chamado nesses 3 pontos.)
+3. **XP recompensa o esforco, nao so o 100%.** +XP por acerto individual (mesmo sem fechar a lição) + bonus ao fechar 100% + bonus de meta diaria. Esforco sempre gera recompensa.
+4. **Monetizacao = SO recompensa positiva. SEM sistema de vidas que bloqueia.** Para um app de fe + multi-idade + offline, um sistema punitivo de "hearts" que trava o progresso seria frustrante e fora da marca. Rewarded ads dao **bonus opcionais** (freeze de streak, baú de XP, 1 dica), nunca destravam conteudo bloqueado. (V23.F.5 reescrito; V23.F.3 ajustado.)
+5. **Persistencia do progresso entre reinstalacoes.** Hoje tudo e SQLite local — perder um streak de 100 dias ao reinstalar/trocar de device mata a retencao. Decisao: ativar **Android Auto Backup** (incluir o .sqlite nas regras de backup) + **export/import manual** do progresso como rede de seguranca. Cloud sync real fica para depois (precisa backend/conta). -> vira V23.A.7.
+6. **Tom encorajador, nao manipulador.** Notificacoes/celebracoes com tom gentil de jornada de fe ("Que tal continuar hoje?"), nunca culpa agressiva estilo Duolingo. Principio de design para todo V23.A-C.
+7. **Anti-farm de XP.** Refazer lição ja concluida da XP reduzido/zero (mantem o XP significativo).
+8. **Acessibilidade de movimento.** Toda celebracao nova e one-shot (nao loop infinito — cruza com V22.B.2) + toggle `reduceMotion` que respeita `AccessibilityInfo.isReduceMotionEnabled`. -> vira V23.E.7.
+9. **Assets de som novos** (level-up, badge, baú, combo-quiz): royalty-free / `media-generation`; reusar os existentes quando possivel.
+10. **Validacao empirica obrigatoria** (licao das 17 versoes do quiz): cada feature de engajamento precisa de teste unitario da logica pura (calculo de XP/streak/badge/Leitner) + prova no emulador hi-res do loop visivel. "Wired" so conta com screenshot do loop rodando.
+
+### Novo item fundacional (pre-requisito de todo o bloco A-D)
+- [x] V23.A.0 **Fundacao de dados de engajamento (migracao + Settings)** — INFRAESTRUTURA | CRITICA | DOUBLE_CHECK | AUTONOMO _(entregue 2026-06-26, V23.1)_
+  - Acao: (1) via `_migrations`, criar tabelas `user_xp`, `user_badges`, `meta_diaria_log`, e a tabela/flag de freeze do streak; (2) estender o tipo `Settings` + KEYS + DEFAULTS com `metaDiaria`, `horarioLembrete`, `reduceMotion`, `textoGrande`; (3) helper central de XP (conceder/ler/nivel) com curva definida (ex.: nivel = floor(sqrt(XP/100))) e anti-farm; (4) testes unitarios da fundacao.
+  - DoD: migracao roda em app ja instalado sem crash; Settings estendido persiste; helper de XP testado.
+
+### Minimum Lovable Engagement (MLE) — o menor conjunto que entrega o "wow"
+> Se for entregar UMA coisa primeiro, e este pacote coeso (lift imediato de retencao): **V23.A.0 + A.1 (XP) + A.2 (streak) + A.3 (meta diaria) + B.3 (barra global) + B.2 (perfil) + B.1 (badges) + C.1 (onboarding 1a vitoria)**. Entregar junto, validar o loop no emulador, depois iterar.
+
+### Quick wins (codigo JA existe — so ligar; horas, nao dias)
+> Alto ROI / baixo esforco — priorizar dentro de cada milestone: wire streak (A.2), wire notificacoes locais (A.4), ler `user_rankings` (B.4), wire TTS (E.4), wire share/`deep-link.ts` (D.5), combo-no-quiz (B.5).
+
+---
+
+## Milestone V23.A: Nucleo de retencao — o LOOP de dopamina (EVOLUCAO) — PENDENTE
+> O coracao do OBJ-1. **Implementar como UM loop coeso** (XP + streak + meta diaria + lembrete), nao 4 features soltas. Maior ROI de retencao segundo a pesquisa (Duolingo/Brilliant). Boa parte da infra ja existe morta no codigo.
+
+- [x] V23.A.1 **Sistema de XP (moeda comum do engajamento)** — EVOLUCAO | CRITICA | OBJECTIVE_GAP + PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-26, V23.1)_
+  - Nao existe XP no app. XP e a moeda que conecta streak, metas, niveis e (futuramente) ligas.
+  - Acao: (1) criar tabela `user_xp` (data, pontos, origem: LICAO|QUIZ|ACERTO|STREAK_BONUS) em database.ts + queries em db-queries.ts; (2) conceder XP nos pontos de recompensa: lição 100% (+50), cada acerto de quiz (+5), bonus diario por bater a meta; (3) feedback imediato "+50 XP" com animacao no `feedback.tsx`/`quiz/final.tsx` (reusar bounce/SFX existentes); (4) total de XP visivel no header de `licoes/index.tsx` e na tela de perfil (V23.B.2).
+  - DoD: XP acumula e e exibido; "+X XP" aparece ao concluir lição/acertar quiz; persiste no SQLite.
+
+- [x] V23.A.2 **Wire do STREAK (dias consecutivos) na UI + freeze funcional** — EVOLUCAO | CRITICA | INVESTIGACAO (codigo morto) + PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-26, V23.1)_
+  - `src/lib/streak.ts` (99 linhas, completo) tem **0 imports**. Streak e o #1 driver de retencao (aversao a perda).
+  - Acao: (1) chamar `registrarAtividade()` ao concluir lição 100% e quiz; (2) exibir "🔥 N dias seguidos!" no header de `licoes/index.tsx` e no perfil; (3) implementar `usarFreezeSemanal()` real (1 freeze/semana, persistir); (4) animacao/SFX de celebracao ao incrementar o streak (reusar successBuzz + confete leve).
+  - DoD: streak visivel, incrementa 1x/dia ao praticar, freeze protege 1x/semana, celebra no incremento.
+
+- [x] V23.A.3 **Meta diaria (daily goal) escolhida pelo usuario** — EVOLUCAO | ALTA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-26, V23.1)_
+  - Senso de propriedade + dose diaria previsivel; ancora o streak. Definida no onboarding (V23.C) e ajustavel em config.
+  - Acao: (1) `settings.metaDiaria` (ex.: 1 lição | 3 lições | 1 quiz/dia, ou em XP: 50/100/150); (2) anel/barra de progresso da meta no header de `licoes/index.tsx` (estilo Duolingo); (3) ao bater a meta: celebracao + bonus XP + (se ativado) notificacao "Meta batida!"; (4) reset diario a meia-noite local.
+  - DoD: usuario escolhe meta, ve progresso do dia, recebe celebracao + bonus ao bater.
+
+- [ ] V23.A.4 **Wire das NOTIFICACOES comportamentais (streak em perigo)** — EVOLUCAO | ALTA | INVESTIGACAO (codigo morto) + PESQUISA_EXTERNA | AUTONOMO
+  - `src/lib/notifications.ts` (`agendarLembreteDiario` completo) tem **0 imports**; o toggle em config nao agenda nada.
+  - Acao: (1) ao ativar notificacoes em config, chamar `agendarLembreteDiario()`; (2) seletor de horario (default 19h); (3) cancelar lembrete pendente ao praticar no dia; (4) se streak > 3 e nao praticou ate 20h: "🔥 Sua streak de N dias pode acabar!"; (5) pedir permissao de notificacao no onboarding (V23.C).
+  - DoD: lembrete dispara se nao praticou, cancela ao praticar; mensagem de streak-em-perigo funcional.
+
+- [ ] V23.A.5 **Recompensa variavel (bau/surpresa) — sustenta o loop a longo prazo** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+  - Recompensa IMPREVISIVEL e o que mantem a dopamina alta ao longo do tempo (vs sempre a mesma celebracao).
+  - Acao: (1) ao concluir uma lição/bater meta, chance aleatoria de "bau" com bonus XP variavel ou desbloqueio cosmetico; (2) animacao especial de abertura (reusar confete/glow do trofeu); (3) frequencia calibrada (nao toda vez — surpresa).
+  - DoD: bau surpresa aparece ocasionalmente com bonus, com animacao distinta.
+
+- [ ] V23.A.6 **Falhar sem punir: refazer SO as questoes erradas + tom de progresso** — MELHORIA | ALTA | DOUBLE_CHECK | AUTONOMO
+  - Mantem a regra de 100% (briefing #1) mas remove a frustracao. Hoje `final.tsx` manda "RECOMECAR"/"TENTAR DE NOVO" e refaz a lição inteira (`router.replace` para o inicio).
+  - Acao: (1) guardar os IDs das questoes erradas da tentativa; (2) ao reprovar, oferecer "Refazer as que faltaram" (so as erradas) alem de "Refazer tudo"; (3) copy encorajadora ("Faltou pouco!", mostrar "acertou X de N"); (4) so 100% libera, mas o caminho ate la e curto e positivo.
+  - DoD: usuario que errou 2 de 10 refaz so 2; tela de falha tem tom de progresso, nao de punicao.
+
+- [ ] V23.A.7 **Persistencia do progresso entre reinstalacoes (Android Auto Backup + export/import)** — INFRAESTRUTURA | ALTA | DOUBLE_CHECK | AUTONOMO
+  - Todo progresso (streak/XP/conclusoes) e SQLite local — reinstalar/trocar device zera tudo. Perder streak longo mata a retencao.
+  - Acao: (1) ativar Android Auto Backup no `app.config.ts` (allowBackup + regras incluindo o arquivo .sqlite); (2) export/import manual do progresso (JSON) em config como rede de seguranca; (3) cloud sync real fica para fase futura (precisa backend/conta).
+  - DoD: reinstalar o app no mesmo device/conta Google preserva streak/XP/conclusoes; export/import funcional.
+
+## Milestone V23.B: Recompensa, conquista e progresso visivel (EVOLUCAO) — PENDENTE
+> Tornar o progresso VISIVEL e PERSISTENTE — o usuario precisa VER que evoluiu para querer continuar.
+
+- [x] V23.B.1 **Badges / Conquistas por marcos** — EVOLUCAO | ALTA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-26, V23.1 — galeria + modal + logica; trigger empirico de unlock deferido p/ modulo completo)_
+  - Nao existe sistema de conquistas. Marcos dao pontos emocionais altos e senso de progresso.
+  - Acao: (1) tabela `user_badges` (tipo, desbloqueado_em); (2) disparar em marcos: 1o modulo, 5/10/20/40 modulos, streak 7/30/100, 100% de uma area (FB/AT/NT), 1o quiz perfeito; (3) modal de celebracao ao desbloquear (animacao + SFX); (4) galeria de badges na tela de perfil (V23.B.2).
+  - DoD: badges desbloqueiam em marcos, com celebracao, visiveis no perfil.
+
+- [x] V23.B.2 **Tela de Perfil / "Meu Progresso"** — EVOLUCAO | ALTA | OBJECTIVE_GAP | AUTONOMO _(entregue 2026-06-26, V23.1)_
+  - Nao ha onde o usuario ver sua evolucao consolidada. Centraliza o "porque continuar".
+  - Acao: nova rota `/perfil` (acessivel de `/modos`) mostrando: streak atual + recorde, XP total + nivel, badges desbloqueadas, % de conclusao (X/40 modulos, barra), historico de atividades (le `user_rankings` — hoje gravado e nunca lido) com ultimos scores (data/tipo).
+  - DoD: tela de perfil com streak, XP/nivel, badges, % global e historico.
+
+- [x] V23.B.3 **Barra de progresso GLOBAL ("X/40 modulos")** — EVOLUCAO | ALTA | OBJECTIVE_GAP | AUTONOMO _(entregue 2026-06-26, V23.1)_
+  - Hoje nao ha visao do todo — so cards. Efeito "objetivo gradiente": ver-se perto do fim aumenta o esforco.
+  - Acao: barra horizontal no topo de `licoes/index.tsx` com "N/40 modulos concluidos" + % + (opcional) por area (FB/AT/NT). Mesma barra resumida no perfil.
+  - DoD: progresso global visivel e atualizado em `/licoes`.
+
+- [ ] V23.B.4 **Leaderboard / historico de scores (ler user_rankings)** — EVOLUCAO | MEDIA | INVESTIGACAO (tabela sombra) | AUTONOMO
+  - `user_rankings` e gravado em `quiz/final.tsx:57` mas **nunca lido** = dados mortos acumulando.
+  - Acao: (1) `listarRankings()` em db-queries.ts; (2) secao "Seu historico" no perfil (ultimos 10: data, score, tipo); (3) opcional: melhor pontuacao/recordes pessoais como meta a superar (leaderboard local self-vs-self; social fica fora do MVP offline).
+  - DoD: usuario ve seu historico e recordes; tabela deixa de ser sombra.
+
+- [ ] V23.B.5 **Combos de acertos consecutivos no Quiz** — MELHORIA | MEDIA | INVESTIGACAO (premissa corrigida) | AUTONOMO
+  - **Correcao double-check:** `playCombo()` NAO esta morto — ja toca na lição 100% (`final.tsx:32`). O que falta e um **contador de combo no QUIZ** (acertos seguidos), que hoje nao existe.
+  - Acao: contador de acertos consecutivos em `quiz/jogar.tsx`; ao atingir 3/5/10 em sequencia: "3x Combo!" visual (one-shot, respeita reduceMotion) + `playCombo()` + multiplicador de XP temporario; zerar ao errar.
+  - DoD: combos disparam visual + som + bonus de XP em sequencias de acerto no quiz.
+
+- [ ] V23.B.6 **Mascote que evolui com o NIVEL (atrelado ao XP)** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+  - (Absorve V22.F.5, mas POLISH: atrelar ao NIVEL de XP, nao so a modulos — fica coerente com o loop A.1.) Ascend/Manna usam mascote que cresce como driver de retencao.
+  - Acao: prop `nivel` no PersonagemLivro (derivado do nivel de XP); crescer size + adicionar "aura"/glow nos niveis altos; transicao de nivel com animacao + SFX especial.
+  - DoD: mascote evolui visualmente conforme o nivel de XP, com celebracao de level-up.
+
+## Milestone V23.C: Onboarding de ativacao (EVOLUCAO) — PENDENTE
+> O onboarding atual e estatico (slides). A pesquisa (Duolingo) mostra que a 1a vitoria rapida e o "aha moment" que ativa o usuario.
+
+- [x] V23.C.1 **Fluxo de ativacao: saudacao -> motivacao -> meta -> 1a vitoria -> streak** — EVOLUCAO | ALTA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-26, V23.1)_
+  - Acao: refazer `onboarding.tsx` como fluxo: (1) personagem-livro sauda; (2) pergunta motivacao ("conhecer a Biblia" / "estudar AT" / "desafio do quiz") -> sugere trilha; (3) define meta diaria (V23.A.3); (4) entrega a 1a pergunta facil de FB01 com vitoria garantida + celebracao do personagem ("Uau!"); (5) introduz o streak (dia 1); (6) pede permissao de notificacao; (7) so entao entra no app.
+  - DoD: novo usuario tem 1a vitoria + meta + streak iniciado antes de chegar em /modos.
+
+- [ ] V23.C.2 **"Continuar de onde parou" / retomada rapida** — MELHORIA | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+  - Reduz friccao de reentrada: botao destacado em /modos levando direto a proxima lição pendente.
+  - Acao: calcular proximo modulo/lição liberado nao concluido; CTA "Continuar" no topo de /modos.
+  - DoD: 1 toque retoma a proxima atividade pendente.
+
+## Milestone V23.D: Aprendizado intuitivo — ensinar, nao so testar (EVOLUCAO) — PENDENTE
+> OBJ derivado do pedido. Hoje o app so AVALIA (pergunta aberta + quiz). Variar formatos e ensinar antes melhora memorizacao e atende mais faixas de idade. Introduzir 1 formato novo por versao.
+
+- [ ] V23.D.1 **Conteudo didatico ANTES de perguntar (campo explicacao)** — EVOLUCAO | ALTA | OBJECTIVE_GAP | AUTONOMO
+  - O schema de pergunta nao tem conteudo de ensino. Brilliant: apresenta o conceito, deixa inferir, confirma.
+  - Acao: (1) campo `explicacao`/`conteudo` em modulo ou lição; (2) gerar via batch M2.7 um mini-ensino por lição (2-4 frases + versiculo-chave); (3) tela/card "Aprenda" opcional antes das perguntas da lição.
+  - DoD: usuario pode ler um mini-conteudo antes de responder; gerado para as licoes.
+
+- [ ] V23.D.2 **Modo Revisao com repeticao espacada (Leitner/SM-2)** — EVOLUCAO | ALTA | PESQUISA_EXTERNA | AUTONOMO
+  - (Absorve V22.F.2.) Motor comprovado de memorizacao de longo prazo. Hoje lição concluida nunca mais aparece.
+  - Acao: (1) registrar acertos/erros por pergunta; (2) algoritmo Leitner simples (caixas) priorizando o que o usuario errou; (3) modo "Revisao" em /modos que reapresenta perguntas de licoes concluidas em intervalos crescentes; (4) recompensar revisao com XP.
+  - DoD: modo Revisao reapresenta perguntas erradas/antigas em intervalos, dando XP.
+
+- [ ] V23.D.3 **Novos formatos de exercicio (1 por versao)** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+  - Variar o formato mantem novidade e ensina de modos diferentes. Ordem sugerida por ROI:
+    1. **Completar versiculo** (fill-in-the-blank SEM banco de opcoes = recall ativo forte)
+    2. **Ordenar eventos/versiculos** cronologicamente (forte para narrativa biblica)
+    3. **Associacao/match** (referencia <-> texto do versiculo)
+    4. **Verdadeiro/Falso** (aquecimento leve, bom para variar)
+  - Acao: criar tipo de pergunta extensivel; comecar por "completar versiculo"; reusar dados existentes + batch M2.7 para gerar os itens.
+  - DoD: pelo menos 1 novo formato jogavel integrado as licoes/quiz.
+
+- [ ] V23.D.4 **Referencias biblicas no feedback** — EVOLUCAO | MEDIA | INVESTIGACAO (campo morto) | AUTONOMO
+  - (CONSOLIDA V22.F.9 + V22.H.4 — eram duplicata.) Campo `referencias_biblicas` existe no schema, NULL em todas as 4345, nunca renderizado.
+  - Acao: (1) gerar refs via batch M2.7; (2) exibir "Referencia: Genesis 1:1" no feedback de acerto/erro; (3) opcional: link/hint na pergunta.
+  - DoD: referencias exibidas no feedback quando disponiveis.
+
+- [ ] V23.D.5 **Versiculo do dia / devocional leve** — EVOLUCAO | ALTA | PESQUISA_EXTERNA | AUTONOMO
+  - (Absorve V22.F.6.) Feature de nicho biblico com melhor relacao esforco/retencao (YouVersion/Manna). Entry point de 30s que traz o usuario de volta sem exigir lição inteira.
+  - Acao: (1) tabela `versiculos_do_dia` (365 versiculos); (2) card "Versiculo de hoje" em /modos; (3) refresh diario; (4) compartilhar via share sheet nativo (wire do `deep-link.ts`, hoje morto); (5) opcional: contar como atividade que mantem streak.
+  - DoD: card de versiculo do dia em /modos, diferente a cada dia, compartilhavel.
+
+## Milestone V23.E: UX/UI, acessibilidade e multi-idade (MELHORIA) — PENDENTE
+> OBJ derivado "varias faixas de idade". Acessibilidade aqui e dupla funcao: inclui criancas/idosos E melhora a experiencia de todos.
+
+- [ ] V23.E.1 **Fontes escalaveis / Dynamic Type + modo "texto grande"** — MELHORIA | ALTA | PESQUISA_EXTERNA (WCAG) | AUTONOMO
+  - Tamanhos de fonte sao FIXOS (24/18/16). Idosos e baixa visao precisam aumentar; corpo minimo 16px.
+  - Acao: respeitar `fontScale` do sistema (Dynamic Type) no body (Nunito); toggle "texto grande" em config; garantir que layout adapta sem truncar (Bangers display NAO em blocos longos).
+  - DoD: aumentar a fonte do sistema escala o texto do app sem quebrar layout.
+
+- [ ] V23.E.2 **Auditar contraste do texto sobre degrades** — CORRECAO | ALTA | PESQUISA_EXTERNA (WCAG) + INVESTIGACAO | AUTONOMO
+  - Texto laranja `#fded48` sobre branco e branco sobre degrade roxo podem falhar AA. Afeta legibilidade para todos.
+  - Acao: medir contraste das combinacoes criticas; ajustar para >= 4.5:1 (texto normal) onde falhar; manter identidade.
+  - DoD: combinacoes de texto-chave passam contraste AA.
+
+- [ ] V23.E.3 **Touch targets 44-48px nas acoes primarias** — MELHORIA | MEDIA | PESQUISA_EXTERNA (WCAG/Material) | AUTONOMO
+  - Botoes de resposta/ENVIAR/alternativas devem ter alvo >= 44-48px (motricidade de criancas/idosos). (Cruza com V22.A.3 overflow 320px.)
+  - Acao: auditar e ajustar hitSlop/tamanho dos Pressable de acao primaria.
+  - DoD: alvos primarios >= 44px sem overflow em telas pequenas.
+
+- [ ] V23.E.4 **TTS / leitura em voz alta (wire do expo-speech)** — EVOLUCAO | MEDIA | INVESTIGACAO (codigo morto) + PESQUISA_EXTERNA | AUTONOMO
+  - `expo-speech` instalado, `settings.voz` existe, **0 chamadas a Speech.speak()**. Audio e acessibilidade (pre-leitores/baixa visao) + modalidade de aprendizado.
+  - Acao: botao "ouvir" no versiculo/pergunta/feedback que chama `Speech.speak()` (pt-BR) quando `settings.voz` ativo.
+  - DoD: usuario pode ouvir versiculos/perguntas em voz alta.
+
+- [ ] V23.E.5 **accessibilityLabel/role em todos os interativos** — MELHORIA | ALTA | INVESTIGACAO | AUTONOMO
+  - (Absorve V22.K.1.) Apenas 4 de ~30+ elementos tem label. TalkBack/VoiceOver nao anuncia o resto.
+  - Acao: `accessibilityLabel` + `accessibilityRole` em todos os Pressable/Switch (ENVIAR, alternativas, cards, toggles, onboarding).
+  - DoD: leitor de tela anuncia todos os interativos.
+
+- [ ] V23.E.6 **Haptics nos botoes principais + polish de microinteracao** — MELHORIA | MEDIA | INVESTIGACAO | AUTONOMO
+  - (Absorve V22.B.3.) `haptics.ts` pronto mas nenhum botao usa. Feedback tatil reforca a recompensa.
+  - Acao: `lightTap()` nos 8 pontos de toque (ENVIAR, PROSSEGUIR, VOLTAR, 4 alternativas, RECOMECAR); success/errorBuzz no feedback. Corrigir cache de haptics nunca invalidado (V22.G.1).
+  - DoD: feedback tatil consistente; toggle de haptics tem efeito imediato.
+
+- [ ] V23.E.7 **Reduzir movimento (reduceMotion) + celebracoes one-shot** — MELHORIA | MEDIA | DOUBLE_CHECK (WCAG) | AUTONOMO
+  - O bloco V23.A-B adiciona muitas animacoes/celebracoes. Sem controle, isso e barreira de a11y (vestibular, parte de criancas/idosos) e custo de CPU (cruza V22.B.2: loops continuos).
+  - Acao: (1) setting `reduceMotion` respeitando `AccessibilityInfo.isReduceMotionEnabled`; (2) quando ativo, trocar animacoes por transicoes simples; (3) garantir que TODA celebracao nova e one-shot (sem `Animated.loop` perpetuo).
+  - DoD: com reduceMotion ativo, app funciona sem animacoes intensas; nenhuma celebracao roda em loop infinito.
+
+## Milestone V23.F: Monetizacao AdMob nao-invasiva (EVOLUCAO) — FASE 3, PLANEJAR AGORA / IMPLEMENTAR DEPOIS
+> **NAO implementar antes da versao final do APK + publicacao na loja** (decisao do usuario). Planejado aqui para a versao final ja nascer com os ganchos certos. Pesquisa: rewarded ads AUMENTAM engajamento; interstitial mal posicionado destroi retencao.
+
+- [ ] V23.F.1 **Migrar expo-ads-admob (DEPRECATED) -> react-native-google-mobile-ads** — INFRAESTRUTURA | ALTA | PESQUISA_EXTERNA + INVESTIGACAO | DEPENDE_VOCE: criar conta AdMob + App ID
+  - `app.config.ts` usa `expo-ads-admob` (descontinuado, placeholder, 0 implementacao). Lib atual: `react-native-google-mobile-ads` (Invertase), requer EAS Build/dev client.
+  - Acao: remover plugin antigo; instalar `react-native-google-mobile-ads` + `expo-build-properties` + `expo-tracking-transparency`; configurar App ID real.
+  - DoD: SDK de ads moderno integrado, build OK com IDs de teste.
+
+- [ ] V23.F.2 **Consentimento UMP (LGPD/GDPR) antes do 1o anuncio** — INFRAESTRUTURA | ALTA | PESQUISA_EXTERNA | AUTONOMO (apos F.1)
+  - Acao: `AdsConsent.requestInfoUpdate()` + `gatherConsent()` no launch antes de pedir ad; configurar messaging no AdMob Console; `delayAppMeasurementInit: true`.
+  - DoD: form de consentimento aparece quando exigido; nenhum ad antes do consent.
+
+- [ ] V23.F.3 **Rewarded ads que AUMENTAM engajamento (so bonus positivo)** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO (apos F.1)
+  - Formato opt-in, melhor recepcao, sustenta sessoes. **Decisao double-check: SO recompensa positiva, nunca destrava conteudo bloqueado.**
+  - Acao: rewarded voluntario para: freeze/recuperar streak, baú de XP bonus, 1 dica numa questao dificil. Nunca como pre-requisito de progresso.
+  - DoD: usuario assiste ad voluntario e recebe um bonus; progresso nunca fica refem de ad.
+
+- [ ] V23.F.4 **Interstitial so em transicao limpa + frequency cap** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO (apos F.1)
+  - Acao: interstitial APENAS apos concluir modulo (nao lição, nao no launch, nao em interacao critica); cap 1 a cada 2-3 min de uso ativo; monitorar retencao e reduzir se cair. Banner so em telas de navegacao/menu (nunca dentro da lição).
+  - DoD: interstitial aparece so pos-modulo respeitando o cap; sem ads sobre conteudo ativo.
+
+- [ ] V23.F.5 **~~Sistema de vidas/hearts~~ DESCARTADO no double-check — substituido por power-ups opcionais** — EVOLUCAO | BAIXA | DOUBLE_CHECK | AUTONOMO
+  - **Decisao tomada:** NAO implementar sistema de vidas que bloqueia progresso. Para app de fe + multi-idade (criancas) + offline, mecanica punitiva e frustrante e fora da marca. A "ponte" engajamento<->rewarded e feita por **power-ups opcionais positivos** (freeze de streak, baú de XP, dica) ja cobertos em V23.F.3 + V23.A.5.
+  - DoD: nenhuma mecanica de vida bloqueante no app; rewarded entrega so bonus.
+
+- [ ] V23.F.6 **Declarar publico ADULTO no Play Console (evitar regime Families de ads)** — INFRAESTRUTURA | ALTA | PESQUISA_EXTERNA | DEPENDE_VOCE: configuracao no Play Console
+  - Se o app for marcado "infantil/todos", o AdMob entra no regime Families (sem ads personalizados, SDK self-certified). O app e LGPD-adulto.
+  - Acao: no Play Console, Target Audience = adulto/geral-adulto; alinhar com a estrategia de ads. (Decisao: o app pode ser USADO por varias idades sem ser DIRECIONADO a criancas.)
+  - DoD: target audience declarado adulto; ads personalizados permitidos.
+
+## Milestone V23.G: Infra e seguranca minima para a versao final (consolida V22 critico) — PENDENTE
+> O que de fato bloqueia uma "versao final" confiavel. Detalhe completo dos itens nos milestones V22 abaixo — aqui fica a ordem/prioridade contra o objetivo.
+
+- [ ] V23.G.1 **[CRITICO] Revogar credenciais expostas no git** — SEGURANCA | CRITICA | INVESTIGACAO | DEPENDE_VOCE
+  - Keystore `expert2026` (V22.I.1) + API key Minimax hardcoded (V22.J.1) no historico do git. **Fazer PRIMEIRO.**
+  - DoD: keystore novo, key revogada, arquivos fora do tracking.
+- [ ] V23.G.2 **Error boundaries com fallback contextual** — INFRAESTRUTURA | CRITICA | INVESTIGACAO | AUTONOMO
+  - V22.C.2. Sem isso, crash de render fecha o app inteiro.
+  - DoD: erro de render mostra tela amigavel, nao crash branco.
+- [ ] V23.G.3 **Analytics + crash reporting (Sentry)** — INFRAESTRUTURA | ALTA | OBJECTIVE_GAP | AUTONOMO
+  - V22.C.3. **Sem medir, nao da pra saber se o engajamento melhorou.** Instrumentar funil (lição concluida, streak, retencao D1/D7) + crashes.
+  - DoD: eventos-chave e crashes reportados no dashboard.
+- [ ] V23.G.4 **EAS init + eas.json (preview APK + production AAB)** — INFRAESTRUTURA | ALTA | INVESTIGACAO | DESTRAVAVEL: rodar `eas init`
+  - V22.C.1. Necessario para build de release confiavel.
+  - DoD: `eas build --profile preview --platform android --dry-run` funciona.
+- [ ] V23.G.5 **Resolver vulns + auditar keys no bundle + upgrade Expo (avaliar)** — INFRAESTRUTURA | MEDIA | INVESTIGACAO | AUTONOMO
+  - V22.D.1/D.2 + V22.F.10/H. `npm audit fix`; confirmar que nenhuma key vaza no APK; avaliar Expo 56.
+  - DoD: 0 high/critical; bundle sem keys; decisao sobre SDK 56 registrada.
+- [ ] V23.G.6 **Higiene de repo (git bloat) — por ultimo** — MANUTENCAO | BAIXA | INVESTIGACAO | AUTONOMO
+  - V22.H/I/J (PNGs 131MB, seed JSON, aliases/scripts mortos, .gitignore). Legitimo, mas nao move o objetivo — fazer ao final.
+  - DoD: repo < 10MB, artifacts fora do tracking.
+
+## Rodada de exaustao V23.2 (2026-06-26) — oportunidades ainda nao cobertas
+
+> Resposta a "ja esgotou?": NAO. Ataque por angulos que A-G nao cobriam (UX de jornada, multi-idade REAL, profundidade de conteudo, sazonalidade, crescimento na loja, monetizacao alternativa). 17 oportunidades novas, todas viaveis offline-first/Android/PT-BR. Apos esta rodada, o que sobra esta REJEITADO por escopo (ver fim da secao) — ai sim esgotado.
+
+## Milestone V23.H: Jornada visual, colecoes e personalizacao (EVOLUCAO/UX) — PENDENTE
+> O grid de cards e funcional mas "plano". A trilha visual e a mecanica de colecao sao dos maiores drivers de engajamento dos apps de referencia.
+
+- [ ] V23.H.1 **Mapa de jornada (trilha sinuosa estilo Duolingo)** — EVOLUCAO | ALTA | PESQUISA_EXTERNA | AUTONOMO
+  - Substituir/complementar o grid de modulos por uma TRILHA visual com nos (modulos/licoes) que o usuario percorre. A "estrada" e iconica e cria sensacao de avanco fisico. Reusa estados existentes (bloqueado/liberado/amarelo).
+  - DoD: /licoes mostra trilha navegavel com o no atual destacado; progresso visivel como caminho.
+- [ ] V23.H.2 **Mapa de colecoes (livros/areas) — "complete o NT"** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+  - Mecanica de colecao: visualizar as 4 areas (FB/AT/NT/TE) e/ou os 66 livros como itens a "colecionar" conforme conclui. Senso de completude.
+  - DoD: tela de colecao mostra o que foi concluido vs falta, por area.
+- [ ] V23.H.3 **Personalizacao cosmetica desbloqueavel por XP (temas/skins do mascote)** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+  - XP precisa de "onde gastar". Cosmeticos (tema de cor on-palette, acessorios do livro-mascote) sao XP-sink + identidade, sem afetar dificuldade.
+  - DoD: usuario desbloqueia e aplica ao menos 1 cosmetico com XP.
+
+## Milestone V23.I: Multi-perfil e modo familia / multi-idade (EVOLUCAO) — PENDENTE
+> Serve DIRETAMENTE o requisito "varias faixas de idade" — um device de familia com pais + criancas usando o mesmo app.
+
+- [ ] V23.I.1 **Perfis locais multiplos (cada um com progresso/streak proprio)** — EVOLUCAO | ALTA | OBJECTIVE_GAP | AUTONOMO
+  - Hoje o progresso e global no device. Perfis locais (sem login/backend) permitem familia compartilhar o app sem misturar streak/XP/conclusoes.
+  - DoD: criar/trocar entre perfis; cada perfil isola progresso no SQLite.
+- [ ] V23.I.2 **Modo Kids / trilha simplificada (linguagem + perguntas adaptadas)** — EVOLUCAO | MEDIA | OBJECTIVE_GAP | AUTONOMO
+  - Conteudo hoje e one-size. Modo Kids: subset de perguntas mais simples + linguagem leve + UI com alvos maiores. Gerar variante via batch M2.7.
+  - DoD: perfil pode ativar Modo Kids com conteudo/UX adequados a crianca.
+- [ ] V23.I.3 **Seletor de perfil no launch + troca rapida** — MELHORIA | BAIXA | INVESTIGACAO | AUTONOMO
+  - DoD: escolher perfil ao abrir; trocar em 1-2 toques.
+
+## Milestone V23.J: Conteudo de referencia e profundidade de aprendizado (EVOLUCAO) — PENDENTE
+> Aprofunda o "aprendizado intuitivo": permitir EXPLORAR conteudo, nao so ser testado.
+
+- [ ] V23.J.1 **Enciclopedia leve: personagens, eventos e glossario** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+  - Browse de "quem e quem" na Biblia + glossario de termos. Valor educacional + entry-point leve. Gerar via batch M2.7.
+  - DoD: secao navegavel de verbetes (personagens/termos) consultavel offline.
+- [ ] V23.J.2 **Planos de leitura / devocional diario** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+  - (Adjacente ao versiculo do dia V23.D.5.) YouVersion/Manna: plano diario = streak natural + habito. Sequencia curada de passagens/temas por N dias.
+  - DoD: ao menos 1 plano de leitura com progresso diario que mantem streak.
+- [ ] V23.J.3 **"Saiba mais" contextual no feedback** — MELHORIA | BAIXA | INVESTIGACAO | AUTONOMO
+  - No feedback de uma pergunta, link para o verbete/explicacao relacionada (cruza V23.D.1/D.4/J.1).
+  - DoD: feedback oferece aprofundamento opcional quando ha verbete.
+
+## Milestone V23.K: Eventos sazonais, desafios e re-engajamento (EVOLUCAO) — PENDENTE
+> Cria motivos RECORRENTES e SAZONAIS de voltar — alem do streak diario.
+
+- [ ] V23.K.1 **Eventos liturgicos sazonais (Natal/Pascoa/Quaresma)** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+  - Desafios tematicos com recompensa especial em datas do calendario cristao. Re-engajamento sazonal on-brand.
+  - DoD: pelo menos 1 evento sazonal (date-based) com desafio + recompensa dedicada.
+- [ ] V23.K.2 **Desafios diarios/semanais rotativos** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+  - (Absorve a ideia de weekly challenges do backlog V22.F.) Distinto da meta diaria: missao rotativa ("acerte 10 do AT hoje") com bonus XP.
+  - DoD: 1 desafio rotativo ativo por periodo, com recompensa.
+- [ ] V23.K.3 **Win-back de inativos (lembrete de retorno apos N dias)** — MELHORIA | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+  - Usa a infra de notificacoes locais (V23.A.4). Se inativo ha 3/7 dias: convite gentil de volta (tom encorajador, nao culpa).
+  - DoD: notificacao de retorno dispara para inativo e cancela ao voltar.
+- [ ] V23.K.4 **Desafiar um amigo (quiz compartilhavel via deep link, async, sem backend)** — EVOLUCAO | BAIXA | PESQUISA_EXTERNA | AUTONOMO | BACKLOG
+  - Gerar link que carrega um quiz com seed fixo; amigo joga e compara score. Viralidade leve sem servidor.
+  - DoD: link de desafio gera quiz reproduzivel; compara scores localmente.
+
+## Milestone V23.L: Crescimento na loja, monetizacao complementar e privacidade (FASE 2/3) — PENDENTE
+> Itens de loja/monetizacao alem do AdMob. L.1 e FASE 2 (pre-loja); L.2/L.4 sao FASE 3.
+
+- [ ] V23.L.1 **Pedido de avaliacao na loja em momento de pico (expo-store-review)** — MELHORIA | ALTA | PESQUISA_EXTERNA | AUTONOMO
+  - Pedir review logo apos um marco feliz (trofeu, badge, streak alto) maximiza nota/volume = crescimento organico. Usar a in-app review API (sem tirar o usuario do app).
+  - DoD: prompt de avaliacao dispara 1x apos marco, respeitando cooldown da API.
+- [ ] V23.L.2 **"Remover anuncios" / doacao via IAP** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | DEPENDE_VOCE: configurar produto IAP no Play Console | FASE 3
+  - Publico de fe costuma APOIAR ministerios; um IAP unico de "apoiar/remover ads" e monetizacao alternativa respeitosa (e agrada quem detesta ads). Complementa, nao substitui, o AdMob.
+  - DoD: compra unica remove ads / registra doacao; estado persistido.
+- [ ] V23.L.3 **Consentimento/privacidade de analytics (LGPD, separado do UMP de ads)** — INFRAESTRUTURA | MEDIA | PESQUISA_EXTERNA | AUTONOMO
+  - Analytics/crash (V23.G.3) coletam dados — precisa de base legal/opt-out proprio, independente do UMP de ads (V23.F.2). Atualizar privacy policy.
+  - DoD: opt-out de analytics em config; privacy policy reflete a coleta real.
+- [ ] V23.L.4 **Widget de versiculo do dia + app shortcuts (research/deferred)** — EVOLUCAO | BAIXA | PESQUISA_EXTERNA | AUTONOMO | BACKLOG
+  - Widget de home (estilo YouVersion) e gatilho externo forte, mas exige modulo nativo (config plugin) — pesquisar custo. App shortcuts (atalho "quiz do dia"/"versiculo") sao baratos.
+  - DoD: decisao registrada sobre widget; app shortcuts implementados se baratos.
+
+## Validacao de exaustao (apos V23.2)
+Com A-L cobertos, as ideias restantes estao **REJEITADAS por escopo** (nao por esquecimento), e por isso o plano esta **esgotado dentro do escopo atual** (MVP Android, offline-first, PT-BR):
+- **Ligas/leaderboard online, modo multiplayer ao vivo, ranking de igreja/grupo:** exigem backend + contas. Rejeitado agora; reabrir se houver backend.
+- **Cloud sync de progresso entre devices:** exige backend/conta. V23.A.7 (Auto Backup local) cobre o essencial; sync real fica pos-MVP.
+- **iOS / Apple Store:** rejeitado (decisao de escopo mantida).
+- **Multi-idioma:** rejeitado (decisao mantida; PT-BR only).
+- **Multiplas traducoes biblicas embarcadas:** custo de tamanho do APK; fora do MVP.
+- **Teologia (24 modulos):** backlog ja decidido (pos-engajamento beta).
+
+> Se o escopo mudar (entrar backend, ou iOS, ou multi-idioma), reabrir esta secao — sao as unicas fronteiras restantes.
+
+## Dependencias entre milestones V23
+- **V23.G.1 (credenciais) PRIMEIRO** (seguranca imediata).
+- **V23.A.0 (fundacao: migracao + Settings + helper de XP) e PRE-REQUISITO de TODO o bloco A-D.** Fazer logo apos G.1.
+- **V23.I.1 (perfis) idealmente antes** de muito estado de jogo acumular (migrar progresso global -> perfil default e mais facil cedo).
+- **V23.H.1 (trilha) e refator de UI de /licoes** — coordenar com V23.B.3 (barra global) e V22.A/B (bugs/polish da mesma tela).
+- **V23.A.1 (XP) e base** de V23.A.3 (meta), V23.B (badges/perfil/niveis/mascote), V23.D.2 (XP por revisao). Fazer XP cedo.
+- **V23.A (loop) antes de V23.C (onboarding)** — o onboarding apresenta meta/streak que dependem do loop existir.
+- **V23.D.1 (conteudo didatico) e V23.D.4 (refs) compartilham o batch M2.7** — gerar juntos.
+- **V23.F (AdMob) e FASE 3** — depende da versao final + V23.F.5 (vidas) como pre-req do rewarded.
+- **V23.G.3 (analytics) idealmente antes** do grosso de V23.A-D, para medir o efeito de cada feature.
+
+## Dependencias de voce (V23)
+- **Conta AdMob + App ID + ad unit IDs** (V23.F.1/F.6) — FASE 3; so quando for monetizar.
+- **Revogar keystore + decidir filter-repo** (V23.G.1) — CRITICO de seguranca.
+- **eas init / projectId** (V23.G.4) — DESTRAVAVEL (rodar 1 comando OU fornecer ID).
+- **Poses douradas assustado/triste** (backlog V20) — designer subir no Drive.
+- **Decisao de produto: sistema de vidas/hearts** (V23.F.5) — combina com o publico? Validar no beta.
+
+## Itens rejeitados V23 (e por que)
+- iOS / multi-idioma / backend dedicado: REJEITADO (decisoes anteriores mantidas, sem fato novo).
+- Ligas/leagues sociais e leaderboard online global: ADIADO (exige backend + contas; o app e offline-first). Mantido como ideia pos-MVP; o leaderboard local self-vs-self (V23.B.4) cobre o essencial agora.
+
+## Proximo passo V23
+Aprovar este plano. Sugestao de ordem para `@full-cycle` (FASE 1, foco APK):
+**V23.G.1 -> V23.G.3 (analytics, para medir) -> V23.A (loop XP/streak/meta) -> V23.B (badges/perfil/progresso) -> V23.C (onboarding) -> V23.D (aprendizado) -> V23.E (UX/multi-idade) -> V23.G.2/4/5 -> V22 backlog tecnico -> V23.G.6 (git cleanup)**. V23.F (AdMob) so apos a versao final aprovada por voce. Rodar `/compact` antes de despachar (a varredura gerou bastante contexto).
 
 ---
 

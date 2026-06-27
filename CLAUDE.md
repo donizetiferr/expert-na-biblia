@@ -164,6 +164,27 @@ Todos os assets visuais/audios estao em Google Drive publico + espelhados localm
 
 ## PROXIMO PASSO
 
+**V23.1 entregue (2026-06-26, v1.12.0/vc7)** — FASE 1 do PLANO V23, Minimum Lovable Engagement:
+liga a camada de RETENCAO PERSISTENTE (antes morta/inexistente). 8 itens: A.0 fundacao (migrations
+em lista + migration 002 `user_xp`/`user_badges`/`meta_diaria_log`/`streak_freeze` + Settings
+estendido + helper de XP), A.1 sistema de XP (+5/acerto, +50 ao fechar licao 100%, anti-farm), A.2
+streak wired + freeze semanal, A.3 meta diaria com bonus, B.3 barra de progresso global, B.2 tela de
+Perfil "Meu Progresso", B.1 badges (galeria + modal + 13 conquistas), C.1 onboarding de ativacao
+(saudacao -> motivacao -> meta -> 1a vitoria -> streak -> notif). Gates: tsc 0 | jest 128/128 (+31) |
+eslint 0. COMPROVADO em emulador hi-res 1080x1920 (UPGRADE sobre V21 = migration 002 em DB ja
+instalado, 0 FATAL): onboarding -> 1a vitoria (+10 XP) -> header (fogo 1/Nivel 1/meta) -> quiz 12/20
+(+60 XP + meta batida +20) -> perfil 90 XP. Evidencias: `orchestration/v23_1_validation/`. APK:
+`dist/ExpertNaBiblia-v23.1.0.apk`. Detalhes: `evolution_plan.md` (PLANO V23) + changelog 1.12.0.
+
+Pendencias (pos-V23.1, nao bloqueiam):
+- Badges: trigger empirico de unlock (1o modulo completo / streak 7 dias / quiz 20/20) nao exercitado
+  no emulador (exige modulo inteiro); galeria + modal + thresholds unit-tested.
+- Quiz: distratores batch-gerados tem ruido ocasional ("sem exceptions") — qualidade de conteudo
+  (quiz-alternatives.ts), follow-up herdado de V20.
+- Resto da FASE 1 em andamento: A.4-A.7, resto de B, C.2, D, E, H, I, J, K + infra/seg G.
+
+---
+
 **V21 entregue (2026-06-25, v1.11.0/vc6)** — ciclo de FECHAMENTO: 3 itens nao-bloqueantes do
 VERDICT V20 + 1 fix de UX exposto pela correcao da IA, COMPROVADOS no emulador hi-res ONLINE.
 (1) **Confiabilidade da IA**: `m3.ts` TIMEOUT_MS 10s->27s (M2.7 mede 4-20s) + `openai.ts` 20s;

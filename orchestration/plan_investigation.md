@@ -1,154 +1,92 @@
-# Plan Investigation — Expert Na Bíblia (2026-06-26)
+# Plan Investigation — Expert Na Biblia (V23, 2026-06-26)
+
+> Investigacao V23 focada na dimensao ENGAJAMENTO/DOPAMINA/UX/MULTI-IDADE/APRENDIZADO/MONETIZACAO,
+> subdimensionada no plano V22 (auditoria tecnica de bugs/infra/seguranca). Atualiza o log para os gates G0-G5.
+> Evidencia V22 anterior preservada no git e no historico do evolution_plan.md.
 
 ## Modo
-Escopo: ATUALIZACAO | Profundidade: COMPLETO — razão: input "auditoria profunda" (keyword de completude) + sem apontamentos acionáveis específicos, direcionamento temático (bugs, layout, UX/UI).
+Escopo: ATUALIZACAO | Profundidade: COMPLETO — razao: input sem apontamentos pontuais, pede "esgotar possibilidades de evolucao / auditoria / validar+enriquecer+aprofundar".
 
-## Arquivos lidos (piso mínimo)
-- `CLAUDE.md` — projeto pessoal, 247 linhas, stack React Native + Expo SDK 55, objetivo: ensinar Bíblia via app mobile
-- `README.md` — status 0.1.0, stack, estrutura, como rodar
-- `package.json` — Expo 55, React 19.2, RN 0.83.6, 30 deps, 14 devDeps
-- `evolution_plan.md` — plano existente V18-V21, ~860 linhas, muitos milestones concluídos
-- `src/app/_layout.tsx` — root layout, font loading, migrations, sound init
-- `src/app/index.tsx` — splash screen com animação, redirecionamento onboarding/modos
-- `src/app/modos.tsx` — tela de seleção de modo (Quiz/Lições), fundo creme, cards roxo+degradê
-- `src/app/onboarding.tsx` — 3 slides com PersonagemLivro, useWindowDimensions
-- `src/app/config.tsx` — configurações (som, haptics, TTS, reset)
-- `src/app/licoes/index.tsx` — lista de 40 módulos, cadeado sequencial, amarelo concluído
-- `src/app/licoes/[moduloId].tsx` — lista de lições dentro do módulo
-- `src/app/licoes/[moduloId]/[licaoId].tsx` — tela de pergunta dissertativa, IA avaliadora
-- `src/app/licoes/[moduloId]/[licaoId]/feedback.tsx` — feedback acerto/erro com personagem
-- `src/app/licoes/[moduloId]/[licaoId]/final.tsx` — tela final da atividade (3 variantes)
-- `src/app/quiz/jogar.tsx` — quiz múltipla escolha, timer 10s, 20 perguntas
-- `src/app/trofeu.tsx` — tela de troféu com confetes animados
-- `src/components/PersonagemLivro.tsx` — mascote animado (bounce+blink), 2 variantes (licoes/quiz)
-- `src/components/Gradiente.tsx` — 4 componentes de degradê (roxo, laranja, laranja forte, troféu)
-- `src/constants/colors.ts` — paleta oficial, fontes, espaçamentos, bordas
-- `src/lib/db-queries.ts` — queries SQLite com fallback mock, 288 linhas
-- `src/db/seed-modulos-licoes.ts` — seed data (800 linhas, esperado para dados)
+## Arquivos lidos (piso minimo + investigacao dirigida)
+- CLAUDE.md do projeto — objetivo central (engajar/dopamina/expert), stack RN+Expo, 40 modulos, 2 modos, aesthetic editorial.
+- evolution_plan.md (1371 linhas) — plano V22 (78 itens, 12 milestones tecnicos) + historico V8-V21.
+- src/app/ (rotas expo-router) — modos, licoes/[moduloId]/[licaoId]/feedback/final, quiz/index/jogar/final, trofeu, onboarding, config.
+- src/lib/streak.ts — 99 linhas, logica completa (incremento, freeze semanal) — 0 imports (MORTO).
+- src/lib/notifications.ts — agendarLembreteDiario completo — 0 imports (MORTO).
+- src/lib/progressao.ts — moduloLiberado() (desbloqueio sequencial OK).
+- src/lib/sound.ts / haptics.ts — SFX+haptics WIRED (playAcerto/playErro/successBuzz; playCombo existe com 0 chamadas).
+- src/lib/db-queries.ts — user_rankings gravado (quiz/final.tsx:57) e NUNCA lido; sem tabela user_xp/user_badges.
+- app.config.ts — plugin expo-ads-admob com PLACEHOLDER (DEPRECATED, 0 implementacao); EAS projectId PLACEHOLDER.
 
-## Comandos executados (com resultado resumido)
-- `npx jest --no-coverage` -> 11 suites, 97/97 PASS (8.1s)
-- `npx tsc --noEmit` -> 0 erros (saída limpa)
-- `grep -rn TODO/FIXME/HACK src/` -> 0 ocorrências reais (apenas referências em comentários/documentação)
-- `npm outdated` -> 29 packages desatualizados (expo 55->56, react-native 0.83->0.86, etc.)
-- `npm audit` -> 16 moderate severity vulnerabilities (@expo/config chain)
-- `find src -name "*.ts" -o -name "*.tsx" | wc -l` -> 55 arquivos fonte
-- `.github/workflows/ci.yml` -> CI configurado (lint+type+test+EAS preview)
+## Comandos executados (subagente Explore, read-only)
+- grep imports streak.ts/notifications.ts/deep-link -> 0 imports (codigo morto confirmado).
+- grep AdMob|admob|google.*ads|GAMobileAds -> 0 resultados (placeholder vestigial).
+- grep Speech.speak -> 0 (TTS nao wired apesar de expo-speech + settings.voz).
+- contagem testes -> 97/97 passando, 11 suites; CI .github/workflows/ci.yml robusto.
 
-## Saúde do projeto (verificada em 2026-06-26)
-- Testes: EXISTEM+PASSANDO (97/97, 11 suites) — evidência: `npx jest`
-- Build: OK (gradlew assembleRelease funciona, APK V21 vc6/1.11.0 publicado) — evidência: changelog + git log
-- CI/CD: CONFIGURADO (GitHub Actions: lint+type+test, EAS preview em PR) — evidência: `.github/workflows/ci.yml`
-- Deps: DESATUALIZADAS (expo 55->56 disponível, RN 0.83->0.86, 29 packages outdated; 16 moderate vulns em @expo/config chain) — evidência: `npm outdated` + `npm audit`
-- Docs: COMPLETAS (CLAUDE.md 247 linhas, README, changelog 45KB, evolution_plan 80KB, 8 docs em docs/, orchestration rico) — evidência: glob + reads
+## Saude do projeto (verificada 2026-06-26)
+- Testes: EXISTEM+PASSANDO (97/97, 11 suites) — evidencia: jest no CI + V21 checkpoint.
+- Build: OK (APK V21 vc6/1.11.0 publicado) — evidencia: dist/ + catbox.
+- CI/CD: CONFIGURADO (lint+type-check -> test -> EAS build preview, Node 22) — evidencia: .github/workflows/ci.yml.
+- Deps: DESATUALIZADAS — Expo SDK 55 (56 disponivel), 16 moderate vulns, **expo-ads-admob DEPRECATED** (lib correta: react-native-google-mobile-ads); EAS projectId placeholder — evidencia: app.config.ts + npm audit (V22).
+- Docs: COMPLETAS (CLAUDE.md/README/CHANGELOG/evolution_plan) com 1 inconsistencia (backend Node.js descartado ainda citado) — evidencia: CLAUDE.md:36.
 
-## Sinais de código
-- TODO/FIXME/HACK: 0 ocorrências reais no código fonte
-- Arquivos >300 linhas: 3 (seed-modulos-licoes.ts 800, licoes/[moduloId]/[licaoId].tsx 365, quiz/jogar.tsx 325)
-- Duplicação óbvia: não detectada
+## Sinais de codigo
+- Codigo morto de engajamento: streak.ts, notifications.ts, deep-link, quota-monitor, playCombo, TTS, user_rankings(read), refs_biblicas(render), campo dificuldade(uso). Padrao: INFRAESTRUTURA DE ENGAJAMENTO EXISTE MAS NAO ESTA LIGADA NA UI.
+- Arquivos >500 linhas: seeds (dados). Duplicacao: refs biblicas no feedback aparece 2x no V22 (F.9 + H.4).
 
-## Pesquisa externa (COMPLETO)
-- Queries: "bible quiz app features 2025", "gamification bible study app", "react native expo education app best practices", "mobile app UX bible learning"
-- Fontes usadas: Play Store (top bible apps), Dribbble (education app designs)
-- Achados que viraram candidatos: 3 (sistema de streak/XP mais visível, modo revisão espaçada, compartilhamento social)
+## Pesquisa externa (COMPLETO — executada)
+- Queries: mecanicas de engajamento Duolingo/Brilliant; apps biblia gamificados (YouVersion/Manna/Bible Trivia); modalidades de aprendizado (spaced repetition/Leitner/SM-2, Brilliant learn-by-doing); design multi-idade/WCAG mobile; AdMob nao-invasivo + rewarded + Families policy + UMP/Expo; onboarding de ativacao.
+- Fontes: trophy.so/duolingo, strivecloud, plotline, youversion.com, themanna.app, brilliant.org/about, wiki Spaced_repetition + Leitner_system, median.co a11y, support.google.com/admob (6244508 frequency, 6223431 families), docs.page invertase react-native-google-mobile-ads, junoschool/appcues onboarding.
+- Achados que viraram candidatos: ~12 (XP+streak+meta como nucleo; ligas/chests; versiculo do dia; spaced repetition; novos formatos; touch 44-48 + Dynamic Type + contraste + TTS; rewarded para vidas/dicas/freeze; interstitial pos-modulo c/ cap; UMP/consent LGPD; publico adulto no Play Console; onboarding de ativacao).
 
 ## Objetivos do produto -> cobertura -> gaps (COMPLETO)
-- OBJ-1: Ensinar Bíblia de forma lúdica e progressiva — cobertura: PARCIAL (~489 canonicas "NAO SEI", módulos Teologia ausentes)
-- OBJ-2: Dois modos complementares (Lições + Quiz) — cobertura: TOTAL
-- OBJ-3: Avaliação por IA generativa (M2.7) — cobertura: TOTAL
-- OBJ-4: Progressão gamificada (100% para avançar, troféu final) — cobertura: TOTAL
-- OBJ-5: Personagem livro animado — cobertura: PARCIAL (set parcial de poses douradas)
-- OBJ-6: Timer 10s no Quiz — cobertura: TOTAL
-- OBJ-7: Quiz customizado (max 20 módulos) — cobertura: TOTAL
-- OBJ-8: Monetização AdMob — cobertura: AUSENTE (PLACEHOLDER_ANDROID_APP_ID, ads removidos V13)
-- OBJ-9: Publicação Play Store — cobertura: PARCIAL (checklist existe, execução pendente)
+- OBJ-1 "Ensinar a Biblia de forma ludica e progressiva, ENGAJANDO e liberando dopamina ate virar expert" | fonte: CLAUDE.md OBJETIVO | cobertura atual: PARCIAL (progressao 100%-gate + SFX/anim/trofeu OK; mas SEM camada de retencao persistente: XP/streak/metas/badges/perfil/progresso-visivel; engajamento morto no codigo) | gap vira: milestones V23.A/B/C (CRITICA-ALTA, fonte OBJECTIVE_GAP).
+- OBJ-deriv "aprendizado (nao so avaliacao)" | INFERIDO do pedido + regra IA | cobertura: AUSENTE (so pergunta aberta + quiz; sem ensinar antes/flashcard/fill-in/ordenar/match/audio) | gap vira: V23.D.
+- OBJ-deriv "varias faixas de idade" | fonte: input usuario | cobertura: AUSENTE (fontes fixas, sem Dynamic Type/TTS/contraste auditado) | gap vira: V23.E.
+- OBJ-deriv "monetizacao AdMob nao-invasiva pos-loja" | fonte: CLAUDE.md decisao #9 + input | cobertura: AUSENTE (placeholder deprecated) | gap vira: V23.F (FASE 3).
 
-## Histórico do plano (ATUALIZACAO)
-- Categorias recorrentes: CORRECAO de bugs visuais/layout (V18-V21 = 4 ciclos focados em fidelidade visual)
-- Areas nunca tocadas: performance profiling, acessibilidade (a11y), analytics/crash reporting, testes E2E Playwright
-- Rejeitados que continuam rejeitados: iOS, multi-idioma, backend dedicado
+## Historico do plano (ATUALIZACAO)
+- Categorias recorrentes: muitos ciclos (V8-V21) gastos em fidelidade visual/bugs de runtime; engajamento sempre empurrado para "backlog V22.F". Sinal: a dimensao de PRODUTO/RETENCAO nunca foi tratada como milestone de primeira classe -> causa-raiz do objetivo OBJ-1 ficar PARCIAL.
+- Areas nunca tocadas por milestone de entrega: XP, badges, perfil, metas diarias, modalidades de aprendizado, onboarding de ativacao.
+- Rejeitados que continuam rejeitados (sem fato novo): iOS, multi-idioma, backend dedicado.
 
 ## Cobertura por dimensao (COMPLETO — gate G4)
-- CORRECAO_BUGS: 3 achados — varredura via code review + npm audit
-- MELHORIA: 5 achados — varredura via code review de todas as telas
-- EVOLUCAO_FEATURES: 4 achados — varredura via pesquisa externa + gaps de objetivos
-- MANUTENCAO_REFACTOR: 3 achados — varredura via code review + docs
-- INFRAESTRUTURA: 4 achados — varredura via npm outdated/audit + package.json
-- UX_UI: 6 achados — varredura via heurísticas Nielsen + code review
-- PERFORMANCE: 2 achados — varredura via code review
-- SEGURANCA: 2 achados — varredura via npm audit + code review
+- CORRECAO_BUGS: V22.A/G ja cobrem (SplashScreen shadowing, key prop, overflow 320px, loading state, haptics cache nunca invalidado). Varrida via V22 + grep. Nada novo critico no escopo V23.
+- MELHORIA: muitos (haptics nos botoes, config icones, header voltar, matching respostas longas) — herdados V22.B + novos UX em V23.E.
+- EVOLUCAO_FEATURES: 6+ achados V23 (XP/streak/metas/badges/perfil/modalidades/versiculo/leaderboard/combos/hearts) + V22.F (mascote evolui, revisao espacada, share, push, dificuldade adaptativa). Maior bloco V23.
+- MANUTENCAO_REFACTOR: V22.H/I/J (git bloat 119MB, seed JSON, aliases mortos, scripts mortos) — validos, rebaixados a BAIXA contra objetivo de engajamento (exceto seguranca).
+- INFRAESTRUTURA: error boundaries (V22.C.2 CRITICA), EAS init+eas.json (V22.C.1), Sentry/analytics (V22.C.3 — essencial p/ medir retencao real), migrar admob lib (V23.F.1). Veredito: avaliada, gaps reais.
+- UX_UI: base estetica boa (editorial, degrades, personagem); gaps: progresso invisivel, sem perfil, contraste sobre degrade nao auditado, sem Dynamic Type, TTS off, touch targets nao verificados 44-48. Milestone V23.E dedicado.
+- PERFORMANCE: animacoes em loop continuo (V22.B.2), 2x listarModulos (V22.A.5), O(n2) moduloLiberado (V22.I.8) — herdados, BAIXA.
+- SEGURANCA: 2 credenciais expostas no git (keystore expert2026 V22.I.1 + API key Minimax V22.J.1) = CRITICA; 16 moderate vulns (V22.D.1). Cruzado com 1.5b.
 
-## Achados independentes (fora dos apontamentos do input/contexto)
-1. SplashScreen import shadowing (index.tsx:21)
-2. key prop ausente no Pressable bloqueado (licoes/index.tsx:97)
-3. FlatList com 1 item no onboarding
-4. Botões feedback 140x140 overflow em telas <=320px
-5. Config VolumeSlider usa emoji inconsistente
-6. Animações loop contínuo consomem CPU
-7. Error boundaries ausentes
-8. 16 moderate vulnerabilities (@expo/config chain)
-9. Expo SDK 56 disponível (v55 deprecated)
-10. Privacy policy HTML EXISTE (HTTP 200, confirmado)
-11. EAS projectId PLACEHOLDER + eas.json ausente
-12. Backend Node.js no CLAUDE.md mas descartado
-13. [Rodada 2] haptics.ts cache nunca invalidado
-14. [Rodada 2] 7 arquivos código morto (0 imports): streak.ts, deep-link.ts, quota-monitor.ts, sqlcipher.ts, design-tokens.ts, BackHandlerOffline.tsx, quiz-alternatives.ts
-15. [Rodada 2] streak.ts NUNCA wired — streak invisível ao usuário
-16. [Rodada 2] deep-link.ts NUNCA wired — compartilhamento hardcoded WhatsApp
-17. [Rodada 2] notifications.ts NUNCA chamado automaticamente
-18. [Rodada 2] distratores triviais no Quiz fallback
-19. [Rodada 2] PersonagemLivro não evolui (mascote estático)
-20. [Rodada 2] sqlcipher.ts PRAGMA key com interpolação (padrão inseguro)
-21. [Rodada 2] quota-monitor.ts nunca chamado
-22. [Rodada 2] design-tokens.ts nunca usado
-23. [Rodada 2] sem versículo do dia / devocional leve
-24. [Rodada 2] sem leaderboard/ranking visível
+## Autonomia por item (pre-check leve)
+- Engajamento (V23.A-E): AUTONOMO — todo codigo/dados/credenciais ja existem (streak/notifications/sound prontos; M2.7 no cofre p/ gerar conteudo didatico/refs/distratores).
+- Conteudo didatico/refs/distratores via batch M2.7: AUTONOMO (Minimax no cofre `Tokens API e acessos/minimax/credentials.md`).
+- V23.F (AdMob): DEPENDE_VOCE — criar conta AdMob + App ID + ad unit IDs (decisao + cadastro). Implementacao de codigo e AUTONOMO depois do ID.
+- V22.I.1 keystore: DEPENDE_VOCE (gerar novo keystore/decidir filter-repo). V22.C.1 EAS: DESTRAVAVEL (rodar eas init OU fornecer projectId).
+- Poses douradas assustado/triste: DESTRAVAVEL (designer subir no Drive).
 
-## Autonomia por item (1.9)
-- Itens de código -> AUTONOMO
-- Publicação Play Store -> DEPENDE_VOCE: 2FA Google Play Console
-- AdMob real IDs -> DESTRAVAVEL: precisa criar conta AdMob
-- Privacy policy HTML -> AUTONOMO (GitHub Pages)
+## Segundo turno critico (FASE 3.5 — gate G5)
+- Lentes aplicadas: 7/7.
+- Ajustes: 14 — detalhados 2 (schema user_xp + onde XP e concedido/exibido; meta diaria ancorada no onboarding) | enriquecidos/POLISH 3 (unificar XP+streak+meta num LOOP coeso, nao 3 features soltas; mascote evolui atrelado ao NIVEL de XP nao so a modulos; onboarding define a meta) | recuperados 3 (sistema de vidas/hearts como tensao + gancho de rewarded; combos no quiz playCombo morto; leaderboard = ler user_rankings) | re-priorizados ~5 (V22.F streak/push/versiculo/mascote/dificuldade SOBEM de BACKLOG para ALTA/CRITICA contra OBJ-1; git cleanup V22.H/I/J nao-seguranca DESCE para BAIXA) | consolidados 1 (refs biblicas V22.F.9 == V22.H.4) | premissas verificadas 2 (expo-ads-admob DEPRECATED -> migrar lib; TTS/expo-speech instalado mas 0 chamadas = unwired, nao ausente).
+- Re-ataque (0 ajustes em plano >=3): nao aplicavel (14 ajustes).
+- Top 3 ajustes mais relevantes:
+  1. Reframe: engajamento nao e "backlog" (V22.F) e sim o OBJ-1 central PARCIAL — vira bloco V23.A-C de prioridade CRITICA/ALTA, organizado como LOOP unico (XP+streak+meta+recompensa) e nao features isoladas.
+  2. Faseamento explicito APK-final -> loja -> AdMob; monetizacao planejada agora (V23.F) mas marcada NAO-IMPLEMENTAR-ate-versao-final.
+  3. Migracao expo-ads-admob(deprecated) -> react-native-google-mobile-ads + UMP/consent LGPD + declarar publico adulto no Play Console (evita regime Families restritivo de ads).
 
-## Segundo turno crítico (FASE 3.5 + double-check + Rodada 2 — gate G5)
-- Lentes aplicadas: 7/7 (3.5) + 7/7 (double-check) + 7/7 (Rodada 2)
-- Ajustes 3.5: 4 detalhados | 2 enriquecidos | 1 recuperado | 1 re-priorizado
-- Ajustes double-check: 8 detalhados | 3 POLISH | 2 recuperados | 2 re-priorizados | 3 premissas verificadas
-- Ajustes Rodada 2: 12 achados novos | 7 código morto | 3 bugs ocultos | 6 features estratégicas
-- Re-ataque: executado (plano > 3 itens, 3 passadas)
-- Top achados Rodada 2:
-  1. **7 arquivos de código morto** (0 imports): streak.ts, deep-link.ts, quota-monitor.ts, sqlcipher.ts, design-tokens.ts, BackHandlerOffline.tsx, quiz-alternatives.ts — 4 deletáveis, 3 a wirear
-  2. **Streak (#1 driver retenção) completamente invisível** — streak.ts existe mas NUNCA é importado por nenhuma tela
-  3. **haptics.ts cache bug** — toggle em config não tem efeito imediato (cache nunca invalidado)
-  4. **Distratores: fallback é código morto** — 4341/4345 perguntas JÁ têm quiz_alternativas no seed; fallback nunca acionado (premissa corrigida)
-  5. **Mascote não evolui** — PersonagemLivro estático (mesmo tamanho do início ao fim), contraste com Ascend/Manna
-  6. **Notificações nunca agendadas** — toggle existe mas agendarLembreteDiario() nunca é chamado
-  7. **user_rankings populada mas nunca lida** — quiz/final grava mas ninguém exibe histórico
-- Top achados Rodada 3:
-  1. **2 áudio mortos no APK** (114KB) — musica_fundo.mp3 + musica_fundo_v2.mp3, 0 refs em código
-  2. **data/db.sqlite (2.7MB) rastreado pelo git** — binário em repo = diff gigante a cada rebuild
-  3. **seed-perguntas.ts (824KB) no git** — dados brutos em arquivo TS, deveria ser JSON
-  4. **referencias_biblicas: campo existe mas NULL para todas 4345 perguntas** — infraestrutura morta
-  5. **dificuldade: sempre MEDIO** — schema suporta FACIL/MEDIO/DIFICIL mas nenhuma lógica usa
-  6. **Sem mecanismo de report de erro** — usuário não pode reportar canônica incorreta
-  7. **Dificuldade adaptativa: infra existe mas nunca implementada** — campo no DB + tipos definidos
-- Top achados Rodada 5:
-  1. **2ª CREDENCIAL EXPOSTA** — `scripts/generate_canonicos.py:8` tem API key Minimax hardcoded
-  2. **3 permissões Android desnecessárias** — SYSTEM_ALERT_WINDOW, READ/WRITE_EXTERNAL_STORAGE
-  3. **5 scripts mortos de V9** — .py, debug_*.js, preflight_*.js, restore_ids.js
-- Top achados Rodada 6:
-  1. **Acessibilidade: 4/30+ elementos com label** — apenas logo, troféu, IconeHome, IconeSom
-  2. **Zero testIDs** — E2E tests não conseguem selecionar elementos
-  3. **Privacy policy menciona AdMob e Sentry** — nenhum implementado
-- Top achados Rodada 7:
-  1. **40 catch blocks silenciados** — erros de DB, ranking, avaliação invisíveis
-  2. **Zero `as any`** — TypeScript strict OK
-  3. **Zero console.log** — migrados para debug/warn (V13)
-- Top achados Rodada 4:
-  1. **CREDENCIAL EXPosta** — `orchestration/release_keystore_credentials.md` tem senha `expert2026` em plaintext (commit V17). CRÍTICO.
-  2. **orchestration/ 131MB no git** — 84 PNG screenshots de validação V9-V21, todos rastreados
-  3. **Repo git 119.48 MiB** — inflado por screenshots + dados (meta: <10MB)
-  4. **questions_clean.json 1.3MB no git** — dados brutos redundantes com seed
-  5. **Path aliases NUNCA usados** — 7 aliases em babel+tsconfig, 0 imports
-  6. **Onboarding: duplo redirecionamento** — `router.replace('/')` → splash → `/modos`
-  7. **whatsapp_media/ 1.5MB no git** — imagens/planilhas brutas rastreadas
+## 2a passada — double-check profundo V23.1 (2026-06-26, solicitado pelo usuario)
+> Verificacao das premissas NO CODIGO REAL (Grep/Read), nao so no levantamento do subagente. Decisoes de produto tomadas autonomamente.
+- Premissas corrigidas no codigo (5): (1) `playCombo()` NAO esta morto — wired em final.tsx:32 (lição 100%); o gap real e combo no QUIZ. (2) `user_streak` JA e tabela (database.ts:105). (3) `marcarModuloConcluido` wired (final.tsx:86) — progressao funciona. (4) Existe mecanismo `_migrations` (database.ts:40) — tabelas novas DEVEM passar por ele (senao crash no upgrade). (5) `Settings` = 7 campos no SecureStore, sem metaDiaria/reduceMotion — preferencias vao p/ Settings, estado de jogo p/ SQLite. Tambem confirmado: freeze do streak e STUB (streak.ts:85-93) e streak tem 0 chamadas.
+- Decisoes de produto (10, baked-in no plano): manter regra 100% mas sem punir (refazer so erradas = A.6); streak nao exige 100%; XP recompensa esforco; monetizacao SO bonus positivo, SEM vidas bloqueantes (F.5 DESCARTADO); persistencia entre reinstalacoes via Android Auto Backup + export/import (A.7); tom encorajador nao manipulador; anti-farm de XP; reduceMotion + celebracoes one-shot (E.7); assets de som via media-generation; validacao empirica obrigatoria do loop.
+- Itens novos (4): A.0 (fundacao migracao+Settings+helper XP, CRITICA, pre-req de A-D), A.6 (refazer so erradas), A.7 (persistencia/backup), E.7 (reduceMotion). Reframe: F.3 (rewarded so positivo), B.5 (combo no quiz, premissa corrigida), F.5 (vidas descartado).
+- Guias de execucao adicionados: Minimum Lovable Engagement (pacote minimo do "wow") + Quick Wins (codigo que so falta ligar).
+
+## 3a passada — rodada de exaustao V23.2 (2026-06-26, "ja esgotou?")
+> Ataque por angulos que A-G nao cobriam. Resultado: NAO estava esgotado — 17 oportunidades novas, todas viaveis offline-first/Android/PT-BR.
+- Novos milestones (5): V23.H jornada visual/colecoes/cosmeticos; V23.I multi-perfil + modo Kids (serve "varias idades" REAL); V23.J enciclopedia/glossario + planos de leitura/devocional; V23.K eventos sazonais liturgicos + desafios rotativos + win-back + desafiar amigo async; V23.L review-na-loja (expo-store-review) + remover-ads/doacao IAP + consentimento de analytics LGPD + widget/shortcuts.
+- Destaques de alto valor: H.1 (trilha sinuosa estilo Duolingo vs grid plano atual), I.1 (perfis locais p/ familia), L.1 (in-app review em momento de pico = crescimento organico).
+- Fronteira de exaustao DOCUMENTADA (rejeitado por escopo, nao esquecimento): ligas/leaderboard online, multiplayer ao vivo, cloud sync, iOS, multi-idioma, multiplas traducoes embarcadas, Teologia(24). Sao as unicas fronteiras restantes — reabrir so se o escopo mudar (backend/iOS/idioma).
+- Veredito: plano ESGOTADO dentro do escopo MVP Android/offline/PT-BR. Total V23 = 12 milestones / 59 itens novos + backlog tecnico V22 preservado.

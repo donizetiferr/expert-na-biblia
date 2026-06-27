@@ -105,3 +105,18 @@ Estado: SAVE_STATE_CONCLUIDO_AGUARDANDO_ORQUESTRADOR (V21)
 - FASE_0_9: SKIPPED | motivo=projeto_mobile_RN_sem_dev_server_web
 
 Estado: IMPLEMENTANDO_V23.1 (fundacao A.0 + XP A.1 + streak A.2)
+
+## V23.1 — ENTREGUE COMPROVADO (2026-06-26, v1.12.0/vc7)
+Estado: V23.1_ENTREGUE_COMPROVADO
+- Escopo MLE (8 itens): A.0 fundacao (migration 002 + Settings + helper XP) + A.1 XP + A.2 streak +
+  A.3 meta diaria + B.3 barra global + B.2 perfil + B.1 badges (galeria+modal) + C.1 onboarding ativacao.
+- Gates: tsc 0 | jest 128/128 (15 suites, +31 vs 97) | eslint 0.
+- VALIDACAO EMPIRICA emulador hi-res 1080x1920 (UPGRADE sobre V21 = migration 002 em DB existente):
+  - 0 FATAL EXCEPTION; `[layout] migrations+seed OK` (migration 002 sem crash no upgrade).
+  - Loop visivel: onboarding 6 passos + 1a vitoria (+10 XP) -> header /licoes (🔥1, Nivel 1, 10 XP,
+    meta 10/50, 0/40) -> quiz 12/20 = +60 XP + Meta batida +20 XP -> perfil 90 XP / Meta ✓ (barra verde).
+  - Evidencias: orchestration/v23_1_validation/ (VALIDACAO.md + 13 screenshots 00..12).
+- APK: dist/ExpertNaBiblia-v23.1.0.apk (vc7/1.12.0); dist podado p/ 5 (v18,19,20,21,23.1).
+- Badges: galeria + modal + logica unit-tested; trigger empirico de unlock (modulo completo/streak 7/
+  quiz 20/20) deferido (desproporcional p/ validacao). Git: commit LOCAL (sem push).
+- Proxima: V23.2 (resto do nucleo de retencao A.4-A.7) e demais ciclos da FASE 1.
