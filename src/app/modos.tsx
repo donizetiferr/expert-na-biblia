@@ -201,6 +201,31 @@ export default function ModosScreen() {
           </Pressable>
         </View>
 
+        {/* V23.10 (J.1/J.2): Enciclopédia (referência) + Planos de leitura (devocional). */}
+        <View style={styles.cardsSecundarios}>
+          <Pressable
+            style={styles.cardMenor}
+            onPress={() => router.push('/enciclopedia')}
+            accessibilityRole="button"
+            accessibilityLabel="Enciclopédia bíblica"
+          >
+            <Text style={styles.cardMenorEmoji}>📖</Text>
+            <Text style={styles.cardMenorTitulo}>BÍBLIA</Text>
+            <Text style={styles.cardMenorSub}>enciclopédia</Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.cardMenor}
+            onPress={() => router.push('/planos')}
+            accessibilityRole="button"
+            accessibilityLabel="Planos de leitura"
+          >
+            <Text style={styles.cardMenorEmoji}>📅</Text>
+            <Text style={styles.cardMenorTitulo}>PLANOS</Text>
+            <Text style={styles.cardMenorSub}>de leitura</Text>
+          </Pressable>
+        </View>
+
         {/* V23.D.5: versiculo do dia (devocional leve + compartilhavel). */}
         <View style={styles.versiculoCard}>
           <Text style={styles.versiculoTitulo}>📖 Versículo de hoje</Text>

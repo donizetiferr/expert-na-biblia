@@ -1,5 +1,5 @@
 import * as SQLite from 'expo-sqlite';
-import { seedDatabaseIfEmpty, seedConteudoIfNeeded } from './seed';
+import { seedDatabaseIfEmpty, seedConteudoIfNeeded, seedReferenciaIfNeeded } from './seed';
 
 /**
  * Wrapper expo-sqlite para Expert Na Biblia.
@@ -249,12 +249,53 @@ export async function runMigrations(): Promise<{ applied: number; skipped: numbe
     );
   `;
 
+  // Migration 006 (V23.10 — milestone J): conteudo de referencia + planos de leitura.
+  // - enciclopedia: verbetes (personagens/termos/eventos) navegaveis offline. Seeded.
+  // - plano_leitura/plano_dia: planos devocionais curados (sequencia de passagens). Seeded.
+  // - plano_progresso: dias de plano concluidos — ESTADO de jogo, POR PERFIL (entra no
+  //   snapshot-swap de lib/perfis). As demais sao catalogo compartilhado.
+  const migration006 = `
+    CREATE TABLE IF NOT EXISTS enciclopedia (
+      id TEXT PRIMARY KEY,
+      tipo TEXT NOT NULL CHECK (tipo IN ('personagem', 'termo', 'evento')),
+      nome TEXT NOT NULL,
+      resumo TEXT NOT NULL,
+      detalhe TEXT NOT NULL,
+      referencias TEXT
+    );
+    CREATE INDEX IF NOT EXISTS idx_enciclopedia_tipo ON enciclopedia(tipo);
+
+    CREATE TABLE IF NOT EXISTS plano_leitura (
+      id TEXT PRIMARY KEY,
+      titulo TEXT NOT NULL,
+      descricao TEXT NOT NULL,
+      dias INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS plano_dia (
+      plano_id TEXT NOT NULL,
+      dia INTEGER NOT NULL,
+      titulo TEXT NOT NULL,
+      passagem TEXT NOT NULL,
+      reflexao TEXT,
+      PRIMARY KEY (plano_id, dia)
+    );
+
+    CREATE TABLE IF NOT EXISTS plano_progresso (
+      plano_id TEXT NOT NULL,
+      dia INTEGER NOT NULL,
+      concluido_em TEXT NOT NULL DEFAULT (datetime('now')),
+      PRIMARY KEY (plano_id, dia)
+    );
+  `;
+
   const MIGRATIONS: Migration[] = [
     { name: '001_initial', sql: migration001 },
     { name: '002_engajamento', sql: migration002 },
     { name: '003_aprendizado', sql: migration003 },
     { name: '004_cosmeticos', sql: migration004 },
     { name: '005_perfis', sql: migration005 },
+    { name: '006_referencia', sql: migration006 },
   ];
 
   let applied = 0;
@@ -287,6 +328,13 @@ export async function runMigrations(): Promise<{ applied: number; skipped: numbe
     seedConteudoIfNeeded(db);
   } catch (e) {
     console.warn('[db] seed de conteudo nao aplicado:', e);
+  }
+  // V23.10: conteudo de referencia (enciclopedia + planos), gate proprio idempotente.
+  // Apos a migration 006 (tabelas enciclopedia/plano_leitura/plano_dia ja existem).
+  try {
+    seedReferenciaIfNeeded(db);
+  } catch (e) {
+    console.warn('[db] seed de referencia nao aplicado:', e);
   }
   return { applied, skipped };
 }

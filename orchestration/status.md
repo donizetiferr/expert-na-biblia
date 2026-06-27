@@ -272,3 +272,17 @@ Estado: V23.9_ENTREGUE_COMPROVADO
   "Eu" (100 XP/Nivel 2/streak 1); ao voltar p/ "Eu", progresso RESTAURADO idêntico (sem perda). Pill
   "MODO KIDS" comprovado. Evidencias: orchestration/v23_9_validation/ (VALIDACAO.md + 00..08).
 - Git: commit LOCAL. Proxima: V23.10 = milestone J (enciclopedia/glossario + planos de leitura).
+
+## V23.10 — ENTREGUE COMPROVADO (2026-06-27, v1.21.0/vc16) — FECHA milestone J
+Estado: V23.10_ENTREGUE_COMPROVADO
+- Escopo (milestone J completo): J.1 enciclopedia (/enciclopedia, ~27 verbetes curados) + J.2 planos de
+  leitura (/planos, 2 planos de 7 dias) + J.3 "Saiba mais" no feedback. Migration 006 + seed de referencia
+  (gate proprio idempotente). plano_progresso adicionado ao snapshot-swap de perfis (progresso por perfil).
+- Conteudo CURADO a mao (verbetes/planos) — preferido a M2.7 para itens conhecidos (confiabilidade);
+  expansao via batch M2.7 fica como follow-up.
+- Gates: tsc 0 | jest 203/203 (25 suites, +15) | eslint 0. Build BUILD SUCCESSFUL. APK 105MB; dist podado 5.
+- VALIDACAO EMPIRICA emulador (UPGRADE sobre V23.9, 0 FATAL): migration 006 + seed sem crash. J.1
+  enciclopedia (busca/filtro/modal Abraão "Gênesis 12-25") COMPROVADO; J.2 planos (marcar dia -> "1/7" +
+  XP/streak) COMPROVADO. J.3 wired + unit-tested (nao exercitado empiricamente). Evidencias:
+  orchestration/v23_10_validation/ (VALIDACAO.md + 00..05).
+- Git: commit LOCAL. Proxima: V23.11 = milestone K (sazonais + desafios + win-back).

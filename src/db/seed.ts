@@ -14,6 +14,8 @@ import { applySeedPerguntas } from './seed-perguntas';
 import { applySeedQuiz } from './seed-quiz';
 import { applySeedConteudo } from './seed-conteudo';
 import { applySeedCompletar } from './seed-completar';
+import { applySeedEnciclopedia } from './seed-enciclopedia';
+import { applySeedPlanos } from './seed-planos';
 
 // Efeito colateral: garantir que Metro bundle inclui os 3 arquivos
 // (tree-shaking removeria se nao houvesse referencia estaticamente observavel).
@@ -88,5 +90,35 @@ export function seedConteudoIfNeeded(db: SQLiteDatabase): void {
     );
   } catch (e) {
     console.warn('[seed] conteudo flag nao persistiu:', e);
+  }
+}
+
+// V23.10 (milestone J): conteudo de REFERENCIA (enciclopedia + planos de leitura). Gate
+// proprio (igual ao de conteudo) para entrar no UPGRADE sem re-rodar os seeds antigos.
+const REFERENCIA_FLAG_VALUE = 'v23_10_referencia';
+
+export function seedReferenciaIfNeeded(db: SQLiteDatabase): void {
+  try {
+    const existing = db.getFirstSync<{ value: string }>(
+      `SELECT value FROM ${SEED_FLAG_TABLE} WHERE key = 'referencia_version'`,
+    );
+    if (existing && existing.value === REFERENCIA_FLAG_VALUE) return;
+  } catch {
+    // Tabela de flags ainda nao existe — segue e aplica.
+  }
+
+  applySeedEnciclopedia(db);
+  applySeedPlanos(db);
+
+  try {
+    db.runSync(
+      `CREATE TABLE IF NOT EXISTS ${SEED_FLAG_TABLE} (key TEXT PRIMARY KEY, value TEXT, aplicado_em TEXT NOT NULL DEFAULT (datetime('now')))`,
+    );
+    db.runSync(
+      `INSERT OR REPLACE INTO ${SEED_FLAG_TABLE} (key, value) VALUES ('referencia_version', ?)`,
+      REFERENCIA_FLAG_VALUE,
+    );
+  } catch (e) {
+    console.warn('[seed] referencia flag nao persistiu:', e);
   }
 }

@@ -120,6 +120,8 @@ export default function RootLayout() {
               <Stack.Screen name="perfis" />
               <Stack.Screen name="colecoes" />
               <Stack.Screen name="cosmeticos" />
+              <Stack.Screen name="enciclopedia" />
+              <Stack.Screen name="planos" />
               <Stack.Screen name="trofeu" />
             </Stack>
           </ErrorBoundary>

@@ -2,6 +2,25 @@
 
 Todas as mudancas relevantes neste projeto.
 
+## [1.21.0] (V23.10) - 2026-06-27 (FASE 1 — Enciclopédia, glossário e planos de leitura: milestone J)
+
+> Milestone V23.J (conteúdo de referência + profundidade). Gates: tsc 0 | jest 203/203 (+15) | eslint 0.
+> COMPROVADO no emulador hi-res (upgrade sobre V23.9, 0 FATAL) — evidências em orchestration/v23_10_validation/.
+
+### Adicionado
+- **[J.1] Enciclopédia bíblica**: nova tela `/enciclopedia` + `src/lib/enciclopedia.ts` (migration 006
+  `enciclopedia`). Verbetes curados de personagens, termos/glossário e eventos (busca + filtro por tipo +
+  detalhe em modal), consultáveis offline. Acervo expansível via batch M2.7 (follow-up).
+- **[J.2] Planos de leitura/devocional**: nova tela `/planos` + `src/lib/planos.ts` (migration 006
+  `plano_leitura`/`plano_dia`/`plano_progresso`). Dois planos curados de 7 dias; marcar um dia como lido
+  mantém a streak + concede XP. Progresso de plano é por perfil (entra no snapshot-swap).
+- **[J.3] "Saiba mais" no feedback**: o feedback de cada pergunta oferece um link para o verbete da
+  enciclopédia relacionado à resposta (match por nome de palavra inteira, sem acento).
+
+### Notas
+- Migration 006 + seed de referência entram por gate próprio idempotente (igual ao de conteúdo D) — seguros
+  no upgrade, sem resetar progresso.
+
 ## [1.20.0] (V23.9) - 2026-06-27 (FASE 1 — Multi-perfil, modo Kids e seletor: milestone I)
 
 > Milestone V23.I (familia / multi-idade). Gates: tsc 0 | jest 188/188 (+13) | eslint 0.

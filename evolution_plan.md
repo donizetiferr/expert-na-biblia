@@ -299,18 +299,15 @@ O app esta **funcional e estavel** (97/97 testes, build OK, APK V21 publicado) e
 - [x] V23.I.3 **Seletor de perfil no launch + troca rapida** — MELHORIA | BAIXA | INVESTIGACAO | AUTONOMO _(entregue 2026-06-27, V23.9 — COMPROVADO: pill do perfil ativo no topo de /modos + criar/trocar em /perfis)_
   - Entregue: rota `/perfis` (listar/criar com nome+tipo/trocar, limite 6) + pill "👤 nome ⇄" no topo de /modos (1-2 toques para trocar).
 
-## Milestone V23.J: Conteudo de referencia e profundidade de aprendizado (EVOLUCAO) — PENDENTE
+## Milestone V23.J: Conteudo de referencia e profundidade de aprendizado (EVOLUCAO) — COMPLETO (V23.10)
 > Aprofunda o "aprendizado intuitivo": permitir EXPLORAR conteudo, nao so ser testado.
 
-- [ ] V23.J.1 **Enciclopedia leve: personagens, eventos e glossario** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
-  - Browse de "quem e quem" na Biblia + glossario de termos. Valor educacional + entry-point leve. Gerar via batch M2.7.
-  - DoD: secao navegavel de verbetes (personagens/termos) consultavel offline.
-- [ ] V23.J.2 **Planos de leitura / devocional diario** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
-  - (Adjacente ao versiculo do dia V23.D.5.) YouVersion/Manna: plano diario = streak natural + habito. Sequencia curada de passagens/temas por N dias.
-  - DoD: ao menos 1 plano de leitura com progresso diario que mantem streak.
-- [ ] V23.J.3 **"Saiba mais" contextual no feedback** — MELHORIA | BAIXA | INVESTIGACAO | AUTONOMO
-  - No feedback de uma pergunta, link para o verbete/explicacao relacionada (cruza V23.D.1/D.4/J.1).
-  - DoD: feedback oferece aprofundamento opcional quando ha verbete.
+- [x] V23.J.1 **Enciclopedia leve: personagens, eventos e glossario** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-27, V23.10 — COMPROVADO: /enciclopedia com busca + filtros + detalhe em modal; verbetes seedados (Abraão "Gênesis 12-25", etc.))_
+  - Entregue: rota `/enciclopedia` + `src/lib/enciclopedia.ts` (migration 006 `enciclopedia`); ~27 verbetes CURADOS (personagens/termos/eventos), busca + filtro por tipo + modal de detalhe. Acervo expansivel via batch M2.7 (follow-up).
+- [x] V23.J.2 **Planos de leitura / devocional diario** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-27, V23.10 — COMPROVADO: 2 planos de 7 dias; marcar dia lido -> "1/7" + streak/XP)_
+  - Entregue: rota `/planos` + `src/lib/planos.ts` (migration 006 `plano_leitura`/`plano_dia`/`plano_progresso`); "7 dias nos Salmos" + "A vida de Jesus em 7 dias"; marcar dia mantem streak + concede XP. Progresso por perfil (snapshot-swap).
+- [x] V23.J.3 **"Saiba mais" contextual no feedback** — MELHORIA | BAIXA | INVESTIGACAO | AUTONOMO _(entregue 2026-06-27, V23.10 — wired no feedback + match unit-tested `nomeApareceEm`)_
+  - Entregue: o feedback chama `encontrarVerbeteEm(resposta_correta)` e, havendo verbete, mostra "📚 Saiba mais: [nome]" -> abre o verbete em /enciclopedia (param focus). Match por palavra inteira sem acento. (Nao exercitado empiricamente — exige resposta de licao que case um verbete; logica coberta por teste unitario.)
 
 ## Milestone V23.K: Eventos sazonais, desafios e re-engajamento (EVOLUCAO) — PENDENTE
 > Cria motivos RECORRENTES e SAZONAIS de voltar — alem do streak diario.

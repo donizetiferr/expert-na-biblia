@@ -41,6 +41,7 @@ const TABELAS_PROGRESSO_FULL = [
   'pergunta_revisao',
   'user_cosmeticos',
   'streak_freeze',
+  'plano_progresso', // V23.10 (J.2): dias de plano de leitura concluidos (por perfil)
 ] as const;
 
 // ---- funcoes puras (testaveis sem DB) ----

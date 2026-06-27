@@ -1,11 +1,12 @@
 import { View, Text, Pressable, StyleSheet, Animated, Easing, ScrollView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../../../constants/colors';
 import { PersonagemLivro } from '../../../../components/PersonagemLivro';
 import { GradienteLaranjaForte } from '../../../../components/Gradiente';
 import { playAcerto, playErro } from '../../../../lib/sound';
 import { lightTap, successBuzz, errorBuzz } from '../../../../lib/haptics';
+import { encontrarVerbeteEm, type Verbete } from '../../../../lib/enciclopedia';
 
 /**
  * V9 M2.4: Tela Feedback Licao dedicada.
@@ -47,6 +48,21 @@ export default function FeedbackScreen() {
 
   // V23.5 (D.4): referencia biblica da licao (versiculo-chave), exibida no feedback.
   const referencia = (params.referencia ?? '').trim();
+
+  // V23.10 (J.3): "Saiba mais" — verbete da enciclopedia relacionado a resposta correta.
+  const respostaCorreta = params.resposta_correta ?? '';
+  const [verbete, setVerbete] = useState<Verbete | null>(null);
+  useEffect(() => {
+    let ativo = true;
+    encontrarVerbeteEm(`${respostaCorreta} ${params.feedback_ia ?? ''}`)
+      .then((v) => {
+        if (ativo) setVerbete(v);
+      })
+      .catch(() => {});
+    return () => {
+      ativo = false;
+    };
+  }, [respostaCorreta, params.feedback_ia]);
 
   const indice = parseInt(params.indice ?? '0', 10);
   const total = parseInt(params.total ?? '1', 10);
@@ -172,6 +188,20 @@ export default function FeedbackScreen() {
         {mostrarFeedbackIa ? <Text style={styles.feedbackIa}>{feedbackIa}</Text> : null}
         {/* V23.5 (D.4): referencia biblica da licao (versiculo-chave). */}
         {referencia ? <Text style={styles.referencia}>📖 Referência: {referencia}</Text> : null}
+        {/* V23.10 (J.3): "Saiba mais" — abre o verbete da enciclopedia relacionado. */}
+        {verbete ? (
+          <Pressable
+            style={styles.saibaMais}
+            onPress={() => {
+              lightTap().catch(() => {});
+              router.push(`/enciclopedia?focus=${verbete.id}`);
+            }}
+            accessibilityRole="button"
+            accessibilityLabel={`Saiba mais sobre ${verbete.nome}`}
+          >
+            <Text style={styles.saibaMaisTexto}>📚 Saiba mais: {verbete.nome} ›</Text>
+          </Pressable>
+        ) : null}
       </View>
 
       <View style={styles.indicador}>
@@ -283,6 +313,19 @@ const styles = StyleSheet.create({
     color: COLORS.roxoEscuro,
     textAlign: 'center',
     marginTop: ESPACAMENTOS.xs,
+  },
+  // V23.10 (J.3): link "Saiba mais" para o verbete relacionado.
+  saibaMais: {
+    marginTop: ESPACAMENTOS.sm,
+    backgroundColor: COLORS.roxoEscuro,
+    borderRadius: BORDAS.raioPequeno,
+    paddingHorizontal: ESPACAMENTOS.md,
+    paddingVertical: ESPACAMENTOS.xs,
+  },
+  saibaMaisTexto: {
+    fontFamily: FONTES.bodyExtraBold,
+    fontSize: 14,
+    color: COLORS.laranjaClaro,
   },
   indicador: {
     paddingVertical: ESPACAMENTOS.xs,
