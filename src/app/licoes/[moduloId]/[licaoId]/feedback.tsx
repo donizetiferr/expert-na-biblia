@@ -78,9 +78,17 @@ export default function FeedbackScreen() {
     if (isLast) {
       // Calcular score final: acertos / total_perguntas * 100
       const scoreFinal = Math.round((acertos / Math.max(totalPerguntas, 1)) * 100);
+      // V23.A.1: propaga acertos + total para a tela final conceder XP por esforco
+      // (5 XP/acerto) alem do bonus de 100%.
       router.replace({
         pathname: `/licoes/${params.moduloId}/${params.licaoId}/final`,
-        params: { score: String(scoreFinal), moduloId: String(params.moduloId), licaoId: String(params.licaoId) },
+        params: {
+          score: String(scoreFinal),
+          moduloId: String(params.moduloId),
+          licaoId: String(params.licaoId),
+          acertos: String(acertos),
+          total: String(totalPerguntas),
+        },
       });
     } else {
       // Avancar para proxima pergunta.

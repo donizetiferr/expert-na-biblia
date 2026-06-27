@@ -203,6 +203,23 @@ export async function listarPerguntasAleatorias(total: number): Promise<Pergunta
   }
 }
 
+/**
+ * V23.A.1: true se a licao JA estava marcada como concluida ANTES de ser refeita.
+ * Usado para o anti-farm de XP (revisita de licao concluida da XP reduzido).
+ */
+export async function licaoJaConcluida(licaoId: string): Promise<boolean> {
+  try {
+    const db = getDatabase();
+    const row = db.getFirstSync<{ concluida: number }>(
+      'SELECT concluida FROM licoes WHERE id = ?',
+      [licaoId],
+    );
+    return (row?.concluida ?? 0) === 1;
+  } catch {
+    return false;
+  }
+}
+
 export async function marcarLicaoConcluida(licaoId: string, score: number): Promise<void> {
   try {
     const db = getDatabase();
@@ -244,6 +261,53 @@ export async function moduloEstaCompleto(moduloId: string): Promise<boolean> {
     return r.total === r.concluidas;
   } catch {
     return false;
+  }
+}
+
+/**
+ * V23.B.3: progresso GLOBAL de modulos (X/40 concluidos) para a barra de progresso.
+ */
+export async function contarModulos(): Promise<{ total: number; concluidos: number }> {
+  try {
+    const db = getDatabase();
+    const row = db.getFirstSync<{ total: number; concluidos: number }>(
+      'SELECT COUNT(*) AS total, SUM(CASE WHEN concluido = 1 THEN 1 ELSE 0 END) AS concluidos FROM modulos',
+    );
+    return { total: row?.total ?? 0, concluidos: row?.concluidos ?? 0 };
+  } catch {
+    return { total: 40, concluidos: 0 };
+  }
+}
+
+/**
+ * V23.B.1/B.2: progresso por AREA (FB/AT/NT/TE) — usado para badges de area 100% e
+ * para o detalhamento no perfil.
+ */
+export async function contarModulosPorArea(): Promise<Array<{ area: string; total: number; concluidos: number }>> {
+  try {
+    const db = getDatabase();
+    return db.getAllSync<{ area: string; total: number; concluidos: number }>(
+      'SELECT area, COUNT(*) AS total, SUM(CASE WHEN concluido = 1 THEN 1 ELSE 0 END) AS concluidos FROM modulos GROUP BY area ORDER BY MIN(ordem)',
+    );
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * V23.B.4: historico de pontuacoes (user_rankings) — gravado em quiz/final e licao,
+ * lido aqui (antes a tabela era gravada e NUNCA lida). Mais recentes primeiro.
+ */
+export async function listarRankings(limit = 10): Promise<Array<{ data: string; score: number; tipo: string }>> {
+  const n = Math.max(1, Math.floor(limit));
+  try {
+    const db = getDatabase();
+    return db.getAllSync<{ data: string; score: number; tipo: string }>(
+      'SELECT data, score, tipo FROM user_rankings ORDER BY criado_em DESC LIMIT ?',
+      [n],
+    );
+  } catch {
+    return [];
   }
 }
 

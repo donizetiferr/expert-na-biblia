@@ -25,8 +25,22 @@ export function getDatabase(): SQLite.SQLiteDatabase {
 }
 
 /**
- * Executa migrations a partir de SQL files. Idempotente.
- * Estrategia simples: tabela _migrations guarda versoes ja aplicadas.
+ * Lista ordenada de migrations. Cada entrada e aplicada UMA vez (controle por
+ * _migrations.name). Adicionar uma nova tabela/feature = NOVA entrada no fim (NUNCA
+ * editar uma migration ja publicada). Assim o upgrade de quem ja tem o app instalado
+ * roda apenas as migrations novas — sem recriar nem perder dados.
+ */
+interface Migration {
+  name: string;
+  sql: string;
+}
+
+/**
+ * Executa migrations pendentes em ordem. Idempotente.
+ * Estrategia simples: tabela _migrations guarda os names ja aplicados.
+ *
+ * V23.A.0: refatorado de "001 hardcoded" para lista de migrations, permitindo
+ * adicionar a migration 002 (tabelas de engajamento) sem quebrar app ja instalado.
  */
 export async function runMigrations(): Promise<{ applied: number; skipped: number }> {
   if (migrationsApplied) {
@@ -44,7 +58,7 @@ export async function runMigrations(): Promise<{ applied: number; skipped: numbe
     );
   `);
 
-  // Migration 001
+  // Migration 001 (esquema base do catalogo)
   const migration001 = `
     CREATE TABLE IF NOT EXISTS modulos (
       id TEXT PRIMARY KEY,
@@ -124,32 +138,71 @@ export async function runMigrations(): Promise<{ applied: number; skipped: numbe
     );
   `;
 
-  const alreadyApplied = db.getFirstSync<{ count: number }>(
-    'SELECT COUNT(*) as count FROM _migrations WHERE name = ?',
-    ['001_initial']
-  );
+  // Migration 002 (V23.A.0): fundacao de ENGAJAMENTO.
+  // - user_xp: cada concessao de XP (origem LICAO/QUIZ/ACERTO/STREAK_BONUS/META_BONUS/BAU).
+  // - user_badges: conquistas desbloqueadas (1 linha por tipo).
+  // - meta_diaria_log: progresso/meta do dia (V23.A.3).
+  // - streak_freeze: token semanal que protege o streak contra 1 falta (V23.A.2).
+  // Tudo CREATE TABLE IF NOT EXISTS — seguro em app ja instalado.
+  const migration002 = `
+    CREATE TABLE IF NOT EXISTS user_xp (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      data TEXT NOT NULL,
+      pontos INTEGER NOT NULL,
+      origem TEXT NOT NULL,
+      criado_em TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE INDEX IF NOT EXISTS idx_xp_data ON user_xp(data);
 
-  if ((alreadyApplied?.count ?? 0) === 0) {
-    db.execSync(migration001);
-    db.runSync('INSERT INTO _migrations (name) VALUES (?)', ['001_initial']);
-    migrationsApplied = true;
-    // V9.2.6: seed APOS migrations (tabelas existem agora)
-    try {
-      seedDatabaseIfEmpty(db);
-    } catch (e) {
-      console.warn('[db] seed nao aplicado:', e);
+    CREATE TABLE IF NOT EXISTS user_badges (
+      tipo TEXT PRIMARY KEY,
+      desbloqueado_em TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS meta_diaria_log (
+      dia TEXT PRIMARY KEY,
+      progresso INTEGER NOT NULL DEFAULT 0,
+      meta INTEGER NOT NULL DEFAULT 50,
+      batida INTEGER NOT NULL DEFAULT 0,
+      bonus_concedido INTEGER NOT NULL DEFAULT 0
+    );
+
+    CREATE TABLE IF NOT EXISTS streak_freeze (
+      semana TEXT PRIMARY KEY,
+      usado_em TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+  `;
+
+  const MIGRATIONS: Migration[] = [
+    { name: '001_initial', sql: migration001 },
+    { name: '002_engajamento', sql: migration002 },
+  ];
+
+  let applied = 0;
+  let skipped = 0;
+  for (const m of MIGRATIONS) {
+    const row = db.getFirstSync<{ count: number }>(
+      'SELECT COUNT(*) as count FROM _migrations WHERE name = ?',
+      [m.name],
+    );
+    if ((row?.count ?? 0) === 0) {
+      db.execSync(m.sql);
+      db.runSync('INSERT INTO _migrations (name) VALUES (?)', [m.name]);
+      applied += 1;
+    } else {
+      skipped += 1;
     }
-    return { applied: 1, skipped: 0 };
   }
 
   migrationsApplied = true;
-  // Seed idempotente (checa flag _seed_applied) — roda mesmo se migration ja aplicada
+  // V9.2.6: seed APOS migrations (tabelas existem agora). Idempotente (checa flag
+  // _seed_applied) — roda mesmo quando todas as migrations ja estavam aplicadas.
   try {
     seedDatabaseIfEmpty(db);
   } catch (e) {
     console.warn('[db] seed nao aplicado:', e);
   }
-  return { applied: 0, skipped: 1 };
+  return { applied, skipped };
 }
 
 /**

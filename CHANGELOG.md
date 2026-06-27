@@ -2,7 +2,44 @@
 
 Todas as mudancas relevantes neste projeto.
 
-## [1.11.0] (V21) - 2026-06-25 (Ciclo de fechamento: confiabilidade da IA + canonica Q07 + acentuacao PT-BR)
+## [1.12.0] (V23.1) - 2026-06-26 (FASE 1 — Minimum Lovable Engagement: XP + Streak + Meta + Progresso + Badges + Onboarding de ativacao)
+
+> Primeira entrega da FASE 1 do PLANO V23 (engajamento/dopamina/retencao). Liga a camada de
+> RETENCAO PERSISTENTE que existia morta ou inexistente no codigo. Comprovado em emulador hi-res
+> 1080x1920 (upgrade sobre a V21 — migration 002 roda em DB ja instalado sem crash).
+> Decisoes de produto V23.1 respeitadas: regra 100% sem punir, streak nao exige 100%, XP recompensa
+> esforco (anti-farm em revisita), tom encorajador, celebracoes one-shot.
+
+### Adicionado
+- **[A.0] Fundacao de engajamento**: `runMigrations` refatorado de "001 hardcoded" para LISTA de
+  migrations (aplica pendentes em ordem) + **migration 002** com `user_xp`, `user_badges`,
+  `meta_diaria_log`, `streak_freeze` (CREATE IF NOT EXISTS — seguro em app ja instalado). Tipo
+  `Settings` estendido com `metaDiaria`, `horarioLembrete`, `reduceMotion`, `textoGrande`
+  (SecureStore; (de)serializacao separada VOLUME/INT/STRING/bool). Helper `src/lib/xp.ts` com curva
+  de nivel `floor(sqrt(xp/100))+1` e anti-farm.
+- **[A.1] Sistema de XP**: +5 XP/acerto + 50 ao fechar a licao em 100%; +5 XP/acerto no quiz;
+  revisita de licao concluida da 20% (anti-farm). Pilula "+X XP" nas telas finais de licao e quiz;
+  total + nivel no header de `/licoes`.
+- **[A.2] Streak wired + freeze**: `streak.ts` (antes 0 imports) ligado em licao e quiz via
+  `registrarAtividade()`; nucleo puro `calcularConsecutivos` + freeze semanal real (`streak_freeze`,
+  1 token/semana garantido no boot, protege 1 falta). "🔥 N dias" no header.
+- **[A.3] Meta diaria**: `settings.metaDiaria` (50/100/150 XP/dia); barra de progresso do dia no
+  header; bonus de +20 XP ao bater (1x/dia, `meta_diaria_log`); celebracao "🎯 Meta batida".
+- **[B.3] Barra de progresso global**: "N/40 módulos" no header de `/licoes` e no perfil.
+- **[B.2] Tela de Perfil / "Meu Progresso"** (`/perfil`, acessivel de `/modos`): streak + XP/nivel +
+  meta + % global, detalhamento por area, galeria de badges (desbloqueadas vs bloqueadas) e
+  historico de pontuacoes (le `user_rankings` — antes gravado e NUNCA lido).
+- **[B.1] Badges/Conquistas**: 13 badges por marcos (1º/5/10/20/40 módulos, streak 7/30/100, 100%
+  por area, quiz perfeito); modal de celebracao one-shot ao desbloquear; galeria no perfil.
+- **[C.1] Onboarding de ativacao**: substitui os slides estaticos por fluxo saudacao -> motivacao ->
+  meta diaria -> 1a vitoria garantida (+10 XP) -> streak iniciado -> permissao de notificacao.
+
+### Testes
+- +31 testes (97 -> 128, 11 -> 15 suites): `xp.test.ts` (curva de nivel, anti-farm), `streak.test.ts`
+  (consecutivos + ponte por freeze + semanaIso), `badges.test.ts` (catalogo + thresholds puros),
+  `meta.test.ts` (catalogo + degradacao em mock), `settings.test.ts` (novos campos, metaDiaria sem
+  clamp 0-1). tsc 0, eslint 0.
+
 
 > Fechamento dos 3 itens nao-bloqueantes do VERDICT V20 (sem release-blocker) + 1 fix de UX
 > exposto pela correcao da IA. Comprovado em emulador hi-res ONLINE (orchestration/v21_validation/).

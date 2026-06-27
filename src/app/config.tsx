@@ -2,7 +2,7 @@ import { View, Text, Pressable, StyleSheet, Switch, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../constants/colors';
-import { loadSettings, saveSetting } from '../lib/settings';
+import { loadSettings, saveSetting, SETTINGS_DEFAULTS } from '../lib/settings';
 import { resetarProgresso } from '../lib/db-queries';
 import { notifySettingsChanged } from '../lib/sound-runtime';
 import type { Settings } from '../types';
@@ -15,15 +15,9 @@ import type { Settings } from '../types';
  */
 export default function ConfigScreen() {
   const router = useRouter();
-  const [settings, setSettings] = useState<Settings>({
-    musica: true,
-    efeitos: true,
-    notificacoes: false,
-    volumeMusica: 0.3,
-    volumeEfeitos: 0.7,
-    hapticos: true,
-    voz: false,
-  });
+  // V23.A.0: usa SETTINGS_DEFAULTS (fonte unica) em vez de literal — evita ficar
+  // dessincronizado quando o tipo Settings ganha campos novos.
+  const [settings, setSettings] = useState<Settings>({ ...SETTINGS_DEFAULTS });
 
   useEffect(() => {
     loadSettings().then(setSettings);

@@ -81,4 +81,23 @@ export interface Settings {
   hapticos: boolean;
   // V10 M6.6: TTS para perguntas
   voz: boolean;
+  // V23.A.0: preferencias de engajamento/acessibilidade (estado de jogo fica no SQLite)
+  metaDiaria: number;      // XP/dia alvo (ex.: 50 | 100 | 150)
+  horarioLembrete: string; // "HH:MM" (lembrete diario; default "19:00")
+  reduceMotion: boolean;   // reduz animacoes/celebracoes (a11y vestibular)
+  textoGrande: boolean;    // aumenta o corpo de texto (idosos/baixa visao)
 }
+
+/**
+ * V23.A.1: resumo do XP do usuario (total + nivel + progresso no nivel atual).
+ * Curva: nivel = floor(sqrt(xp/100)) + 1 (nivel 1 = 0..99, nivel 2 = 100..399, ...).
+ */
+export interface XpResumo {
+  total: number;
+  nivel: number;
+  xpNoNivel: number;     // XP acumulado dentro do nivel atual
+  xpParaProximo: number; // tamanho da faixa do nivel atual (XP para subir)
+  progresso: number;     // 0-1 (fracao do nivel atual ja conquistada)
+}
+
+export type OrigemXp = 'LICAO' | 'QUIZ' | 'ACERTO' | 'STREAK_BONUS' | 'META_BONUS' | 'BAU';

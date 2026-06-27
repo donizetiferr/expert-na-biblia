@@ -29,6 +29,11 @@ const KEYS: Record<keyof Settings, string> = {
   volumeEfeitos: '@settings:volumeEfeitos',
   hapticos: '@settings:hapticos',
   voz: '@settings:voz',
+  // V23.A.0
+  metaDiaria: '@settings:metaDiaria',
+  horarioLembrete: '@settings:horarioLembrete',
+  reduceMotion: '@settings:reduceMotion',
+  textoGrande: '@settings:textoGrande',
 };
 
 const DEFAULTS: Settings = {
@@ -39,24 +44,40 @@ const DEFAULTS: Settings = {
   volumeEfeitos: 0.7,
   hapticos: true,
   voz: false,
+  // V23.A.0
+  metaDiaria: 50,
+  horarioLembrete: '19:00',
+  reduceMotion: false,
+  textoGrande: false,
 };
 
-// Campos numericos (0-1); os demais sao booleanos.
-const NUMERIC_KEYS: ReadonlyArray<keyof Settings> = ['volumeMusica', 'volumeEfeitos'];
-
-function isNumericKey(key: keyof Settings): boolean {
-  return NUMERIC_KEYS.includes(key);
-}
+// V23.A.0: classificacao de campos por forma de (de)serializacao.
+// - VOLUME_KEYS: float clampado 0-1 (volumes de audio).
+// - INT_KEYS: inteiro sem clamp (metaDiaria pode ser 50/100/150).
+// - STRING_KEYS: string literal (horarioLembrete "HH:MM").
+// - demais: booleanos serializados como '1'/'0'.
+const VOLUME_KEYS: ReadonlyArray<keyof Settings> = ['volumeMusica', 'volumeEfeitos'];
+const INT_KEYS: ReadonlyArray<keyof Settings> = ['metaDiaria'];
+const STRING_KEYS: ReadonlyArray<keyof Settings> = ['horarioLembrete'];
 
 function serialize<K extends keyof Settings>(key: K, value: Settings[K]): string {
-  return isNumericKey(key) ? String(value) : value ? '1' : '0';
+  if (VOLUME_KEYS.includes(key) || INT_KEYS.includes(key)) return String(value);
+  if (STRING_KEYS.includes(key)) return String(value);
+  return value ? '1' : '0';
 }
 
 function deserialize<K extends keyof Settings>(key: K, raw: string | null): Settings[K] {
   if (raw === null) return DEFAULTS[key];
-  if (isNumericKey(key)) {
+  if (VOLUME_KEYS.includes(key)) {
     const n = parseFloat(raw);
     return (Number.isFinite(n) ? Math.min(1, Math.max(0, n)) : DEFAULTS[key]) as Settings[K];
+  }
+  if (INT_KEYS.includes(key)) {
+    const n = parseInt(raw, 10);
+    return (Number.isFinite(n) && n > 0 ? n : DEFAULTS[key]) as Settings[K];
+  }
+  if (STRING_KEYS.includes(key)) {
+    return (raw.length > 0 ? raw : DEFAULTS[key]) as Settings[K];
   }
   return (raw === '1') as Settings[K];
 }

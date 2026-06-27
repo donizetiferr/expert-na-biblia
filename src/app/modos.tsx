@@ -16,9 +16,21 @@ export default function ModosScreen() {
 
   return (
     <View style={styles.container}>
+      {/* V23.B.2: acesso ao perfil/"Meu Progresso" (canto superior esquerdo). */}
+      <Pressable
+        style={styles.botaoPerfil}
+        onPress={() => router.push('/perfil')}
+        accessibilityRole="button"
+        accessibilityLabel="Meu Progresso"
+      >
+        <Text style={styles.textoPerfil}>📊</Text>
+      </Pressable>
+
       <Pressable
         style={styles.botaoConfig}
         onPress={() => router.push('/config')}
+        accessibilityRole="button"
+        accessibilityLabel="Configurações"
       >
         <Text style={styles.textoConfig}>≡</Text>
       </Pressable>
@@ -70,6 +82,17 @@ const styles = StyleSheet.create({
     fontSize: 36,
     color: COLORS.laranjaEscuro,
     fontWeight: 'bold',
+  },
+  // V23.B.2: botao de perfil (canto superior esquerdo).
+  botaoPerfil: {
+    position: 'absolute',
+    top: ESPACAMENTOS.xl,
+    left: ESPACAMENTOS.lg,
+    padding: ESPACAMENTOS.sm,
+    zIndex: 10,
+  },
+  textoPerfil: {
+    fontSize: 30,
   },
   logo: {
     width: 280,

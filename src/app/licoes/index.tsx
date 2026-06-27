@@ -1,11 +1,12 @@
 import { View, Text, FlatList, Pressable, StyleSheet, Image } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useRouter, useFocusEffect } from 'expo-router';
+import { useCallback, useRef, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../../constants/colors';
 import { listarModulos } from '../../lib/db-queries';
 import { moduloLiberado } from '../../lib/progressao';
 import { playCadeiraDesbloqueia } from '../../lib/sound';
 import { GradienteRoxo } from '../../components/Gradiente';
+import { HeaderProgresso } from '../../components/HeaderProgresso';
 import type { Modulo } from '../../types';
 
 /**
@@ -21,9 +22,19 @@ export default function LicoesIndex() {
   // acaba de ser desbloqueado (transicao de bloqueado -> livre).
   const unlockSoundOnceRef = useRef<Set<string>>(new Set());
 
-  useEffect(() => {
-    listarModulos().then(setModulos);
-  }, []);
+  // V23.A.1: recarrega ao FOCAR (nao so no mount) — ao voltar de uma licao 100%, o
+  // modulo recem-concluido aparece amarelo e o proximo desbloqueado sem reabrir o app.
+  useFocusEffect(
+    useCallback(() => {
+      let ativo = true;
+      listarModulos().then((m) => {
+        if (ativo) setModulos(m);
+      });
+      return () => {
+        ativo = false;
+      };
+    }, []),
+  );
 
   const renderItem = ({ item, index }: { item: Modulo; index: number }) => {
     // V18.1 MA.5: regra de cadeado sequencial extraida para lib/progressao (testavel).
@@ -115,6 +126,9 @@ export default function LicoesIndex() {
         />
       </View>
 
+      {/* V23.A.1/A.2: faixa de progresso (streak + nivel + XP) acima da lista. */}
+      <HeaderProgresso />
+
       <FlatList
         data={modulos}
         keyExtractor={(item) => item.id}
@@ -134,12 +148,14 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    paddingTop: ESPACAMENTOS.md,
-    paddingBottom: ESPACAMENTOS.lg,
+    paddingTop: ESPACAMENTOS.sm,
+    paddingBottom: ESPACAMENTOS.xs,
   },
   logo: {
-    width: 220,
-    height: 220,
+    // V23.A.1/A.3/B.3: logo compacto (220 -> 120) para abrir espaco para a faixa de
+    // progresso (streak + nivel + XP + meta diaria + modulos) sem espremer a lista.
+    width: 120,
+    height: 120,
   },
   lista: {
     paddingHorizontal: ESPACAMENTOS.lg,

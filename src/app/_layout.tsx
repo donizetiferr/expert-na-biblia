@@ -14,6 +14,7 @@ import { startMonitoring, stopMonitoring } from '../lib/network';
 import { BannerOffline } from '../components/BannerOffline';
 import { useBackHandlerRoot } from '../hooks/useBackHandlerRoot';
 import { runMigrations } from '../db/database';
+import { garantirFreezeSemanal } from '../lib/streak';
 
 export default function RootLayout() {
   // V12 7.2: hook de back handler que mostra modal "Deseja sair?" SOMENTE em /modos.
@@ -37,6 +38,11 @@ export default function RootLayout() {
     if (fontsLoaded || fontError) {
       runMigrations().then(() => {
         console.debug('[layout] migrations+seed OK');
+        // V23.A.2: garante o token de freeze semanal (idempotente, 1x/semana) apos as
+        // migrations (a tabela streak_freeze ja existe). Protege o streak contra 1 falta.
+        garantirFreezeSemanal().catch((e: unknown) =>
+          console.warn('[layout] garantirFreezeSemanal falhou:', e),
+        );
       }).catch((e) => {
         console.warn('[layout] migrations falharam:', e && e.stack ? e.stack : e);
       });
@@ -97,6 +103,7 @@ export default function RootLayout() {
             <Stack.Screen name="licoes" />
             <Stack.Screen name="quiz" />
             <Stack.Screen name="config" />
+            <Stack.Screen name="perfil" />
             <Stack.Screen name="trofeu" />
           </Stack>
         </View>

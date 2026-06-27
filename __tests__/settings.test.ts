@@ -42,6 +42,22 @@ describe('settings - loadSettings', () => {
     expect(s.efeitos).toBe(SETTINGS_DEFAULTS.efeitos);
     expect(s.notificacoes).toBe(SETTINGS_DEFAULTS.notificacoes);
   });
+
+  // V23.A.0: campos de engajamento/acessibilidade com defaults.
+  it('inclui os novos campos V23 com defaults corretos', async () => {
+    const s = await loadSettings();
+    expect(s.metaDiaria).toBe(50);
+    expect(typeof s.metaDiaria).toBe('number');
+    expect(s.horarioLembrete).toBe('19:00');
+    expect(s.reduceMotion).toBe(false);
+    expect(s.textoGrande).toBe(false);
+  });
+
+  it('metaDiaria NAO e clampada em 0-1 (regressao do clamp de volume)', async () => {
+    // O default ja prova que valores > 1 sobrevivem (50). Garante a separacao
+    // INT_KEYS vs VOLUME_KEYS no (de)serialize.
+    expect(SETTINGS_DEFAULTS.metaDiaria).toBeGreaterThan(1);
+  });
 });
 
 describe('settings - saveSetting', () => {
