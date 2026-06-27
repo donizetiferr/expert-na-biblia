@@ -16,6 +16,7 @@ import { calcularXpLicao, concederXp } from '../../../../lib/xp';
 import { registrarAtividade } from '../../../../lib/streak';
 import { verificarMetaEConcederBonus } from '../../../../lib/meta';
 import { verificarBadgesLicao, type BadgeDef } from '../../../../lib/badges';
+import { abrirBau } from '../../../../lib/bau';
 import { ModalBadges } from '../../../../components/ModalBadges';
 
 /**
@@ -32,16 +33,21 @@ export default function FinalAtividadeScreen() {
     score?: string;
     acertos?: string;
     total?: string;
+    erradas?: string;
   }>();
   const score = parseInt(params.score ?? '0', 10);
   const acertos = parseInt(params.acertos ?? '0', 10);
+  const total = parseInt(params.total ?? '0', 10);
+  // V23.A.6: IDs das perguntas ainda nao dominadas (para "refazer so as que faltaram").
+  const erradas = params.erradas ? params.erradas.split(',').filter(Boolean) : [];
 
   const variante =
     score >= 100 ? 'vitoria' : score >= 50 ? 'quase' : 'nao_deu';
 
-  // V23.A.1/A.2/A.3/B.1: XP ganho, bonus de meta diaria, badges desbloqueados.
+  // V23.A.1/A.2/A.3/A.5/B.1: XP ganho, bonus de meta, baú surpresa, badges.
   const [xpGanho, setXpGanho] = useState(0);
   const [metaBonus, setMetaBonus] = useState(0);
+  const [bauXp, setBauXp] = useState(0);
   const [badgesNovos, setBadgesNovos] = useState<BadgeDef[]>([]);
   const recompensaAplicadaRef = useRef(false);
   // Navegacao adiada: quando ha modal de badge, navega so apos o usuario fechar.
@@ -84,6 +90,11 @@ export default function FinalAtividadeScreen() {
         // V23.A.3: se a meta diaria foi batida agora, concede o bonus (1x/dia).
         const bonus = await verificarMetaEConcederBonus();
         if (ativo && bonus > 0) setMetaBonus(bonus);
+        // V23.A.5: ao concluir a licao 100%, chance de baú surpresa com bonus de XP.
+        if (score >= 100) {
+          const bau = await abrirBau();
+          if (ativo && bau > 0) setBauXp(bau);
+        }
       } catch (e) {
         console.warn('[xp] concessao na tela final falhou:', e);
       }
@@ -107,17 +118,19 @@ export default function FinalAtividadeScreen() {
       // V10 M5.6: laranja medio #fea726
       fundo: COLORS.laranjaMedio,
       pose: 'PENSATIVO' as const,
-      titulo: 'QUASE LÁ',
-      subtitulo: `Você fez ${score}% — Reforce os pontos fracos`,
+      titulo: 'QUASE LÁ!',
+      // V23.A.6: tom de PROGRESSO (nao de punicao) — mostra o que ja acertou.
+      subtitulo: total > 0 ? `Faltou pouco! Você acertou ${acertos} de ${total}.` : `Você fez ${score}%. Faltou pouco!`,
       botao: 'TENTAR DE NOVO',
       proxima: false,
     },
     nao_deu: {
       // V10 M5.6: laranja forte (briefing usa laranja, nao vermelho)
       fundo: COLORS.laranjaForte,
-      pose: 'TRISTE' as const,
-      titulo: 'NÃO DEU',
-      subtitulo: `Apenas ${score}% — Continue estudando`,
+      pose: 'PENSATIVO' as const,
+      titulo: 'VOCÊ CONSEGUE!',
+      // V23.A.6: encorajador, nunca "NÃO DEU" seco.
+      subtitulo: total > 0 ? `Você acertou ${acertos} de ${total}. Bora reforçar!` : `Você fez ${score}%. Bora reforçar!`,
       botao: 'RECOMEÇAR',
       proxima: false,
     },
@@ -174,6 +187,22 @@ export default function FinalAtividadeScreen() {
     if (nav) nav();
   };
 
+  // V23.A.6: refazer SO as perguntas ainda nao dominadas (caminho curto e positivo
+  // ate o 100%, sem refazer a licao inteira).
+  const refazerFaltaram = () => {
+    if (!params.moduloId || !params.licaoId || erradas.length === 0) return;
+    router.replace({
+      pathname: `/licoes/${params.moduloId}/${params.licaoId}`,
+      params: {
+        moduloId: String(params.moduloId),
+        licaoId: String(params.licaoId),
+        indice: '0',
+        acertos: '0',
+        somente: erradas.join(','),
+      },
+    });
+  };
+
   return (
     <GradienteLaranjaForte style={styles.container}>
       <PersonagemLivro pose={cfg.pose} size={160} variante="licoes" />
@@ -194,9 +223,29 @@ export default function FinalAtividadeScreen() {
         </Text>
       ) : null}
 
-      <Pressable style={styles.botao} onPress={handleAvancar}>
-        <Text style={styles.botaoTexto}>{cfg.botao}</Text>
-      </Pressable>
+      {/* V23.A.5: baú surpresa (recompensa variavel). */}
+      {bauXp > 0 ? (
+        <Text style={styles.bauBonus} accessibilityLabel={`Baú surpresa! Bônus de ${bauXp} pontos de experiência`}>
+          🎁 Baú surpresa! +{bauXp} XP
+        </Text>
+      ) : null}
+
+      {/* V23.A.6: em nao-vitoria com erradas, oferece refazer SO as que faltaram (caminho
+          curto ate o 100%) + refazer tudo. Na vitoria, segue o botao unico padrao. */}
+      {variante !== 'vitoria' && erradas.length > 0 ? (
+        <>
+          <Pressable style={styles.botao} onPress={refazerFaltaram}>
+            <Text style={styles.botaoTexto}>REFAZER AS QUE FALTARAM ({erradas.length})</Text>
+          </Pressable>
+          <Pressable style={[styles.botao, styles.botaoSecundario]} onPress={handleAvancar}>
+            <Text style={[styles.botaoTexto, styles.botaoTextoSecundario]}>REFAZER TUDO</Text>
+          </Pressable>
+        </>
+      ) : (
+        <Pressable style={styles.botao} onPress={handleAvancar}>
+          <Text style={styles.botaoTexto}>{cfg.botao}</Text>
+        </Pressable>
+      )}
 
       {/* V23.B.1: modal de conquistas (navega ao fechar). */}
       <ModalBadges badges={badgesNovos} onClose={fecharModalBadges} />
@@ -251,6 +300,18 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     textAlign: 'center',
   },
+  // V23.A.5: faixa do baú surpresa.
+  bauBonus: {
+    fontFamily: FONTES.bodyExtraBold,
+    fontSize: 16,
+    color: COLORS.branco,
+    backgroundColor: COLORS.roxoPrimario,
+    paddingHorizontal: ESPACAMENTOS.md,
+    paddingVertical: ESPACAMENTOS.xs,
+    borderRadius: BORDAS.raioMedio,
+    overflow: 'hidden',
+    textAlign: 'center',
+  },
   botao: {
     marginTop: ESPACAMENTOS.lg,
     backgroundColor: COLORS.preto,
@@ -264,5 +325,16 @@ const styles = StyleSheet.create({
     fontFamily: FONTES.display,
     fontSize: 22,
     color: COLORS.laranjaClaro,
+    textAlign: 'center',
+  },
+  // V23.A.6: botao secundario "refazer tudo".
+  botaoSecundario: {
+    marginTop: ESPACAMENTOS.sm,
+    backgroundColor: 'transparent',
+    borderColor: COLORS.branco,
+  },
+  botaoTextoSecundario: {
+    fontSize: 18,
+    color: COLORS.branco,
   },
 });

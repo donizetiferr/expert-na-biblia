@@ -1,10 +1,13 @@
-import { View, Text, Pressable, StyleSheet, Switch, Alert } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Switch, Alert, Share, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../constants/colors';
 import { loadSettings, saveSetting, SETTINGS_DEFAULTS } from '../lib/settings';
 import { resetarProgresso } from '../lib/db-queries';
 import { notifySettingsChanged } from '../lib/sound-runtime';
+import { agendarLembreteDiario, cancelarTodos } from '../lib/notifications';
+import { OPCOES_META } from '../lib/meta';
+import { exportarProgresso, importarProgresso } from '../lib/backup';
 import type { Settings } from '../types';
 
 /**
@@ -27,6 +30,23 @@ export default function ConfigScreen() {
     await saveSetting(key, value);
     setSettings((s) => ({ ...s, [key]: value }));
     notifySettingsChanged().catch(() => {});
+    // V23.A.4: ligar/desligar notificacoes agenda/cancela o lembrete diario de fato.
+    if (key === 'notificacoes') {
+      if (value) {
+        const [h, m] = (settings.horarioLembrete || '19:00').split(':').map((n) => parseInt(n, 10));
+        agendarLembreteDiario(Number.isFinite(h) ? h : 19, Number.isFinite(m) ? m : 0).catch((e: unknown) =>
+          console.warn('[config] agendar lembrete falhou:', e),
+        );
+      } else {
+        cancelarTodos().catch((e: unknown) => console.warn('[config] cancelar lembrete falhou:', e));
+      }
+    }
+  };
+
+  // V23.A.3: meta diaria ajustavel em config (alem do onboarding).
+  const escolherMeta = async (valor: number) => {
+    await saveSetting('metaDiaria', valor);
+    setSettings((s) => ({ ...s, metaDiaria: valor }));
   };
 
   const setVolume = async (key: 'volumeMusica' | 'volumeEfeitos', value: number) => {
@@ -34,6 +54,31 @@ export default function ConfigScreen() {
     await saveSetting(key, clamped);
     setSettings((s) => ({ ...s, [key]: clamped }));
     notifySettingsChanged().catch(() => {});
+  };
+
+  // V23.A.7: export/import manual do progresso (rede de seguranca alem do Auto Backup).
+  const [mostrarImport, setMostrarImport] = useState(false);
+  const [importTexto, setImportTexto] = useState('');
+
+  const handleExportar = async () => {
+    try {
+      const json = await exportarProgresso();
+      await Share.share({ message: json, title: 'Backup Expert Na Bíblia' });
+    } catch (e) {
+      console.warn('[config] exportar falhou:', e);
+      Alert.alert('Não foi possível exportar', 'Tente novamente.');
+    }
+  };
+
+  const handleImportar = async () => {
+    const ok = await importarProgresso(importTexto.trim());
+    if (ok) {
+      setImportTexto('');
+      setMostrarImport(false);
+      Alert.alert('Progresso restaurado', 'Seu backup foi importado com sucesso.');
+    } else {
+      Alert.alert('Backup inválido', 'Confira o texto colado e tente novamente.');
+    }
   };
 
   const handleReset = () => {
@@ -145,6 +190,74 @@ export default function ConfigScreen() {
           />
         </View>
 
+        {/* V23.A.3: meta diaria ajustavel */}
+        <View style={styles.linhaColuna}>
+          <Text style={styles.label}>Meta diária</Text>
+          <View style={styles.metaOpcoes}>
+            {OPCOES_META.map((o) => {
+              const ativo = settings.metaDiaria === o.valor;
+              return (
+                <Pressable
+                  key={o.valor}
+                  style={[styles.metaBtn, ativo && styles.metaBtnAtivo]}
+                  onPress={() => escolherMeta(o.valor)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Meta ${o.rotulo}, ${o.descricao}`}
+                >
+                  <Text style={[styles.metaBtnTexto, ativo && styles.metaBtnTextoAtivo]}>{o.descricao}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+
+        {/* V23.E.7: reduzir movimento (acessibilidade) */}
+        <View style={styles.linha}>
+          <Text style={styles.label}>Reduzir animações</Text>
+          <Switch
+            value={settings.reduceMotion}
+            onValueChange={(v) => toggle('reduceMotion', v)}
+            trackColor={{ false: COLORS.cinzaEscuro, true: COLORS.laranjaEscuro }}
+            thumbColor={settings.reduceMotion ? COLORS.laranjaClaro : COLORS.cinzaMedio}
+          />
+        </View>
+
+        {/* V23.A.7: backup do progresso */}
+        <View style={styles.linhaColuna}>
+          <Text style={styles.label}>Backup do progresso</Text>
+          <Text style={styles.subLabel}>
+            Seu progresso é salvo no backup do Android. Você também pode exportar/importar manualmente.
+          </Text>
+          <View style={styles.metaOpcoes}>
+            <Pressable style={styles.backupBtn} onPress={handleExportar} accessibilityRole="button" accessibilityLabel="Exportar progresso">
+              <Text style={styles.backupBtnTexto}>Exportar</Text>
+            </Pressable>
+            <Pressable
+              style={styles.backupBtn}
+              onPress={() => setMostrarImport((v) => !v)}
+              accessibilityRole="button"
+              accessibilityLabel="Importar progresso"
+            >
+              <Text style={styles.backupBtnTexto}>Importar</Text>
+            </Pressable>
+          </View>
+          {mostrarImport ? (
+            <View style={styles.importBox}>
+              <TextInput
+                style={styles.importInput}
+                value={importTexto}
+                onChangeText={setImportTexto}
+                placeholder="Cole aqui o texto do backup..."
+                placeholderTextColor={COLORS.cinzaMedio}
+                multiline
+              />
+              <Pressable style={styles.backupBtn} onPress={handleImportar}>
+                <Text style={styles.backupBtnTexto}>Restaurar</Text>
+              </Pressable>
+            </View>
+          ) : null}
+        </View>
+
         <Pressable style={styles.botaoReset} onPress={handleReset}>
           <Text style={styles.botaoResetTexto}>Resetar progresso</Text>
         </Pressable>
@@ -193,6 +306,70 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.roxoPrimario,
     padding: ESPACAMENTOS.md,
     borderRadius: BORDAS.raioMedio,
+  },
+  // V23.A.3: linha em coluna (label + opcoes de meta).
+  linhaColuna: {
+    backgroundColor: COLORS.roxoPrimario,
+    padding: ESPACAMENTOS.md,
+    borderRadius: BORDAS.raioMedio,
+    gap: ESPACAMENTOS.sm,
+  },
+  metaOpcoes: {
+    flexDirection: 'row',
+    gap: ESPACAMENTOS.sm,
+  },
+  metaBtn: {
+    flex: 1,
+    paddingVertical: ESPACAMENTOS.sm,
+    borderRadius: BORDAS.raioPequeno,
+    backgroundColor: COLORS.roxoCard,
+    borderWidth: BORDAS.larguraMedia,
+    borderColor: COLORS.roxoCard,
+    alignItems: 'center',
+  },
+  metaBtnAtivo: {
+    borderColor: COLORS.laranjaClaro,
+    backgroundColor: COLORS.roxoEscuro,
+  },
+  metaBtnTexto: {
+    fontFamily: FONTES.bodyBold,
+    fontSize: 13,
+    color: COLORS.cinzaClaro,
+  },
+  metaBtnTextoAtivo: {
+    color: COLORS.laranjaClaro,
+  },
+  // V23.A.7: botoes de backup.
+  backupBtn: {
+    flex: 1,
+    paddingVertical: ESPACAMENTOS.sm,
+    borderRadius: BORDAS.raioPequeno,
+    backgroundColor: COLORS.roxoCard,
+    borderWidth: BORDAS.larguraMedia,
+    borderColor: COLORS.laranjaBorda,
+    alignItems: 'center',
+  },
+  backupBtnTexto: {
+    fontFamily: FONTES.bodyBold,
+    fontSize: 14,
+    color: COLORS.laranjaClaro,
+  },
+  importBox: {
+    gap: ESPACAMENTOS.sm,
+    marginTop: ESPACAMENTOS.sm,
+  },
+  importInput: {
+    backgroundColor: COLORS.roxoEscuro,
+    borderRadius: BORDAS.raioPequeno,
+    borderWidth: BORDAS.larguraFina,
+    borderColor: COLORS.laranjaBorda,
+    color: COLORS.branco,
+    fontFamily: FONTES.bodyRegular,
+    fontSize: 13,
+    padding: ESPACAMENTOS.sm,
+    minHeight: 60,
+    maxHeight: 120,
+    textAlignVertical: 'top',
   },
   subLinha: {
     flexDirection: 'row',

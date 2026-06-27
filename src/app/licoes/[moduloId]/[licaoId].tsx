@@ -26,9 +26,14 @@ type Pose = 'PENSATIVO' | 'FELIZ' | 'ASSUSTADO' | 'TRISTE' | 'EXCLAMANDO';
  */
 export default function LicaoScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ moduloId: string; licaoId: string; indice?: string; acertos?: string }>();
+  const params = useLocalSearchParams<{ moduloId: string; licaoId: string; indice?: string; acertos?: string; erradas?: string; somente?: string }>();
   const { moduloId, licaoId } = params;
   const [perguntas, setPerguntas] = useState<Pergunta[]>([]);
+  // V23.A.6: IDs das perguntas erradas acumulados na jornada (para "refazer so as que
+  // faltaram"). Vem por param (CSV) e cresce a cada erro.
+  const [erradas, setErradas] = useState<string[]>(() =>
+    params.erradas ? params.erradas.split(',').filter(Boolean) : [],
+  );
   // V9 M2.4: indice vem do param (feedback avanca via ?indice=N); default 0
   const [indice, setIndice] = useState(parseInt(params.indice ?? '0', 10));
   const [resposta, setResposta] = useState('');
@@ -52,8 +57,18 @@ export default function LicaoScreen() {
   // V10 M5.4: deps incluem [licaoId, moduloId] (não só licaoId) para garantir reset
   // ao trocar de módulo/lição (evita o looping infinito que ocorria antes).
   useEffect(() => {
-    if (licaoId) listarPerguntas(licaoId).then(setPerguntas);
-  }, [licaoId, moduloId]);
+    if (!licaoId) return;
+    listarPerguntas(licaoId).then((todas) => {
+      // V23.A.6: modo "refazer so as que faltaram" — filtra para os IDs em `somente`.
+      const somente = params.somente ? params.somente.split(',').filter(Boolean) : null;
+      setPerguntas(somente && somente.length > 0 ? todas.filter((p) => somente.includes(p.id)) : todas);
+    });
+  }, [licaoId, moduloId, params.somente]);
+
+  // V23.A.6: sincroniza `erradas` vindo dos params ao reusar a tela.
+  useEffect(() => {
+    setErradas(params.erradas ? params.erradas.split(',').filter(Boolean) : []);
+  }, [params.erradas]);
 
   // V14 M15.5: dispara animacao de entrada do personagem ao montar ou trocar licao
   useEffect(() => {
@@ -138,6 +153,16 @@ export default function LicaoScreen() {
     const acertosAtual = acertos + (resultado.correto ? 1 : 0);
     if (resultado.correto) setAcertos(acertosAtual);
 
+    // V23.A.6: mantem o conjunto de perguntas AINDA nao dominadas. Acerto remove o ID;
+    // erro adiciona. Assim "refazer so as que faltaram" foca no que de fato falta.
+    let erradasAtual = erradas;
+    if (resultado.correto) {
+      erradasAtual = erradas.filter((id) => id !== perguntaAtual.id);
+    } else if (!erradas.includes(perguntaAtual.id)) {
+      erradasAtual = [...erradas, perguntaAtual.id];
+    }
+    if (erradasAtual !== erradas) setErradas(erradasAtual);
+
     // Navega para Tela Feedback dedicada em vez de mudar pose inline.
     // V20: repassa o feedback da IA + a resposta esperada (que pode vir do LLM) e a
     // origem da avaliacao (CACHE/M3/OPENAI/FALHOU) para exibir na tela de feedback.
@@ -154,6 +179,7 @@ export default function LicaoScreen() {
         total: String(perguntas.length),
         total_perguntas: String(perguntas.length),
         acertos_atual: String(acertosAtual),
+        erradas: erradasAtual.join(','),
       },
     });
   };

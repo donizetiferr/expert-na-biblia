@@ -29,6 +29,7 @@ export default function FeedbackScreen() {
     total_perguntas: string;
     feedback_ia: string;
     origem: string;
+    erradas: string;
   }>();
 
   const isAcerto = params.resultado === 'acerto';
@@ -88,6 +89,8 @@ export default function FeedbackScreen() {
           licaoId: String(params.licaoId),
           acertos: String(acertos),
           total: String(totalPerguntas),
+          // V23.A.6: IDs das erradas para a tela final oferecer "refazer so as que faltaram".
+          erradas: params.erradas ?? '',
         },
       });
     } else {
@@ -103,6 +106,7 @@ export default function FeedbackScreen() {
           moduloId: String(params.moduloId),
           licaoId: String(params.licaoId),
           acertos: String(acertos),
+          erradas: params.erradas ?? '',
         },
       });
     }
@@ -120,6 +124,7 @@ export default function FeedbackScreen() {
         moduloId: String(params.moduloId),
         licaoId: String(params.licaoId),
         acertos: String(acertosBase),
+        erradas: params.erradas ?? '',
       },
     });
   };

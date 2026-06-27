@@ -2,7 +2,34 @@
 
 Todas as mudancas relevantes neste projeto.
 
-## [1.12.0] (V23.1) - 2026-06-26 (FASE 1 — Minimum Lovable Engagement: XP + Streak + Meta + Progresso + Badges + Onboarding de ativacao)
+## [1.13.0] (V23.2) - 2026-06-26 (FASE 1 — Nucleo de retencao completo: notificacoes + recompensa variavel + refazer-so-erradas + persistencia)
+
+> Completa o milestone V23.A (engajamento). Respeita as decisoes de produto V23.1 (sem punicao,
+> tom de progresso). Gates: tsc 0 | jest 137/137 (+9) | eslint 0.
+
+### Adicionado
+- **[A.4] Notificacoes comportamentais wired**: o toggle "Notificacoes push" em config agora agenda
+  (`agendarLembreteDiario`, usando `settings.horarioLembrete`) ou cancela (`cancelarTodos`) de fato o
+  lembrete diario — antes `notifications.ts` tinha 0 imports. Permissao ja pedida no onboarding (C.1).
+- **[A.5] Recompensa variavel (baú surpresa)**: ao concluir uma licao 100%, ~30% de chance de um baú
+  com bonus de XP variavel (5/10/15/25) — `src/lib/bau.ts` (RNG injetavel, testado); celebracao
+  "🎁 Baú surpresa! +N XP" na tela final.
+- **[A.6] Falhar sem punir + refazer SO as que faltaram**: a tela final de licao com <100% agora tem
+  tom de PROGRESSO ("QUASE LÁ!"/"VOCÊ CONSEGUE!" + "Você acertou X de N") e oferece **"Refazer as que
+  faltaram (N)"** (refaz so as perguntas ainda nao dominadas, via param `somente`) alem de "Refazer
+  tudo". Os IDs das erradas sao threadados pela jornada licao->feedback->final (acerto remove o ID,
+  erro adiciona). Mantem a regra de 100% para liberar, mas o caminho ate la fica curto e positivo.
+- **[A.7] Persistencia entre reinstalacoes**: Android Auto Backup ligado (`app.config.ts`
+  `android.allowBackup: true`) preserva o SQLite (streak/XP/conclusoes) no mesmo device/conta Google;
+  export/import manual do progresso em config (`src/lib/backup.ts`, serializacao testada) — Exportar
+  via Share, Importar colando o JSON.
+- **Config**: meta diaria ajustavel (50/100/150 XP), toggle "Reduzir animacoes" (`reduceMotion`),
+  secao de Backup.
+
+### Testes
+- +9 testes (128 -> 137, 15 -> 17 suites): `bau.test.ts` (sorteio com RNG injetavel), `backup.test.ts`
+  (round-trip serializacao + validacao de JSON invalido).
+
 
 > Primeira entrega da FASE 1 do PLANO V23 (engajamento/dopamina/retencao). Liga a camada de
 > RETENCAO PERSISTENTE que existia morta ou inexistente no codigo. Comprovado em emulador hi-res
