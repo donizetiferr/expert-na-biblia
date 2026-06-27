@@ -157,3 +157,13 @@ Estado: V23.3_ENTREGUE_COMPROVADO
 - Milestones A + B + C completos (nucleo de engajamento/retencao/conquista da FASE 1).
 - Proxima: V23.4 = milestone D (aprendizado: conteudo didatico, revisao espacada/Leitner, novos
   formatos, refs biblicas, versiculo do dia). Depois E, G, H, I, J, K.
+
+## V23.4 — ENTREGUE COMPROVADO (2026-06-27, v1.15.0/vc10)
+Estado: V23.4_ENTREGUE_COMPROVADO
+- Escopo: D.5 versiculo do dia (lib/versiculo-do-dia + card em /modos; "Li hoje"->streak; Compartilhar).
+  /modos virou ScrollView. Gates: tsc 0 | jest 144/144 (+5) | eslint 0.
+- VALIDACAO emulador (UPGRADE sobre V23.3, 0 FATAL): card "VERSICULO DE HOJE" (Isaías 40:31) COMPROVADO.
+  Evidencias: orchestration/v23_4_validation/.
+- APK: dist/ExpertNaBiblia-v23.4.0.apk (vc10/1.15.0); dist podado p/ 5 (v21,23.1,23.2,23.3,23.4).
+- Pendente milestone D: D.1 conteudo didatico, D.2 Leitner, D.3 completar-versiculo, D.4 refs biblicas
+  — precisam do batch M2.7 (Minimax) p/ gerar conteudo em escala. Proxima: V23.5 = D.1-D.4 + E + G...

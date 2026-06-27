@@ -211,7 +211,7 @@ O app esta **funcional e estavel** (97/97 testes, build OK, APK V21 publicado) e
   - Acao: (1) gerar refs via batch M2.7; (2) exibir "Referencia: Genesis 1:1" no feedback de acerto/erro; (3) opcional: link/hint na pergunta.
   - DoD: referencias exibidas no feedback quando disponiveis.
 
-- [ ] V23.D.5 **Versiculo do dia / devocional leve** — EVOLUCAO | ALTA | PESQUISA_EXTERNA | AUTONOMO
+- [x] V23.D.5 **Versiculo do dia / devocional leve** — EVOLUCAO | ALTA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-27, V23.4 — card em /modos, 30 versiculos curados por dia do ano, share + "li hoje"->streak; COMPROVADO. Escalar p/ 365 via batch M2.7 depois.)_
   - (Absorve V22.F.6.) Feature de nicho biblico com melhor relacao esforco/retencao (YouVersion/Manna). Entry point de 30s que traz o usuario de volta sem exigir lição inteira.
   - Acao: (1) tabela `versiculos_do_dia` (365 versiculos); (2) card "Versiculo de hoje" em /modos; (3) refresh diario; (4) compartilhar via share sheet nativo (wire do `deep-link.ts`, hoje morto); (5) opcional: contar como atividade que mantem streak.
   - DoD: card de versiculo do dia em /modos, diferente a cada dia, compartilhavel.
