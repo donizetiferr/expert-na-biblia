@@ -167,3 +167,25 @@ Estado: V23.4_ENTREGUE_COMPROVADO
 - APK: dist/ExpertNaBiblia-v23.4.0.apk (vc10/1.15.0); dist podado p/ 5 (v21,23.1,23.2,23.3,23.4).
 - Pendente milestone D: D.1 conteudo didatico, D.2 Leitner, D.3 completar-versiculo, D.4 refs biblicas
   — precisam do batch M2.7 (Minimax) p/ gerar conteudo em escala. Proxima: V23.5 = D.1-D.4 + E + G...
+
+## V23.5 — ENTREGUE COMPROVADO (2026-06-27, v1.16.0/vc11) — FECHA milestone D
+Estado: V23.5_ENTREGUE_COMPROVADO
+- Escopo (milestone D completo): D.1 conteudo didatico (card "Aprenda") + D.2 revisao espacada Leitner
+  (rota /revisao) + D.3 novo formato "completar versiculo" (rota /completar) + D.4 refs biblicas no feedback.
+- Migration 003 (`licao_conteudo`, `pergunta_revisao`, `completar_versiculo`) com seed de gate proprio
+  idempotente (INSERT OR IGNORE — nao reseta progresso no upgrade).
+- Conteudo gerado via batch M2.7 (MiniMax-M2.7): 657/754 licoes com mini-ensino+versiculo (`scripts/gen_d1_conteudo.mjs`)
+  + 52 itens "completar versiculo" (`scripts/gen_d3_completar.mjs`). Seeds bundled via `scripts/gen_seed_d.mjs`.
+- Gates: tsc 0 | jest 156/156 (+12: revisao/completar) | eslint 0.
+- VALIDACAO EMPIRICA emulador hi-res 1080x1920 (UPGRADE sobre V23.4, 0 FATAL):
+  - DB pos-upgrade: licao_conteudo=657, completar_versiculo=52, pergunta_revisao registrado ao responder.
+  - D.1: card "APRENDA" (mascote dourado + ensino "Antigo/Novo Testamento" + 📖 Hebreus 1:1-2 + Comecar) -> perguntas.
+  - D.4: feedback "CORRETO!" exibe "📖 Referencia: Hebreus 1:1-2".
+  - D.3: "Complete o versiculo" Mateus 6:33 lacuna + 4 opcoes; acerto "reino" verde + PROXIMO.
+  - D.2: card "🔁 REVISAO" com badge "5" -> flashcard "O que e a Biblia?" -> resposta revelada -> "LEMBREI" reagenda
+    (DB: devidos 5->4, 1 movido p/ futuro) -> avanca 2/5.
+  - Evidencias: orchestration/v23_5_validation/ (00..10).
+- APK: dist/ExpertNaBiblia-v23.5.0.apk (vc11/1.16.0, 105MB); dist podado p/ 5 (v23.1,23.2,23.3,23.4,23.5).
+- Git: commit LOCAL (sem push).
+- Follow-up (nao bloqueiam): ~97 licoes sem conteudo (erro batch M2.7); parte do conteudo sem acentuacao (M2.7);
+  refs por-pergunta especificas (hoje refs em nivel de licao). Proxima: V23.6 = milestone E (UX/multi-idade).

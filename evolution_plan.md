@@ -184,32 +184,20 @@ O app esta **funcional e estavel** (97/97 testes, build OK, APK V21 publicado) e
   - Acao: calcular proximo modulo/lição liberado nao concluido; CTA "Continuar" no topo de /modos.
   - DoD: 1 toque retoma a proxima atividade pendente.
 
-## Milestone V23.D: Aprendizado intuitivo — ensinar, nao so testar (EVOLUCAO) — PENDENTE
+## Milestone V23.D: Aprendizado intuitivo — ensinar, nao so testar (EVOLUCAO) — COMPLETO (V23.4 D.5 + V23.5 D.1-D.4)
 > OBJ derivado do pedido. Hoje o app so AVALIA (pergunta aberta + quiz). Variar formatos e ensinar antes melhora memorizacao e atende mais faixas de idade. Introduzir 1 formato novo por versao.
 
-- [ ] V23.D.1 **Conteudo didatico ANTES de perguntar (campo explicacao)** — EVOLUCAO | ALTA | OBJECTIVE_GAP | AUTONOMO
-  - O schema de pergunta nao tem conteudo de ensino. Brilliant: apresenta o conceito, deixa inferir, confirma.
-  - Acao: (1) campo `explicacao`/`conteudo` em modulo ou lição; (2) gerar via batch M2.7 um mini-ensino por lição (2-4 frases + versiculo-chave); (3) tela/card "Aprenda" opcional antes das perguntas da lição.
-  - DoD: usuario pode ler um mini-conteudo antes de responder; gerado para as licoes.
+- [x] V23.D.1 **Conteudo didatico ANTES de perguntar (campo explicacao)** — EVOLUCAO | ALTA | OBJECTIVE_GAP | AUTONOMO _(entregue 2026-06-27, V23.5 — COMPROVADO: card "APRENDA" com mini-ensino + versiculo-chave antes das perguntas)_
+  - Entregue: tabela `licao_conteudo` (migration 003) seeded com 657/754 licoes via batch M2.7 (`scripts/gen_d1_conteudo.mjs`); card "APRENDA" em `[licaoId].tsx` (mascote dourado + ensino + versiculo + "Comecar"); `src/lib/conteudo.ts`. Follow-up: ~97 licoes sem conteudo (erro de batch M2.7) nao mostram o card; parte do conteudo veio sem acentuacao do M2.7 (polish de conteudo futuro).
 
-- [ ] V23.D.2 **Modo Revisao com repeticao espacada (Leitner/SM-2)** — EVOLUCAO | ALTA | PESQUISA_EXTERNA | AUTONOMO
-  - (Absorve V22.F.2.) Motor comprovado de memorizacao de longo prazo. Hoje lição concluida nunca mais aparece.
-  - Acao: (1) registrar acertos/erros por pergunta; (2) algoritmo Leitner simples (caixas) priorizando o que o usuario errou; (3) modo "Revisao" em /modos que reapresenta perguntas de licoes concluidas em intervalos crescentes; (4) recompensar revisao com XP.
-  - DoD: modo Revisao reapresenta perguntas erradas/antigas em intervalos, dando XP.
+- [x] V23.D.2 **Modo Revisao com repeticao espacada (Leitner/SM-2)** — EVOLUCAO | ALTA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-27, V23.5 — COMPROVADO: card "REVISAO" com badge de pendentes -> flashcard reapresenta perguntas vencidas -> "Lembrei/Nao lembrei" reagenda; DB: 5 devidos -> 4 + 1 reagendado p/ futuro)_
+  - Entregue: tabela `pergunta_revisao` (caixa Leitner 1-5 + proxima data); `registrarRevisao` chamado a cada resposta de licao; rota `/revisao` (flashcard recall offline: pergunta -> mostrar resposta -> auto-avaliacao) que reapresenta as vencidas priorizando caixa baixa + erros; recompensa XP; card "🔁 REVISAO" + badge em /modos; `src/lib/revisao.ts` + testes unitarios.
 
-- [ ] V23.D.3 **Novos formatos de exercicio (1 por versao)** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
-  - Variar o formato mantem novidade e ensina de modos diferentes. Ordem sugerida por ROI:
-    1. **Completar versiculo** (fill-in-the-blank SEM banco de opcoes = recall ativo forte)
-    2. **Ordenar eventos/versiculos** cronologicamente (forte para narrativa biblica)
-    3. **Associacao/match** (referencia <-> texto do versiculo)
-    4. **Verdadeiro/Falso** (aquecimento leve, bom para variar)
-  - Acao: criar tipo de pergunta extensivel; comecar por "completar versiculo"; reusar dados existentes + batch M2.7 para gerar os itens.
-  - DoD: pelo menos 1 novo formato jogavel integrado as licoes/quiz.
+- [x] V23.D.3 **Novos formatos de exercicio (1 por versao)** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-27, V23.5 — "completar versiculo" jogavel; COMPROVADO: Mateus 6:33 com lacuna + 4 opcoes, acerto verde + proximo)_
+  - Entregue: tabela `completar_versiculo` (52 versiculos conhecidos curados via batch M2.7 `scripts/gen_d3_completar.mjs`); rota `/completar` (multipla escolha com lacuna, XP por acerto, mantem streak); card "✍️ COMPLETAR" em /modos; `src/lib/completar.ts` + testes unitarios. (Formatos ordenar/associar/V-F: backlog para proximas versoes.)
 
-- [ ] V23.D.4 **Referencias biblicas no feedback** — EVOLUCAO | MEDIA | INVESTIGACAO (campo morto) | AUTONOMO
-  - (CONSOLIDA V22.F.9 + V22.H.4 — eram duplicata.) Campo `referencias_biblicas` existe no schema, NULL em todas as 4345, nunca renderizado.
-  - Acao: (1) gerar refs via batch M2.7; (2) exibir "Referencia: Genesis 1:1" no feedback de acerto/erro; (3) opcional: link/hint na pergunta.
-  - DoD: referencias exibidas no feedback quando disponiveis.
+- [x] V23.D.4 **Referencias biblicas no feedback** — EVOLUCAO | MEDIA | INVESTIGACAO (campo morto) | AUTONOMO _(entregue 2026-06-27, V23.5 — COMPROVADO: "📖 Referencia: Hebreus 1:1-2" no feedback)_
+  - Entregue: o versiculo-chave da licao (D.1, `licao_conteudo`) e exibido como "📖 Referencia: ..." no feedback de cada pergunta (referencia em nivel de licao). Follow-up: refs por-pergunta especificas (4345) ficam para um batch dedicado futuro — o nivel de licao cobre o DoD.
 
 - [x] V23.D.5 **Versiculo do dia / devocional leve** — EVOLUCAO | ALTA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-27, V23.4 — card em /modos, 30 versiculos curados por dia do ano, share + "li hoje"->streak; COMPROVADO. Escalar p/ 365 via batch M2.7 depois.)_
   - (Absorve V22.F.6.) Feature de nicho biblico com melhor relacao esforco/retencao (YouVersion/Manna). Entry point de 30s que traz o usuario de volta sem exigir lição inteira.
