@@ -122,6 +122,17 @@ export default function ModosScreen() {
           </Pressable>
         ) : null}
 
+        {/* V23.11 (K): desafios (sazonais + diário/semanal). */}
+        <Pressable
+          style={styles.desafiosBtn}
+          onPress={() => router.push('/desafios')}
+          accessibilityRole="button"
+          accessibilityLabel="Desafios do dia e da semana"
+        >
+          <Text style={styles.desafiosTexto}>🏆  DESAFIOS</Text>
+          <Text style={styles.desafiosSub}>missões diárias e eventos</Text>
+        </Pressable>
+
         <View style={styles.cards}>
           <Pressable style={styles.cardShadow} onPress={() => router.push('/quiz')}>
             <GradienteRoxo diagonal style={styles.card}>
@@ -299,6 +310,28 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: COLORS.branco,
     letterSpacing: 1,
+  },
+  // V23.11 (K): card de desafios (destaque roxo).
+  desafiosBtn: {
+    backgroundColor: COLORS.roxoEscuro,
+    borderRadius: BORDAS.raioMedio,
+    borderWidth: BORDAS.larguraGrossa,
+    borderColor: COLORS.laranjaBorda,
+    paddingVertical: ESPACAMENTOS.md,
+    alignItems: 'center',
+    marginBottom: ESPACAMENTOS.md,
+  },
+  desafiosTexto: {
+    fontFamily: FONTES.display,
+    fontSize: 24,
+    color: COLORS.laranjaClaro,
+    letterSpacing: 1,
+  },
+  desafiosSub: {
+    fontFamily: FONTES.bodyBold,
+    fontSize: 12,
+    color: COLORS.branco,
+    opacity: 0.85,
   },
   // V23.D.5: scroll content (logo + continuar + cards + versiculo).
   scroll: {

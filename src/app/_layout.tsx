@@ -16,6 +16,7 @@ import { useBackHandlerRoot } from '../hooks/useBackHandlerRoot';
 import { runMigrations } from '../db/database';
 import { garantirFreezeSemanal } from '../lib/streak';
 import { garantirPerfilPadrao } from '../lib/perfis';
+import { agendarWinBack } from '../lib/notifications';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { instalarHandlerGlobalDeErros, registrarEvento } from '../lib/analytics';
 
@@ -53,6 +54,11 @@ export default function RootLayout() {
         // migrations (a tabela streak_freeze ja existe). Protege o streak contra 1 falta.
         garantirFreezeSemanal().catch((e: unknown) =>
           console.warn('[layout] garantirFreezeSemanal falhou:', e),
+        );
+        // V23.11 (K.3): reagenda o win-back para frente a cada abertura — so dispara se o
+        // usuario ficar dias sem abrir (no-op se nao houver permissao de notificacao).
+        agendarWinBack(3).catch((e: unknown) =>
+          console.warn('[layout] agendarWinBack falhou:', e),
         );
       }).catch((e) => {
         console.warn('[layout] migrations falharam:', e && e.stack ? e.stack : e);
@@ -122,6 +128,7 @@ export default function RootLayout() {
               <Stack.Screen name="cosmeticos" />
               <Stack.Screen name="enciclopedia" />
               <Stack.Screen name="planos" />
+              <Stack.Screen name="desafios" />
               <Stack.Screen name="trofeu" />
             </Stack>
           </ErrorBoundary>

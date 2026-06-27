@@ -309,19 +309,16 @@ O app esta **funcional e estavel** (97/97 testes, build OK, APK V21 publicado) e
 - [x] V23.J.3 **"Saiba mais" contextual no feedback** — MELHORIA | BAIXA | INVESTIGACAO | AUTONOMO _(entregue 2026-06-27, V23.10 — wired no feedback + match unit-tested `nomeApareceEm`)_
   - Entregue: o feedback chama `encontrarVerbeteEm(resposta_correta)` e, havendo verbete, mostra "📚 Saiba mais: [nome]" -> abre o verbete em /enciclopedia (param focus). Match por palavra inteira sem acento. (Nao exercitado empiricamente — exige resposta de licao que case um verbete; logica coberta por teste unitario.)
 
-## Milestone V23.K: Eventos sazonais, desafios e re-engajamento (EVOLUCAO) — PENDENTE
+## Milestone V23.K: Eventos sazonais, desafios e re-engajamento (EVOLUCAO) — COMPLETO (V23.11; K.4 BACKLOG)
 > Cria motivos RECORRENTES e SAZONAIS de voltar — alem do streak diario.
 
-- [ ] V23.K.1 **Eventos liturgicos sazonais (Natal/Pascoa/Quaresma)** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
-  - Desafios tematicos com recompensa especial em datas do calendario cristao. Re-engajamento sazonal on-brand.
-  - DoD: pelo menos 1 evento sazonal (date-based) com desafio + recompensa dedicada.
-- [ ] V23.K.2 **Desafios diarios/semanais rotativos** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO
-  - (Absorve a ideia de weekly challenges do backlog V22.F.) Distinto da meta diaria: missao rotativa ("acerte 10 do AT hoje") com bonus XP.
-  - DoD: 1 desafio rotativo ativo por periodo, com recompensa.
-- [ ] V23.K.3 **Win-back de inativos (lembrete de retorno apos N dias)** — MELHORIA | MEDIA | PESQUISA_EXTERNA | AUTONOMO
-  - Usa a infra de notificacoes locais (V23.A.4). Se inativo ha 3/7 dias: convite gentil de volta (tom encorajador, nao culpa).
-  - DoD: notificacao de retorno dispara para inativo e cancela ao voltar.
-- [ ] V23.K.4 **Desafiar um amigo (quiz compartilhavel via deep link, async, sem backend)** — EVOLUCAO | BAIXA | PESQUISA_EXTERNA | AUTONOMO | BACKLOG
+- [x] V23.K.1 **Eventos liturgicos sazonais (Natal/Pascoa/Quaresma)** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-27, V23.11 — eventoSazonal Natal/Pascoa/Quaresma com computus de Gauss; unit-tested contra datas conhecidas. Sem card em junho — correto)_
+  - Entregue: `eventoSazonal(data)` em `src/lib/desafios.ts` (Natal dez 1-25; Pascoa+Quaresma por data movel via `calcularPascoa`); aparece em /desafios como "EVENTO ESPECIAL" com meta + recompensa dedicada.
+- [x] V23.K.2 **Desafios diarios/semanais rotativos** — EVOLUCAO | MEDIA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-27, V23.11 — COMPROVADO: "Foco total" 30/30 -> Resgatar +15 XP; semanal 110->125 XP refletindo o bonus)_
+  - Entregue: rota `/desafios` + `desafioDiario`/`desafioSemanal` (rotacao deterministica por data); meta de XP no periodo (medida de user_xp) + bonus resgatavel 1x (migration 007 `desafio_progresso`, por perfil). Card no hub.
+- [x] V23.K.3 **Win-back de inativos (lembrete de retorno apos N dias)** — MELHORIA | MEDIA | PESQUISA_EXTERNA | AUTONOMO _(entregue 2026-06-27, V23.11 — wired; firing empirico exige permissao de notif + N dias)_
+  - Entregue: `agendarWinBack(3)` em `src/lib/notifications.ts` (identificador fixo) reagendado a CADA abertura -> so dispara se inativo 3 dias; tom encorajador. No-op sem permissao de notificacao.
+- [ ] V23.K.4 **Desafiar um amigo (quiz compartilhavel via deep link, async, sem backend)** — EVOLUCAO | BAIXA | PESQUISA_EXTERNA | AUTONOMO | BACKLOG _(NAO implementado — BACKLOG por decisao do team-lead)_
   - Gerar link que carrega um quiz com seed fixo; amigo joga e compara score. Viralidade leve sem servidor.
   - DoD: link de desafio gera quiz reproduzivel; compara scores localmente.
 

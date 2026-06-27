@@ -2,6 +2,25 @@
 
 Todas as mudancas relevantes neste projeto.
 
+## [1.22.0] (V23.11) - 2026-06-27 (FASE 1 — Sazonais, desafios e win-back: milestone K)
+
+> Milestone V23.K (motivos recorrentes de voltar). Gates: tsc 0 | jest 216/216 (+13) | eslint 0.
+> COMPROVADO no emulador hi-res (upgrade sobre V23.10, 0 FATAL) — evidências em orchestration/v23_11_validation/.
+
+### Adicionado
+- **[K.1] Eventos sazonais litúrgicos**: nova tela `/desafios` + `src/lib/desafios.ts` mostra um evento
+  especial conforme o calendário cristão — Natal (dez), Páscoa e Quaresma (datas móveis calculadas pelo
+  computus de Gauss). Cada evento tem meta de XP + recompensa dedicada.
+- **[K.2] Desafios diários/semanais rotativos**: missões determinísticas pela data (diária "Ganhe X XP hoje",
+  semanal "Ganhe Y XP na semana"), com barra de progresso e bônus de XP resgatável 1x (migration 007
+  `desafio_progresso`, por perfil). Card de Desafios no hub.
+- **[K.3] Win-back de inativos**: `agendarWinBack` (expo-notifications) reagenda a cada abertura uma
+  notificação gentil para daqui a 3 dias — só dispara se o usuário ficar inativo. Tom encorajador.
+
+### Notas
+- K.4 (desafiar amigo) permanece BACKLOG (não implementado nesta fase).
+- Migration 007 entra por `_migrations`; progresso de desafio é por perfil (snapshot-swap).
+
 ## [1.21.0] (V23.10) - 2026-06-27 (FASE 1 — Enciclopédia, glossário e planos de leitura: milestone J)
 
 > Milestone V23.J (conteúdo de referência + profundidade). Gates: tsc 0 | jest 203/203 (+15) | eslint 0.

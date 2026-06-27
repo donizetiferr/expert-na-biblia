@@ -289,6 +289,17 @@ export async function runMigrations(): Promise<{ applied: number; skipped: numbe
     );
   `;
 
+  // Migration 007 (V23.11 — milestone K): desafios rotativos/sazonais.
+  // - desafio_progresso: desafios (diario/semanal/sazonal) ja resgatados — ESTADO de jogo,
+  //   POR PERFIL (entra no snapshot-swap de lib/perfis). O id carrega a data/semana, entao
+  //   nao colide entre periodos.
+  const migration007 = `
+    CREATE TABLE IF NOT EXISTS desafio_progresso (
+      id TEXT PRIMARY KEY,
+      concluido_em TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+  `;
+
   const MIGRATIONS: Migration[] = [
     { name: '001_initial', sql: migration001 },
     { name: '002_engajamento', sql: migration002 },
@@ -296,6 +307,7 @@ export async function runMigrations(): Promise<{ applied: number; skipped: numbe
     { name: '004_cosmeticos', sql: migration004 },
     { name: '005_perfis', sql: migration005 },
     { name: '006_referencia', sql: migration006 },
+    { name: '007_desafios', sql: migration007 },
   ];
 
   let applied = 0;

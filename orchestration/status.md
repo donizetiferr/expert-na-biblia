@@ -286,3 +286,15 @@ Estado: V23.10_ENTREGUE_COMPROVADO
   XP/streak) COMPROVADO. J.3 wired + unit-tested (nao exercitado empiricamente). Evidencias:
   orchestration/v23_10_validation/ (VALIDACAO.md + 00..05).
 - Git: commit LOCAL. Proxima: V23.11 = milestone K (sazonais + desafios + win-back).
+
+## V23.11 — ENTREGUE COMPROVADO (2026-06-27, v1.22.0/vc17) — FECHA milestone K (K.4 BACKLOG)
+Estado: V23.11_ENTREGUE_COMPROVADO
+- Escopo: K.1 eventos sazonais (Natal/Pascoa/Quaresma, computus de Gauss) + K.2 desafios diario/semanal
+  rotativos (/desafios; meta de XP no periodo + bonus resgatavel; migration 007 desafio_progresso por
+  perfil) + K.3 win-back (agendarWinBack reagendado no boot). K.4 (desafiar amigo) = BACKLOG.
+- Gates: tsc 0 | jest 216/216 (26 suites, +13) | eslint 0. Build BUILD SUCCESSFUL. APK 105MB; dist podado 5.
+- VALIDACAO EMPIRICA emulador (UPGRADE sobre V23.10, 0 FATAL): migration 007 sem crash. K.2 COMPROVADO —
+  "Foco total" 30/30 -> Resgatar +15 XP -> "Resgatado"; o bonus refletiu no medidor semanal (110->125 XP),
+  provando a concessao real de XP. K.1 sazonal unit-tested (sem evento em junho, correto). K.3 win-back
+  wired. Evidencias: orchestration/v23_11_validation/ (VALIDACAO.md + 00..02).
+- Git: commit LOCAL. Proxima: V23.12 = V22 backlog tecnico aplicavel.
