@@ -1,5 +1,0 @@
-subagent_id=fullcycle-expert-3@session-6ce92cc2
-delegated_at=2026-06-27T04:58
-context=@full-cycle (3a sessao, contexto fresco) continuando a FASE 1 do PLANO V23 de V23.8. JA ENTREGUE+VALIDADO: V23.1-V23.7 (milestones A,B,C,D,E,G completos), 33 itens [x], APKs v23.1-v23.7. RESTANTE: H (trilha/colecoes/cosmeticos), I (multi-perfil + modo Kids), J (enciclopedia/planos), K (sazonais/desafios/win-back), V22 backlog, G.6 git cleanup. NAO implementar F (AdMob) nem L.2/L.4 (FASE 3). Rodar ate esgotar a FASE 1.
-prev_sessions=fullcycle-expert (V23.1-4), fullcycle-expert-2 (V23.5-7) — ambas pararam por limite de contexto, handoff limpo
-acao_humana_pendente=orchestration/pending_user_input.md (G.1 seguranca: rotacionar token Minimax, novo keystore, filter-repo opcional)
