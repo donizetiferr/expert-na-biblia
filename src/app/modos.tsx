@@ -1,9 +1,11 @@
-import { View, Text, Pressable, StyleSheet, Image } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Image, ScrollView, Share } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { COLORS, FONTES, ESPACAMENTOS, BORDAS } from '../constants/colors';
 import { GradienteRoxo } from '../components/Gradiente';
 import { proximaLicaoPendente } from '../lib/db-queries';
+import { versiculoDeHoje, textoCompartilhavel } from '../lib/versiculo-do-dia';
+import { registrarAtividade } from '../lib/streak';
 
 /**
  * Tela 2: Selecao de modo (Quiz Biblico / Licoes).
@@ -17,6 +19,22 @@ export default function ModosScreen() {
   const router = useRouter();
   // V23.C.2: proxima licao pendente para o CTA "Continuar" (recarrega ao focar).
   const [pendente, setPendente] = useState<{ moduloId: string; licaoId: string } | null>(null);
+  // V23.D.5: versiculo do dia (deterministico por dia do ano).
+  const versiculo = versiculoDeHoje();
+  const [liHoje, setLiHoje] = useState(false);
+
+  const compartilharVersiculo = () => {
+    Share.share({ message: textoCompartilhavel(versiculo) }).catch((e: unknown) =>
+      console.warn('[modos] compartilhar versiculo falhou:', e),
+    );
+  };
+
+  const marcarLiVersiculo = () => {
+    if (liHoje) return;
+    setLiHoje(true);
+    // Ler o versiculo conta como pratica do dia (mantem o streak — qualquer pratica vale).
+    registrarAtividade().catch((e: unknown) => console.warn('[modos] registrar atividade falhou:', e));
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -51,44 +69,71 @@ export default function ModosScreen() {
         <Text style={styles.textoConfig}>≡</Text>
       </Pressable>
 
-      <Image
-        source={require('../../assets/images/logo.png')}
-        style={styles.logo}
-        resizeMode="contain"
-      />
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        <Image
+          source={require('../../assets/images/logo.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
 
-      {/* V23.C.2: continuar de onde parou (1 toque -> proxima licao pendente). */}
-      {pendente ? (
-        <Pressable
-          style={styles.continuarBtn}
-          onPress={() => router.push(`/licoes/${pendente.moduloId}/${pendente.licaoId}`)}
-          accessibilityRole="button"
-          accessibilityLabel="Continuar de onde parou"
-        >
-          <Text style={styles.continuarTexto}>▶  CONTINUAR</Text>
-        </Pressable>
-      ) : null}
+        {/* V23.C.2: continuar de onde parou (1 toque -> proxima licao pendente). */}
+        {pendente ? (
+          <Pressable
+            style={styles.continuarBtn}
+            onPress={() => router.push(`/licoes/${pendente.moduloId}/${pendente.licaoId}`)}
+            accessibilityRole="button"
+            accessibilityLabel="Continuar de onde parou"
+          >
+            <Text style={styles.continuarTexto}>▶  CONTINUAR</Text>
+          </Pressable>
+        ) : null}
 
-      <View style={styles.cards}>
-        <Pressable style={styles.cardShadow} onPress={() => router.push('/quiz')}>
-          <GradienteRoxo diagonal style={styles.card}>
-            <Text style={styles.cardTitulo}>
-              <Text style={styles.palavraChave}>QUIZ </Text>
-              <Text style={styles.palavraChave}>BÍBLICO</Text>
-            </Text>
-            <Text style={styles.cardSubtitulo}>20 perguntas · Timer 10s</Text>
-          </GradienteRoxo>
-        </Pressable>
+        <View style={styles.cards}>
+          <Pressable style={styles.cardShadow} onPress={() => router.push('/quiz')}>
+            <GradienteRoxo diagonal style={styles.card}>
+              <Text style={styles.cardTitulo}>
+                <Text style={styles.palavraChave}>QUIZ </Text>
+                <Text style={styles.palavraChave}>BÍBLICO</Text>
+              </Text>
+              <Text style={styles.cardSubtitulo}>20 perguntas · Timer 10s</Text>
+            </GradienteRoxo>
+          </Pressable>
 
-        <Pressable style={styles.cardShadow} onPress={() => router.push('/licoes')}>
-          <GradienteRoxo diagonal style={styles.card}>
-            <Text style={styles.cardTitulo}>
-              <Text style={styles.palavraChave}>LIÇÕES</Text>
-            </Text>
-            <Text style={styles.cardSubtitulo}>40 módulos progressivos</Text>
-          </GradienteRoxo>
-        </Pressable>
-      </View>
+          <Pressable style={styles.cardShadow} onPress={() => router.push('/licoes')}>
+            <GradienteRoxo diagonal style={styles.card}>
+              <Text style={styles.cardTitulo}>
+                <Text style={styles.palavraChave}>LIÇÕES</Text>
+              </Text>
+              <Text style={styles.cardSubtitulo}>40 módulos progressivos</Text>
+            </GradienteRoxo>
+          </Pressable>
+        </View>
+
+        {/* V23.D.5: versiculo do dia (devocional leve + compartilhavel). */}
+        <View style={styles.versiculoCard}>
+          <Text style={styles.versiculoTitulo}>📖 Versículo de hoje</Text>
+          <Text style={styles.versiculoTexto}>"{versiculo.texto}"</Text>
+          <Text style={styles.versiculoRef}>— {versiculo.referencia}</Text>
+          <View style={styles.versiculoAcoes}>
+            <Pressable
+              style={[styles.versiculoBtn, liHoje && styles.versiculoBtnLido]}
+              onPress={marcarLiVersiculo}
+              accessibilityRole="button"
+              accessibilityLabel={liHoje ? 'Versículo lido hoje' : 'Marcar como lido hoje'}
+            >
+              <Text style={styles.versiculoBtnTexto}>{liHoje ? '✓ Lido hoje' : 'Li hoje'}</Text>
+            </Pressable>
+            <Pressable
+              style={styles.versiculoBtn}
+              onPress={compartilharVersiculo}
+              accessibilityRole="button"
+              accessibilityLabel="Compartilhar versículo"
+            >
+              <Text style={styles.versiculoBtnTexto}>Compartilhar</Text>
+            </Pressable>
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -138,17 +183,68 @@ const styles = StyleSheet.create({
     color: COLORS.branco,
     letterSpacing: 1,
   },
+  // V23.D.5: scroll content (logo + continuar + cards + versiculo).
+  scroll: {
+    paddingTop: ESPACAMENTOS.xl,
+    paddingBottom: ESPACAMENTOS.xl,
+  },
   logo: {
-    width: 280,
-    height: 280,
+    // V23.D.5: logo menor (280 -> 200) para o conteudo (cards + versiculo) caber melhor.
+    width: 200,
+    height: 200,
     alignSelf: 'center',
-    marginTop: ESPACAMENTOS.xl,
-    marginBottom: ESPACAMENTOS.lg,
+    marginBottom: ESPACAMENTOS.md,
   },
   cards: {
-    flex: 1,
-    justifyContent: 'center',
     gap: ESPACAMENTOS.lg,
+  },
+  // V23.D.5: card do versiculo do dia.
+  versiculoCard: {
+    marginTop: ESPACAMENTOS.lg,
+    backgroundColor: COLORS.branco,
+    borderRadius: BORDAS.raioMedio,
+    borderWidth: BORDAS.larguraMedia,
+    borderColor: COLORS.laranjaForte,
+    padding: ESPACAMENTOS.md,
+    gap: ESPACAMENTOS.sm,
+  },
+  versiculoTitulo: {
+    fontFamily: FONTES.display,
+    fontSize: 20,
+    color: COLORS.laranjaForte,
+    letterSpacing: 1,
+  },
+  versiculoTexto: {
+    fontFamily: FONTES.bodyRegular,
+    fontSize: 15,
+    color: COLORS.preto,
+    lineHeight: 21,
+  },
+  versiculoRef: {
+    fontFamily: FONTES.bodyExtraBold,
+    fontSize: 14,
+    color: COLORS.roxoEscuro,
+    textAlign: 'right',
+  },
+  versiculoAcoes: {
+    flexDirection: 'row',
+    gap: ESPACAMENTOS.sm,
+    marginTop: ESPACAMENTOS.xs,
+  },
+  versiculoBtn: {
+    flex: 1,
+    paddingVertical: ESPACAMENTOS.sm,
+    borderRadius: BORDAS.raioPequeno,
+    backgroundColor: COLORS.roxoEscuro,
+    alignItems: 'center',
+  },
+  versiculoBtnLido: {
+    backgroundColor: COLORS.acertoVerde,
+  },
+  versiculoBtnTexto: {
+    fontFamily: FONTES.bodyBold,
+    fontSize: 14,
+    color: COLORS.branco,
   },
   // V18.3 MC.2/MD.2: sombra fica no Pressable externo; o degrade roxo + borda
   // laranja ficam no card interno (overflow hidden para o degrade respeitar o raio).

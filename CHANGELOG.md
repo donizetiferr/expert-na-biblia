@@ -2,7 +2,24 @@
 
 Todas as mudancas relevantes neste projeto.
 
-## [1.14.0] (V23.3) - 2026-06-27 (FASE 1 — Recompensa/conquista avancada: leaderboard + combo + mascote evolui + continuar)
+## [1.15.0] (V23.4) - 2026-06-27 (FASE 1 — Aprendizado: versiculo do dia)
+
+> Inicia o milestone V23.D (aprendizado intuitivo). Gates: tsc 0 | jest 144/144 (+5) | eslint 0.
+
+### Adicionado
+- **[D.5] Versiculo do dia / devocional leve**: `src/lib/versiculo-do-dia.ts` (30 versiculos curados,
+  selecao deterministica pelo dia do ano — `versiculoDeHoje`). Card "📖 Versículo de hoje" em /modos
+  com texto + referencia + botoes "Li hoje" (conta como pratica e mantem o streak) e "Compartilhar"
+  (Share sheet nativo). Entry point de ~30s que traz o usuario de volta sem exigir licao inteira.
+- **/modos -> ScrollView**: acomoda o CTA Continuar + cards + versiculo do dia sem estourar a dobra.
+
+### Testes
+- +5 testes (139 -> 144): `versiculo-do-dia` (catalogo, diaDoAno, determinismo, rotacao, share).
+
+### Pendente do milestone D (proximas versoes)
+- D.1 conteudo didatico, D.2 revisao espacada/Leitner, D.3 novos formatos (completar-versiculo),
+  D.4 refs biblicas no feedback — dependem do batch M2.7 para gerar conteudo em escala.
+
 
 > Completa o milestone V23.B + V23.C.2. Gates: tsc 0 | jest 139/139 (+2) | eslint 0.
 
